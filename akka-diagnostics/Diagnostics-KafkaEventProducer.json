@@ -1,22 +1,16 @@
 {
-  "start-time" : "2021-01-29T21:15:50.303",
+  "start-time" : "2021-01-31T15:47:57.872",
   "akka-version" : "2.6.10",
   "akka-diagnostics-version" : "1.1.16",
   "akka-http-version" : "10.1.11",
   "akka-persistence-cassandra-version" : "1.0.4",
   "alpakka-kafka-version" : "2.1.0-M1",
-  "classpath" : "/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/job-1/target/200d9128/6ce85cd9/it_2.13-1.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/bb087c2a/011dcf50/common_2.13-0.1.0-SNAPSHOT.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/599c1874/0c459986/readside_2.13-1.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/3ce40b04/ecece396/pcs_2.13-1.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/38a3b0c5/19ae0f5c/akka-cluster-tools_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/de237fc4/c995c529/akka-remote_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/6de901ba/7ab4aded/akka-discovery_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/04e7cc99/9311fa15/akka-persistence-query_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/6fd93f16/f2685f0d/akka-actor_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/530a023b/5ad3044b/akka-persistence_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/3c827841/fd61b76c/akka-slf4j_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/fba895ce/12b3affb/akka-http-core_2.13-10.1.11.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/fc9d195c/c21dd68c/akka-http_2.13-10.1.11.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/53041eb8/48a5ef8b/akka-http-spray-json_2.13-10.1.11.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/3446a0ff/d5cbb220/akka-cluster_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/dc6a4f21/e1d0e1cc/akka-cluster-sharding_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/9b034657/6e5c6a5f/akka-actor-typed_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/3d7306ad/369bec45/akka-persistence-typed_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/af4180eb/9bc7e04d/akka-cluster-sharding-typed_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/22c68f67/9028ac25/akka-discovery-kubernetes-api_2.13-1.0.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/0b7f3c12/1d57e2a8/akka-management_2.13-1.0.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/84746869/b9bfe296/akka-management-cluster-http_2.13-1.0.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/04178f02/77260cb8/akka-management-cluster-bootstrap_2.13-1.0.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/bbf0908c/9d2821d3/akka-stream-kafka_2.13-2.1.0-M1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/1b9e71fa/3576e2f7/akka-serialization-jackson_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/0a4267ad/682cb434/akka-protobuf_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/46da9679/03f7a303/akka-diagnostics_2.13-1.1.16.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/ecf42ebd/fd60c5bf/akka-persistence-inmemory_2.13-2.5.15.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/2ff9fe14/72fd1ccd/scalaz-core_2.13-7.2.28.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/db88be51/3d146dcd/scalaz-concurrent_2.13-7.2.28.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/a60cb8ff/d6bc0d12/akka-persistence-cassandra_2.13-1.0.4.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/c9742c09/e32cf066/akka-projection-eventsourced_2.13-0.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/2f2dd1b4/b3492d1f/akka-projection-cassandra_2.13-0.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/f17a70f6/97705cb7/logback-classic-1.2.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/91d23f75/eebc720e/logstash-logback-encoder-5.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/683a7861/d8741d4e/akka-kryo-serialization_2.13-2.0.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/4a61def4/6a1cfd94/play-json_2.13-2.8.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/fcfad691/8dcc3c28/play-json-extensions_2.13-0.40.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/8077d4ae/18a0a49c/play-json-traits_2.13-1.5.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/a7cc1cf3/5a9cf629/commons-io-2.6.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/62482ea2/65c5c050/reflections-0.9.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/087ca1f3/0cc2d7d5/shapeless_2.13-2.3.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/49e837fc/e9ce8fd6/akka-http-play-json_2.13-1.30.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/d6abaf7c/0f9a2ccb/kamon-core_2.13-2.1.4.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/a43429dc/c1890f76/kamon-status-page_2.13-2.1.4.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/32d6634b/04c8aedc/kamon-prometheus_2.13-2.1.4.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/d5ad7f52/b65665ef/cinnamon-akka_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/27c2c267/cf33397a/cinnamon-akka-http_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/47ce115e/20c17108/cinnamon-jvm-metrics-producer-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/748ab68c/c66fdbe6/cinnamon-prometheus-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/cad35d94/90d2b8ae/cinnamon-prometheus-httpserver-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/41ad4b26/ef90f9ae/cinnamon-akka-persistence_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/569a6158/925735d8/cinnamon-akka-stream_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/88ee6f06/7d451548/cinnamon-opentracing_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/b4a13285/208e1b7e/cinnamon-opentracing-jaeger-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/179a09a5/8f62040e/cinnamon-opentracing-zipkin-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/67d1ea17/ef5a7ec4/cinnamon-akka-typed_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/cd9041b8/5411794c/akka-coordination_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/f7841b97/a447019a/akka-stream_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/21f43489/891bb0c5/akka-pki_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/0315da77/3c2f391a/agrona-1.7.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/d74497ba/65a4d7a3/config-1.4.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/b1e07f5b/cb34b137/scala-java8-compat_2.13-0.9.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/21c6db56/9f4f0e8c/slf4j-api-1.7.30.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/01237254/c5f17aae/akka-parsing_2.13-10.1.11.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/2b05d749/a5f09784/spray-json_2.13-1.3.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/2e026565/2a2d5356/akka-distributed-data_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/d4ab7128/2697cc8e/akka-stream-typed_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/b1edd129/5c9c78f0/akka-cluster-typed_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/c0921292/c92485a6/kafka-clients-2.6.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/9552c2da/d2afeec3/scala-collection-compat_2.13-2.2.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/ce23accf/6d19a5aa/jackson-core-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/cea1d36a/b040a272/jackson-annotations-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/a9584644/f54a59f3/jackson-databind-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/b681de0d/40795950/jackson-module-scala_2.13-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/0b6a138d/abf28902/jackson-datatype-jdk8-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/d9e08a57/39790502/jackson-datatype-jsr310-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/3cf94966/9f1b8f97/jackson-module-parameter-names-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/14508952/312c3310/jackson-dataformat-cbor-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/b9d11ca3/b9827313/lz4-java-1.7.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/e2d9350c/066b4db5/commons-lang3-3.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/770195a3/161d65a2/scalaz-effect_2.13-7.2.28.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/827e19f3/ee0bc8d5/akka-stream-alpakka-cassandra_2.13-2.0.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/f6898112/c14f5344/akka-projection-core_2.13-0.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/021860a7/8d05bad2/logback-core-1.2.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/b68cda37/53a166ba/kryo-5.0.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/020b3659/6a7a0579/play-functional_2.13-2.8.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/0f58579b/f9fd6ced/joda-time-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/e565c915/4598152b/guava-18.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/91a4c916/51e84830/javassist-3.18.2-GA.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/b3be8ac1/ef63af0c/annotations-2.0.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/84943bbb/73d75af5/okhttp-3.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/8e376780/05205cde/cinnamon-java-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/e4fc127d/b50ebf44/cinnamon-scala_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/f5dbba22/18c88617/cinnamon-core-java-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/391ae09c/c140e4ce/simpleclient-0.8.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/0e2ff5b4/14d77992/HdrHistogram-2.1.12.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/c308592d/1b96c5e6/simpleclient_httpserver-0.8.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/95fd7341/9efcc32e/cinnamon-akka-cluster_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/cfcccf88/68165534/cinnamon-play_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/c95aada3/3c54491b/opentracing-api-0.32.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/d5a33681/49cc5a5e/opentracing-util-0.32.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/0a87902e/6eb57464/cinnamon-opentracing-tracer-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/ff74ae9d/9f274d41/jaeger-thrift-0.35.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/7400f3e5/7f0616e0/jaeger-zipkin-0.35.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/e850969f/30fcd385/commons-codec-1.12.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/a743b5d6/960d60b9/httpcore-4.4.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/8270b74c/abdbde66/akka-protobuf-v3_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/552d7064/8fa64fae/reactive-streams-1.0.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/511ec502/c46b6b30/ssl-config-core_2.13-0.4.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/fe7c41da/7e8fd69f/asn-one-0.4.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/370f482d/3fb9012e/lmdbjava-0.7.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/e443b31f/c57a2684/zstd-jni-1.4.4-7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/dd0a15ae/f88278e2/snappy-java-1.1.7.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/7c13609a/2b8a4122/jackson-module-paranamer-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/3eeba262/f964df66/java-driver-core-4.6.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/b16e3df5/95434e11/netty-handler-4.1.52.Final.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/c4b3cb95/d9a78abd/reflectasm-1.11.9.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/217a088f/645445bf/objenesis-3.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/44a55002/c0af7752/minlog-1.3.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/b2edda4f/f2915dcd/okio-1.17.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/0a27a5b9/ba3adedc/cinnamon-core_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/8d3c21fd/7efd13df/cinnamon-common-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/b73a0d10/9f77b5f0/simpleclient_common-0.8.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/4e6663fb/3d626106/opentracing-noop-0.32.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/a6d772de/db219b32/jaeger-core-0.35.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/ea803ddf/82f977c9/libthrift-0.12.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/cc77b7c6/82bbf548/jaeger-client-0.35.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/ca92fded/a1d5f1d8/zipkin-sender-urlconnection-2.7.6.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/420d962c/de51ef4b/scala-parser-combinators_2.13-1.1.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/c72e6580/5fa7d7f5/jnr-ffi-2.1.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/466e8f64/c175b978/jffi-1.2.19.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/a0010db6/77feaaa8/jffi-1.2.19-native.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/a0f8df6d/dccb3b8e/jnr-constants-0.9.12.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/33ccad04/daed874d/paranamer-2.8.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/a2ce266d/1f3130c2/native-protocol-1.4.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/085fe5d1/50cffbc2/java-driver-shaded-guava-25.1-jre.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/cb0fc4be/51dc87f4/jnr-posix-3.0.50.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/97d3ef3d/c7d24218/javatuples-1.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/83f28296/9a62370d/metrics-core-4.0.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/d69fd96e/3998a867/jcip-annotations-1.0-1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/127812bb/93a0293f/netty-common-4.1.52.Final.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/3cd95c92/6d31edc0/netty-resolver-4.1.52.Final.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/03927729/f9e494a7/netty-buffer-4.1.52.Final.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/2bab8696/2ae91f32/netty-transport-4.1.52.Final.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/a1641841/f2864d24/netty-codec-4.1.52.Final.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/8912a15b/ce364181/gson-2.8.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/890845de/2217c003/jaeger-tracerresolver-0.35.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/78f0bf20/983fff97/zipkin-reporter-2.7.6.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/aed784a0/395a47c2/zipkin-2.9.4.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/b58469a7/a8143746/httpclient-4.5.6.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/c6546b98/df42223a/asm-7.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/6507e77e/50450156/asm-commons-7.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/ee5bbc39/a19ba10d/asm-analysis-7.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/532289be/c3984e41/asm-tree-7.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/a2d1934f/a043cd25/asm-util-7.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/bbc005b4/29a67df4/jnr-a64asm-1.0.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/63070114/d875bee2/jnr-x86asm-1.0.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/ea638dd0/e24b0cdc/opentracing-tracerresolver-0.1.6.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_e8587380/target/7cdcf96b/e02e153b/commons-logging-1.2.jar",
+  "classpath" : "/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/job-1/target/200d9128/6ce85cd9/it_2.13-1.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/bb087c2a/c16a87f4/common_2.13-0.1.0-SNAPSHOT.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/599c1874/24dfb0d9/readside_2.13-1.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/3ce40b04/d6ce7bb5/pcs_2.13-1.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/38a3b0c5/19ae0f5c/akka-cluster-tools_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/de237fc4/c995c529/akka-remote_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/6de901ba/7ab4aded/akka-discovery_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/04e7cc99/9311fa15/akka-persistence-query_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/6fd93f16/f2685f0d/akka-actor_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/530a023b/5ad3044b/akka-persistence_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/3c827841/fd61b76c/akka-slf4j_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/fba895ce/12b3affb/akka-http-core_2.13-10.1.11.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/fc9d195c/c21dd68c/akka-http_2.13-10.1.11.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/53041eb8/48a5ef8b/akka-http-spray-json_2.13-10.1.11.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/3446a0ff/d5cbb220/akka-cluster_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/dc6a4f21/e1d0e1cc/akka-cluster-sharding_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/9b034657/6e5c6a5f/akka-actor-typed_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/3d7306ad/369bec45/akka-persistence-typed_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/af4180eb/9bc7e04d/akka-cluster-sharding-typed_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/22c68f67/9028ac25/akka-discovery-kubernetes-api_2.13-1.0.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/0b7f3c12/1d57e2a8/akka-management_2.13-1.0.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/84746869/b9bfe296/akka-management-cluster-http_2.13-1.0.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/04178f02/77260cb8/akka-management-cluster-bootstrap_2.13-1.0.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/bbf0908c/9d2821d3/akka-stream-kafka_2.13-2.1.0-M1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/1b9e71fa/3576e2f7/akka-serialization-jackson_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/0a4267ad/682cb434/akka-protobuf_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/46da9679/03f7a303/akka-diagnostics_2.13-1.1.16.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/ecf42ebd/fd60c5bf/akka-persistence-inmemory_2.13-2.5.15.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/2ff9fe14/72fd1ccd/scalaz-core_2.13-7.2.28.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/db88be51/3d146dcd/scalaz-concurrent_2.13-7.2.28.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/a60cb8ff/d6bc0d12/akka-persistence-cassandra_2.13-1.0.4.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/c9742c09/e32cf066/akka-projection-eventsourced_2.13-0.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/2f2dd1b4/b3492d1f/akka-projection-cassandra_2.13-0.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/f17a70f6/97705cb7/logback-classic-1.2.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/91d23f75/eebc720e/logstash-logback-encoder-5.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/683a7861/d8741d4e/akka-kryo-serialization_2.13-2.0.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/4a61def4/6a1cfd94/play-json_2.13-2.8.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/fcfad691/8dcc3c28/play-json-extensions_2.13-0.40.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/8077d4ae/18a0a49c/play-json-traits_2.13-1.5.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/a7cc1cf3/5a9cf629/commons-io-2.6.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/62482ea2/65c5c050/reflections-0.9.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/087ca1f3/0cc2d7d5/shapeless_2.13-2.3.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/49e837fc/e9ce8fd6/akka-http-play-json_2.13-1.30.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/d6abaf7c/0f9a2ccb/kamon-core_2.13-2.1.4.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/a43429dc/c1890f76/kamon-status-page_2.13-2.1.4.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/32d6634b/04c8aedc/kamon-prometheus_2.13-2.1.4.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/d5ad7f52/b65665ef/cinnamon-akka_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/27c2c267/cf33397a/cinnamon-akka-http_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/47ce115e/20c17108/cinnamon-jvm-metrics-producer-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/748ab68c/c66fdbe6/cinnamon-prometheus-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/cad35d94/90d2b8ae/cinnamon-prometheus-httpserver-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/41ad4b26/ef90f9ae/cinnamon-akka-persistence_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/569a6158/925735d8/cinnamon-akka-stream_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/88ee6f06/7d451548/cinnamon-opentracing_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/b4a13285/208e1b7e/cinnamon-opentracing-jaeger-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/179a09a5/8f62040e/cinnamon-opentracing-zipkin-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/67d1ea17/ef5a7ec4/cinnamon-akka-typed_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/cd9041b8/5411794c/akka-coordination_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/f7841b97/a447019a/akka-stream_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/21f43489/891bb0c5/akka-pki_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/0315da77/3c2f391a/agrona-1.7.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/d74497ba/65a4d7a3/config-1.4.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/b1e07f5b/cb34b137/scala-java8-compat_2.13-0.9.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/21c6db56/9f4f0e8c/slf4j-api-1.7.30.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/01237254/c5f17aae/akka-parsing_2.13-10.1.11.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/2b05d749/a5f09784/spray-json_2.13-1.3.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/2e026565/2a2d5356/akka-distributed-data_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/d4ab7128/2697cc8e/akka-stream-typed_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/b1edd129/5c9c78f0/akka-cluster-typed_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/c0921292/c92485a6/kafka-clients-2.6.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/9552c2da/d2afeec3/scala-collection-compat_2.13-2.2.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/ce23accf/6d19a5aa/jackson-core-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/cea1d36a/b040a272/jackson-annotations-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/a9584644/f54a59f3/jackson-databind-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/b681de0d/40795950/jackson-module-scala_2.13-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/0b6a138d/abf28902/jackson-datatype-jdk8-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/d9e08a57/39790502/jackson-datatype-jsr310-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/3cf94966/9f1b8f97/jackson-module-parameter-names-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/14508952/312c3310/jackson-dataformat-cbor-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/b9d11ca3/b9827313/lz4-java-1.7.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/e2d9350c/066b4db5/commons-lang3-3.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/770195a3/161d65a2/scalaz-effect_2.13-7.2.28.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/827e19f3/ee0bc8d5/akka-stream-alpakka-cassandra_2.13-2.0.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/f6898112/c14f5344/akka-projection-core_2.13-0.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/021860a7/8d05bad2/logback-core-1.2.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/b68cda37/53a166ba/kryo-5.0.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/020b3659/6a7a0579/play-functional_2.13-2.8.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/0f58579b/f9fd6ced/joda-time-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/e565c915/4598152b/guava-18.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/91a4c916/51e84830/javassist-3.18.2-GA.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/b3be8ac1/ef63af0c/annotations-2.0.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/84943bbb/73d75af5/okhttp-3.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/8e376780/05205cde/cinnamon-java-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/e4fc127d/b50ebf44/cinnamon-scala_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/f5dbba22/18c88617/cinnamon-core-java-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/391ae09c/c140e4ce/simpleclient-0.8.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/0e2ff5b4/14d77992/HdrHistogram-2.1.12.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/c308592d/1b96c5e6/simpleclient_httpserver-0.8.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/95fd7341/9efcc32e/cinnamon-akka-cluster_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/cfcccf88/68165534/cinnamon-play_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/c95aada3/3c54491b/opentracing-api-0.32.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/d5a33681/49cc5a5e/opentracing-util-0.32.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/0a87902e/6eb57464/cinnamon-opentracing-tracer-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/ff74ae9d/9f274d41/jaeger-thrift-0.35.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/7400f3e5/7f0616e0/jaeger-zipkin-0.35.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/e850969f/30fcd385/commons-codec-1.12.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/a743b5d6/960d60b9/httpcore-4.4.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/8270b74c/abdbde66/akka-protobuf-v3_2.13-2.6.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/552d7064/8fa64fae/reactive-streams-1.0.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/511ec502/c46b6b30/ssl-config-core_2.13-0.4.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/fe7c41da/7e8fd69f/asn-one-0.4.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/370f482d/3fb9012e/lmdbjava-0.7.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/e443b31f/c57a2684/zstd-jni-1.4.4-7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/dd0a15ae/f88278e2/snappy-java-1.1.7.3.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/7c13609a/2b8a4122/jackson-module-paranamer-2.10.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/3eeba262/f964df66/java-driver-core-4.6.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/b16e3df5/95434e11/netty-handler-4.1.52.Final.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/c4b3cb95/d9a78abd/reflectasm-1.11.9.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/217a088f/645445bf/objenesis-3.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/44a55002/c0af7752/minlog-1.3.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/b2edda4f/f2915dcd/okio-1.17.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/0a27a5b9/ba3adedc/cinnamon-core_2.13-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/8d3c21fd/7efd13df/cinnamon-common-2.14.7.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/b73a0d10/9f77b5f0/simpleclient_common-0.8.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/4e6663fb/3d626106/opentracing-noop-0.32.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/a6d772de/db219b32/jaeger-core-0.35.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/ea803ddf/82f977c9/libthrift-0.12.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/cc77b7c6/82bbf548/jaeger-client-0.35.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/ca92fded/a1d5f1d8/zipkin-sender-urlconnection-2.7.6.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/420d962c/de51ef4b/scala-parser-combinators_2.13-1.1.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/c72e6580/5fa7d7f5/jnr-ffi-2.1.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/466e8f64/c175b978/jffi-1.2.19.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/a0010db6/77feaaa8/jffi-1.2.19-native.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/a0f8df6d/dccb3b8e/jnr-constants-0.9.12.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/33ccad04/daed874d/paranamer-2.8.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/a2ce266d/1f3130c2/native-protocol-1.4.10.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/085fe5d1/50cffbc2/java-driver-shaded-guava-25.1-jre.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/cb0fc4be/51dc87f4/jnr-posix-3.0.50.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/97d3ef3d/c7d24218/javatuples-1.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/83f28296/9a62370d/metrics-core-4.0.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/d69fd96e/3998a867/jcip-annotations-1.0-1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/127812bb/93a0293f/netty-common-4.1.52.Final.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/3cd95c92/6d31edc0/netty-resolver-4.1.52.Final.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/03927729/f9e494a7/netty-buffer-4.1.52.Final.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/2bab8696/2ae91f32/netty-transport-4.1.52.Final.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/a1641841/f2864d24/netty-codec-4.1.52.Final.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/8912a15b/ce364181/gson-2.8.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/890845de/2217c003/jaeger-tracerresolver-0.35.5.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/78f0bf20/983fff97/zipkin-reporter-2.7.6.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/aed784a0/395a47c2/zipkin-2.9.4.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/b58469a7/a8143746/httpclient-4.5.6.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/c6546b98/df42223a/asm-7.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/6507e77e/50450156/asm-commons-7.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/ee5bbc39/a19ba10d/asm-analysis-7.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/532289be/c3984e41/asm-tree-7.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/a2d1934f/a043cd25/asm-util-7.1.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/bbc005b4/29a67df4/jnr-a64asm-1.0.0.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/63070114/d875bee2/jnr-x86asm-1.0.2.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/ea638dd0/e24b0cdc/opentracing-tracerresolver-0.1.6.jar:/Users/sergiomaurenzi/IdeaProjects/Copernico/pcs-cinnamon/target/bg-jobs/sbt_3b08f9ca/target/7cdcf96b/e02e153b/commons-logging-1.2.jar",
   "configuration-warnings" : [
     {
       "checker-key" : "typo",
       "message" : "akka.test.single-expect-default is not an Akka configuration setting. Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
       "properties" : "akka.test.single-expect-default",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.discovery.kubernetes-api.pod-port-name is not an Akka configuration setting. Did you mean one of 'akka.management.cluster.bootstrap.contact-point-discovery.port-name'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.discovery.kubernetes-api.pod-port-name",
       "defaults" : ""
     },
     {
@@ -48,89 +42,11 @@
       "message" : "akka.cluster.auto-discovery is not an Akka configuration setting. Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
       "properties" : "akka.cluster.auto-discovery",
       "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.persistence.cassandra.default-dispatcher.thread-pool-executor.task-queue-size is not an Akka configuration setting. Did you mean one of 'akka.actor.default-dispatcher.thread-pool-executor.task-queue-size', 'akka.actor.default-dispatcher.affinity-pool-executor.task-queue-size', 'akka.actor.default-dispatcher.thread-pool-executor.task-queue-type'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.persistence.cassandra.default-dispatcher.thread-pool-executor.task-queue-size",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.persistence.cassandra.default-dispatcher.thread-pool-executor.max-pool-size-min is not an Akka configuration setting. Did you mean one of 'akka.actor.default-dispatcher.thread-pool-executor.max-pool-size-min', 'akka.actor.default-dispatcher.thread-pool-executor.max-pool-size-max', 'akka.remote.classic.netty.tcp.client-socket-worker-pool.pool-size-min'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.persistence.cassandra.default-dispatcher.thread-pool-executor.max-pool-size-min",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.persistence.cassandra.default-dispatcher.thread-pool-executor.core-pool-size-min is not an Akka configuration setting. Did you mean one of 'akka.actor.default-dispatcher.thread-pool-executor.core-pool-size-min', 'akka.diagnostics.recorder.dispatcher.thread-pool-executor.core-pool-size-min', 'akka.actor.default-dispatcher.thread-pool-executor.core-pool-size-max'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.persistence.cassandra.default-dispatcher.thread-pool-executor.core-pool-size-min",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.persistence.cassandra.default-dispatcher.thread-pool-executor.max-pool-size-max is not an Akka configuration setting. Did you mean one of 'akka.actor.default-dispatcher.thread-pool-executor.max-pool-size-max', 'akka.actor.default-dispatcher.thread-pool-executor.max-pool-size-min', 'akka.remote.classic.netty.tcp.client-socket-worker-pool.pool-size-max'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.persistence.cassandra.default-dispatcher.thread-pool-executor.max-pool-size-max",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.persistence.cassandra.default-dispatcher.thread-pool-executor.core-pool-size-max is not an Akka configuration setting. Did you mean one of 'akka.actor.default-dispatcher.thread-pool-executor.core-pool-size-max', 'akka.diagnostics.recorder.dispatcher.thread-pool-executor.core-pool-size-max', 'akka.actor.default-dispatcher.thread-pool-executor.core-pool-size-min'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.persistence.cassandra.default-dispatcher.thread-pool-executor.core-pool-size-max",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.streams.blocking-io-dispatcher.type is not an Akka configuration setting. Did you mean one of 'akka.cluster.sharded-daemon-process.sharding.distributed-data.durable.pinned-store.type', 'akka.cluster.typed.receptionist.distributed-data.durable.pinned-store.type', 'akka.cluster.sharding.distributed-data.durable.pinned-store.type'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.streams.blocking-io-dispatcher.type",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.streams.blocking-io-dispatcher.thread-pool-executor.task-queue-size is not an Akka configuration setting. Did you mean one of 'akka.actor.default-dispatcher.thread-pool-executor.task-queue-size', 'akka.actor.default-dispatcher.affinity-pool-executor.task-queue-size', 'akka.actor.default-dispatcher.thread-pool-executor.task-queue-type'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.streams.blocking-io-dispatcher.thread-pool-executor.task-queue-size",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.streams.blocking-io-dispatcher.thread-pool-executor.core-pool-size-min is not an Akka configuration setting. Did you mean one of 'akka.actor.default-dispatcher.thread-pool-executor.core-pool-size-min', 'akka.diagnostics.recorder.dispatcher.thread-pool-executor.core-pool-size-min', 'akka.actor.default-dispatcher.thread-pool-executor.core-pool-size-max'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.streams.blocking-io-dispatcher.thread-pool-executor.core-pool-size-min",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.streams.blocking-io-dispatcher.thread-pool-executor.keep-alive-time is not an Akka configuration setting. Did you mean one of 'akka.actor.default-dispatcher.thread-pool-executor.keep-alive-time'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.streams.blocking-io-dispatcher.thread-pool-executor.keep-alive-time",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.streams.blocking-io-dispatcher.thread-pool-executor.max-pool-size-min is not an Akka configuration setting. Did you mean one of 'akka.actor.default-dispatcher.thread-pool-executor.max-pool-size-min', 'akka.actor.default-dispatcher.thread-pool-executor.max-pool-size-max', 'akka.remote.classic.netty.tcp.client-socket-worker-pool.pool-size-min'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.streams.blocking-io-dispatcher.thread-pool-executor.max-pool-size-min",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.streams.blocking-io-dispatcher.thread-pool-executor.core-pool-size-max is not an Akka configuration setting. Did you mean one of 'akka.actor.default-dispatcher.thread-pool-executor.core-pool-size-max', 'akka.diagnostics.recorder.dispatcher.thread-pool-executor.core-pool-size-max', 'akka.actor.default-dispatcher.thread-pool-executor.core-pool-size-min'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.streams.blocking-io-dispatcher.thread-pool-executor.core-pool-size-max",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.streams.blocking-io-dispatcher.thread-pool-executor.max-pool-size-max is not an Akka configuration setting. Did you mean one of 'akka.actor.default-dispatcher.thread-pool-executor.max-pool-size-max', 'akka.actor.default-dispatcher.thread-pool-executor.max-pool-size-min', 'akka.remote.classic.netty.tcp.client-socket-worker-pool.pool-size-max'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.streams.blocking-io-dispatcher.thread-pool-executor.max-pool-size-max",
-      "defaults" : ""
-    },
-    {
-      "checker-key" : "typo",
-      "message" : "akka.streams.blocking-io-dispatcher.executor is not an Akka configuration setting. Did you mean one of 'akka.cluster.sharded-daemon-process.sharding.distributed-data.durable.pinned-store.executor', 'akka.cluster.typed.receptionist.distributed-data.durable.pinned-store.executor', 'akka.cluster.sharding.distributed-data.durable.pinned-store.executor'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
-      "properties" : "akka.streams.blocking-io-dispatcher.executor",
-      "defaults" : ""
     }],
   "system-metrics" : {
     "heap-init" : 1073741824,
     "heap-max" : 1073741824,
-    "heap-used" : 450887680,
+    "heap-used" : 464265576,
     "heap-committed" : 1073741824,
     "os-processors" : 8,
     "mem-pool-0" : {
@@ -138,48 +54,48 @@
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 141458632,
-      "committed" : 151543808
+      "used" : 141443096,
+      "committed" : 151207936
     },
     "mem-pool-1" : {
       "name" : "G1 Survivor Space",
       "type" : "Heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 44040192,
-      "committed" : 44040192
+      "used" : 10485760,
+      "committed" : 10485760
     },
     "mem-pool-2" : {
       "name" : "Compressed Class Space",
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : 1073741824,
-      "used" : 21344920,
-      "committed" : 26607616
+      "used" : 20917464,
+      "committed" : 25952256
     },
     "mem-pool-3" : {
       "name" : "G1 Eden Space",
       "type" : "Heap memory",
       "init" : 56623104,
       "max" : -1,
-      "used" : 225443840,
-      "committed" : 479199232
+      "used" : 222298112,
+      "committed" : 241172480
     },
     "mem-pool-4" : {
       "name" : "G1 Old Gen",
       "type" : "Heap memory",
       "init" : 1017118720,
       "max" : 1073741824,
-      "used" : 181403648,
-      "committed" : 550502400
+      "used" : 231481704,
+      "committed" : 822083584
     },
     "mem-pool-5" : {
       "name" : "CodeCache",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 134217728,
-      "used" : 29536896,
-      "committed" : 29687808
+      "used" : 30783872,
+      "committed" : 31195136
     }
   },
   "configuration" : {
@@ -198,7 +114,7 @@
             "allow-java-serialization" : "off",
             "debug" : {
                 "lifecycle" : "off",
-                "receive" : true
+                "receive" : "off"
             },
             "default-blocking-io-dispatcher" : {
                 "executor" : "thread-pool-executor",
@@ -278,8 +194,7 @@
         "discovery" : {
             "kubernetes-api" : {
                 "pod-label-selector" : "app=cluster-example",
-                "pod-namespace" : "default",
-                "pod-port-name" : "management"
+                "pod-namespace" : "default"
             },
             "method" : "akka-dns"
         },
@@ -307,6 +222,16 @@
                     "max-retries" : 3
                 },
                 "eos-draining-check-interval" : "30ms",
+                "fetch" : {
+                    "max" : {
+                        "wait" : {
+                            "ms" : 5
+                        }
+                    },
+                    "min" : {
+                        "bytes" : 120000
+                    }
+                },
                 "kafka-clients" : {
                     "auto" : {
                         "offset" : {
@@ -328,12 +253,12 @@
                 "metadata-request-timeout" : "5s",
                 "offset-for-times-timeout" : "5s",
                 "partition-handler-warning" : "5s",
-                "poll-interval" : "300ms",
-                "poll-timeout" : "50ms",
+                "poll-interval" : "10ms",
+                "poll-timeout" : "0ms",
                 "position-timeout" : "5s",
                 "stop-timeout" : "30s",
                 "use-dispatcher" : "akka.kafka.default-dispatcher",
-                "wait-close-partition" : "50ms"
+                "wait-close-partition" : "500ms"
             },
             "default-dispatcher" : {
                 "executor" : "fork-join-executor",
@@ -347,6 +272,10 @@
                 "type" : "Dispatcher"
             },
             "producer" : {
+                "acks" : 0,
+                "buffer" : {
+                    "memory" : 100663296
+                },
                 "close-on-producer-stop" : true,
                 "close-timeout" : "60s",
                 "discovery-method" : "akka.discovery",
@@ -354,6 +283,14 @@
                 "kafka-clients" : {
                     "bootstrap" : {
                         "servers" : "localhost:9092"
+                    }
+                },
+                "linger" : {
+                    "ms" : 5
+                },
+                "max" : {
+                    "block" : {
+                        "ms" : 120000
                     }
                 },
                 "parallelism" : 50000,
@@ -410,25 +347,9 @@
                 "redelivery-burst-limit" : 10000,
                 "warn-after-number-of-unconfirmed-attempts" : 5
             },
-            "cassandra" : {
-                "default-dispatcher" : {
-                    "executor" : "thread-pool-executor",
-                    "thread-pool-executor" : {
-                        "core-pool-size-max" : 64,
-                        "core-pool-size-min" : 8,
-                        "max-pool-size-max" : 200,
-                        "max-pool-size-min" : 100,
-                        "task-queue-size" : 10
-                    },
-                    "type" : "Dispatcher"
-                }
-            },
             "internal-stash-overflow-strategy" : "akka.persistence.ThrowExceptionConfigurator",
             "journal" : {
                 "plugin" : "inmemory-journal"
-            },
-            "journal-plugin-fallback" : {
-                "recovery-event-timeout" : "30s"
             },
             "max-concurrent-recoveries" : 5000,
             "snapshot-store" : {
@@ -483,20 +404,6 @@
                     "timeout" : "5s"
                 },
                 "sync-processing-limit" : 1000
-            }
-        },
-        "streams" : {
-            "blocking-io-dispatcher" : {
-                "executor" : "thread-pool-executor",
-                "thread-pool-executor" : {
-                    "core-pool-size-max" : 64,
-                    "core-pool-size-min" : 8,
-                    "keep-alive-time" : "60s",
-                    "max-pool-size-max" : 400,
-                    "max-pool-size-min" : 200,
-                    "task-queue-size" : 10
-                },
-                "type" : "Dispatcher"
             }
         },
         "test" : {
@@ -979,7 +886,7 @@
         }
     },
     "jnidispatch" : {
-        "path" : "/Users/sergiomaurenzi/Library/Caches/JNA/temp/jna299553974744313689.tmp"
+        "path" : "/Users/sergiomaurenzi/Library/Caches/JNA/temp/jna11064977686910238622.tmp"
     },
     "kafka" : {
         "CONSUMER_GROUP" : "READSIDE",
