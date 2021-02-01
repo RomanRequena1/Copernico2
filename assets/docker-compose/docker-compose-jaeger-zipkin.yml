@@ -14,9 +14,11 @@ services:
       COLLECTOR_ZIPKIN_HTTP_PORT: 9411
       JAEGER_REPORTER_MAX_QUEUE_SIZE: 1000
 
-#  zipkin:
-#    container_name: zipkin
-#    image: openzipkin/zipkin
-#    network_mode: bridge
-#    ports:
-#      - '9411:9411'
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    network_mode: bridge
+    ports:
+      - '9411:9411'
+    environment:
+      JAVA_OPTS: "-Xmx1G -Xms512M"

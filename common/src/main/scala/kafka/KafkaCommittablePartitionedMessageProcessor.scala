@@ -85,6 +85,7 @@ class KafkaCommittablePartitionedMessageProcessor(
 
       .committablePartitionedSource(consumer
         .withClientId("Writeside"), subscription)
+        //.buffer(10000, OverflowStrategy.backpressure)
         // TODO changed to reduce the Consumer latency - Moved to kafka.conf
         //.withProperty(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG, "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor")
         //.withProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "120000")
@@ -94,6 +95,7 @@ class KafkaCommittablePartitionedMessageProcessor(
         source
           //.buffer(CONSUMER_PARALLELISM * NR_PARTITIONS, OverflowStrategy.backpressure)
           //.async("akka.stream.blocking-io-dispatcher")
+          //.buffer(10000, OverflowStrategy.backpressure)
           .addAttributes(CinnamonAttributes.instrumented(reportByName = true , perFlow = true, perConnection = true, perBoundary = true, traceable = true))
           .mapAsync(CONSUMER_PARALLELISM) { msg: ConsumerMessage.CommittableMessage[String, String] =>
             val message = msg

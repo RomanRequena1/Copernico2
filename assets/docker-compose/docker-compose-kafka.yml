@@ -22,6 +22,7 @@ services:
       - 9092:9092
       - 29092:29092
     environment:
+      # KAFKA_HEAP_OPTS: "-Xmx2G -Xms2G"
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
