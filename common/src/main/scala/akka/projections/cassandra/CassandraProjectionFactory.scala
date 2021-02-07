@@ -1,5 +1,4 @@
 package akka.projections.cassandra
-
 import akka.actor.typed.ActorSystem
 import akka.persistence.cassandra.query.scaladsl.CassandraReadJournal
 import akka.projection.ProjectionId

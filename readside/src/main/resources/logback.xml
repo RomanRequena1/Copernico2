@@ -14,7 +14,7 @@
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
 
-    <logger name="akka" level="DEBUG"/>
+    <logger name="akka" level="ERROR"/>
     <logger name="akka.kafka" level="ERROR"/>
     <logger name="org.apache.zookeeper" level="ERROR"/>
     <logger name="org.I0Itec.zkclient" level="ERROR"/>
@@ -23,7 +23,7 @@
     <logger name="org.apache.kafka" level="ERROR"/>
     <logger name="org.apache.kafka.common.utils.AppInfoParser" level="ERROR"/>
     <logger name="org.apache.kafka.clients.NetworkClient" level="ERROR"/>
-    <logger name="com.datastax" level="DEBUG"/>
+    <logger name="com.datastax" level="ERROR"/>
     <logger name="io.netty" level="ERROR"/>
     <logger name="com.codahale.metrics.JmxReporter" level="ERROR"/>
     <logger name="in net.logstash" level="ERROR"/>

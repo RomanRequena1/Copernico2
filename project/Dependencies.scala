@@ -6,7 +6,7 @@ object Dependencies {
   // Versions
   lazy val scalaVersion = "2.13.1"
   // TODO - private lazy val akkaVersion = "2.6.6"
-  private lazy val akkaVersion = "2.6.10"
+  private lazy val akkaVersion = "2.6.12"
 
   // Resolvers
   lazy val commonResolvers = Seq(
@@ -43,7 +43,7 @@ object Dependencies {
     private lazy val kafkaTestKit = "com.typesafe.akka" %% "akka-stream-kafka-testkit" % "2.0.0-RC1"
 
     // TODO - private lazy val kafkaVersion = "2.4.0"
-    private lazy val kafkaVersion = "2.6.0"
+    private lazy val kafkaVersion = "2.6.12"
     private lazy val embeddedKafkaVersion = kafkaVersion
     // private lazy val embeddedKafka = "io.github.seglo" %% "embedded-kafka" % embeddedKafkaVersion // "io.github.embeddedkafka" %% "embedded-kafka" % embeddedKafkaVersion
 
@@ -65,14 +65,13 @@ object Dependencies {
 
   object Akka extends Module {
     val akkaHttpVersion = "10.1.11"
-    val akkaManagementVersion = "1.0.3"
+    val akkaManagementVersion = "1.0.9"
     val akkaStreamKafka = "2.1.0-M1"
 
     private def akkaModule(name: String) = "com.typesafe.akka" %% name % akkaVersion
     private def akkaHttpModule(name: String) = "com.typesafe.akka" %% name % akkaHttpVersion
     private def akkaManagmentModule(name: String) = "com.lightbend.akka.management" %% name % akkaManagementVersion
-    // TODO - private lazy val akkaStreamKafka = "com.typesafe.akka" %% "akka-stream-kafka" % "2.0.4"
-    // private lazy val akkaStreamKafka = "com.typesafe.akka" %% "akka-stream-kafka" % "2.1.0-M1"
+
 
     // TODO - added jackson serializer dependency
     // libraryDependencies += "com.typesafe.akka" %% "akka-serialization-jackson" % akkaVersion
@@ -101,7 +100,7 @@ object Dependencies {
       "com.lightbend.akka.management" %% "akka-management-cluster-bootstrap" % akkaManagementVersion ::
         "com.typesafe.akka" %% "akka-stream-kafka" % akkaStreamKafka ::
         "com.typesafe.akka" %% "akka-serialization-jackson" % akkaVersion ::
-        "com.typesafe.akka" %% "akka-protobuf" % "2.6.10" ::
+        "com.typesafe.akka" %% "akka-protobuf" % akkaVersion ::
         // Add Lightbend Platform to your build as documented at https://developer.lightbend.com/docs/lightbend-platform/introduction/getting-started/subscription-and-credentials.html
         "com.lightbend.akka" %% "akka-diagnostics" % "1.1.16" ::
         "com.github.dnvriend" %% "akka-persistence-inmemory" % "2.5.15.2" ::
@@ -111,11 +110,14 @@ object Dependencies {
   object Cassandra extends Module {
     lazy val AkkaPersistenceCassandraVersion = "1.0.4"
     lazy val AkkaProjectionVersion = "0.2"
+    // TODO lazy val AkkaProjectionVersion = "1.1.0"
     private def akkaPersistenceCassandraModule(name: String) =
       "com.typesafe.akka" %% name % AkkaPersistenceCassandraVersion
 
+
     override def modules: Seq[sbt.ModuleID] =
       akkaPersistenceCassandraModule("akka-persistence-cassandra") ::
+        "com.lightbend.akka" %% "akka-projection-core" % AkkaProjectionVersion ::
       "com.lightbend.akka" %% "akka-projection-eventsourced" % AkkaProjectionVersion ::
       "com.lightbend.akka" %% "akka-projection-cassandra" % AkkaProjectionVersion ::
       Nil

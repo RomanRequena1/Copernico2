@@ -35,6 +35,7 @@
 #
 #curl -X POST http://0.0.0.0:8081/kafka/stop/DGR-COP-SUJETO-ANT
 curl -X POST http://0.0.0.0:8081/kafka/stop/DGR-COP-SUJETO-TRI
+curl -X POST http://0.0.0.0:8081/kafka/stop/SujetoReceiveSnapshot
 #
 #curl -X POST http://0.0.0.0:8081/kafka/stop/DGR-COP-TRAMITES
 #

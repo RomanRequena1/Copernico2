@@ -16,6 +16,7 @@ class SujetoTriGenerator extends Generator[SujetoTri] {
     example.copy(
       EV_ID = id,
       SUJ_IDENTIFICADOR = id.toString
+     // SUJ_DENOMINACION = "EJEMPLO"
     )
 
   override def toJson(e: SujetoTri): String = e.toJson

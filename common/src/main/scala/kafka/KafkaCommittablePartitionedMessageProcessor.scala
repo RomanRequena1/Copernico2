@@ -2,18 +2,14 @@ package kafka
 
 import akka.Done
 import akka.actor.ActorSystem
-import akka.kafka.ProducerMessage.passThrough
 import akka.kafka._
 import akka.kafka.scaladsl.{Committer, Consumer}
+import akka.stream.KillSwitches
 import akka.stream.scaladsl.{Keep, Sink}
-import akka.stream.{KillSwitches, OverflowStrategy}
 import com.lightbend.cinnamon.akka.stream.CinnamonAttributes
 import com.lightbend.cinnamon.akka.stream.CinnamonAttributes.{GraphWithInstrumented, SourceWithInstrumented}
 import com.typesafe.config.ConfigFactory
-import kafka.KafkaMessageProcessorRequirements.bootstrapServers
-import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.producer.{ProducerConfig, ProducerRecord}
-import org.apache.kafka.clients.consumer.{ConsumerRebalanceListener, ConsumerRecords, KafkaConsumer}
+import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.LoggerFactory
@@ -64,6 +60,7 @@ class KafkaCommittablePartitionedMessageProcessor(
     val subscription = Subscriptions.topics(SOURCE_TOPIC).withRebalanceListener(rebalancerListener)
 
     val NR_PARTITIONS: Int = appConfig.PARTITIONS_NUMBER
+
     val CONSUMER_PARALLELISM: Int = Try(System.getenv("CONSUMER_PARALLELISM")).map(_.toInt).getOrElse(1)
 
     val committerSettings = CommitterSettings(system)
@@ -84,7 +81,7 @@ class KafkaCommittablePartitionedMessageProcessor(
     val consumerGroup = Consumer
 
       .committablePartitionedSource(consumer
-        .withClientId("Writeside"), subscription)
+        .withGroupId(appConfig.CONSUMER_GROUP), subscription)
         //.buffer(10000, OverflowStrategy.backpressure)
         // TODO changed to reduce the Consumer latency - Moved to kafka.conf
         //.withProperty(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG, "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor")
@@ -118,7 +115,6 @@ class KafkaCommittablePartitionedMessageProcessor(
                  """)
               }
           }
-          //.buffer(10000, OverflowStrategy.backpressure)
 
           .map {
             case Left((message, cause)) =>
@@ -148,6 +144,11 @@ class KafkaCommittablePartitionedMessageProcessor(
           }
 
           .map(_.passThrough)
+   //       .collect {
+   //         case a: ProducerMessage.Envelope[_, String, _] =>
+  //            a.parts.map(a => a.record.value)
+  //        }
+
           .instrumentedRunWith(Committer.sink(committerSettings))(name = "CommittablePartitioned", perFlow = true, perConnection = true, perBoundary = true)
       }
 
