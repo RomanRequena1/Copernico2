@@ -2,22 +2,15 @@ package consumers.no_registral.obligacion.infrastructure.dependency_injection
 
 import akka.actor.Props
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
-import com.typesafe.config.Config
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.obligacion.application.cqrs.commands._
 import consumers.no_registral.obligacion.application.cqrs.queries.ObligacionGetStateHandler
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage.ObligacionMessageRoots
-import consumers.no_registral.obligacion.application.entities.{
-  ObligacionCommands,
-  ObligacionExternalDto,
-  ObligacionQueries
-}
+import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionQueries}
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
-import kafka.MessageProducer
-import monitoring.Monitoring
 
 class ObligacionActor(requirements: MonitoringAndMessageProducer)
     extends PersistentBaseActor[ObligacionEvents, ObligacionState](requirements.monitoring) {
@@ -85,5 +78,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
 object ObligacionActor {
   def props(requirements: MonitoringAndMessageProducer): Props =
-    Props(new ObligacionActor(requirements))
+    Props(new ObligacionActor(requirements)
+    ).withDispatcher("my-dispatcher") //TODO added my-dispatcher
 }

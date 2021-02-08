@@ -3,7 +3,6 @@ package consumers.no_registral.objeto.infrastructure.dependency_injection
 import akka.ActorRefMap
 import akka.actor.{ActorRef, Props}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
-import com.typesafe.config.Config
 import consumers.no_registral.objeto.application.cqrs.commands._
 import consumers.no_registral.objeto.application.cqrs.queries.{GetStateExencionHandler, GetStateObjetoHandler}
 import consumers.no_registral.objeto.application.entities.ObjetoMessage.ObjetoMessageRoots
@@ -18,7 +17,6 @@ import consumers.no_registral.sujeto.application.entity.SujetoCommands
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import monitoring.Monitoring
 
 class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[ObjetoEvents, ObjetoState](requirements.monitoring) {
@@ -125,8 +123,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.obligacionesSaldo
       )
 
-    import consumers.no_registral.cotitularidad.infrastructure.json._
-
     requirements.messageProducer.produce(
       data = Seq(
         KafkaKeyValue(
@@ -187,8 +183,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
 object ObjetoActor {
   def props(requirements: MonitoringAndMessageProducer): Props =
-    Props(new ObjetoActor(requirements, None))
-
+    Props(new ObjetoActor(requirements, None)
+    ).withDispatcher("my-dispatcher") //TODO added my-dispatcher
   type ObligacionAgregateRoot = (String, String, String, String)
   class ObjetoActorRefMap(newActor: ObligacionAgregateRoot => ActorRef)
       extends ActorRefMap[ObligacionAgregateRoot](newActor)
