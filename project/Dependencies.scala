@@ -17,12 +17,12 @@ object Dependencies {
     // the library is available in Bintray repository
     // "dnvriend" at "http://dl.bintray.com/dnvriend/maven"
     Resolver.bintrayRepo("dnvriend", "maven"),
-    "Confluent" at "https://packages.confluent.io/maven/"
+    "Confluent" at "https://packages.confluent.io/maven"
   )
 
   lazy val kafkaClientsDeps: List[ModuleID] =
-    "org.apache.kafka" % "kafka-clients" % "2.6.0" ::
-      "io.confluent" % "monitoring-interceptors" % "6.0.1" ::
+    "org.apache.kafka" % "kafka-clients" % "6.1.0-ccs" :: //TODO before 2.6.0
+      "io.confluent" % "monitoring-interceptors" % "6.1.0" ::
       Nil
 
   // Modules
@@ -161,6 +161,7 @@ object Dependencies {
     override def modules: Seq[sbt.ModuleID] = core :: status :: prometheus :: Nil
   }
 
+
   object Utils extends Module {
     private lazy val logbackVersion = "1.2.3"
     private lazy val kryoVersion = "2.0.1"
@@ -176,6 +177,7 @@ object Dependencies {
     private lazy val reflections = "org.reflections" % "reflections" % "0.9.10"
     private lazy val shapeless = "com.chuusai" %% "shapeless" % "2.3.3"
     private lazy val heikoseeberger = "de.heikoseeberger" %% "akka-http-play-json" % "1.30.0"
+    private lazy val kafkaInterceptor = "io.confluent" % "monitoring-interceptors" % "6.1.0"
 
 
     override def modules: Seq[ModuleID] =
@@ -189,6 +191,7 @@ object Dependencies {
       reflections ::
       shapeless ::
       heikoseeberger ::
+        kafkaInterceptor ::
       Nil
   }
 
@@ -203,4 +206,5 @@ trait Dependencies {
   val commonResolvers: Seq[MavenRepository] = Dependencies.commonResolvers
   val mainDeps: Seq[sbt.ModuleID] = Dependencies.mainDeps
   val testDeps: Seq[sbt.ModuleID] = Dependencies.testDeps
+  val kafkaClientsDeps: List[ModuleID] = Dependencies.kafkaClientsDeps
 }

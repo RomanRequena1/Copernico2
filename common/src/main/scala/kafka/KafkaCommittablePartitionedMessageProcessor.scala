@@ -88,7 +88,7 @@ class KafkaCommittablePartitionedMessageProcessor(
         //.withProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "120000")
         //.withProperty(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "5"), subscription)
         //.withProperty(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG, "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"), subscription)
-      .mapAsyncUnordered(NR_PARTITIONS * CONSUMER_PARALLELISM) { case (topicPartition: TopicPartition, source) =>
+      .mapAsyncUnordered(NR_PARTITIONS) { case (topicPartition: TopicPartition, source) =>
         source
           //.buffer(CONSUMER_PARALLELISM * NR_PARTITIONS, OverflowStrategy.backpressure)
           //.async("akka.stream.blocking-io-dispatcher")

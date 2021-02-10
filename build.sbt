@@ -2,7 +2,7 @@ import Settings._
 import sbt.Keys.scalaVersion
 
 
-javaOptions in run += "-Xmx1G -Xms512M -XX:MaxGCPauseMillis=100"
+javaOptions in run += "-Xmx2G -Xms1G -XX:MaxGCPauseMillis=100"
 
 lazy val commonSettings = Seq(
   organization in ThisBuild := "wetekio",
