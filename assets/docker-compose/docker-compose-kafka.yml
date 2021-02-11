@@ -51,6 +51,8 @@ services:
       CONTROL_CENTER_ZOOKEEPER_CONNECT: "zookeeper:2181"
       CONTROL_CENTER_BOOTSTRAP_SERVERS: "kafka:29092"
       CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_DEPRECATED_VIEWS_ENABLE: "true"
+
 
     depends_on:
       - zookeeper

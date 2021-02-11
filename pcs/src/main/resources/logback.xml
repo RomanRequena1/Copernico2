@@ -21,7 +21,7 @@
     <logger name="kafka" level="ERROR"/>
     <logger name="org.reflections" level="ERROR"/>
     <logger name="org.apache.kafka" level="DEBUG"/>
-    <logger name="org.apache.kafka.common.utils.AppInfoParser" level="DEBUG"/>
+    <logger name="org.apache.kafka.common.utils.AppInfoParser" level="ERROR"/>
     <logger name="org.apache.kafka.clients.NetworkClient" level="DEBUG"/>
     <logger name="com.datastax" level="ERROR"/>
     <logger name="io.netty" level="ERROR"/>

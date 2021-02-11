@@ -1,21 +1,16 @@
 package consumers.no_registral.cotitularidad.infrastructure.kafka
 
-import scala.concurrent.{ExecutionContext, Future}
-import akka.Done
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.no_registral.cotitularidad.application.entities.CotitularidadCommands.{
-  CotitularidadPublishSnapshot,
-  ObjetoSnapshotPersistedReaction
-}
-import consumers.no_registral.objeto.infrastructure.json._
+import consumers.no_registral.cotitularidad.application.entities.CotitularidadCommands.ObjetoSnapshotPersistedReaction
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
+import consumers.no_registral.objeto.infrastructure.json._
 import design_principles.actor_model.Response
-import design_principles.actor_model.mechanism.TypedAsk.AkkaClassicTypedAsk
 import monitoring.Monitoring
-import play.api.libs.json.Json
 import serialization.maybeDecode
+
+import scala.concurrent.Future
 
 case class ObjetoSnapshotPersistedHandler(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
@@ -27,7 +22,20 @@ case class ObjetoSnapshotPersistedHandler(actorRef: ActorRef, monitoring: Monito
   def processInput(input: String): Either[Throwable, ObjetoSnapshotPersisted] =
     maybeDecode[ObjetoSnapshotPersisted](input)
 
+
   def processMessage(evt: ObjetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
+    actorRef ! ObjetoSnapshotPersistedReaction(
+      evt.deliveryId,
+      evt.objetoId,
+      evt.tipoObjeto,
+      evt
+    )
+    Future(Response.SuccessProcessing(evt.aggregateRoot, evt.deliveryId))
+  }
+
+
+ /* Modified to change ask by tell to improve performance
+       def processMessage(evt: ObjetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
     actorRef.ask[Response.SuccessProcessing](
       ObjetoSnapshotPersistedReaction(
         evt.deliveryId,
@@ -36,5 +44,5 @@ case class ObjetoSnapshotPersistedHandler(actorRef: ActorRef, monitoring: Monito
         evt
       )
     )
-  }
+  }*/
 }

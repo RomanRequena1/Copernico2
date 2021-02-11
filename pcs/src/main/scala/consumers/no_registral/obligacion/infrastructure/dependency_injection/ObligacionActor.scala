@@ -72,7 +72,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         )
       ),
       topic = "ObligacionPersistedSnapshot"
-    )(_ => ())
+    )(_ => handler())
   }
 }
 
