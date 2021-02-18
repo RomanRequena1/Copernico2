@@ -6,6 +6,7 @@ import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoA
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 
+
 import scala.util.{Success, Try}
 
 class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
@@ -25,10 +26,16 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
       command.obligacionExenta,
       command.porcentajeExencion
     )
-    actor.persistEvent(event) { () =>
-      actor.state += event
-      actor.informParent(command, actor.state)
-      actor.persistSnapshot(event, actor.state)(() => ())
+    val initialization: String = {
+      Try(System.getenv("INITIALIZATION")).getOrElse(null)
+    }
+
+    if (initialization == null) {
+      actor.persistEvent(event) { () =>
+        actor.state += event
+        actor.informParent(command, actor.state)
+        actor.persistSnapshot(event, actor.state)(() => ())
+      }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

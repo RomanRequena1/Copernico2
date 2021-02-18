@@ -1,6 +1,5 @@
 package consumers.no_registral.sujeto.application.cqrs.commands
 
-import akka.Done
 import consumers.no_registral.sujeto.application.entity.SujetoCommands.SujetoUpdateFromObjeto
 import consumers.no_registral.sujeto.domain.SujetoEvents
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
@@ -20,10 +19,15 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
       command.saldoObjeto,
       command.saldoObligaciones
     )
+    val initialization: String = {
+      Try(System.getenv("INITIALIZATION")).getOrElse(null)
+    }
 
-    actor.persistEvent(event) { () =>
-      actor.state += event
-      actor.persistSnapshot()(_ => ())
+    if (initialization == null) {
+      actor.persistEvent(event) { () =>
+        actor.state += event
+        actor.persistSnapshot()(_ => ())
+      }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
