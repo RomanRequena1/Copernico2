@@ -30,7 +30,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
       Try(System.getenv("INITIALIZATION")).getOrElse(null)
     }
 
-    if (initialization == null) {
+    if (initialization != "true") {
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.informParent(command, actor.state)

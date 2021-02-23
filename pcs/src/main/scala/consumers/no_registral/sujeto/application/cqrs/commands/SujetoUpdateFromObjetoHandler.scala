@@ -23,7 +23,7 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
       Try(System.getenv("INITIALIZATION")).getOrElse(null)
     }
 
-    if (initialization == null) {
+    if (initialization != "true") {
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.persistSnapshot()(_ => ())
