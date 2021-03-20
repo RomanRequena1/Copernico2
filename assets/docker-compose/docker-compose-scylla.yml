@@ -1,13 +1,13 @@
 ---
-version: "3.3"
+version: "3"
 
 services:
 
   scylla-node1:
     container_name: cassandra
-    image: scylladb/scylla:latest
+    image: scylladb/scylla
     restart: always
-    command: --seeds=scylla-node1 --smp 1 --memory 750M --overprovisioned 1 --api-address 172.22.0.6
+#    command: --seeds=scylla-node1 --smp 1 --memory 1.5G --overprovisioned 1 --api-address 172.22.0.6
     environment:
       - CASSANDRA_DC=DC1
       - CASSANDRA_SEEDS=scylla-node1

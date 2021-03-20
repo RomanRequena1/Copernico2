@@ -26,9 +26,9 @@ class ObligacionesTriGenerator extends Generator[ObligacionesTri] {
   def next(id: Int): ObligacionesTri =
     example.copy(
       EV_ID = id,
-      BOB_SUJ_IDENTIFICADOR = id.toString,
-      BOB_SOJ_IDENTIFICADOR = id.toString,
-      BOB_OBN_ID = id.toString
+      // BOB_SUJ_IDENTIFICADOR = id.toString,
+      // BOB_SOJ_IDENTIFICADOR = id.toString,
+      // BOB_OBN_ID = id.toString
     )
 
   override def toJson(e: ObligacionesTri): String = e.toJson
