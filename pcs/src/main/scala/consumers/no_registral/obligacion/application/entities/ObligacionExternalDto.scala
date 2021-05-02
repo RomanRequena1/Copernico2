@@ -25,7 +25,7 @@ sealed trait ObligacionExternalDto extends ExternalDto {
   def BOB_JUI_ID: Option[BigInt]
   def BOB_OTROS_ATRIBUTOS: Option[JsObject]
   def BOB_PERIODO: Option[String]
-  def BOB_PLN_ID: Option[BigInt]
+  def BOB_PLN_ID: Option[String]
   def BOB_PRORROGA: Option[LocalDateTime]
   def BOB_TIPO: Option[String]
   def BOB_SALDO: BigDecimal
@@ -54,7 +54,7 @@ object ObligacionExternalDto {
       BOB_JUI_ID: Option[BigInt],
       BOB_OTROS_ATRIBUTOS: Option[JsObject],
       BOB_PERIODO: Option[String],
-      BOB_PLN_ID: Option[BigInt],
+      BOB_PLN_ID: Option[String],
       BOB_PRORROGA: Option[LocalDateTime],
       BOB_TIPO: Option[String],
       BOB_TOTAL: Option[BigDecimal],
@@ -82,7 +82,7 @@ object ObligacionExternalDto {
       BOB_JUI_ID: Option[BigInt],
       BOB_OTROS_ATRIBUTOS: Option[JsObject],
       BOB_PERIODO: Option[String],
-      BOB_PLN_ID: Option[BigInt],
+      BOB_PLN_ID: Option[String],
       BOB_PRORROGA: Option[LocalDateTime],
       BOB_TIPO: Option[String],
       BOB_TOTAL: Option[BigDecimal],

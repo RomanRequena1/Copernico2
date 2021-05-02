@@ -7,7 +7,7 @@ services:
     container_name: cassandra
     image: scylladb/scylla
     restart: always
-#    command: --seeds=scylla-node1 --smp 1 --memory 1.5G --overprovisioned 1 --api-address 172.22.0.6
+    command: --seeds=scylla-node1 --smp 2 --memory 1G --overprovisioned 1 
     environment:
       - CASSANDRA_DC=DC1
       - CASSANDRA_SEEDS=scylla-node1
@@ -21,3 +21,4 @@ networks:
   kafka_copernico_net:
     external:
       name: kafka_copernico_net
+      

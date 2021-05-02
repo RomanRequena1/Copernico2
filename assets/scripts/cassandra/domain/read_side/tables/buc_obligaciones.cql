@@ -14,7 +14,7 @@ CREATE TABLE read_side.buc_obligaciones (
        bob_jui_id int,
        bob_otros_atributos map<text, text>,
        bob_periodo text,
-       bob_pln_id int,
+       bob_pln_id text,
        bob_prorroga date,
        bob_tipo text,
        bob_saldo float,
