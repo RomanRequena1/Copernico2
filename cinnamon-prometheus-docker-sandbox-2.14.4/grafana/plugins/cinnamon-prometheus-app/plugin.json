@@ -153,6 +153,18 @@
       "name": "Scala Futures",
       "path": "dashboards/scala-futures.json",
       "revision": "2.14.4"
+    },
+    {
+      "type": "dashboard",
+      "name": "Akka Ask Pattern ",
+      "path": "dashboards/akka-ask-pattern.json",
+      "revision": "2.14.4"
+    },
+    {
+      "type": "dashboard",
+      "name": "PCS Application WriteSide",
+      "path": "dashboards/pcs-dashboard.json",
+      "revision": "2.14.4"
     }
   ],
 
