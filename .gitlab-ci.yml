@@ -11,9 +11,13 @@ before_script:
   # Log the sbt version
   - sbt sbtVersion
 
-
-build-job:
-  stage: build
+test:
   script:
-    - sbt pcs/docker:publishLocal
+    # Execute your project's tests
+    - sbt clean test
+
+#build-job:
+#  stage: build
+#  script:
+#    - sbt pcs/docker:publishLocal
 
