@@ -1,6 +1,6 @@
 before_script:
   # Enable the usage of sources over https
-  - apt-get update -yqq
+  - apt-get update 
   - apt-get install apt-transport-https -yqq
   - apt-get install default-jre
   # Add keyserver for SBT
