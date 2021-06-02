@@ -1,9 +1,6 @@
-build:
-  script:
-    - echo "hola"
 
-#build-job:
-#  stage: build
-#  script:
-#    - sbt pcs/docker:publishLocal
+build-job:
+  stage: build
+  script:
+    - java --version
 
