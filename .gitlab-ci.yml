@@ -11,4 +11,4 @@ before_script:
 
 test:
   script:
-    - sbt sbtVersion
+    - sbt pcs/docker:publishLocal
