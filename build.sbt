@@ -5,7 +5,7 @@ import sbt.Keys.scalaVersion
 javaOptions in run += "-Xmx2G -Xms1G -XX:MaxGCPauseMillis=100"
 
 lazy val commonSettings = Seq(
-  organization in ThisBuild := "wetekio",
+  organization in ThisBuild := "peperina",
   version := "1.0",
   scalaVersion := Dependencies.scalaVersion
 )
@@ -125,13 +125,22 @@ lazy val it = project
   .settings(commonSettings)
   .settings(modulesSettings)
   .settings(
-    name := "it"
+    name := "kafka-event-producer"
   )
   .dependsOn(
     common % "compile->compile;test->test",
     readside % "compile->compile;test->test"
   )
 
+  .enablePlugins(JavaServerAppPackaging, DockerPlugin)
+  .settings(
+    mainClass := Some("it.KafkaEventProducer")
+  )
+  .settings(
+    dockerBaseImage := "openjdk:8",
+    dockerUsername := Some("kafka-event-producer"),
+    dockerEntrypoint := Seq("/opt/docker/bin/kafka-event-producer")
+  )
 
 val AkkaVersion = "2.6.12"
 libraryDependencies += "com.typesafe.akka" %% "akka-persistence" % AkkaVersion
