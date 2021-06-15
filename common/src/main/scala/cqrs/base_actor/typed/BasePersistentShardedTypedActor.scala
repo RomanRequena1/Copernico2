@@ -1,19 +1,16 @@
 package cqrs.base_actor.typed
 
-import akka.actor.Props
-
-import scala.reflect.ClassTag
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior, DispatcherSelector}
 import akka.cluster.sharding.external.ExternalShardAllocationStrategy
+import akka.cluster.sharding.typed.ClusterShardingSettings
 import akka.cluster.sharding.typed.scaladsl.{ClusterSharding, Entity, EntityRef, EntityTypeKey}
-import akka.cluster.sharding.typed.{ClusterShardingSettings, HashCodeNoEnvelopeMessageExtractor}
 import akka.persistence.typed.PersistenceId
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
-import com.typesafe.config.{Config, ConfigFactory, ConfigRenderOptions}
 import design_principles.actor_model.mechanism.AbstractOverReplyTo.MessageWithAutomaticReplyTo
 import design_principles.actor_model.mechanism.local_processing.LocalizedProcessingMessageExtractor
 
+import scala.reflect.ClassTag
 import scala.util.{Failure, Success, Try}
 
 abstract class BasePersistentShardedTypedActor[
@@ -28,12 +25,13 @@ abstract class BasePersistentShardedTypedActor[
   val TypeKey: EntityTypeKey[ActorMessages] = EntityTypeKey[ActorMessages](
     utils.Inference.getSimpleName(this.getClass.getName)
   )
+  val NR_PARTITIONS: Int = Try(System.getenv("NR_PARTITIONS")).map(_.toInt).getOrElse(30)
 
   val shardActor: ActorRef[ActorMessages] = sharding.init(
     Entity(TypeKey) { context =>
       persistentEntity(context.entityId, context.shard)
     }.withAllocationStrategy(new ExternalShardAllocationStrategy(system, TypeKey.name))
-      .withMessageExtractor(new LocalizedProcessingMessageExtractor[ActorMessages](30))
+      .withMessageExtractor(new LocalizedProcessingMessageExtractor[ActorMessages](NR_PARTITIONS))
       .withSettings(ClusterShardingSettings(system))
       .withEntityProps {
         // val dispatcherName = "my-dispatcher"

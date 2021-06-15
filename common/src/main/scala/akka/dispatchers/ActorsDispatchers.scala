@@ -6,6 +6,8 @@ import com.typesafe.config.Config
 import cqrs.base_actor.typed.BasePersistentShardedTypedActorWithCQRS
 import cqrs.base_actor.untyped.PersistentBaseActor
 
+import scala.util.Try
+
 class ActorsDispatchers(config: Config) {
 
   private val BasePersistentShardedTypedActorWithCQRSs =
@@ -23,10 +25,10 @@ class ActorsDispatchers(config: Config) {
 
   private val strongScalingDispatcher: StrongScaling =
     StrongScaling.apply(config)
-
+  val NR_PARTITIONS: Int = Try(System.getenv("NR_PARTITIONS")).map(_.toInt).getOrElse(30)
   val actorsDispatchers = actors
     .map {
       strongScalingDispatcher.strongScalingDispatcher
     }
-     .mkString("\n" * 30)
+     .mkString("\n" * NR_PARTITIONS)
 }

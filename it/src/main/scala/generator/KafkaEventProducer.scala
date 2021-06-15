@@ -10,12 +10,11 @@ import generator.Generator.KafkaKeyValue
 import kafka.{KafkaConfig, KafkaMessageShardProducerRecord}
 import no_registrales.obligacion.{ObligacionesAntGenerator, ObligacionesTriGenerator}
 import no_registrales.sujeto.{SujetoAntGenerator, SujetoTriGenerator}
-import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
 import registrales.actividad_sujeto.ActividadSujetoGenerator
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 object KafkaEventProducer {
 
@@ -44,10 +43,11 @@ object KafkaEventProducer {
 
     val config = system.settings.config.getConfig("akka.kafka.producer")
 
-    //TODO added NR_PARTITION as a config variable
+    //TODO added NR_PARTITIONS as a config variable
     val appConfig = new KafkaConfig(ConfigFactory.load())
 
-    val NR_PARTITIONS: Int = appConfig.PARTITIONS_NUMBER
+//    val NR_PARTITIONS: Int = appConfig.PARTITIONS_NUMBER
+    val NR_PARTITIONS: Int = Try(System.getenv("NR_PARTITIONS")).map(_.toInt).getOrElse(30)
 
     val producerSettings: ProducerSettings[String, String] =
       ProducerSettings(config, new StringSerializer, new StringSerializer)
