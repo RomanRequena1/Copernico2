@@ -17,5 +17,5 @@ before_script:
 test:
   script:
     - sbt pcs/docker:publishLocal
-  tags:
-    - docker,peperina
+  #tags:
+  #  - docker,peperina
