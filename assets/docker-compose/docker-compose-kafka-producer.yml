@@ -6,13 +6,14 @@ services:
     container_name: kafka-event-producer
     image: 'kafka-event-producer/kafka-event-producer:1.0'
     volumes:
-      - ./DGR-COP-SUJETO-TRI.json:/assets/examples/DGR-COP-SUJETO-TRI.json
+      - ../examples/DGR-COP-SUJETO-TRI.json:/assets/examples/DGR-COP-SUJETO-TRI.json
+      - ../examples/DGR-COP-OBLIGACIONES-TRI.json:/assets/examples/DGR-COP-OBLIGACIONES-TRI.json
     environment:
-      KAFKA_SERVER: 'localhost:29092'
+      KAFKA_SERVER: 'kafka:29092'
       KAFKA_TOPIC: 'DGR-COP-SUJETO-TRI'
       KAFKA_PRODUCE_FROM: 1
       KAFKA_PRODUCE_TO: 50000
-#      NR_PARTITIONS: 30
+      NR_PARTITIONS: 100
     networks:
       kafka_copernico_net:
         ipv4_address: 172.22.0.10

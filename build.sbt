@@ -137,7 +137,7 @@ lazy val it = project
     mainClass := Some("it.KafkaEventProducer")
   )
   .settings(
-    dockerBaseImage := "openjdk:8",
+    dockerBaseImage := "openjdk:11",
     dockerUsername := Some("kafka-event-producer"),
     dockerEntrypoint := Seq("/opt/docker/bin/kafka-event-producer")
   )

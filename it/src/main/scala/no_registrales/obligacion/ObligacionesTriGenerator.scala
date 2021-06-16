@@ -21,7 +21,7 @@ import scala.util.Random
 
 class ObligacionesTriGenerator extends Generator[ObligacionesTri] {
   import ObligacionesTriGenerator._
-  lazy val example: ObligacionesTri = loadExample[ObligacionesTri]("assets/examples/DGR-COP-OBLIGACIONES-TRI.json")
+  lazy val example: ObligacionesTri = loadExample[ObligacionesTri]("/assets/examples/DGR-COP-OBLIGACIONES-TRI.json")
 
   def next(id: Int): ObligacionesTri =
     example.copy(

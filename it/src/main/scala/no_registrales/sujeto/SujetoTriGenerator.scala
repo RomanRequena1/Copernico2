@@ -10,7 +10,7 @@ import generator.{Generator, Helper}
 class SujetoTriGenerator extends Generator[SujetoTri] {
   import SujetoTriGenerator._
 
-  lazy val example = loadExample[SujetoTri]("assets/examples/DGR-COP-SUJETO-TRI.json")
+  lazy val example = loadExample[SujetoTri]("/assets/examples/DGR-COP-SUJETO-TRI.json")
 
   def next(id: Int): SujetoTri =
     example.copy(
