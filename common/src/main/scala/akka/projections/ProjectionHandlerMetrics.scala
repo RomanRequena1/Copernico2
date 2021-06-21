@@ -1,14 +1,11 @@
 package akka.projections
 
 import akka.Done
+import monitoring.{Counter, Histogram, Monitoring}
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
-import akka.pattern.AskTimeoutException
-import design_principles.actor_model.Response
-import monitoring.{Counter, Histogram, Monitoring}
-import org.slf4j.LoggerFactory
-import serialization.SerializationError
 
 abstract class ProjectionHandlerMetrics(
     monitoring: Monitoring

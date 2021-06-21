@@ -10,8 +10,9 @@ services:
       - '2554:2554'
       - '8554:8559'
       - '8084:8084'
-      - '5004:9095'
-      - '9094:9091'
+      - '29095:9095'
+      - '29091:9091'
+      - '5266:5266'
     environment:
       SEED_NODES: 'akka://PersonClassificationServiceReadSide@172.22.4.3:2554'
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
@@ -36,7 +37,7 @@ services:
       - '8555:8559'
       - '8085:8085'
       - '5005:9095'
-      - '9095:9091'
+      - '39091:9091'
     environment:
       SEED_NODES: 'akka://PersonClassificationServiceReadSide@172.22.4.3:2555'
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
@@ -61,7 +62,7 @@ services:
       - '8556:8559'
       - '8086:8086'
       - '5006:9095'
-      - '9096:9091'
+      - '49091:9091'
     environment:
       SEED_NODES: 'akka://PersonClassificationServiceReadSide@172.22.4.3:2556'
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'

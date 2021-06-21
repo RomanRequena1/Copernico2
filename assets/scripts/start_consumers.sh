@@ -37,10 +37,10 @@ curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-SUJETO-TRI
 #curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-TRAMITES
 
 curl -X POST http://0.0.0.0:8081/kafka/start/ObjetoSnapshotPersisted
-#curl -X POST http://0.0.0.0:8081/kafka/start/ObligacionPersistedSnapshot
+curl -X POST http://0.0.0.0:8081/kafka/start/ObligacionPersistedSnapshot
 
 curl -X POST http://0.0.0.0:8081/kafka/start/ObjetoReceiveSnapshot
-#curl -X POST http://0.0.0.0:8081/kafka/start/SujetoReceiveSnapshot
+curl -X POST http://0.0.0.0:8081/kafka/start/SujetoReceiveSnapshot
 
 
 #curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-EXENCIONES

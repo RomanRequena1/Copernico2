@@ -1,17 +1,15 @@
 package api.actor_transaction
 
-import scala.concurrent.{ExecutionContext, Future}
-import scala.reflect.ClassTag
 import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import com.typesafe.config.Config
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProcessorRequirements
 import monitoring.Monitoring
-import play.api.libs.json.Format
-import serialization.maybeDecode
 
-import scala.util.{Failure, Success, Try}
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
+
 
 abstract class ActorTransaction[ExternalDto](
     monitoring: Monitoring

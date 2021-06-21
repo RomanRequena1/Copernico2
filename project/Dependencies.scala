@@ -155,9 +155,9 @@ object Dependencies {
     // private lazy val kamonAPM = "io.kamon" %% "kamon-apm-reporter" % "2.1.0"
     // private lazy val kamonLogStash = "com.codekeepersinc" %% "kamonlogstash" % "0.0.1"
 
-    val core = "io.kamon" %% "kamon-core" % "2.1.13"
-    val status = "io.kamon" %% "kamon-status-page" % "2.1.13"
-    val prometheus = "io.kamon" %% "kamon-prometheus" % "2.1.13"
+    val core = "io.kamon" %% "kamon-core" % "2.2.0"
+    val status = "io.kamon" %% "kamon-status-page" % "2.2.0"
+    val prometheus = "io.kamon" %% "kamon-prometheus" % "2.2.0"
     // val bundle = "io.kamon" %% "kamon-bundle" % "2.1.13"
     override def modules: Seq[sbt.ModuleID] = core :: status :: prometheus :: Nil
   }

@@ -162,7 +162,7 @@
     },
     {
       "type": "dashboard",
-      "name": "PCS Application WriteSide",
+      "name": "PCS Application",
       "path": "dashboards/pcs-dashboard.json",
       "revision": "2.14.4"
     }

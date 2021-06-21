@@ -1,7 +1,5 @@
 package design_principles.actor_model.mechanism
 
-import java.time.LocalDateTime
-
 import akka.actor.{ActorRef, ActorSystem}
 import akka.http.Controller
 import akka.http.scaladsl.model.HttpResponse
@@ -42,7 +40,7 @@ abstract class QueryStateAPI(monitoring: Monitoring) extends Controller(monitori
               )
           }
           .recover { case e: Exception => HttpResponse(InternalServerError, entity = e.getMessage) }
-        latency.recordFuture(futureResponse)
+        //latency.recordFuture(futureResponse) TODO latency
         futureResponse
       }
     }
