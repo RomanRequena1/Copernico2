@@ -6,7 +6,7 @@
   "BOB_OBN_ID":"555",
   "BOB_SALDO":"555",
   "BOB_CUOTA":"10",
-  "BOB_ESTADO":null,
+  "BOB_ESTADO":"CUOTA PLAN",
   "BOB_FISCALIZADA":"N",
   "BOB_INDICE_INT_PUNIT":null,
   "BOB_INDICE_INT_RESAR":null,

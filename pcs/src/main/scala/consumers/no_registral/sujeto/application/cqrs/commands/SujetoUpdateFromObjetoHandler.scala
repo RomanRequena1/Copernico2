@@ -19,16 +19,16 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
       command.saldoObjeto,
       command.saldoObligaciones
     )
-    val initialization: String = {
-      Try(System.getenv("INITIALIZATION")).getOrElse(null)
-    }
+//    val initialization: String = {
+//      Try(System.getenv("INITIALIZATION")).getOrElse(null)
+//    }
 
-    if (initialization != "true") {
+//    if (initialization != "true") {
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.persistSnapshot()(_ => ())
       }
-    }
+//    }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }

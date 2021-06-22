@@ -26,17 +26,17 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
       command.obligacionExenta,
       command.porcentajeExencion
     )
-    val initialization: String = {
-      Try(System.getenv("INITIALIZATION")).getOrElse(null)
-    }
+//    val initialization: String = {
+//      Try(System.getenv("INITIALIZATION")).getOrElse(null)
+//    }
 
-    if (initialization != "true") {
+//    if (initialization != "true") {
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.informParent(command, actor.state)
         actor.persistSnapshot(event, actor.state)(() => ())
       }
-    }
+//    }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }
