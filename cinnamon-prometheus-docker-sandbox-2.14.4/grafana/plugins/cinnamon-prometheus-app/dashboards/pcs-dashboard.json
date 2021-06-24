@@ -1,28 +1,17 @@
 {
-  "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": "-- Grafana --",
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "type": "dashboard"
-      }
-    ]
-  },
+  "id": null,
+  "title": "PCS Application",
+  "style": "dark",
+  "timezone": "browser",
   "editable": true,
-  "gnetId": null,
   "graphTooltip": 0,
-  "id": 20,
   "links": [],
   "panels": [
     {
-      "datasource": null,
+      "datasource": "Cinnamon Prometheus",
       "gridPos": {
         "h": 2,
-        "w": 4,
+        "w": 5,
         "x": 5,
         "y": 0
       },
@@ -39,10 +28,10 @@
       "type": "text"
     },
     {
-      "datasource": null,
+      "datasource": "Cinnamon Prometheus",
       "gridPos": {
         "h": 2,
-        "w": 5,
+        "w": 7,
         "x": 16,
         "y": 0
       },
@@ -112,7 +101,7 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "sum(copernico_counters_total{entity=~\"DGR-COP.*-ProcessedMessagesCounter\"})\n\n",
+          "expr": "sum(copernico_counters_total{entity=~\"DGR-COP-.*-ProcessedMessagesCounter\"})\n\n",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -123,7 +112,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "TOTAL EVENTS PROCESSED ",
+      "title": "TOTAL MESSAGES PROCESSED ",
       "type": "stat"
     },
     {
@@ -181,7 +170,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(copernico_counters_total{entity=~\"DGR-COP.*-RejectedMessagesCounter\"})",
+          "expr": "sum(copernico_counters_total{application=~\"pcs\", entity=~\".*-RejectedMessagesCounter\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -192,7 +181,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "TOTAL EVENTS REJECTED ",
+      "title": "TOTAL MESSAGES REJECTED ",
       "type": "stat"
     },
     {
@@ -250,7 +239,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(copernico_counters_total{entity=~\".*-persisted\"})",
+          "expr": "sum(copernico_counters_total{application=~\"pcs\", entity=~\".*Actor-persisted\"})\n+\nsum(copernico_counters_total{application=~\"pcs\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -334,18 +323,135 @@
       "type": "stat"
     },
     {
+      "datasource": "Cinnamon Prometheus",
+      "description": "Number of Kafka topic partitions assigned",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 7
+      },
+      "id": 41,
+      "links": [],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.0",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "copernico_counters_total{application=~\"pcs\", entity=~\"TopicPartitionsAssigned\"}",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{entity}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Kafka Topic Patitions Assgned",
+      "type": "gauge"
+    },
+    {
+      "datasource": "Cinnamon Prometheus",
+      "description": "Number of Kafka topic partitions revoked",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 7
+      },
+      "id": 42,
+      "links": [],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.0",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "copernico_counters_total{application=~\"pcs\", entity=~\"TopicPartitionsRevoked\"}",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{entity}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Kafka Topic Patitions Revoked",
+      "type": "gauge"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Cinnamon Prometheus",
+      "description": "Number of Kafka messages processed by WriteSide consumer",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 7
+        "y": 13
       },
       "hiddenSeries": false,
       "id": 19,
@@ -354,7 +460,7 @@
         "current": false,
         "max": false,
         "min": false,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -377,8 +483,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "copernico_counters_total{entity=~\"DGR-COP.*-ProcessedMessagesCounter\"}",
+          "exemplar": true,
+          "expr": "copernico_counters_total{application=~\"pcs\", entity=~\".*-ProcessedMessagesCounter\"}",
           "format": "time_series",
+          "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{entity}}",
           "refId": "A"
@@ -391,7 +499,7 @@
       "title": "Kafka Processed Messages",
       "tooltip": {
         "shared": true,
-        "sort": 0,
+        "sort": 2,
         "value_type": "individual"
       },
       "type": "graph",
@@ -433,7 +541,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Cinnamon Prometheus",
-      "description": "Transaction requests accumlated",
+      "description": "Akka messages persisted in Writeside ",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -446,7 +554,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 7
+        "y": 13
       },
       "hiddenSeries": false,
       "id": 2,
@@ -455,7 +563,7 @@
         "current": false,
         "max": false,
         "min": false,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -479,22 +587,32 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{entity=~\"actor-transaction-.*_transaction-request\"}",
+          "expr": "copernico_counters_total{application=~\"pcs\", entity=~\".*persisted\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{entity}}",
           "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "copernico_counters_total{application=~\"pcs\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"}",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{entity}}",
+          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "TOTAL TRANSACTIONS REQUESTS",
+      "title": "Akka Events Persisted",
       "tooltip": {
         "shared": true,
-        "sort": 0,
+        "sort": 2,
         "value_type": "individual"
       },
       "type": "graph",
@@ -548,7 +666,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 17
+        "y": 23
       },
       "hiddenSeries": false,
       "id": 10,
@@ -583,7 +701,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "\nsum(irate(copernico_counters_total{entity=~\"actor-transaction-.*_transaction-request\"}[1m]))",
+          "expr": "\nsum(irate(copernico_counters_total{application=~\"pcs\", entity=~\".*ProcessedMessagesCounter\"}[1m]))",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -599,7 +717,7 @@
       "title": "Message consumptions per second (OPS)",
       "tooltip": {
         "shared": true,
-        "sort": 0,
+        "sort": 2,
         "value_type": "individual"
       },
       "type": "graph",
@@ -614,7 +732,7 @@
         {
           "$$hashKey": "object:1615",
           "format": "ops",
-          "label": null,
+          "label": "messages/sec",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -637,10 +755,11 @@
     },
     {
       "aliasColors": {},
-      "bars": false,
+      "bars": true,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Cinnamon Prometheus",
+      "description": "Number of records persisted in Cassandra WriteSide Keyspace",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -653,12 +772,12 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 17
+        "y": 23
       },
       "hiddenSeries": false,
-      "id": 4,
+      "id": 37,
       "legend": {
-        "alignAsTable": true,
+        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
@@ -668,8 +787,8 @@
         "total": false,
         "values": false
       },
-      "lines": true,
-      "linewidth": 1,
+      "lines": false,
+      "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
       "options": {
@@ -678,7 +797,7 @@
       "paceLength": 10,
       "percentage": false,
       "pluginVersion": "8.0.0",
-      "pointradius": 5,
+      "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
@@ -687,10 +806,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "exemplar": false,
-          "expr": "irate(copernico_counters_total{entity=~\"actor-transaction.*_transaction-error\"})",
+          "exemplar": true,
+          "expr": "\nsum(irate(copernico_counters_total{application=~\"pcs\", entity=~\".*Actor-persisted\"}[1m]))",
           "format": "time_series",
-          "hide": true,
           "instant": false,
           "interval": "",
           "intervalFactor": 1,
@@ -702,10 +820,10 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Errors",
+      "title": "Recoords persisted per second (OPS)",
       "tooltip": {
         "shared": true,
-        "sort": 0,
+        "sort": 2,
         "value_type": "individual"
       },
       "type": "graph",
@@ -718,16 +836,16 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:568",
-          "format": "short",
-          "label": null,
+          "$$hashKey": "object:1615",
+          "format": "ops",
+          "label": "records/sec",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
-          "$$hashKey": "object:569",
+          "$$hashKey": "object:1616",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -759,7 +877,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 26
+        "y": 32
       },
       "hiddenSeries": false,
       "id": 22,
@@ -792,7 +910,129 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(increase(copernico_counters_total{entity=~\"actor-transaction-.*_transaction-request\"}[1m]))",
+          "expr": "sum(increase(copernico_counters_total{application=~\"pcs\", entity=~\".*ProcessedMessagesCounter\"}[1m]))",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{entity}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [
+        {
+          "$$hashKey": "object:246",
+          "colorMode": "ok",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": null,
+          "yaxis": "left"
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [
+        {
+          "$$hashKey": "object:191",
+          "colorMode": "background6",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time"
+        }
+      ],
+      "timeShift": null,
+      "title": "Request per minute (RPM)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:225",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:226",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Cinnamon Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 32
+      },
+      "hiddenSeries": false,
+      "id": 38,
+      "legend": {
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "paceLength": 10,
+      "percentage": false,
+      "pluginVersion": "8.0.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum(increase(copernico_counters_total{application=~\"pcs\", entity=~\".*Actor-persisted\"}[1m]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -871,17 +1111,18 @@
       "color": {
         "cardColor": "#FF9830",
         "colorScale": "linear",
-        "colorScheme": "interpolateRdYlGn",
+        "colorScheme": "interpolateOranges",
         "exponent": 0.5,
         "mode": "spectrum"
       },
       "dataFormat": "timeseries",
       "datasource": "Cinnamon Prometheus",
+      "description": "Latency of Actor Transaction",
       "gridPos": {
         "h": 9,
         "w": 12,
-        "x": 12,
-        "y": 26
+        "x": 0,
+        "y": 41
       },
       "heatmap": {},
       "hideZeroBuckets": true,
@@ -896,7 +1137,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(copernico_histograms_bucket{entity=~\"actor-transaction-.*_transaction-latency\"}[$__rate_interval])) by (le)",
+          "expr": "sum(rate(copernico_histograms_bucket{application=~\"pcs\", entity=~\"actor-transaction-.*_transaction-latency\"}[$__rate_interval])) by (le)",
           "format": "heatmap",
           "instant": false,
           "interval": "",
@@ -907,7 +1148,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Transaction Latency Heatmap (ms)",
+      "title": "Actor Transaction Latency Heatmap (ms)",
       "tooltip": {
         "show": true,
         "showHistogram": true
@@ -932,12 +1173,81 @@
       "yBucketSize": null
     },
     {
-      "datasource": null,
+      "cards": {
+        "cardPadding": null,
+        "cardRound": null
+      },
+      "color": {
+        "cardColor": "#FF9830",
+        "colorScale": "linear",
+        "colorScheme": "interpolateOranges",
+        "exponent": 0.5,
+        "mode": "spectrum"
+      },
+      "dataFormat": "timeseries",
+      "datasource": "Cinnamon Prometheus",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 41
+      },
+      "heatmap": {},
+      "hideZeroBuckets": true,
+      "highlightCards": true,
+      "id": 39,
+      "legend": {
+        "show": true
+      },
+      "links": [],
+      "pluginVersion": "8.0.0",
+      "reverseYBuckets": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum(rate(copernico_histograms_bucket{application=~\"pcs\", entity=~\"actor-transaction-.*_handler-latency\"}[$__rate_interval])) by (le)",
+          "format": "heatmap",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{le}} ",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Handler Latency Heatmap (ms)",
+      "tooltip": {
+        "show": true,
+        "showHistogram": true
+      },
+      "type": "heatmap",
+      "xAxis": {
+        "show": true
+      },
+      "xBucketNumber": null,
+      "xBucketSize": null,
+      "yAxis": {
+        "decimals": null,
+        "format": "ms",
+        "logBase": 10,
+        "max": null,
+        "min": "0",
+        "show": true,
+        "splitFactor": null
+      },
+      "yBucketBound": "auto",
+      "yBucketNumber": null,
+      "yBucketSize": null
+    },
+    {
+      "datasource": "Cinnamon Prometheus",
       "gridPos": {
         "h": 2,
-        "w": 4,
+        "w": 5,
         "x": 3,
-        "y": 35
+        "y": 50
       },
       "id": 29,
       "links": [],
@@ -952,12 +1262,12 @@
       "type": "text"
     },
     {
-      "datasource": null,
+      "datasource": "Cinnamon Prometheus",
       "gridPos": {
         "h": 2,
-        "w": 5,
+        "w": 7,
         "x": 15,
-        "y": 35
+        "y": 50
       },
       "id": 30,
       "options": {
@@ -973,6 +1283,7 @@
     {
       "cacheTimeout": null,
       "datasource": "Cinnamon Prometheus",
+      "description": "Number of Kafka messages processed by ReadSide Consumer",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1000,7 +1311,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 37
+        "y": 52
       },
       "id": 32,
       "interval": null,
@@ -1025,7 +1336,7 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "sum(copernico_counters_total{entity=~\".*SnapshotPersisted-ProcessedMessagesCounter\"})\n+\nsum(copernico_counters_total{entity=~\".*PersistedSnapshot-ProcessedMessagesCounter\"})\n",
+          "expr": "sum(copernico_counters_total{application=~\"readside\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -1036,12 +1347,13 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "TOTAL EVENTS PROCESSED ",
+      "title": "TOTAL PROCESSED MESSAGES",
       "type": "stat"
     },
     {
       "cacheTimeout": null,
       "datasource": "Cinnamon Prometheus",
+      "description": "Number of Kafka Messages rejected",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1069,7 +1381,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 37
+        "y": 52
       },
       "id": 36,
       "interval": null,
@@ -1094,7 +1406,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(copernico_counters_total{entity=~\".*FromDto-RejectedMessagesCounter\"})",
+          "expr": "sum(copernico_counters_total{entity=~\".*SnapshotPersisted-RejectedMessagesCounter\"})\n+\nsum(copernico_counters_total{entity=~\".*PersistedSnapshot-RejectedMessagesCounter\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -1105,12 +1417,13 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "TOTAL EVENTS REJECTED ",
+      "title": "TOTAL REJECTED MESSAGES",
       "type": "stat"
     },
     {
       "cacheTimeout": null,
       "datasource": "Cinnamon Prometheus",
+      "description": "Number of records written in Cassandra Readside keyspace",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1138,7 +1451,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 37
+        "y": 52
       },
       "id": 34,
       "interval": null,
@@ -1163,7 +1476,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(copernico_counters_total{entity=~\"actor-transaction.*handler-request\"})",
+          "expr": "sum(copernico_counters_total{application=~\"readside\", entity=~\".*persisted.*_handler-request\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -1174,7 +1487,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "TOTAL EVENTS REQUESTED",
+      "title": "TOTAL WRITTEN RECORDS",
       "type": "stat"
     },
     {
@@ -1207,7 +1520,7 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 37
+        "y": 52
       },
       "id": 35,
       "interval": null,
@@ -1232,7 +1545,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(copernico_counters_total{entity=~\"actor-transaction.*handler-error\"})",
+          "expr": "sum(copernico_counters_total{application=~\"readside\", entity=~\".*persisted.*_handler-error\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -1252,13 +1565,14 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Cinnamon Prometheus",
+      "description": "Number of Kafka messages processed by ReadSide Consumer",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 42
+        "y": 57
       },
       "hiddenSeries": false,
       "id": 31,
@@ -1267,7 +1581,7 @@
         "current": false,
         "max": false,
         "min": false,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -1291,7 +1605,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{entity=~\".*SnapshotPersisted-ProcessedMessagesCounter\"}",
+          "expr": "copernico_counters_total{application=~\"readside\", entity=~\".*-ProcessedMessagesCounter\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1306,7 +1620,7 @@
       "title": "Kafka Processed Messages",
       "tooltip": {
         "shared": true,
-        "sort": 0,
+        "sort": 2,
         "value_type": "individual"
       },
       "type": "graph",
@@ -1343,6 +1657,109 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Cinnamon Prometheus",
+      "description": "Cassandra records persisted in ReadSide ",
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 57
+      },
+      "hiddenSeries": false,
+      "id": 40,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": false
+      },
+      "paceLength": 10,
+      "percentage": false,
+      "pluginVersion": "8.0.0",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "copernico_counters_total{application=~\"readside\", entity=~\".*_persisted.*_handler-request\"}",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{entity}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Cassandra Records Persisted",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1462",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1463",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "cards": {
         "cardPadding": null,
         "cardRound": null
@@ -1350,17 +1767,17 @@
       "color": {
         "cardColor": "#b4ff00",
         "colorScale": "sqrt",
-        "colorScheme": "interpolateYlOrBr",
+        "colorScheme": "interpolateOranges",
         "exponent": 0.5,
         "mode": "spectrum"
       },
       "dataFormat": "timeseries",
       "datasource": "Cinnamon Prometheus",
       "gridPos": {
-        "h": 9,
+        "h": 10,
         "w": 12,
         "x": 12,
-        "y": 42
+        "y": 67
       },
       "heatmap": {},
       "hideZeroBuckets": false,
@@ -1375,7 +1792,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(increase(copernico_histograms_bucket{entity=~\"actor-transaction-.*_transaction-latency\"}[$__rate_interval])) by (le)",
+          "expr": "sum(increase(copernico_histograms_bucket{application=~\"readside\", entity=~\".*persisted.*_handler-latency\"}[$__rate_interval])) by (le)",
           "format": "heatmap",
           "instant": false,
           "interval": "",
@@ -1411,7 +1828,7 @@
       "yBucketSize": null
     }
   ],
-  "refresh": "10s",
+  "refresh": "5s",
   "schemaVersion": 30,
   "style": "dark",
   "tags": [],
@@ -1419,7 +1836,7 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -1446,8 +1863,14 @@
       "30d"
     ]
   },
-  "timezone": "",
-  "title": "PCS-Dashboards",
-  "uid": "LIV8sLgnz",
-  "version": 4
+  "annotations": {
+  "list": []
+  },
+  "timezone": "browser",
+  "title": "PCS Application",
+  "refresh": "5s",
+  "schemaVersion": 12,
+  "version": 3,
+  "links": [],
+  "gnetId": null
 }
