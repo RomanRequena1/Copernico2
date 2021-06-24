@@ -1,4 +1,4 @@
-﻿
+
 # How to run  
 ## in development mode  
 **Run the following commands on different consoles**
@@ -107,3 +107,5 @@ _integration only_
 ```bash
 sbt it/test
 ```
+
+M
