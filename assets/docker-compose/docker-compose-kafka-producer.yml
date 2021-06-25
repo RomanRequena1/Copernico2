@@ -11,8 +11,8 @@ services:
     environment:
       KAFKA_SERVER: 'kafka:29092'
       KAFKA_TOPIC: 'DGR-COP-OBLIGACIONES-TRI'
-      KAFKA_PRODUCE_FROM: 1
-      KAFKA_PRODUCE_TO: 20000
+      KAFKA_PRODUCE_FROM: 50000
+      KAFKA_PRODUCE_TO: 70000
       NR_PARTITIONS: 30
     networks:
       kafka_copernico_net:

@@ -6,7 +6,7 @@ object Dependencies {
   // Versions
   lazy val scalaVersion = "2.13.1"
   // TODO - private lazy val akkaVersion = "2.6.6"
-  private lazy val akkaVersion = "2.6.12"
+  private lazy val akkaVersion = "2.6.14" //TODO Before 2.6.12
 
   // Resolvers
   lazy val commonResolvers = Seq(
@@ -66,7 +66,7 @@ object Dependencies {
   object Akka extends Module {
     val akkaHttpVersion = "10.1.11"
     val akkaManagementVersion = "1.0.9"
-    val akkaStreamKafka = "2.1.0-M1"
+    val akkaStreamKafka = "2.1.0"
 
     private def akkaModule(name: String) = "com.typesafe.akka" %% name % akkaVersion
     private def akkaHttpModule(name: String) = "com.typesafe.akka" %% name % akkaHttpVersion
