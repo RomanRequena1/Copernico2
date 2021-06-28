@@ -42,8 +42,8 @@ object Dependencies {
     private lazy val akkaStreamTestKit = "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion
     private lazy val kafkaTestKit = "com.typesafe.akka" %% "akka-stream-kafka-testkit" % "2.0.0-RC1"
 
-    // TODO - private lazy val kafkaVersion = "2.4.0"
-    private lazy val kafkaVersion = "2.6.12"
+
+    private lazy val kafkaVersion = "2.7.0"  // TODO - Before kafkaVersion = "2.6.12 "
     private lazy val embeddedKafkaVersion = kafkaVersion
     // private lazy val embeddedKafka = "io.github.seglo" %% "embedded-kafka" % embeddedKafkaVersion // "io.github.embeddedkafka" %% "embedded-kafka" % embeddedKafkaVersion
 
@@ -66,7 +66,7 @@ object Dependencies {
   object Akka extends Module {
     val akkaHttpVersion = "10.1.11"
     val akkaManagementVersion = "1.1.0" //TODO Before 1.0.9
-    val akkaStreamKafka = "2.1.0"
+    val alpakkaKafkaVersion = "2.1.0"
 
     private def akkaModule(name: String) = "com.typesafe.akka" %% name % akkaVersion
     private def akkaHttpModule(name: String) = "com.typesafe.akka" %% name % akkaHttpVersion
@@ -98,7 +98,7 @@ object Dependencies {
       "com.lightbend.akka.management" %% "akka-management" % akkaManagementVersion ::
       "com.lightbend.akka.management" %% "akka-management-cluster-http" % akkaManagementVersion ::
       "com.lightbend.akka.management" %% "akka-management-cluster-bootstrap" % akkaManagementVersion ::
-        "com.typesafe.akka" %% "akka-stream-kafka" % akkaStreamKafka ::
+        "com.typesafe.akka" %% "akka-stream-kafka" % alpakkaKafkaVersion ::
         "com.typesafe.akka" %% "akka-serialization-jackson" % akkaVersion ::
         "com.typesafe.akka" %% "akka-protobuf" % akkaVersion ::
         // Add Lightbend Platform to your build as documented at https://developer.lightbend.com/docs/lightbend-platform/introduction/getting-started/subscription-and-credentials.html
@@ -151,10 +151,6 @@ object Dependencies {
   }
 
   object Kamon extends Module {
-    // private lazy val kamonBundle = "io.kamon" %% "kamon-bundle" % "2.1.5"
-    // private lazy val kamonAPM = "io.kamon" %% "kamon-apm-reporter" % "2.1.0"
-    // private lazy val kamonLogStash = "com.codekeepersinc" %% "kamonlogstash" % "0.0.1"
-
     val core = "io.kamon" %% "kamon-core" % "2.2.0"
     val status = "io.kamon" %% "kamon-status-page" % "2.2.0"
     val prometheus = "io.kamon" %% "kamon-prometheus" % "2.2.0"
