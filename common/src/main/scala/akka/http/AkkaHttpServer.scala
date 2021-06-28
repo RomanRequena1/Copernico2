@@ -1,15 +1,11 @@
 package akka.http
 
-import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success}
-
 import akka.actor.ActorSystem
-import akka.actor.typed.Behavior
-import akka.actor.typed.scaladsl.adapter._
-import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
-import akka.cluster.ClusterEvent.MemberUp
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server._
+
+import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success}
 
 object AkkaHttpServer {
 
@@ -21,7 +17,8 @@ object AkkaHttpServer {
     implicit val ec: ExecutionContext = system.dispatcher
 
     Http()(system)
-      .bindAndHandle(routes, host, port)
+      //.bindAndHandle(routes, host, port)
+      .newServerAt(host, port).bind(routes)
       .onComplete {
         case Success(bound) =>
           ctx.log.info(

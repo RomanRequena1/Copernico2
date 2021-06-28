@@ -24,7 +24,7 @@ lazy val global = project
     .settings(CommandAliases.aliases)
     .enablePlugins(ScoverageSbtPlugin)
     .enablePlugins(JavaServerAppPackaging, DockerPlugin)
-    .enablePlugins(CinnamonAgentOnly)
+    .enablePlugins(Cinnamon)
     .aggregate(
       common,
       pcs,
@@ -142,6 +142,6 @@ lazy val it = project
     dockerEntrypoint := Seq("/opt/docker/bin/kafka-event-producer")
   )
 
-val AkkaVersion = "2.6.12"
+val AkkaVersion = "2.6.15"
 libraryDependencies += "com.typesafe.akka" %% "akka-persistence" % AkkaVersion
 

@@ -15,9 +15,10 @@ addSbtPlugin("io.spray" % "sbt-revolver" % "0.9.1")
 
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.2")
 
-addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.5.7")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.23")
 
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.5")
 
 // telemetry
-addSbtPlugin("com.lightbend.cinnamon" % "sbt-cinnamon" % "2.15.0")
+addSbtPlugin("com.lightbend.cinnamon" % "sbt-cinnamon" % "2.16.0")
+

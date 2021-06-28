@@ -1,21 +1,13 @@
 package consumers.no_registral.cotitularidad.infrastructure.dependency_injection
 
 import akka.actor.Props
-import akka.actor.Status.Success
 import akka.entity.ShardedEntity
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import akka.persistence.{PersistentActor, RecoveryCompleted, SnapshotOffer}
 import consumers.no_registral.cotitularidad.application.entities.CotitularidadCommands.ObjetoSnapshotPersistedReaction
-import consumers.no_registral.cotitularidad.application.entities.{
-  CotitularidadCommands,
-  CotitularidadQueries,
-  CotitularidadResponses
-}
+import consumers.no_registral.cotitularidad.application.entities.{CotitularidadQueries, CotitularidadResponses}
 import consumers.no_registral.cotitularidad.domain.CotitularidadEvents.CotitularidadAddedSujetoCotitular
 import consumers.no_registral.cotitularidad.domain.{CotitularidadEvents, CotitularidadState}
-import consumers.no_registral.objeto.application.entities.ObjetoCommands.{ObjetoSnapshot, ObjetoUpdateCotitulares}
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
-import consumers.no_registral.objeto.infrastructure.consumer.ObjetoUpdateCotitularesTransaction
 import consumers.no_registral.objeto.infrastructure.json._
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
@@ -26,7 +18,6 @@ class CotitularidadActor(requirements: MonitoringAndMessageProducer)
 
   val monitoring = requirements.monitoring
   val messageProducer = requirements.messageProducer
-  import context.system
 
   var state = CotitularidadState()
 
@@ -60,7 +51,7 @@ class CotitularidadActor(requirements: MonitoringAndMessageProducer)
         sujetoResponsable = command.event.sujetoResponsable
       )
 
-      persist(event) { _ =>
+      persistAsync(event) { _ =>
         state += event
         if (sujetosNoResponsables.isEmpty) {
           replyTo ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
@@ -91,7 +82,7 @@ class CotitularidadActor(requirements: MonitoringAndMessageProducer)
         isResponsable = command.event.sujetoResponsable.map(_ == command.event.sujetoId),
         sujetoResponsable = command.event.sujetoResponsable
       )
-      persist(event) { _ =>
+      persistAsync(event) { _ =>
         state += event
         replyTo ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }

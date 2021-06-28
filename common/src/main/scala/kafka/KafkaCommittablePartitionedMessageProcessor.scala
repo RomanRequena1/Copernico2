@@ -65,18 +65,11 @@ class KafkaCommittablePartitionedMessageProcessor(
 
     val committerSettings = CommitterSettings(system)
 
-
     val config = system.settings.config.getConfig("akka.kafka.producer")
-
 
     val producerSettings =
       ProducerSettings(config, new StringSerializer, new StringSerializer)
-        // TODO changed the buffer memory config to reduce the latency - Moved to kafka.conf
-        // .withBootstrapServers(bootstrapServers)
-        // .withProperty(ProducerConfig.BUFFER_MEMORY_CONFIG, "100663296")
-        // .withProperty(ProducerConfig.ACKS_CONFIG, "0")
-        // .withProperty(ProducerConfig.LINGER_MS_CONFIG, "5")
-        // .withProperty(ProducerConfig.MAX_BLOCK_MS_CONFIG, "120000")
+
 
     val consumerGroup = Consumer
 
@@ -84,15 +77,10 @@ class KafkaCommittablePartitionedMessageProcessor(
         .withGroupId(appConfig.CONSUMER_GROUP), subscription)
         //.buffer(10000, OverflowStrategy.backpressure)
         // TODO changed to reduce the Consumer latency - Moved to kafka.conf
-        //.withProperty(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG, "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor")
-        //.withProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "120000")
-        //.withProperty(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "5"), subscription)
         //.withProperty(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG, "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"), subscription)
       .mapAsyncUnordered(NR_PARTITIONS) { case (topicPartition: TopicPartition, source) =>
         source
           //.buffer(CONSUMER_PARALLELISM * NR_PARTITIONS, OverflowStrategy.backpressure)
-          //.async("akka.stream.blocking-io-dispatcher")
-          //.buffer(10000, OverflowStrategy.backpressure)
           .addAttributes(CinnamonAttributes.instrumented(reportByName = true , perFlow = true, perConnection = true, perBoundary = true, traceable = true))
           .mapAsync(CONSUMER_PARALLELISM) { msg: ConsumerMessage.CommittableMessage[String, String] =>
             val message = msg

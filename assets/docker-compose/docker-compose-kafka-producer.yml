@@ -9,14 +9,14 @@ services:
       - ../examples/DGR-COP-SUJETO-TRI.json:/assets/examples/DGR-COP-SUJETO-TRI.json
       - ../examples/DGR-COP-OBLIGACIONES-TRI.json:/assets/examples/DGR-COP-OBLIGACIONES-TRI.json
     environment:
-      KAFKA_SERVER: 'kafka:29092'
-      KAFKA_TOPIC: 'DGR-COP-OBLIGACIONES-TRI'
-      KAFKA_PRODUCE_FROM: 50000
-      KAFKA_PRODUCE_TO: 70000
+      KAFKA_SERVER: 'kafka:29092, kafka:29093'
+      KAFKA_TOPIC: 'DGR-COP-SUJETO-TRI'
+      KAFKA_PRODUCE_FROM: 1
+      KAFKA_PRODUCE_TO: 100000
       NR_PARTITIONS: 30
     networks:
       kafka_copernico_net:
-        ipv4_address: 172.22.0.10
+        ipv4_address: 172.22.2.10
 # 
 # services:
 #   kafka-event-producer:

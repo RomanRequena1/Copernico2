@@ -6,7 +6,7 @@ object Dependencies {
   // Versions
   lazy val scalaVersion = "2.13.1"
   // TODO - private lazy val akkaVersion = "2.6.6"
-  private lazy val akkaVersion = "2.6.14" //TODO Before 2.6.12
+  private lazy val akkaVersion = "2.6.15" //TODO Before 2.6.12
 
   // Resolvers
   lazy val commonResolvers = Seq(
@@ -65,7 +65,7 @@ object Dependencies {
 
   object Akka extends Module {
     val akkaHttpVersion = "10.1.11"
-    val akkaManagementVersion = "1.0.9"
+    val akkaManagementVersion = "1.1.0" //TODO Before 1.0.9
     val akkaStreamKafka = "2.1.0"
 
     private def akkaModule(name: String) = "com.typesafe.akka" %% name % akkaVersion
@@ -90,7 +90,7 @@ object Dependencies {
       "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion ::
       "com.typesafe.akka" %% "akka-cluster" % akkaVersion ::
       "com.typesafe.akka" %% "akka-cluster-sharding" % akkaVersion ::
-      // "com.typesafe.akka" %% "akka-typed" % akkaVersion ::
+      //  "com.typesafe.akka" %% "akka-typed" % akkaVersion ::
       "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion ::
       "com.typesafe.akka" %% "akka-persistence-typed" % akkaVersion ::
       "com.typesafe.akka" %% "akka-cluster-sharding-typed" % akkaVersion ::
@@ -108,7 +108,7 @@ object Dependencies {
   }
 
   object Cassandra extends Module {
-    lazy val AkkaPersistenceCassandraVersion = "1.0.4"
+    lazy val AkkaPersistenceCassandraVersion = "1.0.5"
     lazy val AkkaProjectionVersion = "0.2"
     // TODO lazy val AkkaProjectionVersion = "1.1.0"
     private def akkaPersistenceCassandraModule(name: String) =
