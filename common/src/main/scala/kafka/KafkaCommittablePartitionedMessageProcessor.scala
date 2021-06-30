@@ -147,6 +147,7 @@ class KafkaCommittablePartitionedMessageProcessor(
     val (killSwitch, done) = consumerGroup.run()
 
 
+
     done.onComplete {
       case Success(_) =>
         log.warn(s"""

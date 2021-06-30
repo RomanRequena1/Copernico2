@@ -66,6 +66,9 @@ object KafkaEventProducer {
 
     val generator: Generator[_] = topic match {
       case "DGR-COP-OBLIGACIONES-TRI" => new ObligacionesTriGenerator()
+      case "DGR-COP-OBLIGACIONES-TRI1" => new ObligacionesTriGenerator()
+      case "DGR-COP-OBLIGACIONES-TRI2" => new ObligacionesTriGenerator()
+      case "DGR-COP-OBLIGACIONES-TRI3" => new ObligacionesTriGenerator()
       case "DGR-COP-OBLIGACIONES-ANT" => new ObligacionesAntGenerator()
       case "DGR-COP-SUJETO-TRI" => new SujetoTriGenerator()
       case "DGR-COP-SUJETO-ANT" => new SujetoAntGenerator()

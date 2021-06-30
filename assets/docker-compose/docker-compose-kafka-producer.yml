@@ -8,12 +8,15 @@ services:
     volumes:
       - ../examples/DGR-COP-SUJETO-TRI.json:/assets/examples/DGR-COP-SUJETO-TRI.json
       - ../examples/DGR-COP-OBLIGACIONES-TRI.json:/assets/examples/DGR-COP-OBLIGACIONES-TRI.json
+      - ../examples/DGR-COP-OBLIGACIONES-TRI1.json:/assets/examples/DGR-COP-OBLIGACIONES-TRI1.json
+      - ../examples/DGR-COP-OBLIGACIONES-TRI2.json:/assets/examples/DGR-COP-OBLIGACIONES-TRI2.json
+      - ../examples/DGR-COP-OBLIGACIONES-TRI3.json:/assets/examples/DGR-COP-OBLIGACIONES-TRI3.json
     environment:
-      KAFKA_SERVER: 'kafka:29092, kafka:29093'
-      KAFKA_TOPIC: 'DGR-COP-SUJETO-TRI'
+      KAFKA_SERVER: 'kafka1:29092'
+      KAFKA_TOPIC: 'DGR-COP-OBLIGACIONES-TRI3'
       KAFKA_PRODUCE_FROM: 1
-      KAFKA_PRODUCE_TO: 100000
-      NR_PARTITIONS: 30
+      KAFKA_PRODUCE_TO: 33000
+      NR_PARTITIONS: 100
     networks:
       kafka_copernico_net:
         ipv4_address: 172.22.2.10

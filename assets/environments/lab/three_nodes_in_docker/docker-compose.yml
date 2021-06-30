@@ -15,7 +15,7 @@ services:
       - '5266:5266'
     environment:
       SEED_NODES: 'akka://PersonClassificationServiceReadSide@172.22.4.3:2554'
-      KAFKA_BROKERS_LIST: 'kafka:29092, kafka2:29093'
+      KAFKA_BROKERS_LIST: 'kafka1:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
       PROJECTIONIST_PARALELLISM: 3
       LOGSTASH: '172.22.5.3:5000'
@@ -102,7 +102,7 @@ services:
       - '9091:9091'
     environment:
       SEED_NODES: 'akka://PersonClassificationService@172.22.1.3:2551'
-      KAFKA_BROKERS_LIST: 'kafka:29092, kafka2:29093'
+      KAFKA_BROKERS_LIST: 'kafka1:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
       CONSUMER_PARALLELISM: $CONSUMER_PARALLELISM
       INITIALIZATION: $INITIALIZATION
@@ -120,23 +120,24 @@ services:
     networks:
       kafka_copernico_net:
         ipv4_address: 172.22.1.3
-  node1:
-    container_name: node1
+  seed2:
+    container_name: seed2
     image: 'pcs/pcs:1.0'
     ports:
-      - '2552:2551'
+      - '2552:2552'
       - '8082:8082'
       - '9096:9095'
       - '9099:9091'
     environment:
-      SEED_NODES: 'akka://PersonClassificationService@172.22.1.3:2551'
-      KAFKA_BROKERS_LIST: 'kafka:29092, kafka2:29093'
+      SEED_NODES: 'akka://PersonClassificationService@172.22.2.3:2552'
+      KAFKA_BROKERS_LIST: 'kafka2:29093'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
       CONSUMER_PARALLELISM: $CONSUMER_PARALLELISM
       INITIALIZATION: $INITIALIZATION
       NR_PARTITIONS: $NR_PARTITIONS
       #LOGSTASH: '172.22.5.3:5000'
-      CLUSTER_IP: 172.22.1.1
+      #CLUSTER_IP: 172.22.1.4 
+      CLUSTER_IP: 172.22.2.3
       CLUSTER_PORT: 2552
       HTTP_PORT: 8082
       PROMETHEUS_PORT: 9095
@@ -147,7 +148,7 @@ services:
       JAEGER_PORT: 5775
     networks:
       kafka_copernico_net:
-        ipv4_address: 172.22.1.1
+        ipv4_address: 172.22.2.3
 
   node2:
     container_name: node2
@@ -165,7 +166,7 @@ services:
       INITIALIZATION: $INITIALIZATION
       NR_PARTITIONS: $NR_PARTITIONS
       #LOGSTASH: '172.22.5.3:5000'
-      CLUSTER_IP: 172.22.1.2
+      CLUSTER_IP: 172.22.1.3
       CLUSTER_PORT: 2553
       HTTP_PORT: 8083
       PROMETHEUS_PORT: 9095
@@ -176,7 +177,7 @@ services:
       JAEGER_PORT: 5775
     networks:
       kafka_copernico_net:
-        ipv4_address: 172.22.1.2
+        ipv4_address: 172.22.1.3
 
   node3:
     container_name: node3
