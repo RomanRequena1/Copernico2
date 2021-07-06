@@ -790,7 +790,7 @@
   "annotations": {
   "list": []
   },
-  "refresh": 10s,
+  "refresh": "10s",
   "schemaVersion": 12,
   "version": 3,
   "links": [],

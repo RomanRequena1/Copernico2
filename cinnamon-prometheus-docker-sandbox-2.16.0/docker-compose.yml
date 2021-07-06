@@ -4,6 +4,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.8.1
+    container_name: prometheus
     volumes: ["./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"]
     ports: ["9090:9090"]
     #network_mode: bridge
@@ -11,6 +12,7 @@ services:
 
   grafana:
     image: grafana/grafana:8.0.0
+    container_name: grafana
 #    image: grafana/grafana:6.0.2
     environment: 
         GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: "cinnamon-prometheus-app"

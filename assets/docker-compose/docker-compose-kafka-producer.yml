@@ -12,11 +12,11 @@ services:
       - ../examples/DGR-COP-OBLIGACIONES-TRI2.json:/assets/examples/DGR-COP-OBLIGACIONES-TRI2.json
       - ../examples/DGR-COP-OBLIGACIONES-TRI3.json:/assets/examples/DGR-COP-OBLIGACIONES-TRI3.json
     environment:
-      KAFKA_SERVER: 'kafka1:29092'
-      KAFKA_TOPIC: 'DGR-COP-OBLIGACIONES-TRI3'
+      KAFKA_SERVER: 'kafka:29092'
+      KAFKA_TOPIC: 'DGR-COP-OBLIGACIONES-TRI'
       KAFKA_PRODUCE_FROM: 1
-      KAFKA_PRODUCE_TO: 33000
-      NR_PARTITIONS: 100
+      KAFKA_PRODUCE_TO: 50000
+      NR_PARTITIONS: 90
     networks:
       kafka_copernico_net:
         ipv4_address: 172.22.2.10

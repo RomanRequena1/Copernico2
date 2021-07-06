@@ -36,12 +36,6 @@
     },
     {
       "type": "dashboard",
-      "name": "Akka Ask-Pattern",
-      "path": "dashboards/akka-ask-pattern.json",
-      "revision": "2.16.0"
-    },
-    {
-      "type": "dashboard",
       "name": "Akka Cluster",
       "path": "dashboards/akka-cluster.json",
       "revision": "2.16.0"
@@ -156,6 +150,12 @@
     },
     {
       "type": "dashboard",
+      "name": "PCS dashboard",
+      "path": "dashboards/pcs-dashboard.json",
+      "revision": "2.16.0"
+    },
+    {
+      "type": "dashboard",
       "name": "Play Clients",
       "path": "dashboards/play-clients.json",
       "revision": "2.16.0"
@@ -164,6 +164,12 @@
       "type": "dashboard",
       "name": "Scala Futures",
       "path": "dashboards/scala-futures.json",
+      "revision": "2.16.0"
+    },
+    {
+      "type": "dashboard",
+      "name": "Akka Ask-Pattern",
+      "path": "dashboards/akka-ask-pattern.json",
       "revision": "2.16.0"
     }
   ],

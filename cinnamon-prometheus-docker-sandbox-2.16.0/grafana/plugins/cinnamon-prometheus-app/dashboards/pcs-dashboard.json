@@ -8,7 +8,7 @@
   "links": [],
   "panels": [
     {
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "gridPos": {
         "h": 2,
         "w": 5,
@@ -28,7 +28,7 @@
       "type": "text"
     },
     {
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "gridPos": {
         "h": 2,
         "w": 7,
@@ -48,7 +48,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -117,7 +117,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -170,7 +170,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(copernico_counters_total{application=~\"pcs\", entity=~\".*-RejectedMessagesCounter\"})",
+          "expr": "sum(copernico_counters_total{app=~\"pcs\", entity=~\".*-RejectedMessagesCounter\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -186,7 +186,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -239,7 +239,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(copernico_counters_total{application=~\"pcs\", entity=~\".*Actor-persisted\"})\n+\nsum(copernico_counters_total{application=~\"pcs\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"})",
+          "expr": "sum(copernico_counters_total{app=~\"pcs\", entity=~\".*Actor-persisted\"})\n+\nsum(copernico_counters_total{app=~\"pcs\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -255,7 +255,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -323,7 +323,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of Kafka topic partitions assigned",
       "fieldConfig": {
         "defaults": {
@@ -367,7 +367,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{application=~\"pcs\", entity=~\"TopicPartitionsAssigned\"}",
+          "expr": "copernico_counters_total{app=~\"pcs\", entity=~\"TopicPartitionsAssigned\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -381,7 +381,7 @@
       "type": "gauge"
     },
     {
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of Kafka topic partitions revoked",
       "fieldConfig": {
         "defaults": {
@@ -425,7 +425,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{application=~\"pcs\", entity=~\"TopicPartitionsRevoked\"}",
+          "expr": "copernico_counters_total{app=~\"pcs\", entity=~\"TopicPartitionsRevoked\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -443,7 +443,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of Kafka messages processed by WriteSide consumer",
       "fill": 1,
       "fillGradient": 0,
@@ -484,7 +484,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{application=~\"pcs\", entity=~\".*-ProcessedMessagesCounter\"}",
+          "expr": "copernico_counters_total{app=~\"pcs\", entity=~\".*-ProcessedMessagesCounter\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -540,7 +540,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Akka messages persisted in Writeside ",
       "fieldConfig": {
         "defaults": {
@@ -587,7 +587,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{application=~\"pcs\", entity=~\".*persisted\"}",
+          "expr": "copernico_counters_total{app=~\"pcs\", entity=~\".*persisted\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -596,7 +596,7 @@
         },
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{application=~\"pcs\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"}",
+          "expr": "copernico_counters_total{app=~\"pcs\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -653,7 +653,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -701,7 +701,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "\nsum(irate(copernico_counters_total{application=~\"pcs\", entity=~\".*ProcessedMessagesCounter\"}[1m]))",
+          "expr": "\nsum(irate(copernico_counters_total{app=~\"pcs\", entity=~\".*ProcessedMessagesCounter\"}[1m]))",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -758,7 +758,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of records persisted in Cassandra WriteSide Keyspace",
       "fieldConfig": {
         "defaults": {
@@ -807,7 +807,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "\nsum(irate(copernico_counters_total{application=~\"pcs\", entity=~\".*Actor-persisted\"}[1m]))",
+          "expr": "\nsum(irate(copernico_counters_total{app=~\"pcs\", entity=~\".*Actor-persisted\"}[1m]))",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -864,7 +864,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -910,7 +910,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(increase(copernico_counters_total{application=~\"pcs\", entity=~\".*ProcessedMessagesCounter\"}[1m]))",
+          "expr": "sum(increase(copernico_counters_total{app=~\"pcs\", entity=~\".*ProcessedMessagesCounter\"}[1m]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -986,7 +986,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -1032,7 +1032,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(increase(copernico_counters_total{application=~\"pcs\", entity=~\".*Actor-persisted\"}[1m]))",
+          "expr": "sum(increase(copernico_counters_total{app=~\"pcs\", entity=~\".*Actor-persisted\"}[1m]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1116,7 +1116,7 @@
         "mode": "spectrum"
       },
       "dataFormat": "timeseries",
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Latency of Actor Transaction",
       "gridPos": {
         "h": 9,
@@ -1137,7 +1137,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(copernico_histograms_bucket{application=~\"pcs\", entity=~\"actor-transaction-.*_transaction-latency\"}[$__rate_interval])) by (le)",
+          "expr": "sum(rate(copernico_histograms_bucket{app=~\"pcs\", entity=~\"actor-transaction-.*_transaction-latency\"}[$__rate_interval])) by (le)",
           "format": "heatmap",
           "instant": false,
           "interval": "",
@@ -1185,7 +1185,7 @@
         "mode": "spectrum"
       },
       "dataFormat": "timeseries",
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "gridPos": {
         "h": 9,
         "w": 12,
@@ -1205,7 +1205,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(copernico_histograms_bucket{application=~\"pcs\", entity=~\"actor-transaction-.*_handler-latency\"}[$__rate_interval])) by (le)",
+          "expr": "sum(rate(copernico_histograms_bucket{app=~\"pcs\", entity=~\"actor-transaction-.*_handler-latency\"}[$__rate_interval])) by (le)",
           "format": "heatmap",
           "hide": false,
           "instant": false,
@@ -1242,7 +1242,7 @@
       "yBucketSize": null
     },
     {
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "gridPos": {
         "h": 2,
         "w": 5,
@@ -1262,7 +1262,7 @@
       "type": "text"
     },
     {
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "gridPos": {
         "h": 2,
         "w": 7,
@@ -1282,7 +1282,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of Kafka messages processed by ReadSide Consumer",
       "fieldConfig": {
         "defaults": {
@@ -1336,7 +1336,7 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "sum(copernico_counters_total{application=~\"readside\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"})",
+          "expr": "sum(copernico_counters_total{app=~\"readside\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -1352,7 +1352,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of Kafka Messages rejected",
       "fieldConfig": {
         "defaults": {
@@ -1422,7 +1422,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of records written in Cassandra Readside keyspace",
       "fieldConfig": {
         "defaults": {
@@ -1476,7 +1476,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(copernico_counters_total{application=~\"readside\", entity=~\".*persisted.*_handler-request\"})",
+          "expr": "sum(copernico_counters_total{app=~\"readside\", entity=~\".*persisted.*_handler-request\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -1492,7 +1492,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1545,7 +1545,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(copernico_counters_total{application=~\"readside\", entity=~\".*persisted.*_handler-error\"})",
+          "expr": "sum(copernico_counters_total{app=~\"readside\", entity=~\".*persisted.*_handler-error\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -1564,7 +1564,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of Kafka messages processed by ReadSide Consumer",
       "fill": 1,
       "fillGradient": 0,
@@ -1605,7 +1605,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{application=~\"readside\", entity=~\".*-ProcessedMessagesCounter\"}",
+          "expr": "copernico_counters_total{app=~\"readside\", entity=~\".*-ProcessedMessagesCounter\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1661,7 +1661,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Cassandra records persisted in ReadSide ",
       "fieldConfig": {
         "defaults": {
@@ -1708,7 +1708,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{application=~\"readside\", entity=~\".*_persisted.*_handler-request\"}",
+          "expr": "copernico_counters_total{app=~\"readside\", entity=~\".*_persisted.*_handler-request\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1772,7 +1772,7 @@
         "mode": "spectrum"
       },
       "dataFormat": "timeseries",
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "gridPos": {
         "h": 10,
         "w": 12,
@@ -1792,7 +1792,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(increase(copernico_histograms_bucket{application=~\"readside\", entity=~\".*persisted.*_handler-latency\"}[$__rate_interval])) by (le)",
+          "expr": "sum(increase(copernico_histograms_bucket{app=~\"readside\", entity=~\".*persisted.*_handler-latency\"}[$__rate_interval])) by (le)",
           "format": "heatmap",
           "instant": false,
           "interval": "",
