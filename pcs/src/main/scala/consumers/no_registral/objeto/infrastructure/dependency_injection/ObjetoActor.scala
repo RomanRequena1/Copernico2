@@ -18,6 +18,8 @@ import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 
+import scala.concurrent.Future
+
 class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[ObjetoEvents, ObjetoState](requirements.monitoring) {
   import ObjetoActor._

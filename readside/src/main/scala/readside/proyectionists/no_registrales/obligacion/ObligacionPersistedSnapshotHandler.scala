@@ -1,16 +1,12 @@
 package readside.proyectionists.no_registrales.obligacion
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
+import api.actor_transaction.ActorTransaction
+import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
+import design_principles.actor_model.Response
+import design_principles.actor_model.Response.SuccessProcessing
+import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
 
 import scala.concurrent.Future
-import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import cassandra.write.CassandraWriteProduction
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
-import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
-import design_principles.actor_model.Response.SuccessProcessing
-import design_principles.actor_model.Response
-import monitoring.Monitoring
-import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
 
 class ObligacionPersistedSnapshotHandler(
     implicit
@@ -20,6 +16,7 @@ class ObligacionPersistedSnapshotHandler(
   override def topic: String = "ObligacionPersistedSnapshot"
 
   import consumers.no_registral.obligacion.infrastructure.json._
+
 
   override def processInput(input: String): Either[Throwable, ObligacionPersistedSnapshot] =
     serialization

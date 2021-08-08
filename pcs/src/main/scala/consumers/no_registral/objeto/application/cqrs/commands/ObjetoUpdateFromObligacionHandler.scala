@@ -10,10 +10,10 @@ import design_principles.actor_model.Response
 import scala.util.{Success, Try}
 
 class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
-    extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromObligacion] {
+  extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromObligacion] {
   override def handle(
-      command: ObjetoCommands.ObjetoUpdateFromObligacion
-  ): Try[Response.SuccessProcessing] = {
+                       command: ObjetoCommands.ObjetoUpdateFromObligacion
+                     ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
     val event = ObjetoUpdatedFromObligacion(
@@ -26,17 +26,17 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
       command.obligacionExenta,
       command.porcentajeExencion
     )
-//    val initialization: String = {
-//      Try(System.getenv("INITIALIZATION")).getOrElse(null)
-//    }
+    //    val initialization: String = {
+    //      Try(System.getenv("INITIALIZATION")).getOrElse(null)
+    //    }
 
-//    if (initialization != "true") {
-      actor.persistEvent(event) { () =>
-        actor.state += event
-        actor.informParent(command, actor.state)
-        actor.persistSnapshot(event, actor.state)(() => ())
-      }
-//    }
+    //    if (initialization != "true") {
+    actor.persistEvent(event) { () =>
+      actor.state += event
+      actor.informParent(command, actor.state)
+      actor.persistSnapshot(event, actor.state)(() => ())
+    }
+    //    }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }

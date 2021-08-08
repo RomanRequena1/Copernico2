@@ -5,7 +5,7 @@ import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionUpdat
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
-import design_principles.actor_model.mechanism.DeliveryIdManagement._
+import design_principles.actor_model.mechanism.DeliveryIdManagement.validateCommand
 
 import scala.util.{Success, Try}
 
@@ -31,7 +31,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event
-        if (initialization == "true" && !(command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {
+        if (!(initialization == "true" && command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {
           actor.informParent(command)
         }
         actor.persistSnapshot() { () =>
