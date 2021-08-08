@@ -4,7 +4,6 @@ version: '3.3'
 
 services:
   elasticsearch:
-    container_name: elasticsearch
     build:
       context: ./elk/elasticsearch/
       args:
@@ -30,7 +29,6 @@ services:
       - kafka_copernico_net
 
   logstash:
-    container_name: logstash
     build:
       context: ./elk/logstash/
       args:
@@ -59,7 +57,6 @@ services:
       - elasticsearch
 
   kibana:
-    container_name: kibana
     build:
       context: ./elk/kibana/
       args:

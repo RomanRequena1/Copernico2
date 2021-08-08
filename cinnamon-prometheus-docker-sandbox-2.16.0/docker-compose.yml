@@ -11,7 +11,7 @@ services:
     networks: ["kafka_copernico_net"]
 
   grafana:
-    image: grafana/grafana:5.4.2
+    image: grafana/grafana:8.0.0
     container_name: grafana
 #    image: grafana/grafana:6.0.2
     environment: 

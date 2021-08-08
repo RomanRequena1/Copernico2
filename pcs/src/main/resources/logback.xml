@@ -8,8 +8,9 @@
         </encoder>
     </appender>
 
-    <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>${LOGSTASH:-host.docker.internal:5000}</destination>
+    <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH:-0.0.0.0:5000}</destination>
+        <!-- encoder is required -->
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
 
@@ -29,7 +30,7 @@
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="STASH"/>
+        <appender-ref ref="stash"/>
     </root>
 
 </configuration>

@@ -1,20 +1,5 @@
 {
-  "annotations": {
-  "list": [
-    {
-      "builtIn": 1,
-        "datasource": "-- Grafana --",
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "type": "dashboard"
-      }
-    ]
-  },
-
-
-  "id": 21,
+  "id": null,
   "title": "PCS Application",
   "style": "dark",
   "timezone": "browser",
@@ -23,7 +8,7 @@
   "links": [],
   "panels": [
     {
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "gridPos": {
         "h": 2,
         "w": 5,
@@ -36,13 +21,14 @@
         "content": "#                   KAFKA->WRITESIDE\n\n\n",
         "mode": "markdown"
       },
+      "pluginVersion": "8.0.0",
       "timeFrom": null,
       "timeShift": null,
       "transparent": true,
       "type": "text"
     },
     {
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "gridPos": {
         "h": 2,
         "w": 7,
@@ -54,6 +40,7 @@
         "content": "#           WRITESIDE->CASSANDRA\n\n",
         "mode": "markdown"
       },
+      "pluginVersion": "8.0.0",
       "timeFrom": null,
       "timeShift": null,
       "transparent": true,
@@ -61,7 +48,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -110,6 +97,7 @@
         "text": {},
         "textMode": "auto"
       },
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "exemplar": false,
@@ -129,7 +117,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -178,10 +166,11 @@
         "text": {},
         "textMode": "auto"
       },
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(copernico_counters_total{app=~\"pcs.*\", entity=~\".*-RejectedMessagesCounter\"})",
+          "expr": "sum(copernico_counters_total{app=~\"pcs\", entity=~\".*-RejectedMessagesCounter\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -197,7 +186,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -246,10 +235,11 @@
         "text": {},
         "textMode": "auto"
       },
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(copernico_counters_total{app=~\"pcs.*\", entity=~\".*Actor-persisted\"})\n+\nsum(copernico_counters_total{app=~\"pcs.*\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"})",
+          "expr": "sum(copernico_counters_total{app=~\"pcs\", entity=~\".*Actor-persisted\"})\n+\nsum(copernico_counters_total{app=~\"pcs\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -265,7 +255,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -314,6 +304,7 @@
         "text": {},
         "textMode": "auto"
       },
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "exemplar": true,
@@ -332,7 +323,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of Kafka topic partitions assigned",
       "fieldConfig": {
         "defaults": {
@@ -372,10 +363,11 @@
         "showThresholdMarkers": true,
         "text": {}
       },
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{app=~\"pcs.*\", entity=~\"TopicPartitionsAssigned\"}",
+          "expr": "copernico_counters_total{app=~\"pcs\", entity=~\"TopicPartitionsAssigned\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -389,7 +381,7 @@
       "type": "gauge"
     },
     {
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of Kafka topic partitions revoked",
       "fieldConfig": {
         "defaults": {
@@ -429,10 +421,11 @@
         "showThresholdMarkers": true,
         "text": {}
       },
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{app=~\"pcs.*\", entity=~\"TopicPartitionsRevoked\"}",
+          "expr": "copernico_counters_total{app=~\"pcs\", entity=~\"TopicPartitionsRevoked\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -450,7 +443,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of Kafka messages processed by WriteSide consumer",
       "fill": 1,
       "fillGradient": 0,
@@ -480,6 +473,7 @@
       },
       "paceLength": 10,
       "percentage": false,
+      "pluginVersion": "8.0.0",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -490,7 +484,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{app=~\"pcs.*\", entity=~\".*-ProcessedMessagesCounter\"}",
+          "expr": "copernico_counters_total{app=~\"pcs\", entity=~\".*-ProcessedMessagesCounter\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -546,7 +540,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Akka messages persisted in Writeside ",
       "fieldConfig": {
         "defaults": {
@@ -582,6 +576,7 @@
       },
       "paceLength": 10,
       "percentage": false,
+      "pluginVersion": "8.0.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -592,7 +587,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{app=~\"pcs.*\", entity=~\".*persisted\"}",
+          "expr": "copernico_counters_total{app=~\"pcs\", entity=~\".*persisted\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -601,7 +596,7 @@
         },
         {
           "exemplar": true,
-          "expr": "copernico_counters_total{app=~\"pcs.*\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"}",
+          "expr": "copernico_counters_total{app=~\"pcs\", entity=~\".*Persisted.*-ProcessedMessagesCounter\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -658,7 +653,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -695,6 +690,7 @@
       },
       "paceLength": 10,
       "percentage": false,
+      "pluginVersion": "8.0.0",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -705,7 +701,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "\nsum(irate(copernico_counters_total{app=~\"pcs.*\", entity=~\".*ProcessedMessagesCounter\"}[1m]))",
+          "expr": "\nsum(irate(copernico_counters_total{app=~\"pcs\", entity=~\".*ProcessedMessagesCounter\"}[1m]))",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -762,7 +758,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of records persisted in Cassandra WriteSide Keyspace",
       "fieldConfig": {
         "defaults": {
@@ -800,6 +796,7 @@
       },
       "paceLength": 10,
       "percentage": false,
+      "pluginVersion": "8.0.0",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -810,7 +807,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "\nsum(irate(copernico_counters_total{app=~\"pcs.*\", entity=~\".*Actor-persisted\"}[1m]))",
+          "expr": "\nsum(irate(copernico_counters_total{app=~\"pcs\", entity=~\".*Actor-persisted\"}[1m]))",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -867,7 +864,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -902,6 +899,7 @@
       },
       "paceLength": 10,
       "percentage": false,
+      "pluginVersion": "8.0.0",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -912,7 +910,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(increase(copernico_counters_total{app=~\"pcs.*\", entity=~\".*ProcessedMessagesCounter\"}[1m]))",
+          "expr": "sum(increase(copernico_counters_total{app=~\"pcs\", entity=~\".*ProcessedMessagesCounter\"}[1m]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -988,7 +986,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -1023,6 +1021,7 @@
       },
       "paceLength": 10,
       "percentage": false,
+      "pluginVersion": "8.0.0",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1033,7 +1032,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(increase(copernico_counters_total{app=~\"pcs.*\", entity=~\".*Actor-persisted\"}[1m]))",
+          "expr": "sum(increase(copernico_counters_total{app=~\"pcs\", entity=~\".*Actor-persisted\"}[1m]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1117,7 +1116,7 @@
         "mode": "spectrum"
       },
       "dataFormat": "timeseries",
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Latency of Actor Transaction",
       "gridPos": {
         "h": 9,
@@ -1133,11 +1132,12 @@
         "show": true
       },
       "links": [],
+      "pluginVersion": "8.0.0",
       "reverseYBuckets": false,
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(copernico_histograms_bucket{app=~\"pcs.*\", entity=~\"actor-transaction-.*_transaction-latency\"}[$__rate_interval])) by (le)",
+          "expr": "sum(rate(copernico_histograms_bucket{app=~\"pcs\", entity=~\"actor-transaction-.*_transaction-latency\"}[$__rate_interval])) by (le)",
           "format": "heatmap",
           "instant": false,
           "interval": "",
@@ -1185,7 +1185,7 @@
         "mode": "spectrum"
       },
       "dataFormat": "timeseries",
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "gridPos": {
         "h": 9,
         "w": 12,
@@ -1200,11 +1200,12 @@
         "show": true
       },
       "links": [],
+      "pluginVersion": "8.0.0",
       "reverseYBuckets": false,
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(copernico_histograms_bucket{app=~\"pcs.*\", entity=~\"actor-transaction-.*_handler-latency\"}[$__rate_interval])) by (le)",
+          "expr": "sum(rate(copernico_histograms_bucket{app=~\"pcs\", entity=~\"actor-transaction-.*_handler-latency\"}[$__rate_interval])) by (le)",
           "format": "heatmap",
           "hide": false,
           "instant": false,
@@ -1241,7 +1242,7 @@
       "yBucketSize": null
     },
     {
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "gridPos": {
         "h": 2,
         "w": 5,
@@ -1254,13 +1255,14 @@
         "content": "#                    KAFKA->READSIDE\n\n\n",
         "mode": "markdown"
       },
+      "pluginVersion": "8.0.0",
       "timeFrom": null,
       "timeShift": null,
       "transparent": true,
       "type": "text"
     },
     {
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "gridPos": {
         "h": 2,
         "w": 7,
@@ -1272,6 +1274,7 @@
         "content": "#           READSIDE->CASSANDRA\n\n",
         "mode": "markdown"
       },
+      "pluginVersion": "8.0.0",
       "timeFrom": null,
       "timeShift": null,
       "transparent": true,
@@ -1279,7 +1282,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of Kafka messages processed by ReadSide Consumer",
       "fieldConfig": {
         "defaults": {
@@ -1329,6 +1332,7 @@
         "text": {},
         "textMode": "auto"
       },
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "exemplar": false,
@@ -1348,7 +1352,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of Kafka Messages rejected",
       "fieldConfig": {
         "defaults": {
@@ -1398,6 +1402,7 @@
         "text": {},
         "textMode": "auto"
       },
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "exemplar": true,
@@ -1417,7 +1422,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of records written in Cassandra Readside keyspace",
       "fieldConfig": {
         "defaults": {
@@ -1467,6 +1472,7 @@
         "text": {},
         "textMode": "auto"
       },
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "exemplar": true,
@@ -1486,7 +1492,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1535,6 +1541,7 @@
         "text": {},
         "textMode": "auto"
       },
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "exemplar": true,
@@ -1557,7 +1564,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Number of Kafka messages processed by ReadSide Consumer",
       "fill": 1,
       "fillGradient": 0,
@@ -1587,6 +1594,7 @@
       },
       "paceLength": 10,
       "percentage": false,
+      "pluginVersion": "8.0.0",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1653,7 +1661,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "description": "Cassandra records persisted in ReadSide ",
       "fieldConfig": {
         "defaults": {
@@ -1689,6 +1697,7 @@
       },
       "paceLength": 10,
       "percentage": false,
+      "pluginVersion": "8.0.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1763,7 +1772,7 @@
         "mode": "spectrum"
       },
       "dataFormat": "timeseries",
-      "datasource": "Cinnamon Prometheus",
+      "datasource": "Prometheus",
       "gridPos": {
         "h": 10,
         "w": 12,
@@ -1778,6 +1787,7 @@
         "show": false
       },
       "links": [],
+      "pluginVersion": "8.0.0",
       "reverseYBuckets": false,
       "targets": [
         {
@@ -1819,6 +1829,7 @@
     }
   ],
   "refresh": "5s",
+  "schemaVersion": 30,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -1852,9 +1863,13 @@
       "30d"
     ]
   },
+  "annotations": {
+  "list": []
+  },
   "timezone": "browser",
   "title": "PCS Application",
   "refresh": "10s",
+  "schemaVersion": 12,
   "version": 3,
   "links": [],
   "gnetId": null
