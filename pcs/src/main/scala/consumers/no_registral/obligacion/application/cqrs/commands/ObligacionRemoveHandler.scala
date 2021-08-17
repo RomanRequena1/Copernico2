@@ -21,8 +21,14 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
         command.tipoObjeto,
         command.obligacionId
       )
+
     actor.persistEvent(event) { () =>
-      actor.state += event
+       actor.state += event
+       actor.informRemoveToParent(command)
+       
+       actor.persistSnapshot() { () =>        
+          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+      }
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

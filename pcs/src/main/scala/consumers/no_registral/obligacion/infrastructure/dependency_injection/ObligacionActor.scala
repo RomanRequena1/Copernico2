@@ -3,6 +3,7 @@ package consumers.no_registral.obligacion.infrastructure.dependency_injection
 import akka.actor.Props
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.entities.ObjetoCommands._
 import consumers.no_registral.obligacion.application.cqrs.commands._
 import consumers.no_registral.obligacion.application.cqrs.queries.ObligacionGetStateHandler
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage.ObligacionMessageRoots
@@ -41,6 +42,15 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   def informBajaToParent(cmd: ObligacionCommands): Unit = {
     context.parent ! ObjetoCommands.ObjetoUpdateFromSetBajaObligacion(
       cmd.deliveryId,
+      cmd.sujetoId,
+      cmd.objetoId,
+      cmd.tipoObjeto,
+      cmd.obligacionId
+    )
+  }
+
+  def informRemoveToParent(cmd: ObligacionCommands): Unit = {
+    context.parent ! ObjetoCommands.ObjetoRemoveObligacion(
       cmd.sujetoId,
       cmd.objetoId,
       cmd.tipoObjeto,

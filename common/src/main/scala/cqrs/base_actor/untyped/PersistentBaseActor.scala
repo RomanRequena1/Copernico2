@@ -21,7 +21,7 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
   val eventBus: EventBus[Try] = new SyncEventBus(logger)
 
 //TODO recovery disabled
-  override def recovery: Recovery = Recovery.none
+  //override def recovery: Recovery = Recovery.none
 
 
   override def receive: Receive = super[PersistentActor].receive

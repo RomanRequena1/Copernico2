@@ -35,9 +35,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.informParent(command, actor.state)
-        log.warn(
-          s"[${actor.persistenceId}] PERSISTING SNAPSHOT| $command -- last delivery id was: ${actor.state.lastDeliveryIdByEvents}"
-        )
 
         actor.persistSnapshot(event, actor.state) { () =>
           if (!actor.state.isResponsable)

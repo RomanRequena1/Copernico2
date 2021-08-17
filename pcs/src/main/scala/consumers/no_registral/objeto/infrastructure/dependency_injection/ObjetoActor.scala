@@ -35,6 +35,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObligacion](new ObjetoUpdateFromObligacionHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateCotitulares](new ObjetoUpdateCotitularesHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoAddExencion](new ObjetoAddExencionHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoRemoveObligacion](new ObjetoRemoveObligacionHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromSetBajaObligacion](
       new ObjetoUpdateFromSetBajaObligacionHandler(this).handle
     )
@@ -77,7 +78,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
       state += evt
       evt match {
         case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
-          obligaciones((evt.sujetoId, evt.objetoId, evt.tipoObjeto, evt.obligacionId))
+          obligaciones((evt.sujetoId, evt.objetoId, evt.tipoObjeto, evt.obligacionId)) // waking up child
         case _ =>
       }
   }
@@ -131,16 +132,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         )
       ),
       "ObjetoSnapshotPersisted"
-    ) { _ =>
-      requirements.messageProducer.produce(
-        data = Seq(
-          KafkaKeyValue(
-            snapshot.aggregateRoot,
-            serialization.encode(snapshot)
-          )
-        ),
-        "ObjetoSnapshotPersistedReadside"
-      )(_ => handler())
+    ) { _ => 
+        handler()
     }
 
   }
