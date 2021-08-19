@@ -6,9 +6,10 @@ import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.application.entities.ObjetoCommands._
 import consumers.no_registral.obligacion.application.cqrs.commands._
 import consumers.no_registral.obligacion.application.cqrs.queries.ObligacionGetStateHandler
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionRemove
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage.ObligacionMessageRoots
 import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionQueries}
-import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
+import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionPersistedSnapshot, ObligacionRemoved}
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
@@ -49,7 +50,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     )
   }
 
-  def informRemoveToParent(cmd: ObligacionCommands): Unit = {
+  def informRemoveToParent(cmd: ObligacionRemove): Unit = {
     context.parent ! ObjetoCommands.ObjetoRemoveObligacion(
       cmd.sujetoId,
       cmd.objetoId,

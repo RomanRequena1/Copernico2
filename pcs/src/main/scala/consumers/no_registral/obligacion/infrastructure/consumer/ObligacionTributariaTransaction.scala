@@ -35,6 +35,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
     val command: Command =  obligacion match {
+       //todo el patternmatch no es conmutativo
       case obn: ObligacionesTri if precondicionParaDarDeBaja(obn) => 
         DownObligacion(
         sujetoId = obn.BOB_SUJ_IDENTIFICADOR,
@@ -66,7 +67,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
         )
     }
 
-    /** return a response  to the actorRef given, this case is an ActorRef of SujetoActor */
+    //return a response  to the actorRef given, this case is an ActorRef of SujetoActor
     actorRef.ask[Response.SuccessProcessing](command)
   }
 

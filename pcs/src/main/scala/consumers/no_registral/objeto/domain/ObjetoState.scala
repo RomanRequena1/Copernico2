@@ -106,4 +106,7 @@ case class ObjetoState(
         log.warn(s"Unexpected event at ObjetoState ${evt}")
         this
     }
+
+  def empty = ObjetoState()
+
 }

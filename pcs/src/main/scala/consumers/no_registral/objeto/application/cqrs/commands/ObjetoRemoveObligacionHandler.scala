@@ -13,7 +13,6 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
   override def handle(
       command: ObjetoCommands.ObjetoRemoveObligacion
   ): Try[Response.SuccessProcessing] = {
-    val sender = actor.context.sender()
 
     val event = ObjetoRemovedObligacion(
       // TODO remember to add the deliveryId command.deliveryId,

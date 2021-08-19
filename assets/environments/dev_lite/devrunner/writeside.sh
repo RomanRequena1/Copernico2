@@ -1,7 +1,7 @@
 cd ../../../..
 ls
 
-export SEED_NODES=akka://PersonClassificationService@0.0.0.0:2551; \                                               deuda_no_deuda_alternate * ] 4:20
+export SEED_NODES=akka://PersonClassificationService@0.0.0.0:2551; \
     export CLUSTER_PORT=2551; \
     export MANAGEMENT_PORT=8551; \
     export HTTP_PORT=8081; \

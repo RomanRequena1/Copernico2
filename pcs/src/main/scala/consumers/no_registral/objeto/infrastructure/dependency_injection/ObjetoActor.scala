@@ -89,6 +89,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         (childMessage.sujetoId, childMessage.objetoId, childMessage.tipoObjeto, childMessage.obligacionId)
       )
       obligacion forward childMessage
+
       childMessage match {
         case obligacionUpdateFromDto: ObligacionUpdateFromDto =>
           state.exenciones.toSeq.foreach { exencion =>
@@ -109,6 +110,9 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
   import consumers.no_registral.objeto.infrastructure.json._
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
+
+    val stateIsEmpty = consolidatedState.equals(state.empty)
+
     val snapshot =
       ObjetoSnapshotPersisted(
         evt.deliveryId,
@@ -124,6 +128,16 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.obligacionesSaldo
       )
 
+
+
+    //todo warning!
+    val kafkaTopic = (if(stateIsEmpty) {
+      "ObjetoSnapshotDeleted"
+    }
+    else {
+      "ObjetoSnapshotPersisted"
+    })
+
     requirements.messageProducer.produce(
       data = Seq(
         KafkaKeyValue(
@@ -131,7 +145,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
           serialization.encode(snapshot)
         )
       ),
-      "ObjetoSnapshotPersisted"
+      kafkaTopic
     ) { _ => 
         handler()
     }
