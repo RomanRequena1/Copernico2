@@ -1,37 +1,39 @@
 {
-  "EV_ID" : "1",
-  "BOB_SUJ_IDENTIFICADOR" : "30",
-  "BOB_SOJ_TIPO_OBJETO" : "I    ",
-  "BOB_SOJ_IDENTIFICADOR" : "1",
-  "BOB_OBN_ID" : "1",
-  "BOB_SALDO" : "100",
-  "BOB_CUOTA" : "1",
-  "BOB_ESTADO" : "JUDICIAL",
-  "BOB_FISCALIZADA" : "N",
-  "BOB_INDICE_INT_PUNIT" : "",
-  "BOB_INDICE_INT_RESAR" : "",
-  "BOB_INTERES_PUNIT" : "",
-  "BOB_INTERES_RESAR" : "",
-  "BOB_JUI_ID" : "1",
-  "BOB_PERIODO" : "2019",
-  "BOB_PLN_ID" : "",
-  "BOB_PRORROGA" : "2019-11-12 00:00:00.0",
-  "BOB_TIPO" : "tributaria",
-  "BOB_TOTAL" : "",
-  "BOB_VENCIMIENTO" : "2020-04-13 00:00:00.0",
-  "BOB_CAPITAL" : "3458.41",
-  "BOB_CONCEPTO" : "701",
-  "BOB_IMPUESTO" : "600",
-  "FECHA_BAJA" : "",
-  "BOB_OTROS_ATRIBUTOS" : {
-    "BOB_DETALLES" : [ {
-      "EVO_OBN_PEO_ID_MATERIAL" : "APCBL",
-      "BOB_MUNICIPIO" : "",
-      "BOB_INTERES_FINANCIACION" : "",
-      "JUICIO_MULTIOBJETO" : "S",
-      "RULE_NUMBER" : "1",
-      "EVO_OBN_PEO_ID_FORMAL" : "NC",
-      "PLAN_MULTIOBJETO" : "N"
-    } ]
-  }
+   "EV_ID":"20210819104502100000001257986341",
+   "BOB_SUJ_IDENTIFICADOR":"23-21656009-4",
+   "BOB_SOJ_TIPO_OBJETO":"M",
+   "BOB_SOJ_IDENTIFICADOR":"JUICIO:501000652021",
+   "BOB_OBN_ID":"20200000000007946331",
+   "BOB_SALDO":"135.88",
+   "BOB_CUOTA":"3",
+   "BOB_ESTADO":"JUDICIAL",
+   "BOB_FISCALIZADA":"N",
+   "BOB_INDICE_INT_PUNIT":null,
+   "BOB_INDICE_INT_RESAR":null,
+   "BOB_INTERES_PUNIT":null,
+   "BOB_INTERES_RESAR":null,
+   "BOB_JUI_ID":"3790428",
+   "BOB_PERIODO":"2020",
+   "BOB_PLN_ID":null,
+   "BOB_PRORROGA":"2020-04-20 00:00:00.0",
+   "BOB_TIPO":"tributaria",
+   "BOB_TOTAL":null,
+   "BOB_VENCIMIENTO":"2020-04-13 00:00:00.0",
+   "BOB_CAPITAL":"100.5",
+   "BOB_CONCEPTO":"101",
+   "BOB_IMPUESTO":"5",
+   "FECHA_BAJA":null,
+   "BOB_OTROS_ATRIBUTOS":{
+      "BOB_DETALLES":[
+         {
+            "EVO_OBN_PEO_ID_MATERIAL":"APCBL",
+            "BOB_MUNICIPIO":null,
+            "BOB_INTERES_FINANCIACION":null,
+            "JUICIO_MULTIOBJETO":"S",
+            "RULE_NUMBER":"-1",
+            "EVO_OBN_PEO_ID_FORMAL":"NC",
+            "PLAN_MULTIOBJETO":"N"
+         }
+      ]
+   }
 }

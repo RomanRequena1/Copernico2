@@ -4,8 +4,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
-import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionDeletedSnapshotHandler
-import readside.proyectionists.no_registrales.obligacion.{ObligacionAddedExencionHandler, ObligacionPersistedSnapshotHandler}
+import readside.proyectionists.no_registrales.obligacion.{ObligacionAddedExencionHandler, ObligacionDeletedSnapshotHandler, ObligacionPersistedSnapshotHandler}
 
 class ObligacionProjectionistMicroservice(
     implicit m: KafkaConsumerMicroserviceRequirements

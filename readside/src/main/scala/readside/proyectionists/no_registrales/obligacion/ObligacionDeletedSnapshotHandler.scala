@@ -1,9 +1,9 @@
-package readside.proyectionists.no_registrales.obligacion.projectionists
+package readside.proyectionists.no_registrales.obligacion
 
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
-import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionAddedExencion, ObligacionPersistedSnapshot}
+import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
 import consumers.no_registral.obligacion.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
@@ -16,7 +16,7 @@ class ObligacionDeletedSnapshotHandler(
     r: MonitoringAndCassandraWrite
 ) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
 
-  override def topic: String = "ObjetoSnapshotDeleted"
+  override def topic: String = "ObligacionDeletedSnapshot"
 
   override def processInput(input: String): Either[Throwable, ObligacionPersistedSnapshot] =
     serialization

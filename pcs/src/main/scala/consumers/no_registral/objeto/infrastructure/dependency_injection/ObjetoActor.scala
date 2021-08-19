@@ -111,8 +111,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
 
-    val stateIsEmpty = consolidatedState.equals(state.empty)
-
     val snapshot =
       ObjetoSnapshotPersisted(
         evt.deliveryId,
@@ -129,15 +127,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
       )
 
 
-
-    //todo warning!
-    val kafkaTopic = (if(stateIsEmpty) {
-      "ObjetoSnapshotDeleted"
-    }
-    else {
-      "ObjetoSnapshotPersisted"
-    })
-
     requirements.messageProducer.produce(
       data = Seq(
         KafkaKeyValue(
@@ -145,7 +134,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
           serialization.encode(snapshot)
         )
       ),
-      kafkaTopic
+      "ObjetoSnapshotPersistedReadside"
     ) { _ => 
         handler()
     }

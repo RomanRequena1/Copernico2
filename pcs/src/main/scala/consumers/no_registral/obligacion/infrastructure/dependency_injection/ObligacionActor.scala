@@ -63,6 +63,15 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   def persistSnapshot()(handler: () => Unit): Unit = {
     val ids = ObligacionMessageRoots.extractor(persistenceId)
 
+    val stateIsEmpty = state.equals(state.empty)
+    //todo warning !
+    val kafkaTopic = (if(stateIsEmpty) {
+      "ObligacionSnapshotDeleted"
+    }
+    else {
+      "ObligacionPersistedSnapshot"
+    })
+
     val event = ObligacionPersistedSnapshot(
       deliveryId = lastDeliveryId,
       sujetoId = ids.sujetoId,
@@ -82,7 +91,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
           encode(event)
         )
       ),
-      topic = "ObligacionPersistedSnapshot"
+      topic = kafkaTopic
     )(_ => handler())
   }
 }
