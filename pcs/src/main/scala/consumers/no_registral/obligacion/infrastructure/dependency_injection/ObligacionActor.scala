@@ -61,16 +61,40 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
   import consumers.no_registral.obligacion.infrastructure.json._
   def persistSnapshot()(handler: () => Unit): Unit = {
+
+    println("")
+
     val ids = ObligacionMessageRoots.extractor(persistenceId)
 
-    val stateIsEmpty = state.equals(state.empty)
-    //todo warning !
-    val kafkaTopic = (if(stateIsEmpty) {
-      "ObligacionSnapshotDeleted"
-    }
-    else {
-      "ObligacionPersistedSnapshot"
-    })
+    val kafkaTopic = "ObligacionPersistedSnapshot"
+
+    val event = ObligacionPersistedSnapshot(
+      deliveryId = lastDeliveryId,
+      sujetoId = ids.sujetoId,
+      objetoId = ids.objetoId,
+      tipoObjeto = ids.tipoObjeto,
+      obligacionId = ids.obligacionId,
+      registro = state.registro,
+      exenta = state.exenta,
+      porcentajeExencion = state.porcentajeExencion.getOrElse(0),
+      saldo = state.saldo
+    )
+    import serialization.encode
+    requirements.messageProducer.produce(
+      data = Seq(
+        KafkaKeyValue(
+          persistenceId,
+          encode(event)
+        )
+      ),
+      topic = kafkaTopic
+    )(_ => handler())
+  }
+
+  def deleteSnapshot()(handler: () => Unit): Unit = {
+    val ids = ObligacionMessageRoots.extractor(persistenceId)
+
+    val kafkaTopic = "ObligacionDeletedSnapshot"
 
     val event = ObligacionPersistedSnapshot(
       deliveryId = lastDeliveryId,

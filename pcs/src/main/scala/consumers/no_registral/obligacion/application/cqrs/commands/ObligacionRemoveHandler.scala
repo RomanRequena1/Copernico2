@@ -25,9 +25,10 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
     actor.persistEvent(event) { () =>
        actor.state += event
 
+      // Propaga actualizaciones al padre (Objeto)
       actor.informRemoveToParent(command)
        
-       actor.persistSnapshot() { () =>        
+       actor.deleteSnapshot() { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
@@ -35,3 +36,22 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+/*val stateIsEmpty = state.equals(state.empty)
+    //todo warning !
+    val kafkaTopic = (if(stateIsEmpty) {
+      "ObligacionDeletedSnapshot"
+    }
+    else {
+      "ObligacionPersistedSnapshot"
+    })*/
