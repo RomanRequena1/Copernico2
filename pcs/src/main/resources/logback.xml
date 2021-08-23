@@ -14,23 +14,24 @@
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
 
-    <logger name="akka" level="ERROR"/>
-    <logger name="akka.kafka" level="ERROR"/>
-    <logger name="org.apache.zookeeper" level="ERROR"/>
-    <logger name="org.I0Itec.zkclient" level="ERROR"/>
-    <logger name="kafka" level="ERROR"/>
-    <logger name="org.reflections" level="ERROR"/>
-    <logger name="org.apache.kafka" level="ERROR"/>
-    <logger name="org.apache.kafka.common.utils.AppInfoParser" level="ERROR"/>
-    <logger name="org.apache.kafka.clients.NetworkClient" level="ERROR"/>
-    <logger name="com.datastax" level="ERROR"/>
-    <logger name="io.netty" level="ERROR"/>
-    <logger name="com.codahale.metrics.JmxReporter" level="ERROR"/>
-    <logger name="in net.logstash" level="ERROR"/>
+    <logger name="akka" level="${AKKA_DEBUG_MODE}"/>
+    <logger name="akka.kafka" level="${AKKA_KAFKA_DEBUG_MODE}"/>
+    <logger name="org.apache.zookeeper" level="${APACHE_ZOOKEEPER_DEBUG_MODE}"/>
+    <logger name="org.I0Itec.zkclient" level="${I0ITEC_ZKCLIENT_DEBUG_MODE}"/>
+    <logger name="kafka" level="${KAFKA_DEBUG_MODE}"/>
+    <logger name="org.reflections" level="${REFLECTION_DEBUG_MODE}"/>
+    <logger name="org.apache.kafka" level="${APACHE_KAFKA_DEBUG_MODE}"/>
+    <logger name="org.apache.kafka.common.utils.AppInfoParser" level="${APACHE_KAFKA_APP_INFO_PARSER_DEBUG_MODE}"/>
+    <logger name="org.apache.kafka.clients.NetworkClient" level="${APACHE_KAFKA_CLIENTS_NETWORK_CLIENT_DEBUG_MODE}"/>
+    <logger name="com.datastax" level="${DATASTACKS_DEBUG_MODE}"/>
+    <logger name="io.netty" level="${IO_NETTY_DEBUG_MODE}"/>
+    <logger name="com.codahale.metrics.JmxReporter" level="${METRICS_JMX_REPORTER_DEBUG_MODE}"/>
+    <logger name="in net.logstash" level="${NET_LOGSTASH_DEBUG_MODE}"/>
 
-    <root level="INFO">
+    <root level="${LOG_ROOT_LEVEL_DEBUG_MODE}">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="stash"/>
     </root>
 
 </configuration>
+

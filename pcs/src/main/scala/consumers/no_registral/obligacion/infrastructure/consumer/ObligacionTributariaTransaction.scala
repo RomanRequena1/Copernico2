@@ -14,7 +14,6 @@ import monitoring.Monitoring
 import play.api.libs.json.Reads
 import serialization.maybeDecode
 
-import java.time.ZonedDateTime
 import scala.concurrent.Future
 import scala.util.Try
 
@@ -23,14 +22,15 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
   actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
 
-  //todo remove println
-  import java.time.format.DateTimeFormatter
+  //todo remove println: only for debug
+  /*import java.time.format.DateTimeFormatter
 
+  import java.time.ZonedDateTime
   val formatter = "%s ->[time = %s ,sujetoId = %s , objetoId = %s, tipoObjeto = %s, obligacionId = %s]"
 
   def getServerTime(): String = {
      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").format(ZonedDateTime.now())
-  }
+  }*/
 
   /** Handles the deserialization of detalles de obligaciones tributarias */
   implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
@@ -48,13 +48,14 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
        //todo el patternmatch no es conmutativo
       case obn: ObligacionesTri if precondicionParaDarDeBaja(obn) =>
 
-        val console_debug_1 = formatter.format("ValidacionIsBajaObligacion"
+        //todo remove println
+        /*val console_debug_1 = formatter.format("ValidacionIsBajaObligacion"
           , getServerTime()
           , obn.BOB_SUJ_IDENTIFICADOR
           ,obn.BOB_SOJ_IDENTIFICADOR
           ,obn.BOB_SOJ_TIPO_OBJETO,obn.BOB_OBN_ID)
 
-        println(console_debug_1)
+        println(console_debug_1)*/
 
         DownObligacion(
         sujetoId = obn.BOB_SUJ_IDENTIFICADOR,
@@ -64,14 +65,14 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
         deliveryId = obn.EV_ID
       )
       case obn: ObligacionesTri if isNotDeuda(obn) => {
-
-        val console_debug_2 = formatter.format("ValidacionIsNotDeuda"
+        //todo remove println
+        /*val console_debug_2 = formatter.format("ValidacionIsNotDeuda"
           , getServerTime()
           , obn.BOB_SUJ_IDENTIFICADOR
           ,obn.BOB_SOJ_IDENTIFICADOR
           ,obn.BOB_SOJ_TIPO_OBJETO,obn.BOB_OBN_ID)
 
-        println(console_debug_2)
+        println(console_debug_2)*/
 
         ObligacionRemove(
           sujetoId = obn.BOB_SUJ_IDENTIFICADOR,
@@ -84,13 +85,13 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
       }
       //Base case
       case obn: ObligacionesTri =>
-        val console_debug_3 = formatter.format("ValidacionIsCasoBaseObligacionUpdateFromDto"
+        /*val console_debug_3 = formatter.format("ValidacionIsCasoBaseObligacionUpdateFromDto"
           , getServerTime()
           , obn.BOB_SUJ_IDENTIFICADOR
           ,obn.BOB_SOJ_IDENTIFICADOR
           ,obn.BOB_SOJ_TIPO_OBJETO,obn.BOB_OBN_ID)
 
-        println(console_debug_3)
+        println(console_debug_3)*/
 
          ObligacionUpdateFromDto(
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
@@ -146,48 +147,3 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
   }
 
 }
-
-/*
-  {
-  "EV_ID" : "1044799163",
-  "BOB_SUJ_IDENTIFICADOR" : "23-07972932-9",
-  "BOB_SOJ_TIPO_OBJETO" : "I",
-  "BOB_SOJ_IDENTIFICADOR" : "110121931761",
-  "BOB_OBN_ID" : "20210000000027758779",
-  "BOB_SALDO" : "336.87",
-  "BOB_CUOTA" : "8",
-  "BOB_ESTADO" : "ADMINISTRATIVA",
-  "BOB_FISCALIZADA" : "N",
-  "BOB_INDICE_INT_PUNIT" : "",
-  "BOB_INDICE_INT_RESAR" : "",
-  "BOB_INTERES_PUNIT" : "",
-  "BOB_INTERES_RESAR" : "",
-  "BOB_JUI_ID" : "",
-  "BOB_PERIODO" : "2021",
-  "BOB_PLN_ID" : "",
-  "BOB_PRORROGA" : "2021-09-10 00:00:00.0",
-  "BOB_TIPO" : "tributaria",
-  "BOB_TOTAL" : "",
-  "BOB_VENCIMIENTO" : "2021-09-10 00:00:00.0",
-  "BOB_CAPITAL" : "336.87",
-  "BOB_CONCEPTO" : "101",
-  "BOB_IMPUESTO" : "5",
-  "FECHA_BAJA" : "",
-  "BOB_OTROS_ATRIBUTOS" : {
-    "BOB_DETALLES" : [ {
-      "EVO_OBN_PEO_ID_MATERIAL" : "DEB",
-      "BOB_MUNICIPIO" : null,
-      "JUICIO_MULTIOBJETO" : "N",
-      "RULE_NUMBER" : "-1",
-      "EVO_OBN_PEO_ID_FORMAL" : "NC",
-      "PLAN_MULTIOBJETO" : "N"
-    } ]
-  }
-}
-
- mensuales - anuales
-
-si paga al menos 1 cuot del "mensual" eso hace que se de de baja esa  obligacion "super"
-un plan de pago nace por obligaciones mensuales vencidas.
-si opto por la anual, osea jamas pague ninguna cuota de ninguna mensual.
-*/
