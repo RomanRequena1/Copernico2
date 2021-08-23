@@ -35,6 +35,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObligacion](new ObjetoUpdateFromObligacionHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateCotitulares](new ObjetoUpdateCotitularesHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoAddExencion](new ObjetoAddExencionHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoRemoveObligacion](new ObjetoRemoveObligacionHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromSetBajaObligacion](
       new ObjetoUpdateFromSetBajaObligacionHandler(this).handle
     )
@@ -77,7 +78,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
       state += evt
       evt match {
         case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
-          obligaciones((evt.sujetoId, evt.objetoId, evt.tipoObjeto, evt.obligacionId))
+          obligaciones((evt.sujetoId, evt.objetoId, evt.tipoObjeto, evt.obligacionId)) // waking up child
         case _ =>
       }
   }
@@ -88,6 +89,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         (childMessage.sujetoId, childMessage.objetoId, childMessage.tipoObjeto, childMessage.obligacionId)
       )
       obligacion forward childMessage
+
       childMessage match {
         case obligacionUpdateFromDto: ObligacionUpdateFromDto =>
           state.exenciones.toSeq.foreach { exencion =>
@@ -108,6 +110,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
   import consumers.no_registral.objeto.infrastructure.json._
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
+
     val snapshot =
       ObjetoSnapshotPersisted(
         evt.deliveryId,
@@ -123,6 +126,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.obligacionesSaldo
       )
 
+
     requirements.messageProducer.produce(
       data = Seq(
         KafkaKeyValue(
@@ -130,17 +134,9 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
           serialization.encode(snapshot)
         )
       ),
-      "ObjetoSnapshotPersisted"
-    ) { _ =>
-      requirements.messageProducer.produce(
-        data = Seq(
-          KafkaKeyValue(
-            snapshot.aggregateRoot,
-            serialization.encode(snapshot)
-          )
-        ),
-        "ObjetoSnapshotPersistedReadside"
-      )(_ => handler())
+      "ObjetoSnapshotPersistedReadside"
+    ) { _ => 
+        handler()
     }
 
   }

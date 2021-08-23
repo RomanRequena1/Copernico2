@@ -9,3 +9,5 @@ trait SujetoProjection extends UpdateReadSideProjection[SujetoEvents] {
     "suj_identificador" -> event.sujetoId
   )
 }
+
+

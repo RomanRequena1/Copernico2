@@ -48,6 +48,7 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
   }
 
   override def receiveCommand: Receive = customReceiveCommand orElse super.receiveCommand
+
   def customReceiveCommand: Receive = {
     case childMessage: ObligacionMessage =>
       objetos((childMessage.sujetoId, childMessage.objetoId, childMessage.tipoObjeto)) forward childMessage

@@ -3,11 +3,13 @@ package consumers.no_registral.obligacion.infrastructure.dependency_injection
 import akka.actor.Props
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.entities.ObjetoCommands._
 import consumers.no_registral.obligacion.application.cqrs.commands._
 import consumers.no_registral.obligacion.application.cqrs.queries.ObligacionGetStateHandler
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionRemove
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage.ObligacionMessageRoots
 import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionQueries}
-import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
+import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionPersistedSnapshot, ObligacionRemoved}
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
@@ -48,9 +50,23 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     )
   }
 
+  def informRemoveToParent(cmd: ObligacionRemove): Unit = {
+    context.parent ! ObjetoCommands.ObjetoRemoveObligacion(
+      cmd.sujetoId,
+      cmd.objetoId,
+      cmd.tipoObjeto,
+      cmd.obligacionId
+    )
+  }
+
   import consumers.no_registral.obligacion.infrastructure.json._
   def persistSnapshot()(handler: () => Unit): Unit = {
+
+    println("")
+
     val ids = ObligacionMessageRoots.extractor(persistenceId)
+
+    val kafkaTopic = "ObligacionPersistedSnapshot"
 
     val event = ObligacionPersistedSnapshot(
       deliveryId = lastDeliveryId,
@@ -71,7 +87,35 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
           encode(event)
         )
       ),
-      topic = "ObligacionPersistedSnapshot"
+      topic = kafkaTopic
+    )(_ => handler())
+  }
+
+  def deleteSnapshot()(handler: () => Unit): Unit = {
+    val ids = ObligacionMessageRoots.extractor(persistenceId)
+
+    val kafkaTopic = "ObligacionDeletedSnapshot"
+
+    val event = ObligacionPersistedSnapshot(
+      deliveryId = lastDeliveryId,
+      sujetoId = ids.sujetoId,
+      objetoId = ids.objetoId,
+      tipoObjeto = ids.tipoObjeto,
+      obligacionId = ids.obligacionId,
+      registro = state.registro,
+      exenta = state.exenta,
+      porcentajeExencion = state.porcentajeExencion.getOrElse(0),
+      saldo = state.saldo
+    )
+    import serialization.encode
+    requirements.messageProducer.produce(
+      data = Seq(
+        KafkaKeyValue(
+          persistenceId,
+          encode(event)
+        )
+      ),
+      topic = kafkaTopic
     )(_ => handler())
   }
 }

@@ -21,7 +21,7 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
   val eventBus: EventBus[Try] = new SyncEventBus(logger)
 
 //TODO recovery disabled
-//  override def recovery: Recovery = Recovery.none
+  //override def recovery: Recovery = Recovery.none
 
 
   override def receive: Receive = super[PersistentActor].receive
@@ -58,6 +58,7 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
 
   def persistEvent(event: E, tags: Set[String] = Set.empty)(handler: () => Unit = () => ()): Unit = {
     persistAsync(event) { _ =>
+      //todo add time
       logger.debug(s"[$persistenceId] Persist event | $event")
       persistedCounter.increment()
       monitoring.counter(s"$name-persisted-${utils.Inference.getSimpleName(event.getClass.getName)}").increment()
