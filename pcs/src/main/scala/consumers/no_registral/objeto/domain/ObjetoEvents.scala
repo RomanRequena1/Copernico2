@@ -107,4 +107,14 @@ object ObjetoEvents {
       sujetoResponsable: Option[String]
   ) extends ObjetoEvents
 
+
+  case class ObjetoRemovedObligacion(
+      sujetoId: String,
+      objetoId: String,
+      tipoObjeto: String,
+      obligacionId: String
+  ) extends ObjetoEvents {
+        val deliveryId = 0
+  }
+
 }

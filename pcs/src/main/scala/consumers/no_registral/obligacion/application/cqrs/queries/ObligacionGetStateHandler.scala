@@ -5,6 +5,7 @@ import consumers.no_registral.obligacion.application.entities.{ObligacionQueries
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import cqrs.untyped.query.QueryHandler.SyncQueryHandler
 
+import java.time.ZonedDateTime
 import scala.util.{Success, Try}
 
 class ObligacionGetStateHandler(actor: ObligacionActor) extends SyncQueryHandler[ObligacionQueries.GetStateObligacion] {
@@ -23,7 +24,10 @@ class ObligacionGetStateHandler(actor: ObligacionActor) extends SyncQueryHandler
       actor.state.porcentajeExencion.getOrElse(0),
       actor.state.juicioId
     )
-    log.info(s"[${actor.persistenceId}] GetState | $response")
+    import java.time.format.DateTimeFormatter
+    val time = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").format(ZonedDateTime.now())
+
+    log.info(s"[${actor.persistenceId}] GetState [${time.toString}]| $response")
     sender ! response
     Success(response)
   }

@@ -94,8 +94,19 @@ case class ObjetoState(
           isBaja = true
         )
 
+      case evt: ObjetoEvents.ObjetoRemovedObligacion =>
+        val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
+        copy(
+          saldo = obligacionesSaldo_.values.sum,
+          obligaciones = obligaciones - evt.obligacionId,
+          obligacionesSaldo = obligacionesSaldo_
+        )
+
       case evt =>
         log.warn(s"Unexpected event at ObjetoState ${evt}")
         this
     }
+
+  def empty = ObjetoState()
+
 }

@@ -39,6 +39,7 @@ class ObligacionUpdateExencionHandler(actor: ObligacionActor)
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.persistSnapshot() { () =>
+          actor.lastDeliveryId = command.deliveryId
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }
       }

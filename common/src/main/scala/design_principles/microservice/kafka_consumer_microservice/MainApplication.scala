@@ -35,6 +35,7 @@ object MainApplication {
     ).reduce(_ withFallback _)
 
     implicit val system: ActorSystem = Guardian.getContext(GuardianRequirements(actorSystemName, config))
+
     val routes = ProductionMicroserviceContextProvider.getContext(system, config) { implicit microserviceProvisioning =>
       val microservices = microservicesFactory(microserviceProvisioning)
       val userRoutes = microservices.map(_.route).reduce(_ ~ _)
@@ -46,6 +47,7 @@ object MainApplication {
       val statRoutes = new ClusterStats().route
       userRoutes ~ systemRoutes ~ statRoutes ~ startStopKafka
     }
+    
     AkkaHttpServer.start(routes, ip, port)(system)
 
     Await.result(system.whenTerminated, Duration.Inf)

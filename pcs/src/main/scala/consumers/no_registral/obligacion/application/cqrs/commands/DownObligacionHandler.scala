@@ -27,9 +27,9 @@ class DownObligacionHandler(actor: ObligacionActor) extends SyncCommandHandler[D
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event
+        actor.lastDeliveryId = command.deliveryId
         actor.informBajaToParent(command)
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-      // actor.context.stop(actor.self)
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

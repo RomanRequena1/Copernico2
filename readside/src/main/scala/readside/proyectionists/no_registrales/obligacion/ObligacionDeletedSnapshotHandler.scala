@@ -1,32 +1,31 @@
 package readside.proyectionists.no_registrales.obligacion
+
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
+import api.actor_transaction.ActorTransaction
+import cassandra.write.CassandraWriteProduction
+import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
+import consumers.no_registral.obligacion.infrastructure.json._
+import design_principles.actor_model.Response
+import design_principles.actor_model.Response.SuccessProcessing
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.Future
-import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import cassandra.write.CassandraWriteProduction
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
-import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionAddedExencion, ObligacionPersistedSnapshot}
-import design_principles.actor_model.Response.SuccessProcessing
-import design_principles.actor_model.Response
-import monitoring.Monitoring
-import org.slf4j.LoggerFactory
-import consumers.no_registral.obligacion.infrastructure.json._
 
-class ObligacionAddedExencionHandler(
+class ObligacionDeletedSnapshotHandler(
     implicit
     r: MonitoringAndCassandraWrite
-) extends ActorTransaction[ObligacionAddedExencion](r.monitoring)(r.actorTransactionRequirements) {
+) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
 
-  override def topic: String = "ObligacionAddedExencion"
+  override def topic: String = "ObligacionDeletedSnapshot"
 
-  override def processInput(input: String): Either[Throwable, ObligacionAddedExencion] =
+  override def processInput(input: String): Either[Throwable, ObligacionPersistedSnapshot] =
     serialization
-      .maybeDecode[ObligacionAddedExencion](input)
+      .maybeDecode[ObligacionPersistedSnapshot](input)
 
   val cassandra = new CassandraWriteProduction()
   private val log = LoggerFactory.getLogger(this.getClass)
-  override def processMessage(registro: ObligacionAddedExencion): Future[Response.SuccessProcessing] = {
+
+  override def processMessage(registro: ObligacionPersistedSnapshot): Future[Response.SuccessProcessing] = {
     for {
       done <- cassandra
         .cql(

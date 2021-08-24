@@ -47,26 +47,8 @@ services:
       kafka_copernico_net:
         ipv4_address: 172.22.0.5
 
-
-  control-center:
-    container_name: control-center
-    image: confluentinc/cp-enterprise-control-center:latest
-    ports:
-      - "9021:9021"
-    environment:
-      CONTROL_CENTER_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: "kafka:29092"
-      CONTROL_CENTER_REPLICATION_FACTOR: 1
-      CONTROL_CENTER_DEPRECATED_VIEWS_ENABLE: "true"
-    depends_on:
-      - zookeeper
-      - kafka
-    networks:
-      kafka_copernico_net:
-        ipv4_address: 172.22.2.6
-
 networks:
   kafka_copernico_net:
-    external:
-      name: kafka_copernico_net
+    external: true
+    name: kafka_copernico_net
 
