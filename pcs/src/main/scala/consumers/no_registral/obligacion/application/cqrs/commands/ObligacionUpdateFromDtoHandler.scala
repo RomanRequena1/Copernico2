@@ -26,7 +26,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       Try(System.getenv("INITIALIZATION")).getOrElse(null)
     }
 
-
     if (validateCommand(event, command, actor.state.lastDeliveryIdByEvents)) {//validates idempotency
 
       log.warn(s"[${actor.persistenceId}] respond idempotent because of old delivery id | $command")
@@ -41,10 +40,10 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event
-        /*if (!initialization == "true" && !(command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {
+        if (!(initialization == "true" && command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {
           actor.informParent(command)
-        }*/
-        actor.informParent(command)
+        }
+        // actor.informParent(command)
         actor.lastDeliveryId = command.registro.EV_ID
         actor.persistSnapshot() { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)

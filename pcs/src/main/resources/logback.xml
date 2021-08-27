@@ -23,7 +23,7 @@
     <logger name="org.apache.kafka" level="${APACHE_KAFKA_DEBUG_MODE}"/>
     <logger name="org.apache.kafka.common.utils.AppInfoParser" level="${APACHE_KAFKA_APP_INFO_PARSER_DEBUG_MODE}"/>
     <logger name="org.apache.kafka.clients.NetworkClient" level="${APACHE_KAFKA_CLIENTS_NETWORK_CLIENT_DEBUG_MODE}"/>
-    <logger name="com.datastax" level="${DATASTACKS_DEBUG_MODE}"/>
+    <logger name="com.datastax" level="${DATASTAX_DEBUG_MODE}"/>
     <logger name="io.netty" level="${IO_NETTY_DEBUG_MODE}"/>
     <logger name="com.codahale.metrics.JmxReporter" level="${METRICS_JMX_REPORTER_DEBUG_MODE}"/>
     <logger name="in net.logstash" level="${NET_LOGSTASH_DEBUG_MODE}"/>
