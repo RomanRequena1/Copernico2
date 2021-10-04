@@ -22,7 +22,7 @@ Console [5] Start first node of readside
 
 `sh assets/docker-compose/dev-lite/readside.sh `
 
-Console [6] After all nodes have been started, start consumers
+Console [6] After all nodes have been started, start consumer
 
 `sh assets/scripts/start_consumers.sh `
 
