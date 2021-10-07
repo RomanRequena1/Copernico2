@@ -43,12 +43,11 @@ class ActorTransactionController(
 
     //TODO changed to KafkaCommittablePartitionedMessageProcessor
 
-      val (killSwitch, done) = new KafkaCommittablePartitionedMessageProcessor(requirements)
-        //  val (killSwitch, done) = new KafkaTransactionalMessageProcessor(requirements)
-        // val (killSwitch, done) = new KafkaCommitableMessageProcessor(requirements)
-        //  val (killSwitch, done) = new KafkaCommittableSourceMessageProcessor(requirements)
-        // val (killSwitch, done) = new KafkaPlainConsumerMessageProcessor(requirements)
-
+    val (killSwitch, done) = new KafkaCommittablePartitionedMessageProcessor(requirements)
+    //  val (killSwitch, done) = new KafkaTransactionalMessageProcessor(requirements)
+    // val (killSwitch, done) = new KafkaCommitableMessageProcessor(requirements)
+    //  val (killSwitch, done) = new KafkaCommittableSourceMessageProcessor(requirements)
+    // val (killSwitch, done) = new KafkaPlainConsumerMessageProcessor(requirements)
       .run(topic, s"${topic}SINK", message => {
         transaction(message).map { output =>
           Seq(output.toString)
@@ -70,6 +69,6 @@ class ActorTransactionController(
   def route: Route =
     path("api" / "system" / "health" / "topic" / actorTransaction.topic) {
 
-  complete(StatusCodes.OK)
+      complete(StatusCodes.OK)
     }
 }

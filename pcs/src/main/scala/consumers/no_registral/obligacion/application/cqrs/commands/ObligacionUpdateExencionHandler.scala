@@ -16,6 +16,11 @@ class ObligacionUpdateExencionHandler(actor: ObligacionActor)
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
+    // The compareTo() method returns:
+    // 0 if both are equal.
+    // >0 if the current date object comes after the specified date object.
+    // <0 if the current date object comes before the specified date object.
+
     val receivesExencion = (for {
       fechaInicio <- command.exencion.BEX_FECHA_INICIO
       fechaFin <- command.exencion.BEX_FECHA_FIN

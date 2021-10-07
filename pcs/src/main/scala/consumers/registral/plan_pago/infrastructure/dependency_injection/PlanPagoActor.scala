@@ -1,7 +1,6 @@
 package consumers.registral.plan_pago.infrastructure.dependency_injection
 
 import akka.actor.typed.ActorSystem
-import com.typesafe.config.Config
 import consumers.registral.plan_pago.application.cqrs.commands.PlanPagoUpdateFromDtoHandler
 import consumers.registral.plan_pago.application.cqrs.queries.GetStatePlanPagoHandler
 import consumers.registral.plan_pago.application.entities.PlanPagoCommands.PlanPagoUpdateFromDto

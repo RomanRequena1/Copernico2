@@ -4,8 +4,13 @@ import akka.ActorRefMap
 import akka.actor.{ActorRef, Props}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.cqrs.commands._
-import consumers.no_registral.objeto.application.cqrs.queries.{GetStateExencionHandler, GetStateObjetoHandler}
+import consumers.no_registral.objeto.application.cqrs.queries.{
+  GetSnapshotObjetoHandler,
+  GetStateExencionHandler,
+  GetStateObjetoHandler
+}
 import consumers.no_registral.objeto.application.entities.ObjetoMessage.ObjetoMessageRoots
+import consumers.no_registral.objeto.application.entities.ObjetoQueries.GetSnapshotObjeto
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoQueries}
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import consumers.no_registral.objeto.domain.{ObjetoEvents, ObjetoState}
@@ -42,6 +47,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
     queryBus.subscribe[ObjetoQueries.GetStateObjeto](new GetStateObjetoHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetStateExencion](new GetStateExencionHandler(this).handle)
+    queryBus.subscribe[ObjetoQueries.GetSnapshotObjeto](new GetSnapshotObjetoHandler(this).handle)
   }
 
   val obligaciones: ObjetoActorRefMap = {
@@ -126,7 +132,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.obligacionesSaldo
       )
 
-
     requirements.messageProducer.produce(
       data = Seq(
         KafkaKeyValue(
@@ -135,8 +140,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         )
       ),
       "ObjetoSnapshotPersistedReadside"
-    ) { _ => 
-        handler()
+    ) { _ =>
+      handler()
     }
 
   }
@@ -179,8 +184,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
 object ObjetoActor {
   def props(requirements: MonitoringAndMessageProducer): Props =
-    Props(new ObjetoActor(requirements, None)
-    ).withDispatcher("my-dispatcher") //TODO added my-dispatcher
+    Props(new ObjetoActor(requirements, None)).withDispatcher("my-dispatcher") //TODO added my-dispatcher
   type ObligacionAgregateRoot = (String, String, String, String)
   class ObjetoActorRefMap(newActor: ObligacionAgregateRoot => ActorRef)
       extends ActorRefMap[ObligacionAgregateRoot](newActor)

@@ -3,13 +3,10 @@ import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 
 import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import cassandra.write.CassandraWriteProduction
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
-import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionAddedExencion, ObligacionPersistedSnapshot}
+import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionAddedExencion}
 import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
-import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import consumers.no_registral.obligacion.infrastructure.json._
 

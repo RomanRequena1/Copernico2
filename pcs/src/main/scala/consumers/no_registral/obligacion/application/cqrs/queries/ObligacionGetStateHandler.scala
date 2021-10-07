@@ -28,6 +28,7 @@ class ObligacionGetStateHandler(actor: ObligacionActor) extends SyncQueryHandler
     val time = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").format(ZonedDateTime.now())
 
     log.info(s"[${actor.persistenceId}] GetState [${time.toString}]| $response")
+
     sender ! response
     Success(response)
   }

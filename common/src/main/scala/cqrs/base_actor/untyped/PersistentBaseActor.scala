@@ -1,7 +1,7 @@
 package cqrs.base_actor.untyped
 
 import akka.actor.ActorLogging
-import akka.persistence.{PersistentActor, RecoveryCompleted, SnapshotOffer, Recovery}
+import akka.persistence.{PersistentActor, Recovery, RecoveryCompleted, SnapshotOffer}
 import cqrs.untyped.event.{EventBus, SyncEventBus}
 import ddd.AbstractState
 import design_principles.actor_model.{Command, Event, Query}
@@ -20,11 +20,11 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
 
   val eventBus: EventBus[Try] = new SyncEventBus(logger)
 
-//TODO recovery disabled
-  override def recovery: Recovery = Recovery.none
-
+  //TODO recovery disabled
+  //override def recovery: Recovery = Recovery.none
 
   override def receive: Receive = super[PersistentActor].receive
+
   override def receiveCommand: Receive = {
     case cmd: Command =>
       commandBus.publish(cmd)
@@ -64,5 +64,9 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
       monitoring.counter(s"$name-persisted-${utils.Inference.getSimpleName(event.getClass.getName)}").increment()
       handler()
     }
+  }
+
+  def snapshotState(snapshot: State) = {
+    saveSnapshot(snapshot)
   }
 }

@@ -108,6 +108,5 @@ class KafkaCommitableMessageProcessor()(
     (Some(killSwitch), done)
   }
 
-
   val log = LoggerFactory.getLogger(this.getClass)
 }

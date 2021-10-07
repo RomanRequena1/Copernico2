@@ -13,4 +13,7 @@ object ObjetoQueries {
       extends ObjetoQueries {
     override type ReturnType = GetExencionResponse
   }
+  case class GetSnapshotObjeto(sujetoId: String, objetoId: String, tipoObjeto: String) extends ObjetoQueries {
+    override type ReturnType = GetObjetoResponse
+  }
 }

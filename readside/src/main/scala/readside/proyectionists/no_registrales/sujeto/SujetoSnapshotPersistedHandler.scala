@@ -25,11 +25,20 @@ class SujetoSnapshotPersistedHandler(
       .maybeDecode[SujetoSnapshotPersisted](input)
 
   val cassandra = new CassandraWriteProduction()
+
   override def processMessage(registro: SujetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
+    recordLag(calculateLag(registro.deliveryId.toString))
     val projection = SujetoSnapshotPersistedProjection(registro)
     for {
       done <- cassandra writeState projection
     } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
   }
-
 }
+//calculate time diff
+//DF = TF(NOW) - TI(EVID)
+//increment kamon counter
+// 1 sec            2sec                  3sec
+//  1 1 1 1  |  1 1 1 1 1 1 1 1 1   |    10 5 6
+//   sum 4   |     sum 9            |    sum 21
+//   n 4     |       n 9            |      n 3
+//  sum/n 1  |     sum/n 1          |    sum/n  7

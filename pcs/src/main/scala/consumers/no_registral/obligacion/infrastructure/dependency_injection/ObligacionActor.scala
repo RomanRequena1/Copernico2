@@ -3,13 +3,12 @@ package consumers.no_registral.obligacion.infrastructure.dependency_injection
 import akka.actor.Props
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import consumers.no_registral.objeto.application.entities.ObjetoCommands._
 import consumers.no_registral.obligacion.application.cqrs.commands._
-import consumers.no_registral.obligacion.application.cqrs.queries.ObligacionGetStateHandler
+import consumers.no_registral.obligacion.application.cqrs.queries.{ObligacionGetStateHandler, ObligacionSnapshotHandler}
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionRemove
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage.ObligacionMessageRoots
 import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionQueries}
-import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionPersistedSnapshot, ObligacionRemoved}
+import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
@@ -21,6 +20,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
   override def setupHandlers(): Unit = {
     queryBus.subscribe[ObligacionQueries.GetStateObligacion](new ObligacionGetStateHandler(this).handle)
+    queryBus.subscribe[ObligacionQueries.GetSnapshotObligacion](new ObligacionSnapshotHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateFromDto](new ObligacionUpdateFromDtoHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateExencion](new ObligacionUpdateExencionHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionRemove](new ObligacionRemoveHandler(this).handle)
@@ -75,7 +75,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       registro = state.registro,
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
-      saldo = state.saldo
+      saldo = state.saldo,
+      operacion = ObligacionEvents.operaciones.get("Upsert").get
     )
     import serialization.encode
     requirements.messageProducer.produce(
@@ -92,7 +93,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   def deleteSnapshot()(handler: () => Unit): Unit = {
     val ids = ObligacionMessageRoots.extractor(persistenceId)
 
-    val kafkaTopic = "ObligacionDeletedSnapshot"
+    val kafkaTopic = "ObligacionPersistedSnapshot"
 
     val event = ObligacionPersistedSnapshot(
       deliveryId = lastDeliveryId,
@@ -103,7 +104,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       registro = state.registro,
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
-      saldo = state.saldo
+      saldo = state.saldo,
+      operacion = ObligacionEvents.operaciones.get("Delete").get
     )
     import serialization.encode
     requirements.messageProducer.produce(
@@ -120,6 +122,5 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
 object ObligacionActor {
   def props(requirements: MonitoringAndMessageProducer): Props =
-    Props(new ObligacionActor(requirements)
-    ).withDispatcher("my-dispatcher") //TODO added my-dispatcher
+    Props(new ObligacionActor(requirements)).withDispatcher("my-dispatcher") //TODO added my-dispatcher
 }

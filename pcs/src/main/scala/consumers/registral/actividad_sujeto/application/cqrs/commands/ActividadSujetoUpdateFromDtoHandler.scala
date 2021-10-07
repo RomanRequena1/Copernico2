@@ -25,7 +25,7 @@ class ActividadSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProdu
           command.registro
         )
       )
-      .thenReply(replyTo) { state =>
+      .thenRun(state =>
         messageProducer.produce(
           Seq(
             KafkaKeyValue(
@@ -42,6 +42,8 @@ class ActividadSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProdu
           ),
           "ActividadSujetoUpdatedFromDto"
         )(_ => ())
+      )
+      .thenReply(replyTo) { state =>
         Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
       }
   }

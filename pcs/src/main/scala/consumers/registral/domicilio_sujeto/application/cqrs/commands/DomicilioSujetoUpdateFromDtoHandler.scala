@@ -6,10 +6,10 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoCommands.DomicilioSujetoUpdateFromDto
 import consumers.registral.domicilio_sujeto.domain.DomicilioSujetoEvents.DomicilioSujetoUpdatedFromDto
 import consumers.registral.domicilio_sujeto.domain.DomicilioSujetoState
+import consumers.registral.domicilio_sujeto.infrastructure.json.DomiciliSujetoUpdatedF
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import consumers.registral.domicilio_sujeto.infrastructure.json.DomiciliSujetoUpdatedF
 
 class DomicilioSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
@@ -26,7 +26,7 @@ class DomicilioSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProdu
           command.registro
         )
       )
-      .thenReply(replyTo) { state =>
+      .thenRun(state =>
         messageProducer.produce(
           Seq(
             KafkaKeyValue(command.aggregateRoot,
@@ -41,6 +41,8 @@ class DomicilioSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProdu
           ),
           "DomicilioSujetoUpdatedFromDto"
         )(_ => ())
+      )
+      .thenReply(replyTo) { state =>
         Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
       }
 

@@ -1,23 +1,19 @@
 package consumers.registral.subasta.infrastructure.kafka
 
-import akka.Done
-import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import com.typesafe.config.Config
-import consumers.registral.plan_pago.application.entities.PlanPagoExternalDto.PlanPagoTri
 import consumers.registral.subasta.application.entities.{SubastaCommands, SubastaExternalDto}
 import consumers.registral.subasta.infrastructure.dependency_injection.SubastaActor
 import consumers.registral.subasta.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring
-import serialization.{decodeF, maybeDecode}
+import serialization.maybeDecode
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import scala.util.Try
 
-case class SubastaTransaction(actor: ActorRef, monitoring: Monitoring)(
+case class SubastaTransaction(actor: SubastaActor, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[SubastaExternalDto](monitoring) {
@@ -39,7 +35,7 @@ case class SubastaTransaction(actor: ActorRef, monitoring: Monitoring)(
       registro = registro
     )
 
-    actor ask command
+    actor.ask(command)
   }
 
 }

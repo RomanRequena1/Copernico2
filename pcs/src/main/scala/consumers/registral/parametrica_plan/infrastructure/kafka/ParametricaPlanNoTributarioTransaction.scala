@@ -1,24 +1,20 @@
 package consumers.registral.parametrica_plan.infrastructure.kafka
 
-import akka.Done
-import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import com.typesafe.config.Config
-import consumers.registral.juicio.application.entities.JuicioExternalDto.JuicioTri
+import consumers.registral.parametrica_plan.application.entities.ParametricaPlanCommands
 import consumers.registral.parametrica_plan.application.entities.ParametricaPlanExternalDto.ParametricaPlanAnt
-import consumers.registral.parametrica_plan.application.entities.{ParametricaPlanCommands, ParametricaPlanExternalDto}
 import consumers.registral.parametrica_plan.infrastructure.dependency_injection.ParametricaPlanActor
 import consumers.registral.parametrica_plan.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring
-import serialization.{decodeF, maybeDecode}
+import serialization.maybeDecode
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import scala.util.Try
 
-case class ParametricaPlanNoTributarioTransaction(actor: ActorRef, monitoring: Monitoring)(
+case class ParametricaPlanNoTributarioTransaction(actor: ParametricaPlanActor, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ParametricaPlanAnt](monitoring) {
@@ -37,7 +33,7 @@ case class ParametricaPlanNoTributarioTransaction(actor: ActorRef, monitoring: M
       registro = registro
     )
 
-    actor ask command
+    actor.ask(command)
   }
 
 }

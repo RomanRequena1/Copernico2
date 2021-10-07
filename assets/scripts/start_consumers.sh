@@ -12,7 +12,8 @@
 #curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-ETAPROCESALES-TRI
 
 #curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-JUICIOS-ANT
-#curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-JUICIOS-TRI
+
+curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-JUICIOS-TRI
 
 #curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-OBJETOS-ANT
 curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-OBJETOS-TRI

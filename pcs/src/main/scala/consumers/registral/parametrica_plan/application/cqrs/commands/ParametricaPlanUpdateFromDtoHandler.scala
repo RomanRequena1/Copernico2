@@ -3,14 +3,13 @@ package consumers.registral.parametrica_plan.application.cqrs.commands
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
-import consumers.registral.juicio.domain.JuicioEvents.JuicioUpdatedFromDto
 import consumers.registral.parametrica_plan.application.entities.ParametricaPlanCommands.ParametricaPlanUpdateFromDto
 import consumers.registral.parametrica_plan.domain.ParametricaPlanEvents.ParametricaPlanUpdatedFromDto
 import consumers.registral.parametrica_plan.domain.{ParametricaPlanEvents, ParametricaPlanState}
+import consumers.registral.parametrica_plan.infrastructure.json._
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import consumers.registral.parametrica_plan.infrastructure.json._
 
 class ParametricaPlanUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
@@ -44,7 +43,7 @@ class ParametricaPlanUpdateFromDtoHandler(implicit messageProducer: MessageProdu
       ](
         event
       )
-      .thenReply(replyTo) { state =>
+      .thenRun(state =>
         messageProducer.produce(Seq(
                                   KafkaKeyValue(command.aggregateRoot,
                                                 serialization.encode(
@@ -52,6 +51,8 @@ class ParametricaPlanUpdateFromDtoHandler(implicit messageProducer: MessageProdu
                                                 ))
                                 ),
                                 "ParametricaPlanUpdatedFromDto")(_ => ())
+      )
+      .thenReply(replyTo) { state =>
         Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
       }
   }

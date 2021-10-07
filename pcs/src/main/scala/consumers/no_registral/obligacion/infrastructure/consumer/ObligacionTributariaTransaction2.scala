@@ -4,7 +4,10 @@ import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesTri}
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{
+  DetallesObligacion,
+  ObligacionesTri
+}
 import consumers.no_registral.obligacion.infrastructure.json._
 import design_principles.actor_model.Response
 import monitoring.Monitoring

@@ -10,7 +10,6 @@ import monitoring.Monitoring
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-
 abstract class ActorTransaction[ExternalDto](
     monitoring: Monitoring
 )(implicit actorTransactionRequirements: ActorTransactionRequirements)

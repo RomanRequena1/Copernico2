@@ -6,10 +6,10 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoCommands.ParametricaRecargoUpdateFromDto
 import consumers.registral.parametrica_recargo.domain.ParametricaRecargoEvents.ParametricaRecargoUpdatedFromDto
 import consumers.registral.parametrica_recargo.domain.{ParametricaRecargoEvents, ParametricaRecargoState}
+import consumers.registral.parametrica_recargo.infrastructure.json._
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import consumers.registral.parametrica_recargo.infrastructure.json._
 
 class ParametricaRecargoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
@@ -33,7 +33,7 @@ class ParametricaRecargoUpdateFromDtoHandler(implicit messageProducer: MessagePr
       ](
         event
       )
-      .thenReply(replyTo) { state =>
+      .thenRun(state =>
         messageProducer.produce(Seq(
                                   KafkaKeyValue(command.aggregateRoot,
                                                 serialization.encode(
@@ -41,6 +41,8 @@ class ParametricaRecargoUpdateFromDtoHandler(implicit messageProducer: MessagePr
                                                 ))
                                 ),
                                 "ParametricaRecargoUpdatedFromDto")(_ => ())
+      )
+      .thenReply(replyTo) { state =>
         Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
       }
   }

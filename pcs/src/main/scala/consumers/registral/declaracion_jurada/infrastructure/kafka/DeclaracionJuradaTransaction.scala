@@ -1,12 +1,7 @@
 package consumers.registral.declaracion_jurada.infrastructure.kafka
 
-import akka.Done
-import akka.actor.ActorRef
-import akka.actor.typed.ActorSystem
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import com.typesafe.config.Config
-import consumers.registral.calendario.application.entities.CalendarioExternalDto
 import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaCommands
 import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaExternalDto.DeclaracionJurada
 import consumers.registral.declaracion_jurada.infrastructure.dependency_injection.DeclaracionJuradaActor
@@ -14,12 +9,12 @@ import consumers.registral.declaracion_jurada.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring
-import serialization.{decodeF, maybeDecode}
+import serialization.maybeDecode
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import scala.util.Try
 
-case class DeclaracionJuradaTransaction(actor: ActorRef, monitoring: Monitoring)(
+case class DeclaracionJuradaTransaction(actor: DeclaracionJuradaActor, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[DeclaracionJurada](monitoring) {
@@ -41,7 +36,7 @@ case class DeclaracionJuradaTransaction(actor: ActorRef, monitoring: Monitoring)
       registro = registro
     )
 
-    actor ask command
+    actor.ask(command)
   }
 
 }

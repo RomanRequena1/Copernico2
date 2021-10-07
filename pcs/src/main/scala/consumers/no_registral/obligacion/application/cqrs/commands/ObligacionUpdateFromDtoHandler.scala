@@ -26,7 +26,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       Try(System.getenv("INITIALIZATION")).getOrElse(null)
     }
 
-    if (validateCommand(event, command, actor.state.lastDeliveryIdByEvents)) {//validates idempotency
+    if (validateCommand(event, command, actor.state.lastDeliveryIdByEvents)) { //validates idempotency
 
       log.warn(s"[${actor.persistenceId}] respond idempotent because of old delivery id | $command")
 

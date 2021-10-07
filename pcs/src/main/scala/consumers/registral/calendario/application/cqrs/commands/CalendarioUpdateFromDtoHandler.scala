@@ -3,14 +3,13 @@ package consumers.registral.calendario.application.cqrs.commands
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
-import consumers.registral.actividad_sujeto.domain.ActividadSujetoEvents.ActividadSujetoUpdatedFromDto
 import consumers.registral.calendario.application.entities.CalendarioCommands.CalendarioUpdateFromDto
 import consumers.registral.calendario.domain.CalendarioEvents.CalendarioUpdatedFromDto
 import consumers.registral.calendario.domain.CalendarioState
+import consumers.registral.calendario.infrastructure.json._
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import consumers.registral.calendario.infrastructure.json._
 
 class CalendarioUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
@@ -26,7 +25,7 @@ class CalendarioUpdateFromDtoHandler(implicit messageProducer: MessageProducer) 
           command.registro
         )
       )
-      .thenReply(replyTo) { state =>
+      .thenRun(state =>
         messageProducer.produce(
           Seq(
             KafkaKeyValue(
@@ -42,6 +41,8 @@ class CalendarioUpdateFromDtoHandler(implicit messageProducer: MessageProducer) 
           ),
           "CalendarioUpdatedFromDto"
         )(_ => ())
+      )
+      .thenReply(replyTo) { state =>
         Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
       }
 

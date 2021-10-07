@@ -26,7 +26,7 @@ abstract class BasePersistentShardedTypedActorWithCQRS[
   val queryBus = new SyncEffectQueryBus[ActorEvents, State](logger)
   val eventBus = new SyncEffectEventBus[ActorEvents, State]()
 
-  def commandHandler(
+  override final def commandHandler(
       state: State,
       command: MessageWithAutomaticReplyTo[ActorMessages, ActorMessages#ReturnType]
   ): Effect[ActorEvents, State] = {
@@ -35,6 +35,7 @@ abstract class BasePersistentShardedTypedActorWithCQRS[
         queryBus.ask(state, query)(command.replyTo.asInstanceOf[ActorRef[Query#ReturnType]])
       case cmd: Command =>
         commandBus.publish(cmd)(command.replyTo.asInstanceOf[ActorRef[Success]])
+
     }
   }
 

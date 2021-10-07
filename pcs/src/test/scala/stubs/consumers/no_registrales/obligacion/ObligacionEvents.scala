@@ -16,7 +16,8 @@ object ObligacionEvents {
     registro = Some(stubs.consumers.no_registrales.obligacion.ObligacionExternalDtoStub.obligacionesTri),
     exenta = false,
     porcentajeExencion = 0,
-    saldo = 0
+    saldo = 0,
+    operacion = "U"
   )
   def obligacionUpdatedFromDtoTriStub =
     ObligacionUpdatedFromDto(
