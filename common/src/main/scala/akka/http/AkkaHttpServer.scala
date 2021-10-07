@@ -17,8 +17,9 @@ object AkkaHttpServer {
     implicit val ec: ExecutionContext = system.dispatcher
 
     Http()(system)
-      //.bindAndHandle(routes, host, port)
-      .newServerAt(host, port).bind(routes)
+    //.bindAndHandle(routes, host, port)
+      .newServerAt(host, port)
+      .bind(routes)
       .onComplete {
         case Success(bound) =>
           ctx.log.info(

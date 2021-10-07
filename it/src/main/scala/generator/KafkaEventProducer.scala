@@ -22,18 +22,17 @@ object KafkaEventProducer {
 
     def isInt(s: String): Boolean = s.matches("""\d+""")
 
-
     args.toList match {
       case kafkaServer :: topic :: from :: to :: Nil if isInt(from) && isInt(to) =>
         produce(kafkaServer, topic, from.toInt, to.toInt)
       case _ =>
-   //     val NR_PARTITIONS: Int = Try(System.getenv("NR_PARTITIONS")).map(_.toInt).getOrElse(30)
+        //     val NR_PARTITIONS: Int = Try(System.getenv("NR_PARTITIONS")).map(_.toInt).getOrElse(30)
         val kafkaServer: String = Try(System.getenv("KAFKA_SERVER")).getOrElse("0.0.0.0:9092")
         val topic: String = Try(System.getenv("KAFKA_TOPIC")).getOrElse("DGR-COP-SUJETO-TRI")
         val from: Int = Try(System.getenv("KAFKA_PRODUCE_FROM")).map(_.toInt).getOrElse(1)
         val to: Int = Try(System.getenv("KAFKA_PRODUCE_TO")).map(_.toInt).getOrElse(50000)
         produce(kafkaServer, topic, from.toInt, to.toInt)
-   //     throw new IllegalArgumentException("usage: <topic> <from> <to> -- example: DGR-COP-ACTIVIDADES 1 1000")
+      //     throw new IllegalArgumentException("usage: <topic> <from> <to> -- example: DGR-COP-ACTIVIDADES 1 1000")
     }
   }
 

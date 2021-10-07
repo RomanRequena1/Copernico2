@@ -8,5 +8,6 @@ object DeliveryIdManagement {
       command: Command,
       lastDeliveryIdByEvents: Map[String, BigInt]
   ): Boolean =
-    command.deliveryId <= lastDeliveryIdByEvents.getOrElse(utils.Inference.getSimpleName(event.getClass.getName), BigInt(0))
+    command.deliveryId <= lastDeliveryIdByEvents.getOrElse(utils.Inference.getSimpleName(event.getClass.getName),
+                                                           BigInt(0))
 }

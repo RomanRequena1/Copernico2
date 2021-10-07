@@ -2,9 +2,8 @@ package infrastructure.kafka
 
 import java.util.Properties
 import java.util.concurrent.ExecutionException
-
 import com.typesafe.config.Config
-import kafka.zk.{AdminZkClient, KafkaZkClient}
+import infrastructure.kafka.zk.{AdminZkClient, KafkaZkClient}
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 import org.apache.kafka.common.serialization.StringSerializer
 import org.apache.kafka.common.utils.Time

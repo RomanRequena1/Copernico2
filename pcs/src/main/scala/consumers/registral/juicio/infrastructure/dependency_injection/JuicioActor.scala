@@ -1,7 +1,6 @@
 package consumers.registral.juicio.infrastructure.dependency_injection
 
 import akka.actor.typed.ActorSystem
-import com.typesafe.config.Config
 import consumers.registral.juicio.application.cqrs.commands.JuicioUpdateFromDtoHandler
 import consumers.registral.juicio.application.cqrs.queries.GetStateJuicioHandler
 import consumers.registral.juicio.application.entities.JuicioCommands.JuicioUpdateFromDto
@@ -15,7 +14,6 @@ import kafka.MessageProducer
 
 case class JuicioActor(state: JuicioState = JuicioState())(
     implicit
-
     messageProducer: MessageProducer,
     system: ActorSystem[Nothing]
 ) extends BasePersistentShardedTypedActorWithCQRS[
@@ -23,6 +21,7 @@ case class JuicioActor(state: JuicioState = JuicioState())(
       JuicioEvents,
       JuicioState
     ](state) {
+
   commandBus.subscribe[JuicioUpdateFromDto](new JuicioUpdateFromDtoHandler().handle)
   queryBus.subscribe[GetStateJuicio](new GetStateJuicioHandler().handle)
   eventBus.subscribe[JuicioUpdatedFromDto](new JuicioUpdatedFromDtoHandler().handle)

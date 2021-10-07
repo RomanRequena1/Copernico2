@@ -1,29 +1,20 @@
 package consumers.registral.parametrica_recargo.infrastructure.kafka
 
-import akka.Done
-import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import com.typesafe.config.Config
-import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoExternalDto.{
-  ParametricaRecargoAnt,
-  ParametricaRecargoTri
-}
-import consumers.registral.parametrica_recargo.application.entities.{
-  ParametricaRecargoCommands,
-  ParametricaRecargoExternalDto
-}
+import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoCommands
+import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoExternalDto.ParametricaRecargoTri
 import consumers.registral.parametrica_recargo.infrastructure.dependency_injection.ParametricaRecargoActor
 import consumers.registral.parametrica_recargo.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring
-import serialization.{decodeF, maybeDecode}
+import serialization.maybeDecode
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import scala.util.Try
 
-case class ParametricaRecargoTributarioTransaction(actor: ActorRef, monitoring: Monitoring)(
+case class ParametricaRecargoTributarioTransaction(actor: ParametricaRecargoActor, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ParametricaRecargoTri](monitoring) {
@@ -42,6 +33,6 @@ case class ParametricaRecargoTributarioTransaction(actor: ActorRef, monitoring: 
       registro = registro
     )
 
-    actor ask command
+    actor.ask(command)
   }
 }

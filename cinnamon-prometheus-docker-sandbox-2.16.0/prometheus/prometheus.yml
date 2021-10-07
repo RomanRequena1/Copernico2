@@ -3,24 +3,24 @@ scrape_configs:
   - job_name: 'cinnamon'
     scrape_interval: 10s
     static_configs:
-      - targets: ['host.docker.internal:9091'] #Seed 9091
-      - targets: ['host.docker.internal:9093'] #Node1 9091
-      - targets: ['host.docker.internal:9099'] #Node2 9091
-      - targets: ['host.docker.internal:29091'] #ReadSide1 9091
-      - targets: ['host.docker.internal:39091'] #Readside2 9091
-      - targets: ['host.docker.internal:49091'] #Readside3 9091
+      - targets: ['seed:9091'] #Seed 9091
+      - targets: ['node1:9091'] #Node1 9091
+      #- targets: ['localhost:9091'] #Node2 9091
+      - targets: ['readside1:9091'] #ReadSide1 9091
+      #- targets: ['localhost:9091'] #Readside2 9091
+      #- targets: ['localhost:9091'] #Readside3 9091
 
   - job_name: kamon
     scrape_interval: 10s
     static_configs:
-      - targets: ['host.docker.internal:9095']  #Seed 9095
-      - targets: ['host.docker.internal:9096']  #Seed2 9096
-      - targets: ['host.docker.internal:29095']  #Readside1 9095
-      - targets: ['host.docker.internal:39095']  #Readside2 9095
+      - targets: ['seed:9095']  #Seed 9095
+      #- targets: ['localhost:9096']  #Seed2 9096
+      - targets: ['readside1:9095']  #Readside1 9095
+      #- targets: ['localhost:9095']  #Readside2 9095
 
 
   - job_name: kafka-lag-exporter
     scrape_interval: 10s
     static_configs:
-      - targets: ['host.docker.internal:8000']
+      - targets: ['localhost:29092']
 

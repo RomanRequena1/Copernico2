@@ -1,6 +1,6 @@
 package consumers.no_registral.sujeto.infrastructure.consumer
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future}
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements

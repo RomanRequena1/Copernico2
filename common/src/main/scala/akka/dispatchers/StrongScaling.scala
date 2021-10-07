@@ -40,8 +40,6 @@ object StrongScaling {
 
 class StrongScaling(hardwareSpec: HardwareSpecs) extends Dispatchers {
 
-
-
   def strongScalingDispatcher(dispatcherName: String) =
     s"${forkJoin(
       dispatcherName,

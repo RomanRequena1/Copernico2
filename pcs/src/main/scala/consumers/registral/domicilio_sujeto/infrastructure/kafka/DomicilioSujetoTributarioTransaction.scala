@@ -1,27 +1,20 @@
 package consumers.registral.domicilio_sujeto.infrastructure.kafka
 
-import akka.Done
-import akka.actor.ActorRef
-import akka.actor.typed.ActorSystem
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import com.typesafe.config.Config
 import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoCommands
-import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoExternalDto.{
-  DomicilioSujetoAnt,
-  DomicilioSujetoTri
-}
+import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoExternalDto.DomicilioSujetoTri
 import consumers.registral.domicilio_sujeto.infrastructure.dependency_injection.DomicilioSujetoActor
 import consumers.registral.domicilio_sujeto.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring
-import serialization.{decodeF, maybeDecode}
+import serialization.maybeDecode
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import scala.util.Try
 
-case class DomicilioSujetoTributarioTransaction(actor: ActorRef, monitoring: Monitoring)(
+case class DomicilioSujetoTributarioTransaction(actor: DomicilioSujetoActor, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[DomicilioSujetoTri](monitoring) {
@@ -41,6 +34,6 @@ case class DomicilioSujetoTributarioTransaction(actor: ActorRef, monitoring: Mon
       registro = registro
     )
 
-    actor ask command
+    actor.ask(command)
   }
 }

@@ -4,7 +4,7 @@ import api.actor_transaction.{ActorTransaction, ActorTransactionController}
 import design_principles.actor_model.mechanism.QueryStateAPI.QueryStateApiRequirements
 import design_principles.microservice.Microservice
 import kafka.{KafkaMessageProcessorRequirements, KafkaMessageProducer}
-import monitoring.{KamonMonitoring, Monitoring}
+import monitoring.{KamonMonitoring}
 import akka.actor.typed.scaladsl.adapter._
 import akka.entity.ShardedEntity.{ProductionMonitoringAndCassandraWrite, ProductionMonitoringAndMessageProducer}
 import design_principles.actor_model.mechanism.stream_supervision.UniqueTopicPerNode.uniqueTopicPerNode

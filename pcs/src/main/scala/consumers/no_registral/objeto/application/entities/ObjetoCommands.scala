@@ -64,14 +64,13 @@ object ObjetoCommands {
       obligacionId: String
   ) extends ObjetoCommands
 
-
   case class ObjetoRemoveObligacion(
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
       obligacionId: String
   ) extends ObjetoCommands {
-        val deliveryId = 0
+    val deliveryId = 0
   }
 
   case class ObjetoTagAdd(

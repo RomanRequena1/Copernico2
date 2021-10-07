@@ -13,8 +13,8 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
 
 class KafkaTransactionalMessageProcessor(
-                                          transactionRequirements: KafkaMessageProcessorRequirements
-                                        ) extends MessageProcessor {
+    transactionRequirements: KafkaMessageProcessorRequirements
+) extends MessageProcessor {
 
   override type MessageProcessorKillSwitch = akka.stream.UniqueKillSwitch
 
@@ -24,10 +24,10 @@ class KafkaTransactionalMessageProcessor(
   def transactionalId: String = java.util.UUID.randomUUID().toString
 
   def run(
-           SOURCE_TOPIC: String,
-           SINK_TOPIC: String,
-           algorithm: String => Future[Seq[String]]
-         ): (Option[MessageProcessorKillSwitch], Future[Done]) = {
+      SOURCE_TOPIC: String,
+      SINK_TOPIC: String,
+      algorithm: String => Future[Seq[String]]
+  ): (Option[MessageProcessorKillSwitch], Future[Done]) = {
 
     val ProcessedMessagesCounter = transactionRequirements.monitoring.counter(
       s"$SOURCE_TOPIC-ProcessedMessagesCounter"

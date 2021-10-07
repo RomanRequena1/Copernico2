@@ -19,7 +19,7 @@ class DeclaracionJuradaMicroservice(implicit m: KafkaConsumerMicroserviceRequire
     extends KafkaConsumerMicroservice {
   implicit val actor: DeclaracionJuradaActor = DeclaracionJuradaActor(DeclaracionJuradaState())
   override def actorTransactions: Set[ActorTransaction[_]] =
-    Set(DeclaracionJuradaTransaction(actor.shardActor.toClassic, monitoring))
+    Set(DeclaracionJuradaTransaction(actor, monitoring))
 
   override def route: Route =
     (Seq(

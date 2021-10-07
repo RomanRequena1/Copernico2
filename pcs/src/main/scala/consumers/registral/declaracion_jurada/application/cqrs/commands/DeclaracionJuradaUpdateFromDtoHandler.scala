@@ -3,14 +3,13 @@ package consumers.registral.declaracion_jurada.application.cqrs.commands
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
-import consumers.registral.calendario.domain.CalendarioEvents.CalendarioUpdatedFromDto
 import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaCommands.DeclaracionJuradaUpdateFromDto
 import consumers.registral.declaracion_jurada.domain.DeclaracionJuradaEvents.DeclaracionJuradaUpdatedFromDto
 import consumers.registral.declaracion_jurada.domain.DeclaracionJuradaState
-import design_principles.actor_model.Response
-import kafka.MessageProducer
 import consumers.registral.declaracion_jurada.infrastructure.json._
+import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
+import kafka.MessageProducer
 class DeclaracionJuradaUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
   def handle(command: DeclaracionJuradaUpdateFromDto)(replyTo: ActorRef[Success]) =
@@ -28,7 +27,7 @@ class DeclaracionJuradaUpdateFromDtoHandler(implicit messageProducer: MessagePro
           command.registro
         )
       )
-      .thenReply(replyTo) { state =>
+      .thenRun(state =>
         messageProducer.produce(
           Seq(
             KafkaKeyValue(
@@ -47,6 +46,8 @@ class DeclaracionJuradaUpdateFromDtoHandler(implicit messageProducer: MessagePro
           ),
           "DeclaracionJuradaUpdatedFromDto"
         )(_ => ())
+      )
+      .thenReply(replyTo) { state =>
         Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
       }
 

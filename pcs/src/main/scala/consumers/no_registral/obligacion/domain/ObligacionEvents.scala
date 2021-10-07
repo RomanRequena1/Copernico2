@@ -13,6 +13,7 @@ sealed trait ObligacionEvents extends Event with ObligacionMessage {
 }
 
 object ObligacionEvents {
+  val operaciones: Map[String, String] = Map(("Upsert" -> "U"), ("Delete" -> "D"))
 
   case class ObligacionPersistedSnapshot(
       deliveryId: BigInt,
@@ -23,7 +24,8 @@ object ObligacionEvents {
       registro: Option[ObligacionExternalDto],
       exenta: Boolean,
       porcentajeExencion: BigDecimal,
-      saldo: BigDecimal
+      saldo: BigDecimal,
+      operacion: String
   ) extends ObligacionEvents
 
   case class ObligacionUpdatedFromDto(

@@ -45,7 +45,7 @@ class KafkaCommittableSourceMessageProcessor(
     val subscription = Subscriptions.topics(SOURCE_TOPIC).withRebalanceListener(rebalancerListener)
 
     val CONSUMER_PARALLELISM: Int = Try(System.getenv("CONSUMER_PARALLELISM")).map(_.toInt).getOrElse(1)
-    val MAX_PARTITION_COUNT: Int =  3 // = CONSUMER_PARALLELISM
+    val MAX_PARTITION_COUNT: Int = 3 // = CONSUMER_PARALLELISM
 
     val committerSettings = CommitterSettings(system)
 
@@ -103,18 +103,18 @@ class KafkaCommittableSourceMessageProcessor(
           )
       }
       .map(_.passThrough)
-      .via(Committer.flow(committerSettings.withMaxBatch(1000))).async
+      .via(Committer.flow(committerSettings.withMaxBatch(1000)))
+      .async
       .viaMat(KillSwitches.single)(Keep.right)
       /*
       .collect {
         case a: ProducerMessage.MultiResult[_, String, _] =>
           a.parts.map(a => a.record.value)
       }
-      */
+       */
       //.withAttributes(akka.defaultSupervisionStrategy)
       .toMat(Sink.ignore)(Keep.both)
     val (killSwitch, done) = stream.named("KafkaCommittableSourceMessageProcessor").run()
-
 
     done.onComplete {
       case Success(_) =>

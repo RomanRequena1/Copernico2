@@ -2,7 +2,7 @@ package consumers.registral.juicio.application.cqrs.commands
 
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
-import akka.persistence.typed.scaladsl.Effect
+import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
 import consumers.registral.etapas_procesales.domain.EtapasProcesalesEvents.EtapasProcesalesUpdatedFromDto
 import consumers.registral.juicio.application.entities.JuicioCommands.JuicioUpdateFromDto
 import consumers.registral.juicio.domain.JuicioEvents.JuicioUpdatedFromDto
@@ -12,8 +12,9 @@ import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 import consumers.registral.juicio.infrastructure.json._
 class JuicioUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
-
-  def handle(command: JuicioUpdateFromDto)(replyTo: ActorRef[Success]) =
+  def handle(
+      command: JuicioUpdateFromDto
+  )(replyTo: ActorRef[Success]): ReplyEffect[JuicioUpdatedFromDto, JuicioState] = {
     Effect
       .persist[
         JuicioUpdatedFromDto,
@@ -29,7 +30,7 @@ class JuicioUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
           command.detallesJuicio
         )
       )
-      .thenReply(replyTo) { state =>
+      .thenRun(state =>
         messageProducer.produce(
           Seq(
             KafkaKeyValue(
@@ -49,6 +50,9 @@ class JuicioUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
           ),
           "JuicioUpdatedFromDto"
         )(_ => ())
+      )
+      .thenReply(replyTo) { state =>
         Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
       }
+  }
 }

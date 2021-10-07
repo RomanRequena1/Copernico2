@@ -26,6 +26,7 @@ class ParametricaRecargoUpdatedFromDtoHandler(
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: ParametricaRecargoUpdatedFromDto): Future[Response.SuccessProcessing] = {
+    recordLag(calculateLag(registro.deliveryId.toString))
     val projection = ParametricaRecargoUpdatedFromDtoProjection(registro)
     projection.updateReadside()
     for {

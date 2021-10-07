@@ -6,9 +6,9 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.tramite.application.entities.TramiteCommands.TramiteUpdateFromDto
 import consumers.registral.tramite.domain.TramiteEvents.TramiteUpdatedFromDto
 import consumers.registral.tramite.domain.TramiteState
+import consumers.registral.tramite.infrastructure.json._
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
-import consumers.registral.tramite.infrastructure.json._
 import kafka.MessageProducer
 
 class TramiteUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
@@ -27,7 +27,7 @@ class TramiteUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
       ](
         event
       )
-      .thenReply(replyTo) { state =>
+      .thenRun(state =>
         messageProducer.produce(Seq(
                                   KafkaKeyValue(command.aggregateRoot,
                                                 serialization.encode(
@@ -35,6 +35,8 @@ class TramiteUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
                                                 ))
                                 ),
                                 "TramiteUpdatedFromDto")(_ => ())
+      )
+      .thenReply(replyTo) { state =>
         Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
       }
   }

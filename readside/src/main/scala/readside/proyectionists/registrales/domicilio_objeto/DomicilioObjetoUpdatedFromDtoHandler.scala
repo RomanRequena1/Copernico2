@@ -26,6 +26,7 @@ class DomicilioObjetoUpdatedFromDtoHandler(
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: DomicilioObjetoUpdatedFromDto): Future[Response.SuccessProcessing] = {
+    recordLag(calculateLag(registro.deliveryId.toString))
     val projection = DomicilioObjetoUpdatedFromDtoProjection(registro)
     for {
       done <- cassandra writeState projection

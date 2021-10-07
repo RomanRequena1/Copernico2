@@ -11,4 +11,11 @@ object ObligacionQueries {
       with Query {
     override type ReturnType = GetObligacionResponse
   }
+
+  case class GetSnapshotObligacion(sujetoId: String, objetoId: String, tipoObjeto: String, obligacionId: String)
+      extends ObligacionQueries
+      with Query {
+    override type ReturnType = GetObligacionResponse
+  }
+
 }

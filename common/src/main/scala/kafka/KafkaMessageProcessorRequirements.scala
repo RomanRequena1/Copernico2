@@ -28,8 +28,7 @@ object KafkaMessageProcessorRequirements {
       .withBootstrapServers(bootstrapServers)
       .withProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "100000")
       .withProperty(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "1")
-      //.withClientId("client-new") //TODO add client ID
-
+  //.withClientId("client-new") //TODO add client ID
 
   private implicit def producerSettings(system: akka.actor.ActorSystem): ProducerSettings[String, String] =
     ProducerSettings(system, new StringSerializer, new StringSerializer)

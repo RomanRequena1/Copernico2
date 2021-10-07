@@ -26,6 +26,7 @@ class ObjetoAddedExencionHandler(
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: ObjetoAddedExencion): Future[Response.SuccessProcessing] = {
+    recordLag(calculateLag(registro.deliveryId.toString))
     val projection = ObjetoAddedExencionProjection(registro)
     for {
       done <- cassandra writeState projection

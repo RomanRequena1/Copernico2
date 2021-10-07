@@ -1,11 +1,10 @@
 import Settings._
 import sbt.Keys.scalaVersion
 
-
-javaOptions in run += "-Xmx2G -Xms1G -XX:MaxGCPauseMillis=100"
+run / javaOptions += "-Xmx2G -Xms1G -XX:MaxGCPauseMillis=100"
 
 lazy val commonSettings = Seq(
-  organization in ThisBuild := "peperina",
+  ThisBuild / organization := "peperina",
   version := "1.0",
   scalaVersion := Dependencies.scalaVersion
 )
@@ -37,12 +36,12 @@ lazy val FunTest = config("fun") extend (Test)
 def funTestFilter(name: String): Boolean = ((name endsWith "E2E") || (name endsWith "IntegrationTest"))
 def unitTestFilter(name: String): Boolean = ((name endsWith "Spec") && !funTestFilter(name))
 
-testOptions in FunTest := Seq(Tests.Filter(funTestFilter))
+FunTest / testOptions := Seq(Tests.Filter(funTestFilter))
 
-testOptions in Test := Seq(Tests.Filter(unitTestFilter))
+Test / testOptions := Seq(Tests.Filter(unitTestFilter))
 
-cinnamon in run := true
-cinnamon in test := false
+run / cinnamon := true
+test / cinnamon := false
 cinnamonLogLevel := "INFO"
 
 lazy val globalResources = file("resources")
@@ -53,7 +52,7 @@ lazy val pcs = project
   .settings(
     Seq(
       Test / parallelExecution := true,
-      unmanagedResourceDirectories in Compile += globalResources
+       Compile / unmanagedResourceDirectories += globalResources
     )
   )
   .settings(commonSettings)
@@ -79,14 +78,15 @@ lazy val pcs = project
       )
   )
   .settings(
-    mainClass in (Compile, run) := Some("Main")
+    Compile / mainClass := Some("Main"),
+    //run / mainClass := Some("Main")
   )
 
 lazy val readside = project
   .settings(
     Seq(
       Test / parallelExecution := true,
-      unmanagedResourceDirectories in Compile += globalResources
+      Compile / unmanagedResourceDirectories += globalResources
     )
   )
   .settings(commonSettings)

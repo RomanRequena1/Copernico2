@@ -1,14 +1,13 @@
 package consumers.no_registral.sujeto.infrastructure.http
 
 import java.time.LocalDateTime
-
 import akka.actor.{ActorRef, ActorSystem, PoisonPill}
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.no_registral.obligacion.infrastructure.http.ObligacionStateAPI.withSujeto
-import consumers.no_registral.sujeto.application.entity.SujetoQueries.GetStateSujeto
+import consumers.no_registral.sujeto.application.entity.SujetoQueries.{GetSnapshotSujeto, GetStateSujeto}
 import consumers.no_registral.sujeto.application.entity.SujetoResponses.GetSujetoResponse
 import consumers.no_registral.sujeto.infrastructure.json._
 import design_principles.actor_model.mechanism.QueryStateAPI
@@ -43,6 +42,15 @@ case class SujetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
         state => state.fechaUltMod == LocalDateTime.MIN
       )
     }
-  def route: Route = GET(getState) ~ GET(developerTools)
+
+  def getSnapshot: Route =
+    path("sujeto" / Segment / "snapshot") { sujetoId =>
+      queryState[GetSujetoResponse](actor, GetSnapshotSujeto(sujetoId))(
+        GetSujetoResponseF,
+        state => state.fechaUltMod == LocalDateTime.MIN
+      )
+    }
+
+  def route: Route = GET(getState) ~ GET(developerTools) ~ GET(getSnapshot)
   def withDeveloperTools = path("developer" / "tools" / Segment)
 }

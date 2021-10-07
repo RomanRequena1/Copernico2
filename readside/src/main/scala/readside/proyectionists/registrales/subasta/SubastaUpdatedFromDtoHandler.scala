@@ -26,6 +26,7 @@ class SubastaUpdatedFromDtoHandler(
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: SubastaUpdatedFromDto): Future[Response.SuccessProcessing] = {
+    recordLag(calculateLag(registro.deliveryId.toString))
     val projection = SubastaUpdatedFromDtoProjection(registro)
     projection.updateReadside()
     for {

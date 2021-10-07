@@ -28,7 +28,7 @@ class ObjetoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) exte
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       ObjetoExencionTransaction(actor, monitoring),
-      ObjetoNoTributarioTransaction(actor, monitoring),
+      //ObjetoNoTributarioTransaction(actor, monitoring),
       ObjetoTributarioTransaction(actor, monitoring),
       ObjetoUpdateNovedadTransaction(actor, monitoring)
     )

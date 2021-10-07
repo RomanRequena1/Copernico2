@@ -68,7 +68,7 @@ package object json {
 
   implicit val ObjetoUpdatedFromObligacionBajaSetF = Json.format[ObjetoUpdatedFromObligacionBajaSet]
   class ObjetoUpdatedFromObligacionBajaSetFS extends EventSerializer[ObjetoUpdatedFromObligacionBajaSet]
-   
+
   implicit val ObjetosTriOtrosAtributosF = Json.format[ObjetosTriOtrosAtributos]
 
   implicit val GetExencionResponseF = Json.format[GetExencionResponse]

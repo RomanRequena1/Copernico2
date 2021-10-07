@@ -30,5 +30,5 @@ class ActorsDispatchers(config: Config) {
     .map {
       strongScalingDispatcher.strongScalingDispatcher
     }
-     .mkString("\n" * NR_PARTITIONS)
+    .mkString("\n" * NR_PARTITIONS)
 }

@@ -9,4 +9,7 @@ object SujetoQueries {
   case class GetStateSujeto(sujetoId: String) extends SujetoQueries {
     override type ReturnType = GetSujetoResponse
   }
+  case class GetSnapshotSujeto(sujetoId: String) extends SujetoQueries {
+    override type ReturnType = GetSujetoResponse
+  }
 }

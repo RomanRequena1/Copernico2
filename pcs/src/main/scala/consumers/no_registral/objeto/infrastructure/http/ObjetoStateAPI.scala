@@ -1,13 +1,16 @@
 package consumers.no_registral.objeto.infrastructure.http
 
 import java.time.LocalDateTime
-
 import akka.actor.{ActorRef, ActorSystem, PoisonPill}
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
-import consumers.no_registral.objeto.application.entities.ObjetoQueries.{GetStateExencion, GetStateObjeto}
+import consumers.no_registral.objeto.application.entities.ObjetoQueries.{
+  GetSnapshotObjeto,
+  GetStateExencion,
+  GetStateObjeto
+}
 import consumers.no_registral.objeto.application.entities.ObjetoResponses.{GetExencionResponse, GetObjetoResponse}
 import consumers.no_registral.objeto.infrastructure.json._
 import design_principles.actor_model.mechanism.QueryStateAPI
@@ -73,7 +76,19 @@ case class ObjetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
       }
     }
 
-  def route: Route = GET(getState) ~ GET(getExencion) ~ POST(developerTools)
+  def getSnapshot: Route =
+    withSujeto { sujetoId =>
+      withObjeto { objetoId =>
+        path("tipo" / Segment / "snapshot") { tipoObjeto =>
+          queryState[GetObjetoResponse](actorRef = actor, GetSnapshotObjeto(sujetoId, objetoId, tipoObjeto))(
+            GetObjetoResponseF,
+            _.fechaUltMod == LocalDateTime.MIN
+          )
+        }
+      }
+    }
+
+  def route: Route = GET(getState) ~ GET(getExencion) ~ GET(getSnapshot) ~ POST(developerTools)
 
 }
 

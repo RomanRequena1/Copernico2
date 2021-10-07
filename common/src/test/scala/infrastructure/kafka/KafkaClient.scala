@@ -31,7 +31,8 @@ class KafkaClient(config: Config)(implicit m: Materializer) {
 
   def consumeTopic(topicName: String): List[String] = {
     consumer.subscribe(Collections.singletonList(topicName))
-    val consumerRecords: ConsumerRecords[String, String] = consumer.poll(Duration.ofMillis(5000)) //TODO changed 500 to 5000
+    val consumerRecords
+        : ConsumerRecords[String, String] = consumer.poll(Duration.ofMillis(5000)) //TODO changed 500 to 5000
     val records =
       consumerRecords.records(topicName).asScala.map(_.value).toList
     consumer.commitSync()

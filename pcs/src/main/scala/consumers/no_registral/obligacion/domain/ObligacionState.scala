@@ -42,4 +42,4 @@ case class ObligacionState(
     }
 
   def empty = ObligacionState()
- }
+}

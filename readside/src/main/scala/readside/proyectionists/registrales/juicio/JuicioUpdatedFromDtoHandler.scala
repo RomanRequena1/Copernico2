@@ -3,12 +3,10 @@ import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 
 import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.juicio.domain.JuicioEvents.JuicioUpdatedFromDto
 import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
-import monitoring.Monitoring
 import readside.proyectionists.registrales.juicio.projections.JuicioUpdatedFromDtoProjection
 
 class JuicioUpdatedFromDtoHandler(
@@ -25,7 +23,9 @@ class JuicioUpdatedFromDtoHandler(
       .maybeDecode[JuicioUpdatedFromDto](input)
 
   val cassandra = new CassandraWriteProduction()
+
   override def processMessage(registro: JuicioUpdatedFromDto): Future[Response.SuccessProcessing] = {
+    recordLag(calculateLag(registro.deliveryId.toString))
     val projection = JuicioUpdatedFromDtoProjection(registro)
     for {
       done <- cassandra writeState projection

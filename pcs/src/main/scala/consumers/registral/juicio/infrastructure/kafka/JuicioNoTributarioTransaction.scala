@@ -19,7 +19,7 @@ import serialization.{decodeF, maybeDecode}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-case class JuicioNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitoring)(
+case class JuicioNoTributarioTransaction(actor: JuicioActor, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[JuicioAnt](monitoring) {
@@ -51,7 +51,7 @@ case class JuicioNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
         detalles.getOrElse(Seq.empty)
       )
 
-    actorRef ask command
+    actor.ask(command)
   }
 
 }

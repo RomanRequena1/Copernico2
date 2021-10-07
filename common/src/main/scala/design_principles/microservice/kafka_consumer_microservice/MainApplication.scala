@@ -47,7 +47,7 @@ object MainApplication {
       val statRoutes = new ClusterStats().route
       userRoutes ~ systemRoutes ~ statRoutes ~ startStopKafka
     }
-    
+
     AkkaHttpServer.start(routes, ip, port)(system)
 
     Await.result(system.whenTerminated, Duration.Inf)

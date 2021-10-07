@@ -3,14 +3,13 @@ package consumers.registral.domicilio_objeto.application.cqrs.commands
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
-import consumers.registral.declaracion_jurada.domain.DeclaracionJuradaEvents.DeclaracionJuradaUpdatedFromDto
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoCommands.DomicilioObjetoUpdateFromDto
 import consumers.registral.domicilio_objeto.domain.DomicilioObjetoEvents.DomicilioObjetoUpdatedFromDto
 import consumers.registral.domicilio_objeto.domain.DomicilioObjetoState
-import design_principles.actor_model.Response
-import kafka.MessageProducer
 import consumers.registral.domicilio_objeto.infrastructure.json._
+import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
+import kafka.MessageProducer
 
 class DomicilioObjetoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
@@ -29,7 +28,7 @@ class DomicilioObjetoUpdateFromDtoHandler(implicit messageProducer: MessageProdu
           command.registro
         )
       )
-      .thenReply(replyTo) { state =>
+      .thenRun(state =>
         messageProducer.produce(
           Seq(
             KafkaKeyValue(
@@ -48,6 +47,8 @@ class DomicilioObjetoUpdateFromDtoHandler(implicit messageProducer: MessageProdu
           ),
           "DomicilioObjetoUpdatedFromDto"
         )(_ => ())
+      )
+      .thenReply(replyTo) { state =>
         Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
       }
 

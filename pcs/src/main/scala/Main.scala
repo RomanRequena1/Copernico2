@@ -1,11 +1,9 @@
 import com.typesafe.config.ConfigFactory
-import design_principles.microservice.Microservice
 import design_principles.microservice.kafka_consumer_microservice.{
   KafkaConsumerMicroservice,
   KafkaConsumerMicroserviceRequirements
 }
 import design_principles.microservice.kafka_consumer_microservice.MainApplication.startMicroservices
-import monitoring.KamonMonitoring
 
 object Main extends App {
 
