@@ -2,6 +2,7 @@
 ## in development mode  
 **Run the following commands on different consoles**
 
+
 Console [1] Start infrastructure (Cassandra, Kafka)
 
 `sh assets/docker-compose/dev-lite/infrastructure.sh `
