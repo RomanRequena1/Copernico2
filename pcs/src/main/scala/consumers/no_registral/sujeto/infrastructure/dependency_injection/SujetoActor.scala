@@ -73,11 +73,14 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
   def persistSnapshot()(handler: Seq[KafkaKeyValue] => Unit): Unit = {
     val sujetoId = SujetoMessageRoots.extractor(persistenceId).sujetoId
     val event = SujetoSnapshotPersisted(state.registro.map(_.EV_ID).getOrElse(0), sujetoId, state.registro, state.saldo)
-
     requirements.messageProducer.produce(
       data = Seq(KafkaKeyValue(persistenceId, serialization.encode(event))),
       topic = "SujetoSnapshotPersisted"
     )(handler)
+
+    if(state.lastDeliveryIdByEvents.size > 2){
+      saveSnapshot(state.copy(lastDeliveryIdByEvents = Map.empty))
+    }
   }
 
 }

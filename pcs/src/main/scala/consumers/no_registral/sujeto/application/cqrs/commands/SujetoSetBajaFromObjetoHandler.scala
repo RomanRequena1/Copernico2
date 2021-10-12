@@ -19,7 +19,7 @@ class SujetoSetBajaFromObjetoHandler(actor: SujetoActor) extends SyncCommandHand
       command.tipoObjeto
     )
 
-    actor.persistEvent(event) { () =>
+    actor.persistEvent(event,Set("Sujeto")) { () =>
       actor.state += event
       actor.persistSnapshot()(_ => ())
     }

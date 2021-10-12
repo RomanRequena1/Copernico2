@@ -1,7 +1,7 @@
 package cqrs.base_actor.untyped
 
 import akka.actor.ActorLogging
-import akka.persistence.{PersistentActor, Recovery, RecoveryCompleted, SnapshotOffer}
+import akka.persistence.{PersistentActor, Recovery, RecoveryCompleted, SaveSnapshotFailure, SaveSnapshotSuccess, SnapshotOffer}
 import cqrs.untyped.event.{EventBus, SyncEventBus}
 import ddd.AbstractState
 import design_principles.actor_model.{Command, Event, Query}
@@ -19,9 +19,6 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
   val persistedCounter: Counter = monitoring.counter(s"$name-persisted")
 
   val eventBus: EventBus[Try] = new SyncEventBus(logger)
-
-  //TODO recovery disabled
-  //override def recovery: Recovery = Recovery.none
 
   override def receive: Receive = super[PersistentActor].receive
 
@@ -47,18 +44,24 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
     case SnapshotOffer(_, snapshot: State) =>
       state = snapshot
 
+    case SaveSnapshotSuccess =>
+      logger.debug(s"RecoveryCompleted for entity [$name | $persistenceId]")
+
+    case SaveSnapshotFailure =>
+      logger.debug(s"SaveSnapshotFailure for entity [$name | $persistenceId]")
+
     case RecoveryCompleted =>
-      logger.debug(s"[$persistenceId] RecoveryCompleted")
+      logger.debug(s"RecoveryCompleted for entity [$name | $persistenceId]")
 
     case other =>
-      logger.warn(s"[$persistenceId] Unexpected event $other")
+      logger.warn(s"Unexpected event $other happened for [$name | $persistenceId]")
   }
 
   implicit val ec: ExecutionContext = context.system.dispatcher
 
   def persistEvent(event: E, tags: Set[String] = Set.empty)(handler: () => Unit = () => ()): Unit = {
+    //todo review the use of persistAsync
     persistAsync(event) { _ =>
-      //todo add time
       logger.debug(s"[$persistenceId] Persist event | $event")
       persistedCounter.increment()
       monitoring.counter(s"$name-persisted-${utils.Inference.getSimpleName(event.getClass.getName)}").increment()
