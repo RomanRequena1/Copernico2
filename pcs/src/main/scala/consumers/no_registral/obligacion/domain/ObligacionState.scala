@@ -14,11 +14,12 @@ case class ObligacionState(
     registro: Option[ObligacionExternalDto] = None,
     lastDeliveryIdByEvents: Map[String, BigInt] = Map.empty,
     detallesObligacion: Seq[DetallesObligacion] = Seq.empty,
-    juicioId: Option[BigInt] = None
+    juicioId: Option[BigInt] = None,
+    eventCounter:Int = 0
 ) extends AbstractState[ObligacionEvents] {
 
   override def +(event: ObligacionEvents): ObligacionState =
-    changeState(event).copy(fechaUltMod = LocalDateTime.now)
+    changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = eventCounter + 1)
 
   private def changeState(event: ObligacionEvents): ObligacionState =
     event match {
@@ -42,4 +43,6 @@ case class ObligacionState(
     }
 
   def empty = ObligacionState()
+
+
 }

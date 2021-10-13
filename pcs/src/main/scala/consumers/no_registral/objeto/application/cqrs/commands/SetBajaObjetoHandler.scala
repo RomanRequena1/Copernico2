@@ -25,8 +25,8 @@ class SetBajaObjetoHandler(actor: ObjetoActor) extends SyncCommandHandler[Objeto
       command.isResponsable,
       command.sujetoResponsable
     )
-    if (validateCommand(event, command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(s"[${actor.persistenceId}] respond idempotent because of old delivery id | $command")
+    if (isIdempotent(event, command, actor.state.lastDeliveryIdByEvents)) {
+      log.warn(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
       actor.persistEvent(event) { () =>

@@ -24,7 +24,7 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
 //    }
 
 //    if (initialization != "true") {
-    actor.persistEvent(event) { () =>
+    actor.persistEvent(event,Set("Sujeto")) { () =>
       actor.state += event
       actor.persistSnapshot()(_ => ())
     }

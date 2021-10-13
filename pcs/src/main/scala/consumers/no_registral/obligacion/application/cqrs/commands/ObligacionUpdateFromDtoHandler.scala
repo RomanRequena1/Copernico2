@@ -5,7 +5,7 @@ import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionUpdat
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
-import design_principles.actor_model.mechanism.DeliveryIdManagement.validateCommand
+import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
 
 import scala.util.{Success, Try}
 
@@ -26,9 +26,8 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       Try(System.getenv("INITIALIZATION")).getOrElse(null)
     }
 
-    if (validateCommand(event, command, actor.state.lastDeliveryIdByEvents)) { //validates idempotency
-
-      log.warn(s"[${actor.persistenceId}] respond idempotent because of old delivery id | $command")
+    if (isIdempotent(event, command, actor.state.lastDeliveryIdByEvents)) {
+      log.warn(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
 
       // Informs that operation has been ignored */
       //todo check if this is desirable, why? signal the sender??
@@ -43,10 +42,12 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         if (!(initialization == "true" && command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {
           actor.informParent(command)
         }
-        // actor.informParent(command)
         actor.lastDeliveryId = command.registro.EV_ID
         actor.persistSnapshot() { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+          if (actor.state.eventCounter > 10) {
+            actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+          }
         }
       }
     }

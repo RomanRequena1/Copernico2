@@ -19,13 +19,15 @@ case class ObjetoState(
     lastDeliveryIdByEvents: Map[String, BigInt] = Map.empty,
     porcentajeResponsabilidad: BigDecimal = 0,
     exenciones: Set[Exencion] = Set.empty,
-    isBaja: Boolean = false
+    isBaja: Boolean = false,
+    eventCounter:Int = 0
 ) extends AbstractState[ObjetoEvents] {
 
   override def +(event: ObjetoEvents): ObjetoState = {
     changeState(event).copy(
       fechaUltMod = LocalDateTime.now,
-      lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId))
+      lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
+      eventCounter = eventCounter + 1
     )
   }
 
