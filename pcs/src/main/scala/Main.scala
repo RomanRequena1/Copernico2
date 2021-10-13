@@ -1,9 +1,7 @@
 import com.typesafe.config.ConfigFactory
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import design_principles.microservice.kafka_consumer_microservice.MainApplication.startMicroservices
+
 
 object Main extends App {
 
@@ -11,6 +9,7 @@ object Main extends App {
   val ip = config.getString("http.ip")
   val port = config.getInt("http.port")
   val actorSystemName = "PersonClassificationService"
+
 
   startMicroservices(microservices, ip, port, actorSystemName)
 
@@ -38,3 +37,4 @@ object Main extends App {
     )
   }
 }
+

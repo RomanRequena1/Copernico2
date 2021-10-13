@@ -17,8 +17,8 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
 
     val event = SujetoUpdatedFromTri(command.deliveryId, command.sujetoId, command.registro)
 
-    if (validateCommand(event, command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(s"[${actor.persistenceId}] respond idempotent because of old delivery id | $command")
+    if (isIdempotent(event, command, actor.state.lastDeliveryIdByEvents)) {
+      log.warn(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
 
@@ -26,6 +26,9 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
         actor.state += event
         actor.persistSnapshot() { _ =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+          if (actor.state.eventCounter > 10) {
+            actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+          }
         }
       }
     }

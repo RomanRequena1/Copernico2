@@ -25,10 +25,8 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
       command.isResponsable,
       command.sujetoResponsable
     )
-    if (validateCommand(event, command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(
-        s"[${actor.persistenceId}] respond idempotent because of old delivery id | $command -- last delivery id was: ${actor.state.lastDeliveryIdByEvents}"
-      )
+    if (isIdempotent(event, command, actor.state.lastDeliveryIdByEvents)) {
+      log.warn(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
       // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular
@@ -37,9 +35,13 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
         actor.informParent(command, actor.state)
 
         actor.persistSnapshot(event, actor.state) { () =>
-          if (!actor.state.isResponsable)
+          if (!actor.state.isResponsable) {
             actor.removeObligaciones()
+          }
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+          if (actor.state.eventCounter > 10) {
+            actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+          }
         }
       }
     }

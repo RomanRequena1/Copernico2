@@ -8,12 +8,7 @@ import consumers.no_registral.objeto.application.entities.ObjetoMessage
 import consumers.no_registral.objeto.application.entities.ObjetoMessage.ObjetoMessageRoots
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage
-import consumers.no_registral.sujeto.application.cqrs.commands.{
-  SujetoSetBajaFromObjetoHandler,
-  SujetoUpdateFromAntHandler,
-  SujetoUpdateFromObjetoHandler,
-  SujetoUpdateFromTriHandler
-}
+import consumers.no_registral.sujeto.application.cqrs.commands.{SujetoSetBajaFromObjetoHandler, SujetoUpdateFromAntHandler, SujetoUpdateFromObjetoHandler, SujetoUpdateFromTriHandler}
 import consumers.no_registral.sujeto.application.cqrs.queries.{GetSnapshotSujetoHandler, GetStateSujetoHandler}
 import consumers.no_registral.sujeto.application.entity.SujetoMessage.SujetoMessageRoots
 import consumers.no_registral.sujeto.application.entity.{SujetoCommands, SujetoQueries}
@@ -22,6 +17,8 @@ import consumers.no_registral.sujeto.domain.{SujetoEvents, SujetoState}
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor.SujetoActorRefMap
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
+
+import java.util.Calendar
 
 class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[SujetoEvents, SujetoState](requirements.monitoring) {
@@ -78,9 +75,7 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
       topic = "SujetoSnapshotPersisted"
     )(handler)
 
-    if(state.lastDeliveryIdByEvents.size > 2){
-      saveSnapshot(state.copy(lastDeliveryIdByEvents = Map.empty))
-    }
+
   }
 
 }
@@ -89,7 +84,7 @@ object SujetoActor extends ShardedEntity[MonitoringAndMessageProducer] {
   def props(sujetoActorRequirements: MonitoringAndMessageProducer): Props =
     Props(
       new SujetoActor(sujetoActorRequirements, None)
-    ).withDispatcher("my-dispatcher") //TODO added my-dispatcher
+    ).withDispatcher("my-dispatcher")
   type ObjetoAggregateRoot = (String, String, String)
   class SujetoActorRefMap(newActor: ObjetoAggregateRoot => ActorRef) extends ActorRefMap[ObjetoAggregateRoot](newActor)
 

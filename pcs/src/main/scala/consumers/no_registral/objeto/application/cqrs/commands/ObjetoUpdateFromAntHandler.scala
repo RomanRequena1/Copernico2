@@ -23,10 +23,12 @@ class ObjetoUpdateFromAntHandler(actor: ObjetoActor) extends SyncCommandHandler[
       command.tipoObjeto,
       command.registro
     )
-    if (validateCommand(event, command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(s"[${actor.persistenceId}] respond idempotent because of old delivery id | $command")
+    if (isIdempotent(event, command, actor.state.lastDeliveryIdByEvents)) {
+      log.warn(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
+
+
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.informParent(command, actor.state)

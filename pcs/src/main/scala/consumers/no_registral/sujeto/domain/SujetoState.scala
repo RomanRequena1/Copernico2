@@ -12,12 +12,14 @@ final case class SujetoState(
     objetos: Set[(String, String)] = Set.empty,
     fechaUltMod: LocalDateTime = LocalDateTime.MIN,
     registro: Option[SujetoExternalDto] = None,
-    lastDeliveryIdByEvents: Map[String, BigInt] = Map.empty
+    lastDeliveryIdByEvents: Map[String, BigInt] = Map.empty,
+    eventCounter:Int = 0
 ) extends AbstractState[SujetoEvents] {
   def +(event: SujetoEvents): SujetoState =
     changeState(event).copy(
       fechaUltMod = LocalDateTime.now,
-      lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId))
+      lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
+      eventCounter = eventCounter + 1
     )
 
   private def changeState(event: SujetoEvents): SujetoState =

@@ -25,6 +25,7 @@ class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) 
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       ObligacionTributariaTransaction(actor, monitoring),
+
       ObligacionTributariaTransaction1(actor, monitoring),
       ObligacionTributariaTransaction2(actor, monitoring),
       ObligacionTributariaTransaction3(actor, monitoring)
@@ -39,3 +40,5 @@ class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) 
   }
 
 }
+
+
