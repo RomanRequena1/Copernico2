@@ -13,7 +13,8 @@ final case class SujetoState(
     fechaUltMod: LocalDateTime = LocalDateTime.MIN,
     registro: Option[SujetoExternalDto] = None,
     lastDeliveryIdByEvents: Map[String, BigInt] = Map.empty,
-    eventCounter:Int = 0
+    eventCounter:Int = 0,
+    lastInternalDeliveryId:BigInt = 0
 ) extends AbstractState[SujetoEvents] {
   def +(event: SujetoEvents): SujetoState =
     changeState(event).copy(
@@ -32,23 +33,25 @@ final case class SujetoState(
         copy(
           registro = Some(registro)
         )
-      case SujetoEvents.SujetoUpdatedFromObjeto(_, _, objetoId, tipoObjeto, saldoObjeto, _saldoObligaciones) =>
+      case SujetoEvents.SujetoUpdatedFromObjeto(deliveryId, _, objetoId, tipoObjeto, saldoObjeto, _saldoObligaciones) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
         copy(
           objetos = objetos + ((objetoId, tipoObjeto)),
           saldoObjetos = _saldoObjetos,
           saldo = _saldoObjetos.values.sum,
-          saldoObligaciones = saldoObligaciones + (objetoKey -> _saldoObligaciones)
+          saldoObligaciones = saldoObligaciones + (objetoKey -> _saldoObligaciones),
+          lastInternalDeliveryId = deliveryId
         )
-      case SujetoEvents.SujetoBajaFromObjetoSet(_, _, objetoId, tipoObjeto) =>
+      case SujetoEvents.SujetoBajaFromObjetoSet(deliveryId, _, objetoId, tipoObjeto) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos - objetoKey
         copy(
           objetos = objetos - ((objetoId, tipoObjeto)),
           saldoObjetos = _saldoObjetos,
           saldo = _saldoObjetos.values.sum,
-          saldoObligaciones = saldoObligaciones - objetoKey
+          saldoObligaciones = saldoObligaciones - objetoKey,
+          lastInternalDeliveryId = deliveryId
         )
       case evt: SujetoEvents.SujetoSnapshotPersisted =>
         copy(
