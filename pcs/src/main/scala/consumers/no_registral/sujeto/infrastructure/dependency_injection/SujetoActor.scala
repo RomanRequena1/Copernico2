@@ -18,8 +18,6 @@ import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoA
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
 
-import java.util.Calendar
-
 class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[SujetoEvents, SujetoState](requirements.monitoring) {
 
@@ -69,15 +67,12 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
   import consumers.no_registral.sujeto.infrastructure.json._
   def persistSnapshot()(handler: Seq[KafkaKeyValue] => Unit): Unit = {
     val sujetoId = SujetoMessageRoots.extractor(persistenceId).sujetoId
-    val event = SujetoSnapshotPersisted(state.registro.map(_.EV_ID).getOrElse(0), sujetoId, state.registro, state.saldo)
+    val event = SujetoSnapshotPersisted(state.registro.map(_.EV_ID).getOrElse(state.lastInternalDeliveryId), sujetoId, state.registro, state.saldo)
     requirements.messageProducer.produce(
       data = Seq(KafkaKeyValue(persistenceId, serialization.encode(event))),
       topic = "SujetoSnapshotPersisted"
     )(handler)
-
-
   }
-
 }
 
 object SujetoActor extends ShardedEntity[MonitoringAndMessageProducer] {
