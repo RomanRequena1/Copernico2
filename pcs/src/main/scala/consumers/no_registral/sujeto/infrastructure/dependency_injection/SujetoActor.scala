@@ -72,10 +72,7 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
       data = Seq(KafkaKeyValue(persistenceId, serialization.encode(event))),
       topic = "SujetoSnapshotPersisted"
     )(handler)
-
-
   }
-
 }
 
 object SujetoActor extends ShardedEntity[MonitoringAndMessageProducer] {
