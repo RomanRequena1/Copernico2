@@ -62,7 +62,8 @@ abstract class ActorTransactionMetrics(
     //GMT -3
     val tf: LocalDateTime = LocalDateTime.now
     //difference
-    ChronoUnit.MILLIS.between(ti, tf);
+    println("TESTINGMETRIC-------- TI: " + ti + " TF: " + tf + " MS " + ChronoUnit.MILLIS.between(ti, tf))
+    ChronoUnit.MILLIS.between(ti, tf)
   }
 
 }
