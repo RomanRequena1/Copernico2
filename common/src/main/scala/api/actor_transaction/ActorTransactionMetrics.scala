@@ -6,7 +6,7 @@ import monitoring.{Counter, Histogram, Monitoring}
 import org.slf4j.LoggerFactory
 import serialization.SerializationError
 
-import java.time.{LocalDateTime, ZonedDateTime}
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
@@ -60,7 +60,7 @@ abstract class ActorTransactionMetrics(
     val ti: LocalDateTime = toLocalDateTime(evId)
     //time in the sink
     //GMT -3
-    val tf: LocalDateTime = LocalDateTime.now
+    val tf: LocalDateTime = ZonedDateTime.now(ZoneId.of("UTC-3")).toLocalDateTime
     //difference
     println("TESTINGMETRIC-------- TI: " + ti + " TF: " + tf + " MS " + ChronoUnit.MILLIS.between(ti, tf))
     ChronoUnit.MILLIS.between(ti, tf)
