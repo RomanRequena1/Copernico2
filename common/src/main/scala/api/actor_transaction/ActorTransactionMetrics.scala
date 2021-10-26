@@ -62,7 +62,6 @@ abstract class ActorTransactionMetrics(
     //GMT -3
     val tf: LocalDateTime = ZonedDateTime.now(ZoneId.of("UTC-3")).toLocalDateTime
     //difference
-    println("TESTINGMETRIC-------- TI: " + ti + " TF: " + tf + " MS " + ChronoUnit.MILLIS.between(ti, tf))
     ChronoUnit.MILLIS.between(ti, tf)
   }
 
