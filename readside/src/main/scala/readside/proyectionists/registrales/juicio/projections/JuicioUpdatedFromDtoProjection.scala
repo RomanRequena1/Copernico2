@@ -8,6 +8,7 @@ case class JuicioUpdatedFromDtoProjection(
   val registro: JuicioExternalDto = event.registro
 
   def bindings: List[(String, Serializable)] = List(
+    "bju_nro_externo" -> registro.BJU_NRO_EXTERNO,
     "bju_capital" -> registro.BJU_CAPITAL,
     "bju_estado" -> registro.BJU_ESTADO,
     "bju_fiscalizada" -> registro.BJU_FISCALIZADA,

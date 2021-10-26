@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS read_side.buc_juicios (
     bju_soj_tipo_objeto text,
     bju_soj_identificador text,
     bju_jui_id int,
+    bju_nro_externo text,
     bju_capital float,
     bju_estado text,
     bju_fiscalizada text,

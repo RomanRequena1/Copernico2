@@ -10,6 +10,7 @@ sealed trait JuicioExternalDto extends ddd.ExternalDto {
   def BJU_SOJ_TIPO_OBJETO: String
   def BJU_SOJ_IDENTIFICADOR: String
   def BJU_JUI_ID: String
+  def BJU_NRO_EXTERNO:Option[String]
   def BJU_CAPITAL: Option[BigDecimal]
   def BJU_ESTADO: Option[String]
   def BJU_FISCALIZADA: Option[String]
@@ -36,6 +37,7 @@ object JuicioExternalDto {
       BJU_SOJ_TIPO_OBJETO: String,
       BJU_SOJ_IDENTIFICADOR: String,
       BJU_JUI_ID: String,
+      BJU_NRO_EXTERNO: Option[String],
       BJU_CAPITAL: Option[BigDecimal],
       BJU_ESTADO: Option[String],
       BJU_FISCALIZADA: Option[String],
@@ -60,6 +62,7 @@ object JuicioExternalDto {
       BJU_SOJ_TIPO_OBJETO: String,
       BJU_SOJ_IDENTIFICADOR: String,
       BJU_JUI_ID: String,
+      BJU_NRO_EXTERNO: Option[String],
       BJU_CAPITAL: Option[BigDecimal],
       BJU_ESTADO: Option[String],
       BJU_FISCALIZADA: Option[String],
@@ -86,7 +89,6 @@ object JuicioExternalDto {
       BJU_CUOTA: String, // "10",
       BJU_FECHA_GENERACION: Option[LocalDateTime], // "1999-12-29 00:00:00.0",
       BJU_FECHA_IMPRESION: Option[String], // null,
-      BJU_NRO_EXTERNO: Option[String], // "1400918697",
       BJU_VTO_ORIGINAL: Option[LocalDateTime], // "1994-03-23 00:00:00.0",
       BJU_IMPORTE_ORIGINAL: Option[String], // "34",
       BJU_IMPORTE_HISTORICO: Option[String], // "34",

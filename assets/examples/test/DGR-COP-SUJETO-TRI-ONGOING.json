@@ -1,17 +1,16 @@
 {
-  "EV_ID" : "20211007230401054000000011103000",
-  "SUJ_IDENTIFICADOR" : "13",
-  "SUJ_CAT_SUJ_ID" : null,
-  "SUJ_DENOMINACION" : "Mariodasd",
-  "SUJ_DFE" : null,
-  "SUJ_DIRECCION" : null,
-  "SUJ_EMAIL" : "hola@a",
-  "SUJ_ID_EXTERNO" : null,
-  "SUJ_OTROS_ATRIBUTOS" : null,
-  "SUJ_RIESGO_FISCAL" : null,
-  "SUJ_SITUACION_FISCAL" : null,
-  "SUJ_TELEFONO" : null,
-  "SUJ_TIPO" : null
+    "EV_ID": "20211025142208100000000000274995",
+    "SUJ_IDENTIFICADOR": "110117901408",
+    "SUJ_CAT_SUJ_ID": null,
+    "SUJ_DENOMINACION": "TOTAL SOC ANON INM COM                                                          ",
+    "SUJ_DFE": null,
+    "SUJ_DIRECCION": null,
+    "SUJ_EMAIL": null,
+    "SUJ_ID_EXTERNO": "301404",
+    "SUJ_OTROS_ATRIBUTOS": {},
+    "SUJ_RIESGO_FISCAL": null,
+    "SUJ_SITUACION_FISCAL": null,
+    "SUJ_TELEFONO": null,
+    "SUJ_TIPO": "J",
+    "FECHA_BAJA": "2006-07-21 11:41:25.0"
 }
-
-
