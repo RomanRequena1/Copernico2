@@ -22,13 +22,13 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
 
-      actor.persistEvent(event,Set("Sujeto")) { () =>
+      actor.persistEvent(event) { () =>
         actor.state += event
         actor.persistSnapshot() { _ =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-          if (actor.state.eventCounter > 10) {
+          /*if (actor.state.eventCounter > 10) {
             actor.saveSnapshot(actor.state.copy(eventCounter = 0))
-          }
+          }*/
         }
       }
     }

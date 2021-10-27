@@ -35,13 +35,13 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
         actor.informParent(command, actor.state)
 
         actor.persistSnapshot(event, actor.state) { () =>
-          if (!actor.state.isResponsable) {
+          /*if (!actor.state.isResponsable) {
             actor.removeObligaciones()
-          }
+          }*/
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-          if (actor.state.eventCounter > 10) {
+          /*if (actor.state.eventCounter > 10) {
             actor.saveSnapshot(actor.state.copy(eventCounter = 0))
-          }
+          }*/
         }
       }
     }
