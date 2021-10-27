@@ -26,7 +26,7 @@ class PlanPagoUpdatedFromDtoHandler(
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: PlanPagoUpdatedFromDto): Future[Response.SuccessProcessing] = {
-    recordLag(calculateLag(registro.deliveryId.toString))
+    //recordLag(calculateLag(registro.deliveryId.toString))
     val projection = PlanPagoUpdatedFromDtoProjection(registro)
     for {
       done <- cassandra writeState projection
