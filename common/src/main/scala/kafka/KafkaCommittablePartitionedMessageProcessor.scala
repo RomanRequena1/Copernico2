@@ -2,7 +2,7 @@ package kafka
 
 import akka.actor.ActorSystem
 import akka.kafka._
-import akka.kafka.scaladsl.{Committer, Consumer}
+import akka.kafka.scaladsl.{Committer, Consumer, Producer}
 import akka.stream.scaladsl.{Keep, RunnableGraph, Sink, Source}
 import akka.stream.{KillSwitches, UniqueKillSwitch}
 import akka.{Done, NotUsed}
@@ -129,29 +129,44 @@ class KafkaCommittablePartitionedMessageProcessor(
                   log.error(cause)
                   RejectedMessagesCounter.increment()
                   val output = Seq(message.record.value)
-                  ProducerMessage.multi(
-                    records = output.map { o =>
-                      new ProducerRecord(
-                        SOURCE_TOPIC + "_retry",
-                        message.record.key,
-                        o
-                      )
-                    }.toList,
-                    passThrough = message.committableOffset
-                  )
+                  if (cause.contains("AskTimeoutException")){
+                    log.error("Retrying due to AskTimeoutException -->" + message.record.key)
+                    ProducerMessage.multi(
+                      records = output.map { o =>
+                        new ProducerRecord(
+                          SOURCE_TOPIC,
+                          message.record.key,
+                          o
+                        )
+                      }.toList,
+                      passThrough = message.committableOffset
+                    )
+                  } else {
+                    ProducerMessage.multi(
+                      records = output.map { o =>
+                        new ProducerRecord(
+                          SOURCE_TOPIC + "_error",
+                          message.record.key,
+                          "FAILED WITH CAUSE: "+ cause + "DTO:\n"+ o
+                        )
+                      }.toList,
+                      passThrough = message.committableOffset
+                    )
+                  }
+
                 case Right((message, output)) =>
                   ProcessedMessagesCounter.increment()
                   ProducerMessage.multi(
                     records = output.map { o =>
                       new ProducerRecord(
-                        SINK_TOPIC,
+                        SOURCE_TOPIC + "_success",
                         message.record.key,
                         o
                       )
-                    }.toList,
-                    passThrough = message.committableOffset
-                  )
+                    }.empty,
+                    passThrough = message.committableOffset                  )
               }
+              .via(Producer.flexiFlow(producerSettings))
               .map(_.passThrough)
               //       .collect {
               //         case a: ProducerMessage.Envelope[_, String, _] =>
