@@ -24,9 +24,14 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
 //    }
 
 //    if (initialization != "true") {
-    actor.persistEvent(event,Set("Sujeto")) { () =>
+    actor.persistEvent(event) { () =>
       actor.state += event
-      actor.persistSnapshot()(_ => ())
+      actor.persistSnapshot(){ _ =>
+        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+        if (actor.state.eventCounter > 50) {
+          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+        }
+      }
     }
 //    }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
