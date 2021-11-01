@@ -33,7 +33,12 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
       actor.state += event
       if (initialization != "true")
         actor.informParent(command, actor.state)
-      actor.persistSnapshot(event, actor.state)(() => ())
+      actor.persistSnapshot(event, actor.state){ () =>
+        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+        if (actor.state.eventCounter > 50) {
+          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+        }
+      }
     }
 
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

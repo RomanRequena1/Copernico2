@@ -126,15 +126,15 @@ class KafkaCommittablePartitionedMessageProcessor(
               }
               .map {
                 case Left((message, cause)) =>
-                  log.error(cause)
+                  //log.error(cause)
                   RejectedMessagesCounter.increment()
                   val output = Seq(message.record.value)
                   if (cause.contains("AskTimeoutException")){
-                    log.error("Retrying due to AskTimeoutException -->" + message.record.key)
+                  //  log.error("Retrying due to AskTimeoutException -->" + message.record.key)
                     ProducerMessage.multi(
                       records = output.map { o =>
                         new ProducerRecord(
-                          SOURCE_TOPIC,
+                          SOURCE_TOPIC + "_retry",
                           message.record.key,
                           o
                         )
