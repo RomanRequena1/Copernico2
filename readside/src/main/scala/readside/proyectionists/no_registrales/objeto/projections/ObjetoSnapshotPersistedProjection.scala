@@ -7,17 +7,27 @@ case class ObjetoSnapshotPersistedProjection(
     event: ObjetoSnapshotPersisted
 ) extends ObjetoProjection {
   val registro: Option[ObjetoExternalDto] = event.registro
-  val fromRegistro: Option[List[(String, Option[Object])]] = registro map { registro =>
-    List(
-      "soj_cat_soj_id" -> registro.SOJ_CAT_SOJ_ID,
-      "soj_descripcion" -> registro.SOJ_DESCRIPCION,
-      "soj_estado" -> registro.SOJ_ESTADO,
-      "soj_fecha_fin" -> registro.SOJ_FECHA_FIN,
-      "soj_fecha_inicio" -> registro.SOJ_FECHA_INICIO,
-      "soj_id_externo" -> registro.SOJ_ID_EXTERNO,
-      "soj_otros_atributos" -> registro.SOJ_OTROS_ATRIBUTOS,
-      "soj_base_imponible" -> registro.SOJ_BASE_IMPONIBLE
-    )
+  val fromRegistro: Option[List[(String, Option[Object])]] = registro match {
+    case Some(r) => Some(List(
+      "soj_cat_soj_id" -> r.SOJ_CAT_SOJ_ID,
+      "soj_descripcion" -> r.SOJ_DESCRIPCION,
+      "soj_estado" -> r.SOJ_ESTADO,
+      "soj_fecha_fin" -> r.SOJ_FECHA_FIN,
+      "soj_fecha_inicio" -> r.SOJ_FECHA_INICIO,
+      "soj_id_externo" -> r.SOJ_ID_EXTERNO,
+      "soj_otros_atributos" -> r.SOJ_OTROS_ATRIBUTOS,
+      "soj_base_imponible" -> r.SOJ_BASE_IMPONIBLE
+    ))
+    case None => Some(List(
+      "soj_cat_soj_id" -> None,
+      "soj_descripcion" -> Some("Sin descripción"),
+      "soj_estado" -> None,
+      "soj_fecha_fin" -> None,
+      "soj_fecha_inicio" -> None,
+      "soj_id_externo" -> None,
+      "soj_otros_atributos" -> None,
+      "soj_base_imponible" -> None
+    ))
   }
 
   val others: List[(String, BigDecimal)] = List(
