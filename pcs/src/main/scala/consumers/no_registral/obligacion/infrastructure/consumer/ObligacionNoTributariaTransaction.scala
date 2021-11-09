@@ -34,6 +34,7 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
 
   def processMessage(registro: ObligacionesAnt): Future[Response.SuccessProcessing] = {
     implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
+    val isAdheridoDebito = registro.BOB_ADHERIDO_DEBITO.contains("S")
 
     val detalles: Option[Seq[DetallesObligacion]] = for {
       otrosAtributos <- registro.BOB_OTROS_ATRIBUTOS
@@ -58,7 +59,8 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
           obligacionId = registro.BOB_OBN_ID,
           deliveryId = registro.EV_ID,
           registro = registro,
-          detallesObligacion = detalles.getOrElse(Seq.empty)
+          detallesObligacion = detalles.getOrElse(Seq.empty),
+          isAdheridoDebito = isAdheridoDebito
         )
     actorRef.ask[Response.SuccessProcessing](command)
   }

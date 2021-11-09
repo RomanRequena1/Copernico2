@@ -14,7 +14,8 @@ object ObligacionCommands {
       obligacionId: String,
       deliveryId: BigInt,
       registro: ObligacionExternalDto,
-      detallesObligacion: Seq[DetallesObligacion]
+      detallesObligacion: Seq[DetallesObligacion],
+      isAdheridoDebito: Boolean
   ) extends ObligacionCommands
 
   case class ObligacionRemove(

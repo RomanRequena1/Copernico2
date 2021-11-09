@@ -19,7 +19,8 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       command.tipoObjeto,
       command.obligacionId,
       command.registro,
-      command.detallesObligacion
+      command.detallesObligacion,
+      command.isAdheridoDebito
     )
     // check whether we are in initialization mode or not
     val initialization: String = {

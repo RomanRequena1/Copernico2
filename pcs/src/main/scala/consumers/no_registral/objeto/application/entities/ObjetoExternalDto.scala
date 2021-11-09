@@ -18,6 +18,7 @@ sealed trait ObjetoExternalDto extends ExternalDto {
   def SOJ_ID_EXTERNO: Option[String]
   def SOJ_OTROS_ATRIBUTOS: Option[JsValue]
   def SOJ_BASE_IMPONIBLE: Option[BigDecimal]
+  def SOJ_ADHERIDO_DEBITO: Option[String]
   def EV_ID: BigInt
 }
 
@@ -35,13 +36,13 @@ object ObjetoExternalDto {
       SOJ_FECHA_FIN: Option[LocalDateTime],
       SOJ_ID_EXTERNO: Option[String],
       SOJ_OTROS_ATRIBUTOS: Option[JsValue],
-      SOJ_BASE_IMPONIBLE: Option[BigDecimal]
+      SOJ_BASE_IMPONIBLE: Option[BigDecimal],
+      SOJ_ADHERIDO_DEBITO: Option[String]
   ) extends ObjetoExternalDto
 
   case class ObjetosTriOtrosAtributos(
       RESPONSABLE_OTROS_ATRIBUTOS: Option[String],
       PORCENTAJE_OTROS_ATRIBUTOS: Option[BigDecimal],
-      OTROS_ATRIBUTOS_ADHERIDO_DEBITO: Option[String],
       CUENTA_SOJ_OTROS_ATRIBUTOS: Option[String],
       PERIODO_SOJ_OTROS_ATRIBUTOS: Option[String],
       IMPORTE_SOJ_OTROS_ATRIBUTOS: Option[String]
@@ -58,7 +59,8 @@ object ObjetoExternalDto {
       SOJ_FECHA_FIN: Option[LocalDateTime],
       SOJ_ID_EXTERNO: Option[String],
       SOJ_OTROS_ATRIBUTOS: Option[JsValue],
-      SOJ_BASE_IMPONIBLE: Option[BigDecimal]
+      SOJ_BASE_IMPONIBLE: Option[BigDecimal],
+      SOJ_ADHERIDO_DEBITO: Option[String]
   ) extends ObjetoExternalDto
 
   case class Cotitularidad(

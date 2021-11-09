@@ -15,6 +15,7 @@ case class ObligacionState(
     lastDeliveryIdByEvents: Map[String, BigInt] = Map.empty,
     detallesObligacion: Seq[DetallesObligacion] = Seq.empty,
     juicioId: Option[BigInt] = None,
+    isAdheridoDebito: Boolean = false,
     eventCounter:Int = 0
 ) extends AbstractState[ObligacionEvents] {
 
@@ -37,7 +38,8 @@ case class ObligacionState(
           registro = Some(e.registro),
           detallesObligacion = e.detallesObligacion,
           juicioId = e.registro.BOB_JUI_ID,
-          lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, e.deliveryId))
+          lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, e.deliveryId)),
+          isAdheridoDebito = e.isAdheridoDebito
         )
       case _ => this
     }

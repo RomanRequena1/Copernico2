@@ -11,6 +11,7 @@ CREATE TABLE read_side.buc_sujeto_objeto (
     soj_otros_atributos map<text, text>,
     soj_saldo float,
     soj_base_imponible float,
+    soj_adherido_debito text,
     PRIMARY KEY (soj_suj_identificador, soj_tipo_objeto, soj_identificador)
 ) WITH CLUSTERING ORDER BY (soj_tipo_objeto ASC, soj_identificador ASC)
     AND bloom_filter_fp_chance = 0.01

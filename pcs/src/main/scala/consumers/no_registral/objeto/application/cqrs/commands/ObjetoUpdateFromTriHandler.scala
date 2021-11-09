@@ -23,7 +23,8 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
       command.tipoObjeto,
       command.registro,
       command.isResponsable,
-      command.sujetoResponsable
+      command.sujetoResponsable,
+      command.isAdheridoDebito
     )
     if (isIdempotent(event, command, actor.state.lastDeliveryIdByEvents)) {
       log.warn(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
