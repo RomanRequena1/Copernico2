@@ -20,6 +20,7 @@ case class ObjetoState(
     porcentajeResponsabilidad: BigDecimal = 0,
     exenciones: Set[Exencion] = Set.empty,
     isBaja: Boolean = false,
+    isAdheridoDebito: Boolean = false,
     eventCounter:Int = 0
 ) extends AbstractState[ObjetoEvents] {
 
@@ -49,7 +50,8 @@ case class ObjetoState(
           },
           isResponsable = evt.isResponsable.getOrElse(false),
           registro = Some(evt.registro),
-          sujetos = sujetos + evt.sujetoId
+          sujetos = sujetos + evt.sujetoId,
+          isAdheridoDebito = evt.isAdheridoDebito
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
         copy(

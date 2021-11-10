@@ -22,7 +22,7 @@ class ObjetoSnapshotPersistedHandler(
   }
 
   override def processMessage(registro: ObjetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
-    recordLag(calculateLag(registro.deliveryId.toString))
+    //recordLag(calculateLag(registro.deliveryId.toString))
     val projection = ObjetoSnapshotPersistedProjection(registro)
     for {
       done <- r.cassandraWrite writeState projection

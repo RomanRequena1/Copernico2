@@ -52,6 +52,8 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
       }
     }
 
+    val isAdheridoDebito = registro.SOJ_ADHERIDO_DEBITO.contains("S")
+
     val command: ObjetoCommands =
       if (registro.SOJ_ESTADO.contains("BAJA"))
         ObjetoCommands.SetBajaObjeto(
@@ -71,7 +73,8 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
           deliveryId = registro.EV_ID,
           registro = registro,
           isResponsable = isResponsable,
-          sujetoResponsable = sujetoResponsable
+          sujetoResponsable = sujetoResponsable,
+          isAdheridoDebito = isAdheridoDebito
         )
 
     actorRef.ask[Response.SuccessProcessing](command)

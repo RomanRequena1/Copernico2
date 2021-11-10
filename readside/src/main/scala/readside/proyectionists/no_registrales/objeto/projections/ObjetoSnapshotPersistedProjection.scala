@@ -16,7 +16,8 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_fecha_inicio" -> r.SOJ_FECHA_INICIO,
       "soj_id_externo" -> r.SOJ_ID_EXTERNO,
       "soj_otros_atributos" -> r.SOJ_OTROS_ATRIBUTOS,
-      "soj_base_imponible" -> r.SOJ_BASE_IMPONIBLE
+      "soj_base_imponible" -> r.SOJ_BASE_IMPONIBLE,
+      "soj_adherido_debito" -> r.SOJ_ADHERIDO_DEBITO
     ))
     case None => Some(List(
       "soj_cat_soj_id" -> None,
@@ -26,7 +27,8 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_fecha_inicio" -> None,
       "soj_id_externo" -> None,
       "soj_otros_atributos" -> None,
-      "soj_base_imponible" -> None
+      "soj_base_imponible" -> None,
+      "soj_adherido_debito" -> None
     ))
   }
 

@@ -33,6 +33,7 @@ case class ObligacionTributariaTransaction1(actorRef: ActorRef, monitoring: Moni
     maybeDecode[ObligacionesTri](input)
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
+    val isAdheridoDebito = obligacion.BOB_ADHERIDO_DEBITO.contains("S")
     val command: Command = obligacion match {
       //this pattern match isn't  commutative
       case obn: ObligacionesTri if precondicionParaDarDeBaja(obn) =>
@@ -59,7 +60,8 @@ case class ObligacionTributariaTransaction1(actorRef: ActorRef, monitoring: Moni
           deliveryId = obligacion.EV_ID,
           registro = obligacion,
           //todo: fix
-          detallesObligacion = extractOtrosAtributos(obligacion).getOrElse(Seq.empty)
+          detallesObligacion = extractOtrosAtributos(obligacion).getOrElse(Seq.empty),
+          isAdheridoDebito = isAdheridoDebito
         )
     }
 
