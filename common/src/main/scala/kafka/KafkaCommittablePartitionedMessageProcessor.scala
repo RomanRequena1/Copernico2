@@ -147,7 +147,7 @@ class KafkaCommittablePartitionedMessageProcessor(
                         new ProducerRecord(
                           SOURCE_TOPIC + "_error",
                           message.record.key,
-                          "FAILED WITH CAUSE: "+ cause + "DTO:\n"+ o
+                          o
                         )
                       }.toList,
                       passThrough = message.committableOffset
