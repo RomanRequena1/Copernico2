@@ -13,7 +13,20 @@
         <!-- encoder is required -->
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
-    
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/home/demiourgos728/server.log</file>
+        <append>true</append>
+        
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/home/demiourgos728/logs/log-%d{yyyy-MM-dd-HH:mm}.log</fileNamePattern>
+            <maxHistory>5</maxHistory> 
+        </rollingPolicy>
+        
+        <encoder>
+            <pattern>[%d{"yyyy-MM-dd'T'HH:mm:ss,SSS"}] | [${ENVIRONMENT_EXECUTION}] | [READSIDE] | [%-5level] | [%thread] | [%msg]%n</pattern>
+        </encoder>
+    </appender>
 
     <logger name="akka" level="${AKKA_DEBUG_MODE}"/>
     <logger name="akka.kafka" level="${AKKA_KAFKA_DEBUG_MODE}"/>
@@ -32,6 +45,7 @@
     <root level="${LOG_ROOT_LEVEL_DEBUG_MODE}">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="stash"/>
+        <appender-ref ref="FILE"/>
     </root>
 
 </configuration>
