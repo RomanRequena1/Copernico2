@@ -28,6 +28,7 @@ services:
       ZIPKIN_PORT: 9411
       JAEGER_HOST: host.docker.internal
       JAEGER_PORT: 5775
+      ENVIRONMENT_EXECUTION: 'DESA'
     networks:
       kafka_copernico_net:
         ipv4_address: 172.22.4.3

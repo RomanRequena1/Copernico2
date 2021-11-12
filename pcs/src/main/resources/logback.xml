@@ -11,6 +11,20 @@
     </layout>
     </appender>
 
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/home/demiourgos728/server.log</file>
+        <append>true</append>
+        
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/home/demiourgos728/logs/log-%d{yyyy-MM-dd-HH:mm}.log</fileNamePattern>
+            <maxHistory>5</maxHistory> 
+        </rollingPolicy>
+        
+        <encoder>
+            <pattern>[%d{"yyyy-MM-dd'T'HH:mm:ss,SSS"}] | [${ENVIRONMENT_EXECUTION}] | [PCS] | [%-5level] | [%thread] | [%msg]%n</pattern>
+        </encoder>
+    </appender>
+
     <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <destination>${LOGSTASH:-0.0.0.0:5000}</destination>
         <!-- encoder is required -->
@@ -34,6 +48,7 @@
         <root level="ERROR">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="stash"/>
+            <appender-ref ref="FILE"/>
         </root>
 
     </configuration>
