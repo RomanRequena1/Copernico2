@@ -15,7 +15,7 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/home/demiourgos728/server.log</file>
+        <file>/var/log/readside/server.log</file>
         <append>true</append>
         
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
