@@ -15,11 +15,10 @@ import serialization.maybeDecode
 import scala.concurrent.Future
 import scala.util.Try
 
-case class ObligacionTributariaTransaction1(actorRef: ActorRef, monitoring: Monitoring)(
+case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
-
 
   /** Handles the deserialization of detalles de obligaciones tributarias */
   implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
@@ -27,7 +26,7 @@ case class ObligacionTributariaTransaction1(actorRef: ActorRef, monitoring: Moni
   def topic =
     Try {
       actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-OBLIGACIONES-TRI1"
+    } getOrElse "DGR-COP-OBLIGACIONES-TRI-BILLETERA"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] =
     maybeDecode[ObligacionesTri](input)
@@ -103,5 +102,6 @@ case class ObligacionTributariaTransaction1(actorRef: ActorRef, monitoring: Moni
   private def extractRuleNumber(otrosAtributos: Seq[DetallesObligacion]) = {
     otrosAtributos.headOption.flatMap(_.RULE_NUMBER)
   }
+
 
 }

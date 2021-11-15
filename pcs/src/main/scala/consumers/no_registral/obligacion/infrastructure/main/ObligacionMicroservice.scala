@@ -7,7 +7,7 @@ import api.actor_transaction.ActorTransaction
 import consumers.no_registral.obligacion.infrastructure.consumer.{
   ObligacionNoTributariaTransaction,
   ObligacionTributariaTransaction,
-  ObligacionTributariaTransaction1,
+  ObligacionTributariaTransactionBilletera,
   ObligacionTributariaTransaction2,
   ObligacionTributariaTransaction3
 }
@@ -26,7 +26,7 @@ class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) 
     Set(
       ObligacionTributariaTransaction(actor, monitoring),
 
-      ObligacionTributariaTransaction1(actor, monitoring),
+      ObligacionTributariaTransactionBilletera(actor, monitoring),
       ObligacionTributariaTransaction2(actor, monitoring),
       ObligacionTributariaTransaction3(actor, monitoring)
       //ObligacionNoTributariaTransaction(actor, monitoring)
