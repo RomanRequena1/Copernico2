@@ -4,19 +4,10 @@ import akka.actor.ActorRef
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
-import consumers.no_registral.obligacion.infrastructure.consumer.{
-  ObligacionNoTributariaTransaction,
-  ObligacionTributariaTransaction,
-  ObligacionTributariaTransactionBilletera,
-  ObligacionTributariaTransaction2,
-  ObligacionTributariaTransaction3
-}
+import consumers.no_registral.obligacion.infrastructure.consumer.{ObligacionNoTributariaTransaction, ObligacionTributariaTransaction, ObligacionTributariaTransaction2, ObligacionTributariaTransaction3, ObligacionTributariaTransactionAutomotor, ObligacionTributariaTransactionBilletera, ObligacionTributariaTransactionCuotaPlan, ObligacionTributariaTransactionEmbarcacion, ObligacionTributariaTransactionIngresoBruto, ObligacionTributariaTransactionInmueble, ObligacionTributariaTransactionJuicio}
 import consumers.no_registral.obligacion.infrastructure.http.ObligacionStateAPI
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
 
@@ -27,6 +18,13 @@ class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) 
       ObligacionTributariaTransaction(actor, monitoring),
 
       ObligacionTributariaTransactionBilletera(actor, monitoring),
+      ObligacionTributariaTransactionInmueble(actor, monitoring),
+      ObligacionTributariaTransactionAutomotor(actor, monitoring),
+      ObligacionTributariaTransactionIngresoBruto(actor, monitoring),
+      ObligacionTributariaTransactionMultiobjeto(actor, monitoring),
+      ObligacionTributariaTransactionEmbarcacion(actor, monitoring),
+      ObligacionTributariaTransactionCuotaPlan(actor, monitoring),
+      ObligacionTributariaTransactionJuicio(actor, monitoring),
       ObligacionTributariaTransaction2(actor, monitoring),
       ObligacionTributariaTransaction3(actor, monitoring)
       //ObligacionNoTributariaTransaction(actor, monitoring)
