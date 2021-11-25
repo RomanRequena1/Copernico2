@@ -1,5 +1,5 @@
 # How to run  
-## in development mode  
+## in development mode  *
 **Run the following commands on different consoles**
 
 
