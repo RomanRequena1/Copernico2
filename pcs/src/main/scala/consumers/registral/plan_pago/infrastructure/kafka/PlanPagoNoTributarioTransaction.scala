@@ -18,10 +18,9 @@ case class PlanPagoNoTributarioTransaction(actor: PlanPagoActor, monitoring: Mon
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[PlanPagoAnt](monitoring) {
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-PLANES-ANT"
+  def topic = "DGR-COP-PLANES-ANT"
+  def topicRetry = "DGR-COP-PLANES-ANT_retry"
+  def topicError = "DGR-COP-PLANES-ANT_error"
 
   def processInput(input: String): Either[Throwable, PlanPagoAnt] =
     maybeDecode[PlanPagoAnt](input)

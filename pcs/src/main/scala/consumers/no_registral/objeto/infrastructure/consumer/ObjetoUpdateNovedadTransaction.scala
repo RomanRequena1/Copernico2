@@ -17,6 +17,8 @@ case class ObjetoUpdateNovedadTransaction(actorRef: ActorRef, monitoring: Monito
 ) extends ActorTransaction[ObjetoSnapshot](monitoring) {
 
   def topic = "ObjetoReceiveSnapshot"
+  def topicRetry = "ObjetoReceiveSnapshot_retry"
+  def topicError = "ObjetoReceiveSnapshot_error"
 
   def processInput(input: String): Either[Throwable, ObjetoSnapshot] =
     maybeDecode[ObjetoSnapshot](input)

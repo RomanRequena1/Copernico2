@@ -18,10 +18,9 @@ case class EtapasProcesalesTributarioTransaction(actor: EtapasProcesalesActor, m
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[EtapasProcesalesTri](monitoring) {
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-ETAPROCESALES-TRI"
+  def topic = "DGR-COP-ETAPROCESALES-TRI"
+  def topicRetry = "DGR-COP-ETAPROCESALES-TRI_retry"
+  def topicError = "DGR-COP-ETAPROCESALES-TRI_error"
 
   def processInput(input: String): Either[Throwable, EtapasProcesalesTri] =
     maybeDecode[EtapasProcesalesTri](input)

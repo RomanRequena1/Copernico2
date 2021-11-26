@@ -20,6 +20,8 @@ class ActividadSujetoUpdatedFromDtoHandler(
 ) extends ActorTransaction[ActividadSujetoUpdatedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
   override def topic: String = "ActividadSujetoUpdatedFromDto"
+  override def topicRetry: String = "ActividadSujetoUpdatedFromDto_retry"
+  override def topicError: String = "ActividadSujetoUpdatedFromDto_error"
 
   import consumers.registral.actividad_sujeto.infrastructure.json._
 

@@ -19,10 +19,9 @@ case class ObjetoExencionTransaction(actorRef: ActorRef, monitoring: Monitoring)
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[Exencion](monitoring) {
 
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-EXENCIONES"
+  def topic = "DGR-COP-EXENCIONES"
+  def topicRetry = "DGR-COP-EXENCIONES_retry"
+  def topicError = "DGR-COP-EXENCIONES_error"
 
   def processInput(input: String): Either[Throwable, Exencion] =
     maybeDecode[Exencion](input)

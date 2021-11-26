@@ -20,6 +20,8 @@ trait MessageProcessor {
   def run(
       SOURCE_TOPIC: String,
       SINK_TOPIC: String,
+      RETRY_TOPIC: String,
+      ERROR_TOPIC: String,
       algorithm: String => Future[Seq[String]]
   ): (Option[MessageProcessorKillSwitch], Future[Done])
 

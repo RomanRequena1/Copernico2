@@ -18,10 +18,9 @@ case class DeclaracionJuradaTransaction(actor: DeclaracionJuradaActor, monitorin
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[DeclaracionJurada](monitoring) {
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-DECJURADAS"
+  def topic = "DGR-COP-DECJURADAS"
+  def topicRetry = "DGR-COP-DECJURADAS_retry"
+  def topicError = "DGR-COP-DECJURADAS_error"
 
   def processInput(input: String): Either[Throwable, DeclaracionJurada] =
     maybeDecode[DeclaracionJurada](input)

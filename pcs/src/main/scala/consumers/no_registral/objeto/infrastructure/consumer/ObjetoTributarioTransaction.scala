@@ -24,10 +24,9 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObjetosTri](monitoring) {
 
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-OBJETOS-TRI"
+  def topic = "DGR-COP-OBJETOS-TRI"
+  def topicRetry = "DGR-COP-OBJETOS-TRI_retry"
+  def topicError = "DGR-COP-OBJETOS-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObjetosTri] =
     maybeDecode[ObjetosTri](input)

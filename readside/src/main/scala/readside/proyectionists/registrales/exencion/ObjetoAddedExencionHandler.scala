@@ -17,6 +17,8 @@ class ObjetoAddedExencionHandler(
 ) extends ActorTransaction[ObjetoAddedExencion](r.monitoring)(r.actorTransactionRequirements) {
 
   override def topic: String = "ObjetoAddedExencion"
+  override def topicRetry: String = "ObjetoAddedExencion_retry"
+  override def topicError: String = "ObjetoAddedExencion_error"
 
   import consumers.no_registral.objeto.infrastructure.json._
 

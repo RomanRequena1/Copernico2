@@ -17,6 +17,8 @@ class SubastaUpdatedFromDtoHandler(
 ) extends ActorTransaction[SubastaUpdatedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
   override def topic: String = "SubastaUpdatedFromDto"
+  override def topicError: String = "SubastaUpdatedFromDto_error"
+  override def topicRetry: String = "SubastaUpdatedFromDto_retry"
 
   import consumers.registral.subasta.infrastructure.json._
 

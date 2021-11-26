@@ -17,6 +17,10 @@ class ObligacionAddedExencionHandler(
 
   override def topic: String = "ObligacionAddedExencion"
 
+  override def topicRetry: String = "ObligacionAddedExencion_retry"
+
+  override def topicError: String = "ObligacionAddedExencion_error"
+
   override def processInput(input: String): Either[Throwable, ObligacionAddedExencion] =
     serialization
       .maybeDecode[ObligacionAddedExencion](input)

@@ -16,6 +16,8 @@ abstract class ActorTransaction[ExternalDto](
     extends ActorTransactionMetrics(monitoring)(actorTransactionRequirements.executionContext) {
 
   def topic: String
+  def topicRetry: String
+  def topicError: String
 
   def processMessage(registro: ExternalDto): Future[Response.SuccessProcessing]
 

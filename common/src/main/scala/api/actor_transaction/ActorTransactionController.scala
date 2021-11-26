@@ -37,6 +37,9 @@ class ActorTransactionController(
 
   def startTransaction(): Option[KillSwitch] = {
     def topic = actorTransaction.topic
+    def topicRetry= actorTransaction.topicRetry
+    def topicError= actorTransaction.topicError
+
     val transaction = actorTransaction.transaction _
     println(s"Starting ${actorTransaction.topic} transaction")
     log.debug(s"Starting ${actorTransaction.topic} transaction")
@@ -48,7 +51,7 @@ class ActorTransactionController(
     // val (killSwitch, done) = new KafkaCommitableMessageProcessor(requirements)
     //  val (killSwitch, done) = new KafkaCommittableSourceMessageProcessor(requirements)
     // val (killSwitch, done) = new KafkaPlainConsumerMessageProcessor(requirements)
-      .run(topic, s"${topic}SINK", message => {
+      .run(topic, s"${topic}SINK",topicRetry,topicError, message => {
         transaction(message).map { output =>
           Seq(output.toString)
         }

@@ -17,6 +17,8 @@ class DomicilioObjetoUpdatedFromDtoHandler(
 ) extends ActorTransaction[DomicilioObjetoUpdatedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
   override def topic: String = "DomicilioObjetoUpdatedFromDto"
+  override def topicRetry: String = "DomicilioObjetoUpdatedFromDto_retry"
+  override def topicError: String = "DomicilioObjetoUpdatedFromDto_error"
 
   import consumers.registral.domicilio_objeto.infrastructure.json._
 

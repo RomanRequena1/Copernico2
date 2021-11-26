@@ -23,10 +23,9 @@ case class JuicioNoTributarioTransaction(actor: JuicioActor, monitoring: Monitor
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[JuicioAnt](monitoring) {
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-JUICIOS-ANT"
+  def topic = "DGR-COP-JUICIOS-ANT"
+  def topicRetry = "DGR-COP-JUICIOS-ANT_retry"
+  def topicError = "DGR-COP-JUICIOS-ANT_error"
 
   def processInput(input: String): Either[Throwable, JuicioAnt] =
     maybeDecode[JuicioAnt](input)

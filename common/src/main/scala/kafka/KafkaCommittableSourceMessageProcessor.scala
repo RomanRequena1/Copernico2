@@ -26,6 +26,8 @@ class KafkaCommittableSourceMessageProcessor(
   def run(
       SOURCE_TOPIC: String,
       SINK_TOPIC: String,
+      RETRY_TOPIC: String,
+      ERROR_TOPIC: String,
       algorithm: String => Future[Seq[String]]
   ): (Option[MessageProcessorKillSwitch], Future[Done]) = {
 
@@ -82,7 +84,7 @@ class KafkaCommittableSourceMessageProcessor(
           ProducerMessage.multi(
             records = output.map { o =>
               new ProducerRecord(
-                SOURCE_TOPIC + "_retry",
+                RETRY_TOPIC,
                 message.record.key,
                 o
               )
@@ -128,7 +130,7 @@ class KafkaCommittableSourceMessageProcessor(
       case Failure(ex) =>
         log.error(s"Stream completed with failure -- ${ex.getMessage}")
         ks.shutdown()
-        run(SOURCE_TOPIC, SINK_TOPIC, algorithm)
+        run(SOURCE_TOPIC, SINK_TOPIC, RETRY_TOPIC, ERROR_TOPIC, algorithm)
     }
     (Some(killSwitch), done)
 
