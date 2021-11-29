@@ -17,10 +17,9 @@ case class SubastaTransaction(actor: SubastaActor, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[SubastaExternalDto](monitoring) {
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-SUBASTAS"
+  def topic = "DGR-COP-SUBASTAS"
+  def topicRetry = "DGR-COP-SUBASTAS_retry"
+  def topicError = "DGR-COP-SUBASTAS_error"
 
   def processInput(input: String): Either[Throwable, SubastaExternalDto] =
     maybeDecode[SubastaExternalDto](input)

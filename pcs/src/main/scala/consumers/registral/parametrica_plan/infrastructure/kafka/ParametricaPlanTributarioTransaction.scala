@@ -18,10 +18,9 @@ case class ParametricaPlanTributarioTransaction(actor: ParametricaPlanActor, mon
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ParametricaPlanTri](monitoring) {
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-PARAMPLAN-TRI"
+  def topic = "DGR-COP-PARAMPLAN-TRI"
+  def topicRetry = "DGR-COP-PARAMPLAN-TRI_retry"
+  def topicError = "DGR-COP-PARAMPLAN-TRI_error"
 
   def processInput(input: String): Either[Throwable, ParametricaPlanTri] =
     maybeDecode[ParametricaPlanTri](input)

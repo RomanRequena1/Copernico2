@@ -19,10 +19,10 @@ case class ObjetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObjetosAnt](monitoring) {
 
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-OBJETOS-ANT"
+  def topic = "DGR-COP-OBJETOS-ANT"
+  def topicRetry = "DGR-COP-OBJETOS-ANT_retry"
+  def topicError = "DGR-COP-OBJETOS-ANT_error"
+
 
   def processInput(input: String): Either[Throwable, ObjetosAnt] =
     maybeDecode[ObjetosAnt](input)

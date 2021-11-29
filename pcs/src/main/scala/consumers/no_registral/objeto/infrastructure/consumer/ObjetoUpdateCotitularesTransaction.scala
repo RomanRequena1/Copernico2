@@ -16,6 +16,8 @@ case class ObjetoUpdateCotitularesTransaction(actorRef: ActorRef, monitoring: Mo
 ) extends ActorTransaction[ObjetoUpdateCotitulares](monitoring) {
 
   def topic = "ObjetoUpdatedCotitulares"
+  def topicRetry = "ObjetoUpdatedCotitulares_retry"
+  def topicError = "ObjetoUpdatedCotitulares_error"
 
   def processInput(input: String): Either[Throwable, ObjetoUpdateCotitulares] =
     maybeDecode[ObjetoUpdateCotitulares](input)

@@ -17,6 +17,8 @@ class PlanPagoUpdatedFromDtoHandler(
 ) extends ActorTransaction[PlanPagoUpdatedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
   override def topic: String = "PlanPagoUpdatedFromDto"
+  override def topicRetry: String = "PlanPagoUpdatedFromDto_retry"
+  override def topicError: String = "PlanPagoUpdatedFromDto_error"
 
   import consumers.registral.plan_pago.infrastructure.json._
 

@@ -15,6 +15,10 @@ class ObjetoSnapshotPersistedHandler(
 
   override def topic: String = "ObjetoSnapshotPersistedReadside"
 
+  override def topicRetry: String = "ObjetoSnapshotPersistedReadside_retry"
+
+  override def topicError: String = "ObjetoSnapshotPersistedReadside_error"
+
   override def processInput(input: String): Either[Throwable, ObjetoSnapshotPersisted] = {
     import consumers.no_registral.objeto.infrastructure.json._
     serialization

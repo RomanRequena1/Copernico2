@@ -24,10 +24,10 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesAnt](monitoring) {
 
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-OBLIGACIONES-ANT"
+  def topic = "DGR-COP-OBLIGACIONES-ANT"
+  def topicRetry = "DGR-COP-OBLIGACIONES-ANT_retry"
+  def topicError = "DGR-COP-OBLIGACIONES-ANT_error"
+
 
   def processInput(input: String): Either[Throwable, ObligacionesAnt] =
     maybeDecode[ObligacionesAnt](input)

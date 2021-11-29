@@ -18,10 +18,9 @@ case class TramiteTransaction(actor: TramiteActor, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[Tramite](monitoring) {
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-TRAMITES"
+  def topic = "DGR-COP-TRAMITES"
+  def topicRetry = "DGR-COP-TRAMITES_retry"
+  def topicError = "DGR-COP-TRAMITES_error"
 
   def processInput(input: String): Either[Throwable, Tramite] =
     maybeDecode[Tramite](input)

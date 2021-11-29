@@ -18,6 +18,8 @@ case class ObjetoSnapshotPersistedHandler(actorRef: ActorRef, monitoring: Monito
 ) extends ActorTransaction[ObjetoSnapshotPersisted](monitoring) {
 
   def topic = "ObjetoSnapshotPersisted"
+  def topicRetry = "ObjetoSnapshotPersisted_retry"
+  def topicError = "ObjetoSnapshotPersisted_error"
 
   def processInput(input: String): Either[Throwable, ObjetoSnapshotPersisted] =
     maybeDecode[ObjetoSnapshotPersisted](input)

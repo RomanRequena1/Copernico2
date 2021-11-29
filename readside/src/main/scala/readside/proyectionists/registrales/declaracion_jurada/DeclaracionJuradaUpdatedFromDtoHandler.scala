@@ -20,6 +20,8 @@ class DeclaracionJuradaUpdatedFromDtoHandler(
 ) extends ActorTransaction[DeclaracionJuradaUpdatedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
   override def topic: String = "DeclaracionJuradaUpdatedFromDto"
+  override def topicRetry: String = "DeclaracionJuradaUpdatedFromDto_retry"
+  override def topicError: String = "DeclaracionJuradaUpdatedFromDto_error"
 
   import consumers.registral.declaracion_jurada.infrastructure.json._
 

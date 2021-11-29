@@ -17,6 +17,8 @@ class ParametricaRecargoUpdatedFromDtoHandler(
 ) extends ActorTransaction[ParametricaRecargoUpdatedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
   override def topic: String = "ParametricaRecargoUpdatedFromDto"
+  override def topicRetry: String = "ParametricaRecargoUpdatedFromDto_retry"
+  override def topicError: String = "ParametricaRecargoUpdatedFromDto_error"
 
   import consumers.registral.parametrica_recargo.infrastructure.json._
 

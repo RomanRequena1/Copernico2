@@ -17,10 +17,9 @@ case class CalendarioTransaction(actor: CalendarioActor, monitoring: Monitoring)
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[CalendarioExternalDto](monitoring) {
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-CALENDARIO"
+  def topic = "DGR-COP-CALENDARIO"
+  def topicRetry = "DGR-COP-CALENDARIO_retry"
+  def topicError = "DGR-COP-CALENDARIO_error"
 
   def processInput(input: String): Either[Throwable, CalendarioExternalDto] =
     maybeDecode[CalendarioExternalDto](input)

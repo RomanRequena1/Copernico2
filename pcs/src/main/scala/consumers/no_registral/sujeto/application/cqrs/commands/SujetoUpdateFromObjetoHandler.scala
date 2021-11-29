@@ -28,7 +28,7 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
       actor.state += event
       actor.persistSnapshot(){ _ =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-        if (actor.state.eventCounter > 50) {
+        if (actor.state.eventCounter > 9) {
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
       }

@@ -17,6 +17,8 @@ class EtapasProcesalesUpdatedFromDtoHandler(
 ) extends ActorTransaction[EtapasProcesalesUpdatedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
   override def topic: String = "EtapasProcesalesUpdatedFromDto"
+  override def topicRetry: String = "EtapasProcesalesUpdatedFromDto_retry"
+  override def topicError: String = "EtapasProcesalesUpdatedFromDto_error"
 
   import consumers.registral.etapas_procesales.infrastructure.json._
 

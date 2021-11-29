@@ -46,7 +46,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         actor.lastDeliveryId = command.registro.EV_ID
         actor.persistSnapshot() { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-          if (actor.state.eventCounter > 50) {
+          if (actor.state.eventCounter > 9) {
             actor.saveSnapshot(actor.state.copy(eventCounter = 0))
           }
         }

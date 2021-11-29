@@ -51,7 +51,8 @@ object ObligacionesTriGenerator {
         obligacionesTri.BOB_SOJ_TIPO_OBJETO,
         obligacionesTri.BOB_OBN_ID,
         obligacionesTri,
-        detallesObligaciones.getOrElse(Seq.empty)
+        detallesObligaciones.getOrElse(Seq.empty),
+        true
       )
     }
 
@@ -67,7 +68,8 @@ object ObligacionesTriGenerator {
           obligacionesTri.BOB_OBN_ID,
           deliveryId,
           obligacionesTri,
-          detallesObligaciones.getOrElse(Seq.empty)
+          detallesObligaciones.getOrElse(Seq.empty),
+          true
         )
 
       obligacionUpdatedFromDtoStub

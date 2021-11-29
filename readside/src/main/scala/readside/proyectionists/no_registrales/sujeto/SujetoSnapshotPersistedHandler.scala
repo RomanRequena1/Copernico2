@@ -17,6 +17,8 @@ class SujetoSnapshotPersistedHandler(
 ) extends ActorTransaction[SujetoSnapshotPersisted](r.monitoring)(r.actorTransactionRequirements) {
 
   override def topic: String = "SujetoSnapshotPersisted"
+  override def topicRetry: String =  "SujetoSnapshotPersisted_retry"
+  override def topicError: String = "SujetoSnapshotPersisted_error"
 
   import consumers.no_registral.sujeto.infrastructure.json._
 

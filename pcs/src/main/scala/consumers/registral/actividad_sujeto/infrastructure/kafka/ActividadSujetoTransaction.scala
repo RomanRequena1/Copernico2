@@ -19,10 +19,10 @@ case class ActividadSujetoTransaction(actor: ActividadSujetoActor, monitoring: M
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ActividadSujeto](monitoring) {
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-ACTIVIDADES"
+  def topic = "DGR-COP-ACTIVIDADES"
+  def topicRetry = "DGR-COP-ACTIVIDADES_retry"
+  def topicError = "DGR-COP-ACTIVIDADES_error"
+
 
   def processInput(input: String): Either[Throwable, ActividadSujeto] =
     maybeDecode[ActividadSujeto](input)

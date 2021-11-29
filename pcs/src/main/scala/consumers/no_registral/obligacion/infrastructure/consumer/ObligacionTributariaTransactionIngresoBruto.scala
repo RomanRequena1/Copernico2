@@ -3,7 +3,6 @@ package consumers.no_registral.obligacion.infrastructure.consumer
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.no_registral.obligacion.application.entities.ObligacionCommands
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{DownObligacion, ObligacionRemove, ObligacionUpdateFromDto}
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json._
@@ -15,7 +14,7 @@ import serialization.maybeDecode
 import scala.concurrent.Future
 import scala.util.Try
 
-case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Monitoring)(
+case class ObligacionTributariaTransactionIngresoBruto(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
@@ -23,7 +22,7 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
   /** Handles the deserialization of detalles de obligaciones tributarias */
   implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
 
-  def topic = "DGR-COP-OBLIGACIONES-TRI2"
+  def topic = "DGR-COP-OBLIGACIONES-TRI-E"
   def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
@@ -101,5 +100,6 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
   private def extractRuleNumber(otrosAtributos: Seq[DetallesObligacion]) = {
     otrosAtributos.headOption.flatMap(_.RULE_NUMBER)
   }
+
 
 }

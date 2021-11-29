@@ -18,10 +18,9 @@ case class DomicilioObjetoTributarioTransaction(actor: DomicilioObjetoActor, mon
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[DomicilioObjetoTri](monitoring) {
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-DOMICILIO-OBJ-TRI"
+  def topic = "DGR-COP-DOMICILIO-OBJ-TRI"
+  def topicRetry = "DGR-COP-DOMICILIO-OBJ-TRI_retry"
+  def topicError = "DGR-COP-DOMICILIO-OBJ-TRI_error"
 
   def processInput(input: String): Either[Throwable, DomicilioObjetoTri] =
     maybeDecode[DomicilioObjetoTri](input)

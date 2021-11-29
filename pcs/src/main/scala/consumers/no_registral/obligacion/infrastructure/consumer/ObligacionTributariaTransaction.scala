@@ -28,10 +28,9 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
   /** Handles the deserialization of detalles de obligaciones tributarias */
   implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
 
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-OBLIGACIONES-TRI"
+  def topic = "DGR-COP-OBLIGACIONES-TRI"
+  def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
+  def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] =
     maybeDecode[ObligacionesTri](input)

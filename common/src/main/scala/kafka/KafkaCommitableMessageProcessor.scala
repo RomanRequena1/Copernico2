@@ -24,6 +24,8 @@ class KafkaCommitableMessageProcessor()(
   def run(
       SOURCE_TOPIC: String,
       SINK_TOPIC: String,
+      RETRY_TOPIC: String,
+      ERROR_TOPIC: String,
       algorithm: String => Future[Seq[String]]
   ): (Option[MessageProcessorKillSwitch], Future[Done]) = {
 
@@ -70,7 +72,7 @@ class KafkaCommitableMessageProcessor()(
           ProducerMessage.multi(
             records = output.map { o =>
               new ProducerRecord(
-                SOURCE_TOPIC + "_retry",
+                RETRY_TOPIC,
                 message.record.key,
                 o
               )

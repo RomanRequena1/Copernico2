@@ -17,6 +17,8 @@ class TramiteUpdatedFromDtoHandler(
 ) extends ActorTransaction[TramiteUpdatedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
   override def topic: String = "TramiteUpdatedFromDto"
+  override def topicError: String = "TramiteUpdatedFromDto_error"
+  override def topicRetry: String = "TramiteUpdatedFromDto_retry"
 
   import consumers.registral.tramite.infrastructure.json._
 

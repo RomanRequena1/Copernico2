@@ -15,6 +15,8 @@ class JuicioUpdatedFromDtoHandler(
 ) extends ActorTransaction[JuicioUpdatedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
   override def topic: String = "JuicioUpdatedFromDto"
+  override def topicRetry: String = "JuicioUpdatedFromDto_retry"
+  override def topicError: String = "JuicioUpdatedFromDto_error"
 
   import consumers.registral.juicio.infrastructure.json._
 

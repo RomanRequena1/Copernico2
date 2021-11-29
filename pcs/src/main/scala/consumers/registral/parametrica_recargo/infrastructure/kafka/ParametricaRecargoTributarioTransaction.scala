@@ -18,10 +18,9 @@ case class ParametricaRecargoTributarioTransaction(actor: ParametricaRecargoActo
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ParametricaRecargoTri](monitoring) {
-  def topic =
-    Try {
-      actorTransactionRequirements.config.getString(s"consumers.$simpleName.topic")
-    } getOrElse "DGR-COP-PARAMRECARGO-TRI"
+  def topic = "DGR-COP-PARAMRECARGO-TRI"
+  def topicRetry = "DGR-COP-PARAMRECARGO-TRI_retry"
+  def topicError = "DGR-COP-PARAMRECARGO-TRI_error"
 
   def processInput(input: String): Either[Throwable, ParametricaRecargoTri] =
     maybeDecode[ParametricaRecargoTri](input)

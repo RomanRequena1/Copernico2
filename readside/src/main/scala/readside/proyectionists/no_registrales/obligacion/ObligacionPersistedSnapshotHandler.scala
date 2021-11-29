@@ -19,6 +19,9 @@ class ObligacionPersistedSnapshotHandler(
 ) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
 
   override def topic: String = "ObligacionPersistedSnapshot"
+  override def topicRetry: String = "ObligacionPersistedSnapshot_retry"
+  override def topicError: String = "ObligacionPersistedSnapshot_error"
+
   private val log = LoggerFactory.getLogger(this.getClass)
 
   import consumers.no_registral.obligacion.infrastructure.json._
