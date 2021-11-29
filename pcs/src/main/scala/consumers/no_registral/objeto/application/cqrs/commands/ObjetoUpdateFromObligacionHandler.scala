@@ -35,7 +35,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
         actor.informParent(command, actor.state)
       actor.persistSnapshot(event, actor.state){ () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-        if (actor.state.eventCounter > 50) {
+        if (actor.state.eventCounter > 9) {
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
       }
