@@ -39,7 +39,7 @@ case class ObligacionState(
           detallesObligacion = e.detallesObligacion,
           juicioId = e.registro.BOB_JUI_ID,
           lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, e.deliveryId)),
-          isAdheridoDebito = e.isAdheridoDebito
+          isAdheridoDebito = e.isAdheridoDebito.getOrElse(false)
         )
       case _ => this
     }

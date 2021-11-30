@@ -51,7 +51,7 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
       }
     }
 
-    val isAdheridoDebito = registro.SOJ_ADHERIDO_DEBITO.contains("S")
+    val isAdheridoDebito = Some(registro.SOJ_ADHERIDO_DEBITO.contains("S"))
 
     val command: ObjetoCommands =
       if (registro.SOJ_ESTADO.contains("BAJA"))

@@ -36,7 +36,7 @@ object ObligacionEvents {
       obligacionId: String,
       registro: ObligacionExternalDto,
       detallesObligacion: Seq[DetallesObligacion],
-      isAdheridoDebito: Boolean
+      isAdheridoDebito: Option[Boolean]
   ) extends ObligacionEvents
 
   case class ObligacionRemoved(

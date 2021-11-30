@@ -50,7 +50,7 @@ object ObligacionesAntGenerator {
         obligacionesAnt.BOB_OBN_ID,
         obligacionesAnt,
         detallesObligaciones.getOrElse(Seq.empty),
-        true
+        Some(true)
       )
     }
 
@@ -67,7 +67,7 @@ object ObligacionesAntGenerator {
           deliveryId,
           obligacionesAnt,
           detallesObligaciones.getOrElse(Seq.empty),
-          true
+          Some(true)
         )
 
       obligacionUpdatedFromDtoStub
