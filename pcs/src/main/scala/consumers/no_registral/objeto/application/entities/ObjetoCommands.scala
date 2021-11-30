@@ -35,7 +35,7 @@ object ObjetoCommands {
       registro: ObjetosTri,
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String],
-      isAdheridoDebito: Boolean
+      isAdheridoDebito: Option[Boolean],
   ) extends ObjetoCommands
 
   case class ObjetoUpdateFromAnt(

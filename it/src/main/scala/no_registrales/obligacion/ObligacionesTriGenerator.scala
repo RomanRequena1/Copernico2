@@ -52,7 +52,7 @@ object ObligacionesTriGenerator {
         obligacionesTri.BOB_OBN_ID,
         obligacionesTri,
         detallesObligaciones.getOrElse(Seq.empty),
-        true
+        Some(true)
       )
     }
 
@@ -69,7 +69,7 @@ object ObligacionesTriGenerator {
           deliveryId,
           obligacionesTri,
           detallesObligaciones.getOrElse(Seq.empty),
-          true
+          Some(true)
         )
 
       obligacionUpdatedFromDtoStub

@@ -44,7 +44,7 @@ object ObjetoEvents {
       registro: ObjetosTri,
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String],
-      isAdheridoDebito: Boolean
+      isAdheridoDebito: Option[Boolean],
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromAnt(

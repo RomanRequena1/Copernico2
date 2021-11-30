@@ -51,7 +51,7 @@ case class ObjetoState(
           isResponsable = evt.isResponsable.getOrElse(false),
           registro = Some(evt.registro),
           sujetos = sujetos + evt.sujetoId,
-          isAdheridoDebito = evt.isAdheridoDebito
+          isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false)
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
         copy(
