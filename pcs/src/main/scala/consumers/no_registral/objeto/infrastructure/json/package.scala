@@ -46,7 +46,6 @@ package object json {
   implicit val ObjetoRemoveObligacionF = Json.format[ObjetoRemoveObligacion]
   implicit val ObjetoTagRemoveF = Json.format[ObjetoTagRemove]
   implicit val SelfUpdateCotitularesF = Json.format[SelfUpdateCotitulares]
-  implicit val ObjetoUpdateFromSetBajaObligacionF = Json.format[ObjetoUpdateFromSetBajaObligacion]
 
   implicit val ObjetoSnapshotPersistedF = Json.format[ObjetoSnapshotPersisted]
   class ObjetoSnapshotPersistedFS extends EventSerializer[ObjetoSnapshotPersisted]

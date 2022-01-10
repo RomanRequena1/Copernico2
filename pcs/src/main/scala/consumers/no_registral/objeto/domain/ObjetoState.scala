@@ -21,7 +21,8 @@ case class ObjetoState(
     exenciones: Set[Exencion] = Set.empty,
     isBaja: Boolean = false,
     isAdheridoDebito: Boolean = false,
-    eventCounter:Int = 0
+    eventCounter:Int = 0,
+    cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false)
 ) extends AbstractState[ObjetoEvents] {
 
   override def +(event: ObjetoEvents): ObjetoState = {
@@ -58,13 +59,6 @@ case class ObjetoState(
           registro = Some(evt.registro),
           sujetos = sujetos + evt.sujetoId
         )
-      case evt: ObjetoEvents.ObjetoUpdatedFromObligacionBajaSet =>
-        val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
-        copy(
-          saldo = obligacionesSaldo_.values.sum,
-          obligaciones = obligaciones - evt.obligacionId,
-          obligacionesSaldo = obligacionesSaldo_
-        )
       case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
         val obligacionesSaldo_ = obligacionesSaldo + (evt.obligacionId -> evt.saldoObligacion)
         copy(
@@ -100,11 +94,22 @@ case class ObjetoState(
 
       case evt: ObjetoEvents.ObjetoRemovedObligacion =>
         val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
-        copy(
-          saldo = obligacionesSaldo_.values.sum,
-          obligaciones = obligaciones - evt.obligacionId,
-          obligacionesSaldo = obligacionesSaldo_
-        )
+        if(evt.cuota.isEmpty) {
+          copy(
+            saldo = obligacionesSaldo_.values.sum,
+            obligaciones = obligaciones - evt.obligacionId,
+            obligacionesSaldo = obligacionesSaldo_
+          )
+        }else {
+          val cuotaIndex_ = evt.cuota.get.toInt
+          val cuotasPagadas_ = cuotas.updated(cuotaIndex_, true)
+          copy(
+            saldo = obligacionesSaldo_.values.sum,
+            obligaciones = obligaciones - evt.obligacionId,
+            obligacionesSaldo = obligacionesSaldo_,
+            cuotas = cuotasPagadas_
+          )
+        }
 
       case evt =>
         log.warn(s"Unexpected event at ObjetoState ${evt}")

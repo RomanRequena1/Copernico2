@@ -23,7 +23,8 @@ class ObjetoSnapshotHandler(actor: ObjetoActor) extends SyncCommandHandler[Objet
       command.sujetoResponsable,
       actor.state.porcentajeResponsabilidad,
       actor.state.registro,
-      command.obligacionesSaldo
+      command.obligacionesSaldo,
+      actor.state.cuotas.mkString("{",",","}")
     )
     val consolidatedState = actor.state + event
     val sender = actor.context.sender()
