@@ -73,7 +73,8 @@ case class ObjetoState(
           sujetos = evt.cotitulares,
           sujetoResponsable = evt.sujetoResponsable,
           obligacionesSaldo = evt.obligacionesSaldo,
-          tags = evt.tags
+          tags = evt.tags,
+          cuotas = evt.cuotas
         )
 
       case evt: ObjetoEvents.ObjetoTagAdded =>

@@ -126,7 +126,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.porcentajeResponsabilidad,
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
-        consolidatedState.cuotas.mkString("{",",","}")
+        consolidatedState.cuotas
       )
 
     requirements.messageProducer.produce(
