@@ -95,7 +95,7 @@ case class ObjetoState(
 
       case evt: ObjetoEvents.ObjetoRemovedObligacion =>
         val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
-        if(evt.cuota.isEmpty) {
+        if(evt.cuota.isEmpty || evt.cuota.get.toInt < 0 || evt.cuota.get.toInt > 12) {
           copy(
             saldo = obligacionesSaldo_.values.sum,
             obligaciones = obligaciones - evt.obligacionId,
