@@ -3,8 +3,7 @@ package consumers.no_registral.obligacion.infrastructure.consumer
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.no_registral.obligacion.application.entities.ObligacionCommands
-import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{DownObligacion, ObligacionRemove, ObligacionUpdateFromDto}
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json._
 import design_principles.actor_model.{Command, Response}
@@ -13,7 +12,6 @@ import play.api.libs.json.Reads
 import serialization.maybeDecode
 
 import scala.concurrent.Future
-import scala.util.Try
 
 case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
@@ -34,20 +32,23 @@ case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitori
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative
-      case obn: ObligacionesTri if precondicionParaDarDeBaja(obn) =>
-        DownObligacion(
+      case obn: ObligacionesTri if isCancelada(obn) =>
+        ObligacionRemove(
+          deliveryId = obn.EV_ID,
           sujetoId = obn.BOB_SUJ_IDENTIFICADOR,
           objetoId = obn.BOB_SOJ_IDENTIFICADOR,
           tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
           obligacionId = obn.BOB_OBN_ID,
-          deliveryId = obn.EV_ID
+          cuota = obn.BOB_CUOTA
         )
       case obn: ObligacionesTri if isNotDeuda(obn) =>
         ObligacionRemove(
+          deliveryId = obn.EV_ID,
           sujetoId = obn.BOB_SUJ_IDENTIFICADOR,
           objetoId = obn.BOB_SOJ_IDENTIFICADOR,
           tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
-          obligacionId = obn.BOB_OBN_ID // TODO consider adding here deliveryId, because this is the consequence of a Kafka message
+          obligacionId = obn.BOB_OBN_ID,
+          cuota = None
         )
       case obn: ObligacionesTri =>
         ObligacionUpdateFromDto(
@@ -67,8 +68,6 @@ case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitori
     actorRef.ask[Response.SuccessProcessing](command)
   }
 
-  def precondicionParaDarDeBaja(registro: ObligacionesTri): Boolean = registro.BOB_ESTADO.contains("BAJA")
-
   private def isNotDeuda(obligacion: ObligacionesTri): Boolean = {
 
     val otrosAtributos = extractOtrosAtributos(obligacion).getOrElse(default = Nil)
@@ -78,6 +77,26 @@ case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitori
       val ruleNumber = extractRuleNumber(otrosAtributos)
 
       if (ruleNumber.contains("-1")) {
+        true
+      } else {
+        false
+      }
+    } else {
+      false
+    })
+
+    result
+  }
+
+  private def isCancelada(obligacion: ObligacionesTri): Boolean = {
+
+    val otrosAtributos = extractOtrosAtributos(obligacion).getOrElse(default = Nil)
+
+    val result: Boolean = (if (otrosAtributos.nonEmpty) {
+
+      val ruleNumber = extractRuleNumber(otrosAtributos)
+
+      if (ruleNumber.contains("-2")) {
         true
       } else {
         false
@@ -101,6 +120,5 @@ case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitori
   private def extractRuleNumber(otrosAtributos: Seq[DetallesObligacion]) = {
     otrosAtributos.headOption.flatMap(_.RULE_NUMBER)
   }
-
 
 }

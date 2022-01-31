@@ -41,10 +41,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateCotitulares](new ObjetoUpdateCotitularesHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoAddExencion](new ObjetoAddExencionHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoRemoveObligacion](new ObjetoRemoveObligacionHandler(this).handle)
-    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromSetBajaObligacion](
-      new ObjetoUpdateFromSetBajaObligacionHandler(this).handle
-    )
-
     queryBus.subscribe[ObjetoQueries.GetStateObjeto](new GetStateObjetoHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetStateExencion](new GetStateExencionHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetSnapshotObjeto](new GetSnapshotObjetoHandler(this).handle)
@@ -129,7 +125,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.sujetoResponsable,
         consolidatedState.porcentajeResponsabilidad,
         consolidatedState.registro,
-        consolidatedState.obligacionesSaldo
+        consolidatedState.obligacionesSaldo,
+        consolidatedState.cuotas
       )
 
     requirements.messageProducer.produce(
@@ -146,7 +143,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
   }
 
-  def removeObligaciones(): Unit =
+  /*def removeObligaciones(): Unit =
     state.obligaciones.foreach { obligacionId =>
       val aggregateRoots = ObjetoMessageRoots.extractor(persistenceId)
       val obligacion =
@@ -158,7 +155,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
     }
 
   def withCotitulares(sujetos: Set[String]): Boolean =
-    sujetos.size > 1
+    sujetos.size > 1*/
 
   def informParent(cmd: ObjetoCommands, state: ObjetoState): Unit = {
     context.parent ! SujetoCommands.SujetoUpdateFromObjeto(

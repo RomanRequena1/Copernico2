@@ -44,7 +44,8 @@ object ObligacionEvents {
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      obligacionId: String
+      obligacionId: String,
+      cuota:Option[String]
   ) extends ObligacionEvents
 
   case class ObligacionAddedExencion(

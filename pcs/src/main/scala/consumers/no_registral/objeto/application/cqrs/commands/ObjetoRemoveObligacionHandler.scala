@@ -15,11 +15,12 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
   ): Try[Response.SuccessProcessing] = {
 
     val event = ObjetoRemovedObligacion(
-      // TODO remember to add the deliveryId command.deliveryId,
+      command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
-      command.obligacionId
+      command.obligacionId,
+      command.cuota
     )
     actor.persistEvent(event) { () =>
       actor.state += event

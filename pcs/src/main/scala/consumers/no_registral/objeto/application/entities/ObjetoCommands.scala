@@ -57,22 +57,14 @@ object ObjetoCommands {
       porcentajeExencion: Option[BigDecimal]
   ) extends ObjetoCommands
 
-  case class ObjetoUpdateFromSetBajaObligacion(
+  case class ObjetoRemoveObligacion(
       deliveryId: BigInt,
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      obligacionId: String
+      obligacionId: String,
+      cuota: Option[String]
   ) extends ObjetoCommands
-
-  case class ObjetoRemoveObligacion(
-      sujetoId: String,
-      objetoId: String,
-      tipoObjeto: String,
-      obligacionId: String
-  ) extends ObjetoCommands {
-    val deliveryId = 0
-  }
 
   case class ObjetoTagAdd(
       deliveryId: BigInt,

@@ -33,7 +33,8 @@ object ObjetoEvents {
       sujetoResponsable: Option[String],
       porcentajeResponsabilidad: BigDecimal,
       registro: Option[ObjetoExternalDto],
-      obligacionesSaldo: Map[String, BigDecimal] = Map.empty
+      obligacionesSaldo: Map[String, BigDecimal] = Map.empty,
+      cuotas:List[Boolean]
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromTri(
@@ -109,12 +110,12 @@ object ObjetoEvents {
   ) extends ObjetoEvents
 
   case class ObjetoRemovedObligacion(
+      deliveryId: BigInt,
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      obligacionId: String
-  ) extends ObjetoEvents {
-    val deliveryId = 0
-  }
+      obligacionId: String,
+      cuota:Option[String]
+  ) extends ObjetoEvents
 
 }

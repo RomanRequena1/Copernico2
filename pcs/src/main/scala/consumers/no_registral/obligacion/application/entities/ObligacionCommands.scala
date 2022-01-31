@@ -19,20 +19,12 @@ object ObligacionCommands {
   ) extends ObligacionCommands
 
   case class ObligacionRemove(
-      sujetoId: String,
-      objetoId: String,
-      tipoObjeto: String,
-      obligacionId: String
-  ) extends ObligacionCommands {
-    override def deliveryId: BigInt = 0
-  }
-
-  case class DownObligacion(
       deliveryId: BigInt,
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      obligacionId: String
+      obligacionId: String,
+      cuota:Option[String]
   ) extends ObligacionCommands
 
   case class ObligacionUpdateExencion(

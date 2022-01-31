@@ -24,7 +24,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateFromDto](new ObligacionUpdateFromDtoHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateExencion](new ObligacionUpdateExencionHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionRemove](new ObligacionRemoveHandler(this).handle)
-    commandBus.subscribe[ObligacionCommands.DownObligacion](new DownObligacionHandler(this).handle)
   }
 
   def informParent(cmd: ObligacionCommands): Unit = {
@@ -40,22 +39,15 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     )
   }
 
-  def informBajaToParent(cmd: ObligacionCommands): Unit = {
-    context.parent ! ObjetoCommands.ObjetoUpdateFromSetBajaObligacion(
+
+  def informRemoveToParent(cmd: ObligacionRemove): Unit = {
+    context.parent ! ObjetoCommands.ObjetoRemoveObligacion(
       cmd.deliveryId,
       cmd.sujetoId,
       cmd.objetoId,
       cmd.tipoObjeto,
-      cmd.obligacionId
-    )
-  }
-
-  def informRemoveToParent(cmd: ObligacionRemove): Unit = {
-    context.parent ! ObjetoCommands.ObjetoRemoveObligacion(
-      cmd.sujetoId,
-      cmd.objetoId,
-      cmd.tipoObjeto,
-      cmd.obligacionId
+      cmd.obligacionId,
+      cmd.cuota,
     )
   }
 
