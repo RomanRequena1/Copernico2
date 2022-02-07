@@ -10,6 +10,7 @@ import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 abstract class ActorTransactionMetrics(
     monitoring: Monitoring
@@ -46,23 +47,25 @@ abstract class ActorTransactionMetrics(
     }
 
   private def toLocalDateTime(num: String) = {
-    val fechaString =
-      s"${num(0)}${num(1)}${num(2)}${num(3)}-${num(4)}${num(5)}-${num(6)}${num(7)}T${num(8)}${num(9)}:${num(10)}${num(
-        11
-      )}:${num(12)}${num(13)}.${num(14)}${num(15)}${num(16)}"
-    val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
-    LocalDateTime.parse(fechaString, formatter)
+     val fechaString =
+       s"${num(0)}${num(1)}${num(2)}${num(3)}-${num(4)}${num(5)}-${num(6)}${num(7)}T${num(8)}${num(9)}:${num(10)}${
+         num(
+           11
+         )
+       }:${num(12)}${num(13)}.${num(14)}${num(15)}${num(16)}"
+     val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+     LocalDateTime.parse(fechaString, formatter)
   }
 
   protected def calculateLag(evId: String) = {
-    //time in the source
-    //GMT -3
-    val ti: LocalDateTime = toLocalDateTime(evId)
-    //time in the sink
-    //GMT -3
-    val tf: LocalDateTime = ZonedDateTime.now(ZoneId.of("UTC-3")).toLocalDateTime
-    //difference
-    ChronoUnit.MILLIS.between(ti, tf)
+     //time in the source
+     //GMT -3
+     val ti: LocalDateTime = toLocalDateTime(evId)
+     //time in the sink
+     //GMT -3
+     val tf: LocalDateTime = ZonedDateTime.now(ZoneId.of("UTC-3")).toLocalDateTime
+     //difference
+     ChronoUnit.MILLIS.between(ti, tf)
   }
 
 }
