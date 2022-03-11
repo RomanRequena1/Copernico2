@@ -4,11 +4,7 @@ import akka.ActorRefMap
 import akka.actor.{ActorRef, Props}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.cqrs.commands._
-import consumers.no_registral.objeto.application.cqrs.queries.{
-  GetSnapshotObjetoHandler,
-  GetStateExencionHandler,
-  GetStateObjetoHandler
-}
+import consumers.no_registral.objeto.application.cqrs.queries.{GetSnapshotObjetoHandler, GetStateExencionHandler, GetStateObjetoHandler}
 import consumers.no_registral.objeto.application.entities.ObjetoMessage.ObjetoMessageRoots
 import consumers.no_registral.objeto.application.entities.ObjetoQueries.GetSnapshotObjeto
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoQueries}
@@ -17,6 +13,7 @@ import consumers.no_registral.objeto.domain.{ObjetoEvents, ObjetoState}
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage._
 import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionMessage}
+import consumers.no_registral.obligacion.domain.ObligacionEvents
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import consumers.no_registral.sujeto.application.entity.SujetoCommands
 import cqrs.base_actor.untyped.PersistentBaseActor
@@ -112,7 +109,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
   import consumers.no_registral.objeto.infrastructure.json._
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
-
+    val kafkaTopic = "ObjetoSnapshotPersistedReadside"
     val snapshot =
       ObjetoSnapshotPersisted(
         evt.deliveryId,
@@ -126,7 +123,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.porcentajeResponsabilidad,
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
-        consolidatedState.cuotas
+        consolidatedState.cuotas,
+        operacion = ObligacionEvents.operaciones.get("Upsert").get
       )
 
     requirements.messageProducer.produce(
@@ -136,11 +134,72 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
           serialization.encode(snapshot)
         )
       ),
-      "ObjetoSnapshotPersistedReadside"
+      topic = kafkaTopic
     ) { _ =>
       handler()
     }
+  }
+  def deleteSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
+    val kafkaTopic = "ObjetoSnapshotPersistedReadside"
+    val snapshot =
+      ObjetoSnapshotPersisted(
+        evt.deliveryId,
+        evt.sujetoId,
+        evt.objetoId,
+        evt.tipoObjeto,
+        consolidatedState.saldo,
+        consolidatedState.sujetos,
+        consolidatedState.tags,
+        consolidatedState.sujetoResponsable,
+        consolidatedState.porcentajeResponsabilidad,
+        consolidatedState.registro,
+        consolidatedState.obligacionesSaldo,
+        consolidatedState.cuotas,
+        operacion = ObligacionEvents.operaciones.get("Delete").get
+      )
 
+    requirements.messageProducer.produce(
+      data = Seq(
+        KafkaKeyValue(
+          snapshot.aggregateRoot,
+          serialization.encode(snapshot)
+        )
+      ),
+      topic = kafkaTopic
+    ) { _ =>
+      handler()
+    }
+  }
+  def deleteObjetoObligacionesSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
+    val kafkaTopic = "ObjetoSnapshotPersistedReadside"
+    val snapshot =
+      ObjetoSnapshotPersisted(
+        evt.deliveryId,
+        evt.sujetoId,
+        evt.objetoId,
+        evt.tipoObjeto,
+        consolidatedState.saldo,
+        consolidatedState.sujetos,
+        consolidatedState.tags,
+        consolidatedState.sujetoResponsable,
+        consolidatedState.porcentajeResponsabilidad,
+        consolidatedState.registro,
+        consolidatedState.obligacionesSaldo,
+        consolidatedState.cuotas,
+        operacion = ObligacionEvents.operaciones.get("FullDelete").get
+      )
+
+    requirements.messageProducer.produce(
+      data = Seq(
+        KafkaKeyValue(
+          snapshot.aggregateRoot,
+          serialization.encode(snapshot)
+        )
+      ),
+      topic = kafkaTopic
+    ) { _ =>
+      handler()
+    }
   }
 
   /*def removeObligaciones(): Unit =

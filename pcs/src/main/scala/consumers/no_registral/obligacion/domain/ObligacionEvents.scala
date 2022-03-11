@@ -13,7 +13,7 @@ sealed trait ObligacionEvents extends Event with ObligacionMessage {
 }
 
 object ObligacionEvents {
-  val operaciones: Map[String, String] = Map(("Upsert" -> "U"), ("Delete" -> "D"))
+  val operaciones: Map[String, String] = Map(("Upsert" -> "U"), ("Delete" -> "D"),("FullDelete" -> "FD"))
 
   case class ObligacionPersistedSnapshot(
       deliveryId: BigInt,

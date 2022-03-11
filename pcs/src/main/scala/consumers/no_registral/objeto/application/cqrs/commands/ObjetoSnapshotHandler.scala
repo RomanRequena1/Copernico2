@@ -3,6 +3,7 @@ package consumers.no_registral.objeto.application.cqrs.commands
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
+import consumers.no_registral.obligacion.domain.ObligacionEvents
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 
@@ -24,7 +25,8 @@ class ObjetoSnapshotHandler(actor: ObjetoActor) extends SyncCommandHandler[Objet
       actor.state.porcentajeResponsabilidad,
       actor.state.registro,
       command.obligacionesSaldo,
-      actor.state.cuotas
+      actor.state.cuotas,
+      operacion = ObligacionEvents.operaciones.get("Upsert").get
     )
     val consolidatedState = actor.state + event
     val sender = actor.context.sender()
