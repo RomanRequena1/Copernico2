@@ -13,6 +13,7 @@ sealed trait ObjetoEvents extends Event {
 }
 
 object ObjetoEvents {
+  val operaciones: Map[String, String] = Map(("Upsert" -> "U"), ("Delete" -> "D"))
 
   case class ObjetoUpdatedCotitulares(
       deliveryId: BigInt,
@@ -34,7 +35,8 @@ object ObjetoEvents {
       porcentajeResponsabilidad: BigDecimal,
       registro: Option[ObjetoExternalDto],
       obligacionesSaldo: Map[String, BigDecimal] = Map.empty,
-      cuotas:List[Boolean]
+      cuotas:List[Boolean],
+      operacion: String
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromTri(

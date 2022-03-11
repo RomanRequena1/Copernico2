@@ -1,28 +1,28 @@
 package readside.proyectionists.no_registrales.obligacion
-import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 
-import scala.concurrent.Future
+import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import cassandra.write.CassandraWriteProduction
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
-import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
-import monitoring.Monitoring
+import design_principles.actor_model.Response.SuccessProcessing
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
 
-class ObligacionPersistedSnapshotHandler(
-    implicit
-    r: MonitoringAndCassandraWrite
-) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
+import scala.concurrent.Future
 
-  override def topic: String = "ObligacionPersistedSnapshot"
-  override def topicRetry: String = "ObligacionPersistedSnapshot_retry"
-  override def topicError: String = "ObligacionPersistedSnapshot_error"
+class ObligacionPersistedSnapshotHandler(
+                                          implicit
+                                          r: MonitoringAndCassandraWrite
+                                        ) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
 
   private val log = LoggerFactory.getLogger(this.getClass)
+
+  override def topic: String = "ObligacionPersistedSnapshot"
+
+  override def topicRetry: String = "ObligacionPersistedSnapshot_retry"
+
+  override def topicError: String = "ObligacionPersistedSnapshot_error"
 
   import consumers.no_registral.obligacion.infrastructure.json._
 
@@ -44,12 +44,11 @@ class ObligacionPersistedSnapshotHandler(
           .cql(
             s"""
           DELETE FROM read_side.buc_obligaciones """ +
-            """ WHERE bob_suj_identificador = """ +
-            s""" '${registro.sujetoId}' """ +
-            s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """ +
-            s""" and bob_soj_identificador = '${registro.objetoId}' """ +
-            s""" and bob_obn_id = '${registro.obligacionId}'
-          """
+              """ WHERE bob_suj_identificador = """ +
+              s""" '${registro.sujetoId}' """ +
+              s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """ +
+              s""" and bob_soj_identificador = '${registro.objetoId}' """ +
+              s""" and bob_obn_id = '${registro.obligacionId}' """
           )
           .recover { ex: Throwable =>
             log.error(ex.getMessage)
@@ -58,5 +57,4 @@ class ObligacionPersistedSnapshotHandler(
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
     }
   }
-
 }
