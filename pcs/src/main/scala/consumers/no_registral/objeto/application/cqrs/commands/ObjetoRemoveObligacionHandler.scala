@@ -24,8 +24,10 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
     )
     actor.persistEvent(event) { () =>
       actor.state += event
-      actor.informParent(command, actor.state)
-      actor.persistSnapshot(event, actor.state)(() => ())
+      if(!actor.state.isBaja){
+        actor.informParent(command, actor.state)
+        actor.persistSnapshot(event, actor.state)(() => ())
+      }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

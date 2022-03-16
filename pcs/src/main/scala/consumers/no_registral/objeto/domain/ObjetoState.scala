@@ -37,11 +37,13 @@ case class ObjetoState(
     event match {
       case cmd: ObjetoEvents.ObjetoUpdatedCotitulares =>
         copy(
-          sujetos = cmd.cotitulares
+          sujetos = cmd.cotitulares,
+          isBaja = false
         )
       case ObjetoEvents.ObjetoAddedExencion(deliveryId, sujetoId, objetoId, tipoObjeto, exencion) =>
         copy(
-          exenciones = exenciones + exencion
+          exenciones = exenciones + exencion,
+          isBaja = false
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
         copy(
@@ -52,7 +54,8 @@ case class ObjetoState(
           isResponsable = evt.isResponsable.getOrElse(false),
           registro = Some(evt.registro),
           sujetos = sujetos + evt.sujetoId,
-          isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false)
+          isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
+          isBaja = false
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
         copy(
@@ -65,7 +68,8 @@ case class ObjetoState(
           saldo = obligacionesSaldo_.values.sum,
           obligaciones = obligaciones + evt.obligacionId,
           obligacionesSaldo = obligacionesSaldo_,
-          sujetos = sujetos + evt.sujetoId
+          sujetos = sujetos + evt.sujetoId,
+          isBaja = false
         )
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
         copy(
@@ -74,13 +78,14 @@ case class ObjetoState(
           sujetoResponsable = evt.sujetoResponsable,
           obligacionesSaldo = evt.obligacionesSaldo,
           tags = evt.tags,
-          cuotas = evt.cuotas
+          isBaja = false,
+          cuotas = evt.cuotas,
         )
 
       case evt: ObjetoEvents.ObjetoTagAdded =>
-        copy(tags = tags + evt.tagAdded)
+        copy(tags = tags + evt.tagAdded, isBaja = false)
       case evt: ObjetoEvents.ObjetoTagRemoved =>
-        copy(tags = tags - evt.tagRemoved)
+        copy(tags = tags - evt.tagRemoved, isBaja = false)
 
       case evt: ObjetoEvents.ObjetoBajaSet =>
         copy(
