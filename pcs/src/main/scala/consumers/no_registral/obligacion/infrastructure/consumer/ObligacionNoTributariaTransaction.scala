@@ -33,7 +33,7 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
     maybeDecode[ObligacionesAnt](input)
 
   def processMessage(registro: ObligacionesAnt): Future[Response.SuccessProcessing] = {
-    /*
+
     implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
 
     val isAdheridoDebito = Some(registro.BOB_ADHERIDO_DEBITO.contains("S"))
@@ -45,15 +45,6 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
     } yield detalles
 
     val command =
-      if (registro.BOB_ESTADO.contains("BAJA"))
-        ObligacionCommands.DownObligacion(
-          sujetoId = registro.BOB_SUJ_IDENTIFICADOR,
-          objetoId = registro.BOB_SOJ_IDENTIFICADOR,
-          tipoObjeto = registro.BOB_SOJ_TIPO_OBJETO,
-          obligacionId = registro.BOB_OBN_ID,
-          deliveryId = registro.EV_ID
-        )
-      else
         ObligacionCommands.ObligacionUpdateFromDto(
           sujetoId = registro.BOB_SUJ_IDENTIFICADOR,
           objetoId = registro.BOB_SOJ_IDENTIFICADOR,
@@ -64,7 +55,7 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
           detallesObligacion = detalles.getOrElse(Seq.empty),
           isAdheridoDebito = isAdheridoDebito
         )
-    actorRef.ask[Response.SuccessProcessing](command)*/
-    ???
+    actorRef.ask[Response.SuccessProcessing](command)
+    //???
   }
 }

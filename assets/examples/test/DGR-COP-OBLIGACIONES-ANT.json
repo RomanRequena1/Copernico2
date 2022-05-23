@@ -1,0 +1,51 @@
+{
+  "EV_ID" : "20220516213910100000001457883636",
+  "BOB_SUJ_IDENTIFICADOR" : "11-11111111-2",
+  "BOB_SOJ_TIPO_OBJETO" : "CAM",
+  "BOB_SOJ_IDENTIFICADOR" : "070900203378",
+  "BOB_OBN_ID" : "5427435546",
+  "BOB_SALDO" : "1980",
+  "BOB_CUOTA" : null,
+  "BOB_ESTADO" : "PVOL",
+  "BOB_FISCALIZADA" : "N",
+  "BOB_INDICE_INT_PUNIT" : null,
+  "BOB_INDICE_INT_RESAR" : null,
+  "BOB_INTERES_PUNIT" : null,
+  "BOB_INTERES_RESAR" : null,
+  "BOB_JUI_ID" : null,
+  "BOB_PERIODO" : null,
+  "BOB_PLN_ID" : null,
+  "BOB_PRORROGA" : "2022-01-03 00:00:00.0",
+  "BOB_TIPO" : "no tributaria",
+  "BOB_TOTAL" : null,
+  "BOB_VENCIMIENTO" : "2022-01-03 00:00:00.0",
+  "BOB_CAPITAL" : "1981",
+  "BOB_CANAL_ORIGEN" : "PSRM",
+  "CCTID" : null,
+  "ITSID" : null,
+  "FECHAVTOSANCION" : null,
+  "FECHAVTOREBELDIA" : null,
+  "TPBID" : null,
+  "TABLE_NAME" : "EVENTOS_OBLIGACIONES_PSRM",
+  "OSSSITGESTIONESPECIAL" : null,
+  "OSSSITGESTION" : null,
+  "OSSSITPLANPAGO" : null,
+  "OSSSITJUDICIAL" : null,
+  "OSSSITBLOQUEO" : null,
+  "OSSSITAJUSTE" : null,
+  "OSSSITSE" : null,
+  "BOB_OTROS_ATRIBUTOS" : {
+    "BOB_DETALLES": [
+        {
+            "EVO_OBN_PEO_ID_MATERIAL": "APEX",
+            "BOB_MUNICIPIO": null,
+            "BOB_INTERES_FINANCIACION": null,
+            "JUICIO_MULTIOBJETO": "N",
+            "RULE_NUMBER": "1",
+            "EVO_OBN_PEO_ID_FORMAL": "NC",
+            "PLAN_MULTIOBJETO": "N"
+        }
+    ]
+  },
+  "RULE_NUMBER" : "-1"
+}
