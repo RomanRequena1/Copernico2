@@ -7,10 +7,8 @@ import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoSnapshot
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{
-  DetallesObligacion,
-  ObligacionesAnt
-}
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesAnt, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json._
 import design_principles.actor_model.Response
 import monitoring.Monitoring
@@ -32,30 +30,61 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
   def processInput(input: String): Either[Throwable, ObligacionesAnt] =
     maybeDecode[ObligacionesAnt](input)
 
-  def processMessage(registro: ObligacionesAnt): Future[Response.SuccessProcessing] = {
+  def processMessage(obligacion: ObligacionesAnt): Future[Response.SuccessProcessing] = {
 
     implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
 
-    val isAdheridoDebito = Some(registro.BOB_ADHERIDO_DEBITO.contains("S"))
+    val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
 
     val detalles: Option[Seq[DetallesObligacion]] = for {
-      otrosAtributos <- registro.BOB_OTROS_ATRIBUTOS
+      otrosAtributos <- obligacion.BOB_OTROS_ATRIBUTOS
       bobDetalles <- (otrosAtributos \ "BOB_DETALLES").toOption
       detalles = serialization.decodeF[Seq[DetallesObligacion]](bobDetalles.toString)
     } yield detalles
 
-    val command =
-        ObligacionCommands.ObligacionUpdateFromDto(
-          sujetoId = registro.BOB_SUJ_IDENTIFICADOR,
-          objetoId = registro.BOB_SOJ_IDENTIFICADOR,
-          tipoObjeto = registro.BOB_SOJ_TIPO_OBJETO,
-          obligacionId = registro.BOB_OBN_ID,
-          deliveryId = registro.EV_ID,
-          registro = registro,
+    val command = obligacion match {
+      case obn: ObligacionesAnt if isNotDeuda(obn) =>
+        ObligacionRemove(
+          deliveryId = obn.EV_ID,
+          sujetoId = obn.BOB_SUJ_IDENTIFICADOR,
+          objetoId = obn.BOB_SOJ_IDENTIFICADOR,
+          tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
+          obligacionId = obn.BOB_OBN_ID,
+          cuota = None
+        )
+      case obn: ObligacionesAnt =>
+        ObligacionUpdateFromDto(
+          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+          obligacionId = obligacion.BOB_OBN_ID,
+          deliveryId = obligacion.EV_ID,
+          registro = obligacion,
+          //todo: fix
           detallesObligacion = detalles.getOrElse(Seq.empty),
           isAdheridoDebito = isAdheridoDebito
         )
+    }
     actorRef.ask[Response.SuccessProcessing](command)
     //???
   }
+
+  private def isNotDeuda(obligacion: ObligacionesAnt): Boolean = {
+
+    //val otrosAtributos = extractOtrosAtributos(obligacion).getOrElse(default = Nil)
+
+    val result: Boolean = {
+
+      val ruleNumber = obligacion.RULE_NUMBER
+
+      if (ruleNumber.contains("-1")) {
+        true
+      } else {
+        false
+      }
+    }
+    result
+  }
+
+
 }
