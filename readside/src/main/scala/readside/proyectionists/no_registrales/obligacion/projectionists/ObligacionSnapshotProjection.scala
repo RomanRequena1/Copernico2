@@ -12,6 +12,7 @@ final case class ObligacionSnapshotProjection(
   val fromRegistro: Option[List[(String, Option[Serializable])]] = registro map { registro =>
     List(
       "bob_adherido_debito" -> registro.BOB_ADHERIDO_DEBITO,
+      "bob_canal_origen" -> registro.BOB_CANAL_ORIGEN,
       "bob_capital" -> registro.BOB_CAPITAL,
       "bob_cuota" -> registro.BOB_CUOTA,
       "bob_estado" -> registro.BOB_ESTADO,

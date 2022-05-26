@@ -26,8 +26,8 @@ class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) 
       ObligacionTributariaTransactionCuotaPlan(actor, monitoring),
       ObligacionTributariaTransactionJuicio(actor, monitoring),
       ObligacionTributariaTransaction2(actor, monitoring),
-      ObligacionTributariaTransaction3(actor, monitoring)
-      //ObligacionNoTributariaTransaction(actor, monitoring)
+      ObligacionTributariaTransaction3(actor, monitoring),
+      ObligacionNoTributariaTransaction(actor, monitoring)
     )
 
   def route: Route = {
