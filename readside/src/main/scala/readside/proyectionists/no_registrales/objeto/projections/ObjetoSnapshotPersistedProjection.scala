@@ -9,6 +9,7 @@ case class ObjetoSnapshotPersistedProjection(
   val registro: Option[ObjetoExternalDto] = event.registro
   val fromRegistro: Option[List[(String, Option[Object])]] = registro match {
     case Some(r) => Some(List(
+      "soj_canal_origen" -> r.SOJ_CANAL_ORIGEN,
       "soj_cat_soj_id" -> r.SOJ_CAT_SOJ_ID,
       "soj_descripcion" -> r.SOJ_DESCRIPCION,
       "soj_estado" -> r.SOJ_ESTADO,
