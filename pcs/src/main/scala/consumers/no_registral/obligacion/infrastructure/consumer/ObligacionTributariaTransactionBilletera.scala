@@ -22,8 +22,8 @@ case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitori
   implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
 
   def topic = "DGR-COP-OBLIGACIONES-TRI-BILLETERA"
-  def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
-  def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
+  def topicRetry = "DGR-COP-OBLIGACIONES-TRI-BILLETERA_retry"
+  def topicError = "DGR-COP-OBLIGACIONES-TRI-BILLETERA_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] =
     maybeDecode[ObligacionesTri](input)
