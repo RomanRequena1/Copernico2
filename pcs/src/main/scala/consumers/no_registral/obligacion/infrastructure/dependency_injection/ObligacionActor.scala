@@ -35,7 +35,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       cmd.obligacionId,
       state.saldo,
       state.exenta,
-      state.porcentajeExencion
+      state.porcentajeExencion,
+      state.idExterno
     )
   }
 

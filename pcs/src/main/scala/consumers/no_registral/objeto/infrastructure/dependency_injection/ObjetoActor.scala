@@ -124,7 +124,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
         consolidatedState.cuotas,
-        operacion = ObligacionEvents.operaciones.get("Upsert").get
+        operacion = ObligacionEvents.operaciones.get("Upsert").get,
+        consolidatedState.idExterno
       )
 
     requirements.messageProducer.produce(
@@ -155,7 +156,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
         consolidatedState.cuotas,
-        operacion = ObligacionEvents.operaciones.get("Delete").get
+        operacion = ObligacionEvents.operaciones.get("Delete").get,
+        consolidatedState.idExterno
       )
 
     requirements.messageProducer.produce(
@@ -186,7 +188,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
         consolidatedState.cuotas,
-        operacion = ObligacionEvents.operaciones.get("FullDelete").get
+        operacion = ObligacionEvents.operaciones.get("FullDelete").get,
+        consolidatedState.idExterno
       )
 
     requirements.messageProducer.produce(

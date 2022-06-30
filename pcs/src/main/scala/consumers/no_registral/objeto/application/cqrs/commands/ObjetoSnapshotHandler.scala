@@ -26,7 +26,8 @@ class ObjetoSnapshotHandler(actor: ObjetoActor) extends SyncCommandHandler[Objet
       actor.state.registro,
       command.obligacionesSaldo,
       actor.state.cuotas,
-      operacion = ObligacionEvents.operaciones.get("Upsert").get
+      operacion = ObligacionEvents.operaciones.get("Upsert").get,
+      actor.state.idExterno
     )
     val consolidatedState = actor.state + event
     val sender = actor.context.sender()

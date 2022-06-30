@@ -28,7 +28,8 @@ final case class ObligacionSnapshotProjection(
       "bob_prorroga" -> registro.BOB_PRORROGA,
       "bob_tipo" -> registro.BOB_TIPO,
       "bob_total" -> registro.BOB_TOTAL,
-      "bob_vencimiento" -> registro.BOB_VENCIMIENTO
+      "bob_vencimiento" -> registro.BOB_VENCIMIENTO,
+      "bob_oga_id" -> registro.BOB_OGA_ID
     )
   }
   val other: List[(String, BigDecimal)] =

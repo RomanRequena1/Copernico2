@@ -27,7 +27,7 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_estado" -> None,
       "soj_fecha_fin" -> None,
       "soj_fecha_inicio" -> None,
-      "soj_id_externo" -> None,
+      "soj_id_externo" -> event.idExterno,
       "soj_otros_atributos" -> None,
       "soj_base_imponible" -> None,
       "soj_adherido_debito" -> None,

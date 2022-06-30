@@ -22,7 +22,8 @@ case class ObjetoState(
     isBaja: Boolean = false,
     isAdheridoDebito: Boolean = false,
     eventCounter:Int = 0,
-    cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false)
+    cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
+    idExterno: Option[String] = None
 ) extends AbstractState[ObjetoEvents] {
 
   override def +(event: ObjetoEvents): ObjetoState = {
@@ -69,7 +70,8 @@ case class ObjetoState(
           obligaciones = obligaciones + evt.obligacionId,
           obligacionesSaldo = obligacionesSaldo_,
           sujetos = sujetos + evt.sujetoId,
-          isBaja = false
+          isBaja = false,
+          idExterno = evt.idExterno
         )
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
         copy(
@@ -101,6 +103,7 @@ case class ObjetoState(
       case evt: ObjetoEvents.ObjetoRemovedObligacion =>
         val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
         if(evt.cuota.isEmpty || evt.cuota.get.toInt < 0 || evt.cuota.get.toInt > 12) {
+
           copy(
             saldo = obligacionesSaldo_.values.sum,
             obligaciones = obligaciones - evt.obligacionId,
