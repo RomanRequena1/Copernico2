@@ -33,7 +33,7 @@ sealed trait ObligacionExternalDto extends ExternalDto {
   def BOB_SALDO: BigDecimal
   def BOB_TOTAL: Option[BigDecimal]
   def BOB_VENCIMIENTO: Option[LocalDateTime]
-  def SOJ_IDEXTERNO: Option[String],
+  def SOJ_IDEXTERNO: Option[String]
   def BOB_OGA_ID: Option[String]
 }
 
