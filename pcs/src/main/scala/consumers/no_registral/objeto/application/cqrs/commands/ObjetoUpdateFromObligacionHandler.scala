@@ -23,7 +23,8 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
       command.obligacionId,
       command.saldoObligacion,
       command.obligacionExenta,
-      command.porcentajeExencion
+      command.porcentajeExencion,
+      command.idExterno
     )
     val initialization: String = {
       Try(System.getenv("INITIALIZATION")).getOrElse(null)

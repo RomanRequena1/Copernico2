@@ -36,7 +36,8 @@ object ObjetoEvents {
       registro: Option[ObjetoExternalDto],
       obligacionesSaldo: Map[String, BigDecimal] = Map.empty,
       cuotas:List[Boolean],
-      operacion: String
+      operacion: String,
+      idExterno: Option[String]
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromTri(
@@ -82,7 +83,8 @@ object ObjetoEvents {
       obligacionId: String,
       saldoObligacion: BigDecimal,
       obligacionExenta: Boolean,
-      porcentajeExencion: Option[BigDecimal]
+      porcentajeExencion: Option[BigDecimal],
+      idExterno: Option[String]
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromObligacionBajaSet(

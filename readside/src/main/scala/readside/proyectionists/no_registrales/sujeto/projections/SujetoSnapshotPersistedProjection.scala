@@ -9,6 +9,7 @@ final case class SujetoSnapshotPersistedProjection(
   val registro: Option[SujetoExternalDto] = event.registro
   val fromRegistro: Option[List[(String, Option[Object])]] = registro map { registro =>
     List(
+      "suj_canal_origen" -> registro.SUJ_CANAL_ORIGEN,
       "suj_cat_suj_id" -> registro.SUJ_CAT_SUJ_ID,
       "suj_denominacion" -> registro.SUJ_DENOMINACION,
       "suj_dfe" -> registro.SUJ_DFE,

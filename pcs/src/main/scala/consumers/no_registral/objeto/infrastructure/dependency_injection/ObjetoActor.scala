@@ -124,7 +124,11 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
         consolidatedState.cuotas,
-        operacion = ObligacionEvents.operaciones.get("Upsert").get
+        operacion = ObligacionEvents.operaciones.get("Upsert").get,
+        idExterno = evt match {
+          case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
+          case _ => None
+        }
       )
 
     requirements.messageProducer.produce(
@@ -155,7 +159,11 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
         consolidatedState.cuotas,
-        operacion = ObligacionEvents.operaciones.get("Delete").get
+        operacion = ObligacionEvents.operaciones.get("Delete").get,
+        idExterno = evt match {
+          case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
+          case _ => None
+        }
       )
 
     requirements.messageProducer.produce(
@@ -186,7 +194,11 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
         consolidatedState.cuotas,
-        operacion = ObligacionEvents.operaciones.get("FullDelete").get
+        operacion = ObligacionEvents.operaciones.get("FullDelete").get,
+        idExterno = evt match {
+          case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
+          case _ => None
+        }
       )
 
     requirements.messageProducer.produce(

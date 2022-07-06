@@ -16,7 +16,8 @@ case class ObligacionState(
     detallesObligacion: Seq[DetallesObligacion] = Seq.empty,
     juicioId: Option[BigInt] = None,
     isAdheridoDebito: Boolean = false,
-    eventCounter:Int = 0
+    eventCounter:Int = 0,
+    idExterno: Option[String] = None
 ) extends AbstractState[ObligacionEvents] {
 
   override def +(event: ObligacionEvents): ObligacionState =
@@ -39,7 +40,8 @@ case class ObligacionState(
           detallesObligacion = e.detallesObligacion,
           juicioId = e.registro.BOB_JUI_ID,
           lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, e.deliveryId)),
-          isAdheridoDebito = e.isAdheridoDebito.getOrElse(false)
+          isAdheridoDebito = e.isAdheridoDebito.getOrElse(false),
+          idExterno = e.registro.SOJ_IDEXTERNO
         )
       case _ => this
     }
