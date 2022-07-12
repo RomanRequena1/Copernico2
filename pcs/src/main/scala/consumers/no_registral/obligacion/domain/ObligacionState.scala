@@ -41,7 +41,7 @@ case class ObligacionState(
           juicioId = e.registro.BOB_JUI_ID,
           lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, e.deliveryId)),
           isAdheridoDebito = e.isAdheridoDebito.getOrElse(false),
-          idExterno = e.registro.SOJ_IDEXTERNO
+          idExterno = e.registro.SOJ_ID_EXTERNO
         )
       case _ => this
     }
