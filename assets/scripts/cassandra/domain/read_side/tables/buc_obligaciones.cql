@@ -20,10 +20,13 @@ CREATE TABLE read_side.buc_obligaciones (
        bob_saldo float,
        bob_total float,
        bob_vencimiento date,
-       bob_concepto text, 
+       bob_concepto text,
+       bob_fechasancion text,
        bob_impuesto text,
+       bob_sub_estado text,
        bob_adherido_debito text,
        bob_canal_origen text,
+       bob_tpbid text,
        bob_oga_id text,
        PRIMARY KEY (bob_suj_identificador, bob_soj_tipo_objeto, bob_soj_identificador, bob_obn_id)
       ) WITH CLUSTERING ORDER BY (bob_soj_tipo_objeto ASC, bob_soj_identificador ASC, bob_obn_id ASC)
