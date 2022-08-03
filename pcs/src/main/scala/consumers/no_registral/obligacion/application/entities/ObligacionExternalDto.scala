@@ -18,6 +18,9 @@ sealed trait ObligacionExternalDto extends ExternalDto {
   def BOB_CUOTA: Option[String]
   def BOB_ESTADO: Option[String]
   def BOB_CONCEPTO: Option[String]
+  def BOB_FECHASANCION: Option[String]
+  def BOB_SUB_ESTADO: Option[String]
+  def BOB_TPBID: Option[String]
   def BOB_FISCALIZADA: Option[String]
   def BOB_IMPUESTO: Option[String]
   def BOB_INDICE_INT_PUNIT: Option[String]
@@ -33,7 +36,7 @@ sealed trait ObligacionExternalDto extends ExternalDto {
   def BOB_SALDO: BigDecimal
   def BOB_TOTAL: Option[BigDecimal]
   def BOB_VENCIMIENTO: Option[LocalDateTime]
-  def SOJ_IDEXTERNO: Option[String]
+  def SOJ_ID_EXTERNO: Option[String]
   def BOB_OGA_ID: Option[String]
 }
 
@@ -47,12 +50,15 @@ object ObligacionExternalDto {
       BOB_OBN_ID: String,
       BOB_ADHERIDO_DEBITO: Option[String],
       BOB_CANAL_ORIGEN: Option[String],
+      BOB_TPBID: Option[String],
       BOB_CAPITAL: Option[BigDecimal],
       BOB_CUOTA: Option[String],
       BOB_ESTADO: Option[String],
       BOB_CONCEPTO: Option[String],
+      BOB_FECHASANCION: Option[String],
       BOB_FISCALIZADA: Option[String],
       BOB_IMPUESTO: Option[String],
+      BOB_SUB_ESTADO: Option[String],
       BOB_INDICE_INT_PUNIT: Option[String],
       BOB_INDICE_INT_RESAR: Option[String],
       BOB_INTERES_PUNIT: Option[BigDecimal],
@@ -67,7 +73,7 @@ object ObligacionExternalDto {
       BOB_VENCIMIENTO: Option[LocalDateTime],
       EV_ID: BigInt,
       RULE_NUMBER: Option[String],
-      SOJ_IDEXTERNO: Option[String],
+      SOJ_ID_EXTERNO: Option[String],
       BOB_OGA_ID: Option[String]
   ) extends ObligacionExternalDto
 
@@ -77,12 +83,15 @@ object ObligacionExternalDto {
       BOB_SOJ_TIPO_OBJETO: String,
       BOB_SOJ_IDENTIFICADOR: String,
       BOB_OBN_ID: String,
+      BOB_SUB_ESTADO: Option[String],
+      BOB_TPBID: Option[String],
       BOB_ADHERIDO_DEBITO: Option[String],
       BOB_CANAL_ORIGEN: Option[String],
       BOB_CAPITAL: Option[BigDecimal],
       BOB_CUOTA: Option[String],
       BOB_ESTADO: Option[String],
       BOB_CONCEPTO: Option[String],
+      BOB_FECHASANCION: Option[String],
       BOB_FISCALIZADA: Option[String],
       BOB_IMPUESTO: Option[String],
       BOB_INDICE_INT_PUNIT: Option[String],
@@ -99,7 +108,7 @@ object ObligacionExternalDto {
       BOB_VENCIMIENTO: Option[LocalDateTime],
       EV_ID: BigInt,
       RULE_NUMBER: Option[String],
-      SOJ_IDEXTERNO: Option[String],
+      SOJ_ID_EXTERNO: Option[String],
       BOB_OGA_ID: Option[String]
   ) extends ObligacionExternalDto
 
