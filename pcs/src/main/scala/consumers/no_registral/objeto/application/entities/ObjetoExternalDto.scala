@@ -10,6 +10,7 @@ sealed trait ObjetoExternalDto extends ExternalDto {
   def SOJ_SUJ_IDENTIFICADOR: String
   def SOJ_TIPO_OBJETO: String
   def SOJ_IDENTIFICADOR: String
+  def SOJ_IDENTIFICADOR_2: String
   def SOJ_CAT_SOJ_ID: Option[String]
   def SOJ_DESCRIPCION: Option[String]
   def SOJ_ESTADO: Option[String]
@@ -31,6 +32,7 @@ object ObjetoExternalDto {
       SOJ_SUJ_IDENTIFICADOR: String,
       SOJ_TIPO_OBJETO: String,
       SOJ_IDENTIFICADOR: String,
+      SOJ_IDENTIFICADOR_2: String,
       SOJ_CAT_SOJ_ID: Option[String],
       SOJ_DESCRIPCION: Option[String],
       SOJ_ESTADO: Option[String],
@@ -56,6 +58,7 @@ object ObjetoExternalDto {
       SOJ_SUJ_IDENTIFICADOR: String,
       SOJ_TIPO_OBJETO: String,
       SOJ_IDENTIFICADOR: String,
+      SOJ_IDENTIFICADOR_2: String,
       SOJ_CAT_SOJ_ID: Option[String],
       SOJ_DESCRIPCION: Option[String],
       SOJ_ESTADO: Option[String],

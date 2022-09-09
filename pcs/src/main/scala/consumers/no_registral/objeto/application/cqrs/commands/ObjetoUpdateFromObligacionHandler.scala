@@ -19,6 +19,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
       command.deliveryId,
       command.sujetoId,
       command.objetoId,
+      command.objetoId2,
       command.tipoObjeto,
       command.obligacionId,
       command.saldoObligacion,

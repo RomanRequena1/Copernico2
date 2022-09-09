@@ -11,6 +11,7 @@ sealed trait ObligacionExternalDto extends ExternalDto {
   def BOB_SUJ_IDENTIFICADOR: String
   def BOB_SOJ_TIPO_OBJETO: String
   def BOB_SOJ_IDENTIFICADOR: String
+  def BOB_SOJ_IDENTIFICADOR_2: String
   def BOB_OBN_ID: String
   def BOB_ADHERIDO_DEBITO: Option[String]
   def BOB_CANAL_ORIGEN: Option[String]
@@ -45,6 +46,7 @@ object ObligacionExternalDto {
   case class ObligacionesTri(
       BOB_SALDO: BigDecimal,
       BOB_SUJ_IDENTIFICADOR: String,
+      BOB_SOJ_IDENTIFICADOR_2: String,
       BOB_SOJ_TIPO_OBJETO: String,
       BOB_SOJ_IDENTIFICADOR: String,
       BOB_OBN_ID: String,
@@ -80,6 +82,7 @@ object ObligacionExternalDto {
   case class ObligacionesAnt(
       BOB_SALDO: BigDecimal,
       BOB_SUJ_IDENTIFICADOR: String,
+      BOB_SOJ_IDENTIFICADOR_2: String,
       BOB_SOJ_TIPO_OBJETO: String,
       BOB_SOJ_IDENTIFICADOR: String,
       BOB_OBN_ID: String,

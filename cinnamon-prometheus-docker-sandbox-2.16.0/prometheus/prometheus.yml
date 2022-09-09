@@ -24,3 +24,8 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:29092']
 
+  - job_name: clean-up-tool
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['clean-tool:7777']
+      - targets: ['clean-tool:9091']

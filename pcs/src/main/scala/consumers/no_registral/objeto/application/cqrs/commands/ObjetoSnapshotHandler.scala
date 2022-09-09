@@ -18,6 +18,7 @@ class ObjetoSnapshotHandler(actor: ObjetoActor) extends SyncCommandHandler[Objet
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
+      command.objetoId2,
       command.saldo,
       command.cotitulares,
       command.tags,
