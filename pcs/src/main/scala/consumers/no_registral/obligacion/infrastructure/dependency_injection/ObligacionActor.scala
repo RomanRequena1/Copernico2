@@ -31,6 +31,10 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       cmd.deliveryId,
       cmd.sujetoId,
       cmd.objetoId,
+      cmd match {
+        case c: ObligacionCommands.ObligacionUpdateFromDto => c.registro.BOB_SOJ_IDENTIFICADOR_2
+        case _ => None
+      },
       cmd.tipoObjeto,
       cmd.obligacionId,
       state.saldo,

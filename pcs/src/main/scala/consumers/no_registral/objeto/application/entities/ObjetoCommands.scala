@@ -19,12 +19,14 @@ object ObjetoCommands {
       deliveryId: BigInt,
       sujetoId: String,
       objetoId: String,
+      objetoId2: Option[String],
       tipoObjeto: String,
       saldo: BigDecimal,
       cotitulares: Set[String],
       tags: Set[String],
       sujetoResponsable: Option[String],
-      obligacionesSaldo: Map[String, BigDecimal] = Map.empty
+      obligacionesSaldo: Map[String, BigDecimal] = Map.empty,
+      idExterno: Option[String]
   ) extends ObjetoCommands
 
   case class ObjetoUpdateFromTri(
@@ -50,6 +52,7 @@ object ObjetoCommands {
       deliveryId: BigInt,
       sujetoId: String,
       objetoId: String,
+      objetoId2: Option[String],
       tipoObjeto: String,
       obligacionId: String,
       saldoObligacion: BigDecimal,
