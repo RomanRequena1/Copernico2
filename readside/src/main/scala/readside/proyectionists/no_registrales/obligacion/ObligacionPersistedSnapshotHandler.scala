@@ -35,7 +35,10 @@ class ObligacionPersistedSnapshotHandler(
     if (registro.operacion.equals("U")) {
       val projection = ObligacionSnapshotProjection(registro)
       for {
-        done <- r.cassandraWrite writeState projection
+        done <- r.cassandraWrite.writeState(projection).recover { ex: Throwable =>
+          log.error(ex.getMessage)
+          ex
+        }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
     } else {
       val cassandra = new CassandraWriteProduction()

@@ -9,12 +9,14 @@ import consumers.no_registral.sujeto.domain.SujetoEvents.SujetoSnapshotPersisted
 import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import monitoring.Monitoring
+import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.sujeto.projections.SujetoSnapshotPersistedProjection
 
 class SujetoSnapshotPersistedHandler(
     implicit
     r: MonitoringAndCassandraWrite
 ) extends ActorTransaction[SujetoSnapshotPersisted](r.monitoring)(r.actorTransactionRequirements) {
+  private val log = LoggerFactory.getLogger(this.getClass)
 
   override def topic: String = "SujetoSnapshotPersisted"
   override def topicRetry: String =  "SujetoSnapshotPersisted_retry"
@@ -32,7 +34,10 @@ class SujetoSnapshotPersistedHandler(
     //recordLag(calculateLag(registro.deliveryId.toString))
     val projection = SujetoSnapshotPersistedProjection(registro)
     for {
-      done <- cassandra writeState projection
+      done <- cassandra.writeState(projection).recover { ex: Throwable =>
+        log.error(ex.getMessage)
+        ex
+      }
     } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
   }
 }
