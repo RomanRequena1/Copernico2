@@ -1,7 +1,7 @@
 import com.lightbend.cinnamon.sbt.Cinnamon.library._
 import com.lightbend.cinnamon.sbt.CinnamonLibrary.{cinnamonOpenTracingJaeger, cinnamonOpenTracingZipkin}
 import sbt.{Resolver, _}
-
+import sbt._
 object Dependencies {
   // Versions
   lazy val scalaVersion = "2.13.1"
@@ -84,6 +84,7 @@ object Dependencies {
       akkaModule("akka-persistence-query") ::
       akkaModule("akka-actor") ::
       "com.typesafe.akka" %% "akka-persistence" % akkaVersion ::
+      "com.oracle.database.jdbc" % "ojdbc8" % "21.3.0.0" ::
       "com.typesafe.akka" %% "akka-slf4j" % akkaVersion ::
       "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion ::
       "com.typesafe.akka" %% "akka-http" % akkaHttpVersion ::

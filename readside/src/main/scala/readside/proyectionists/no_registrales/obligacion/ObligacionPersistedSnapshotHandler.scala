@@ -6,6 +6,7 @@ import cassandra.write.CassandraWriteProduction
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
+import oracle.oracle.connOracle
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
 
@@ -36,6 +37,7 @@ class ObligacionPersistedSnapshotHandler(
       val projection = ObligacionSnapshotProjection(registro)
       for {
         done <- r.cassandraWrite.writeState(projection).recover { ex: Throwable =>
+          connOracle(registro.sujetoId,registro.tipoObjeto,registro.objetoId,registro.obligacionId)
           log.error(ex.getMessage)
           ex
         }
