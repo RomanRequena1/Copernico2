@@ -4,13 +4,12 @@ import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{
-  DetallesObligacion,
-  ObligacionesTri
-}
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json._
 import design_principles.actor_model.{Command, Response}
 import monitoring.Monitoring
+import oracle.oracle.connOracleKafkaToWriteside
+import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.maybeDecode
 
@@ -21,7 +20,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
-
+  private val log = LoggerFactory.getLogger(this.getClass)
   /** Handles the deserialization of detalles de obligaciones tributarias */
   implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
 
@@ -29,10 +28,14 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
   def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
-  def processInput(input: String): Either[Throwable, ObligacionesTri] =
+  def processInput(input: String): Either[Throwable, ObligacionesTri] = {
     maybeDecode[ObligacionesTri](input)
+  }
+
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
+    log.debug("Cumbia KW oracle")
+    connOracleKafkaToWriteside(obligacion.BOB_SUJ_IDENTIFICADOR,obligacion.BOB_SOJ_TIPO_OBJETO,obligacion.BOB_SOJ_IDENTIFICADOR,obligacion.BOB_OBN_ID)
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative

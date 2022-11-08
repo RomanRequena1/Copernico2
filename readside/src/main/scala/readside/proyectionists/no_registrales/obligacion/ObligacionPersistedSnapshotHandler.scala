@@ -6,11 +6,12 @@ import cassandra.write.CassandraWriteProduction
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
-import oracle.oracle.connOracle
+import oracle.oracle.connOracleReadsideToCass
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
 
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 class ObligacionPersistedSnapshotHandler(
                                           implicit
@@ -32,15 +33,35 @@ class ObligacionPersistedSnapshotHandler(
       .maybeDecode[ObligacionPersistedSnapshot](input)
 
   override def processMessage(registro: ObligacionPersistedSnapshot): Future[Response.SuccessProcessing] = {
+
     //recordLag(calculateLag(registro.deliveryId.toString))
     if (registro.operacion.equals("U")) {
       val projection = ObligacionSnapshotProjection(registro)
+
+      /*r.cassandraWrite.writeState(projection).onComplete {
+        case Failure(exception) => log.error("Cumbia------- Dont persist" + exception)
+
+        case Success(value) =>
+
+          connOracleReadsideToCass(registro.sujetoId,registro.tipoObjeto,registro.objetoId,registro.obligacionId)
+          SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
+
+      }*/
+
       for {
-        done <- r.cassandraWrite.writeState(projection).recover { ex: Throwable =>
-          connOracle(registro.sujetoId,registro.tipoObjeto,registro.objetoId,registro.obligacionId)
-          log.error(ex.getMessage)
-          ex
+        done <- r.cassandraWrite.writeState(projection).andThen {
+          case Failure(exception) => log.error("Cumbia Dont persist " + exception )
+          case Success(value) => log.error("Cumbia Persist " + value )
+            connOracleReadsideToCass(registro.sujetoId,registro.tipoObjeto,registro.objetoId,registro.obligacionId)
         }
+
+
+          /*recover { ex: Throwable =>
+          connOracleReadsideToCass(registro.sujetoId,registro.tipoObjeto,registro.objetoId,registro.obligacionId)
+          log.error(ex.getMessage)
+          log.error("Cumbia readside oracle")
+          ex
+        }*/
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
     } else {
       val cassandra = new CassandraWriteProduction()
