@@ -15,7 +15,7 @@ object oracle {
     val connection : Connection = null
     val oracleUser = "sys as sysdba"
     val oraclePassword = "1234"
-    val oracleURL = "jdbc:oracle:thin:@172.22.2.2:1521:xe"
+    val oracleURL = "jdbc:oracle:thin:@172.22.2.1:1521:xe"
 
     val ods = new OracleDataSource()
     ods.setUser(oracleUser)
@@ -40,7 +40,7 @@ object oracle {
     val connection : Connection = null
     val oracleUser = "sys as sysdba"
     val oraclePassword = "1234"
-    val oracleURL = "jdbc:oracle:thin:@172.22.2.2:1521:xe"
+    val oracleURL = "jdbc:oracle:thin:@172.22.2.1:1521:xe"
 
     val ods = new OracleDataSource()
     ods.setUser(oracleUser)
@@ -66,7 +66,7 @@ object oracle {
     val connection : Connection = null
     val oracleUser = "sys as sysdba"
     val oraclePassword = "1234"
-    val oracleURL = "jdbc:oracle:thin:@172.22.2.2:1521:xe"
+    val oracleURL = "jdbc:oracle:thin:@172.22.2.1:1521:xe"
 
     val ods = new OracleDataSource()
     ods.setUser(oracleUser)

@@ -16,3 +16,6 @@
 @EXPAND select * from readside;
 
 DROP TABLE readside PURGE;
+
+
+
