@@ -35,7 +35,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
     log.debug("Cumbia KW oracle")
-    connOracleKafkaToWriteside(obligacion.EV_ID)
+    connOracleKafkaToWriteside(obligacion.EV_ID.toString())
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative

@@ -12,9 +12,7 @@ import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersi
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
-import oracle.oracle.connOracleWriteSideToKafka
 
-import scala.util.{Failure, Success}
 
 class ObligacionActor(requirements: MonitoringAndMessageProducer)
     extends PersistentBaseActor[ObligacionEvents, ObligacionState](requirements.monitoring) {
