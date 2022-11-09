@@ -2,20 +2,31 @@ package oracle
 import java.sql.Connection
 import _root_.oracle.jdbc.pool.OracleDataSource
 import org.slf4j.LoggerFactory
+
+import java.text.SimpleDateFormat
+import java.util.Calendar
 object oracle {
 
 
   private val log = LoggerFactory.getLogger(this.getClass)
-  def connOracleKafkaToWriteside(sujetoId: String,tipoObjeto: String,objetoId: String,obligacionId: String) = {
-    //UPDATE readside SET out='hola1' WHERE id = '123'
-    val query = s"""
-    UPDATE readside SET outtocass = 'true' WHERE sujetoId = '${sujetoId}' and tipoObjeto = '${tipoObjeto}' and objetoId = '${objetoId}' and obligacionId = '${obligacionId}' and tipo = 'KW'
-    """
+  def connOracleKafkaToWriteside(ev_id: String) = {
 
+    val form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+    val c = Calendar.getInstance();
+
+
+
+    val formattedDate = form.format(c.getTime());
+    val query = s"""
+            update tax.EVENTOS_OBN_LOGS
+            set PASO = '05', fecha_03 = '${formattedDate}'
+            where EV_ID = '${ev_id}'
+    """
+    log.debug("\nTime when pcs comes in " + formattedDate)
     val connection : Connection = null
-    val oracleUser = "sys as sysdba"
-    val oraclePassword = "1234"
-    val oracleURL = "jdbc:oracle:thin:@172.22.2.1:1521:xe"
+    val oracleUser = "usrnifi"
+    val oraclePassword = "usrnifi"
+    val oracleURL = "jdbc:oracle:thin:@10.250.11.15:1521/PTAXDESA"
 
     val ods = new OracleDataSource()
     ods.setUser(oracleUser)
@@ -30,7 +41,7 @@ object oracle {
     statement.executeUpdate(query)
 
   }
-  def connOracleWriteSideToKafka(sujetoId: String,tipoObjeto: String,objetoId: String,obligacionId: String) = {
+  /*def connOracleWriteSideToKafka(sujetoId: String,tipoObjeto: String,objetoId: String,obligacionId: String) = {
     //UPDATE readside SET out='hola1' WHERE id = '123'
     val query = s"""
       UPDATE readside SET outtocass='true' WHERE sujetoId = '${sujetoId}' and tipoObjeto = '${tipoObjeto}' and objetoId = '${objetoId}' and obligacionId = '${obligacionId}' and tipo = 'WK'
@@ -38,9 +49,9 @@ object oracle {
     """
 
     val connection : Connection = null
-    val oracleUser = "sys as sysdba"
-    val oraclePassword = "1234"
-    val oracleURL = "jdbc:oracle:thin:@172.22.2.1:1521:xe"
+    val oracleUser = "usrnifi"
+    val oraclePassword = "usrnifi"
+    val oracleURL = "jdbc:oracle:thin:@10.250.11.15:1521:PTAXDESA"
 
     val ods = new OracleDataSource()
     ods.setUser(oracleUser)
@@ -55,18 +66,25 @@ object oracle {
     statement.executeUpdate(query)
 
 
-  }
+  }*/
 
-  def connOracleReadsideToCass(sujetoId: String,tipoObjeto: String,objetoId: String,obligacionId: String) = {
+  def connOracleReadsideToCass(ev_id: String) = {
+    val form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+    val c = Calendar.getInstance();
 
+
+
+    val formattedDate = form.format(c.getTime());
     val query = s"""
-  UPDATE readside SET outtocass='true' WHERE sujetoId = '${sujetoId}' and tipoObjeto = '${tipoObjeto}' and objetoId = '${objetoId}' and obligacionId = '${obligacionId}' and tipo = 'KR'
+           update tax.EVENTOS_OBN_LOGS
+           set PASO = '06', fecha_04 = '${formattedDate}'
+           where EV_ID = '${ev_id}'
     """
-
+    log.debug("Time when readside comes out " + formattedDate)
     val connection : Connection = null
-    val oracleUser = "sys as sysdba"
-    val oraclePassword = "1234"
-    val oracleURL = "jdbc:oracle:thin:@172.22.2.1:1521:xe"
+    val oracleUser = "usrnifi"
+    val oraclePassword = "usrnifi"
+    val oracleURL = "jdbc:oracle:thin:@10.250.11.15:1521/PTAXDESA"
 
     val ods = new OracleDataSource()
     ods.setUser(oracleUser)
@@ -87,4 +105,24 @@ object oracle {
 
 
 
+}
+object demo extends App{
+
+
+  import java.util.Calendar
+
+  val dT = Calendar.getInstance
+
+
+  //val time = dT.get(Calendar.YEAR) + '-' + dT.get(Calendar.MONTH) + '-' + dT.get(Calendar.DATE) + ' ' + dT.get(Calendar.HOUR) + ':' + dT.get(Calendar.MINUTE) + ':' + dT.get(Calendar.SECOND) + .000
+
+  val form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+  val c = Calendar.getInstance();
+
+
+
+  val formattedDate = form.format(c.getTime());
+  println("Date formatted : "+formattedDate);
+
+  println(formattedDate)
 }

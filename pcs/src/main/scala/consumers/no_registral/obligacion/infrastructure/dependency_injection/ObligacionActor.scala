@@ -87,13 +87,13 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         )
       ),
       topic = kafkaTopic
-    )(_ => handler()).onComplete {
+    )(_ => handler())/*.onComplete {
       case Failure(ex) => log.error("Cumbia Error when try to send to topic " + ex)
       case Success(value) => {
         log.debug("Cumbia Success,  sent to topic")
         connOracleWriteSideToKafka(event.sujetoId,event.tipoObjeto,event.objetoId,event.obligacionId)
       }
-    }
+    }*/
   }
 
   def deleteSnapshot()(handler: () => Unit): Unit = {
