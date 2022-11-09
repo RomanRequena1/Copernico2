@@ -41,32 +41,9 @@ object oracle {
     statement.executeUpdate(query)
 
   }
-  /*def connOracleWriteSideToKafka(sujetoId: String,tipoObjeto: String,objetoId: String,obligacionId: String) = {
-    //UPDATE readside SET out='hola1' WHERE id = '123'
-    val query = s"""
-      UPDATE readside SET outtocass='true' WHERE sujetoId = '${sujetoId}' and tipoObjeto = '${tipoObjeto}' and objetoId = '${objetoId}' and obligacionId = '${obligacionId}' and tipo = 'WK'
-
-    """
-
-    val connection : Connection = null
-    val oracleUser = "usrnifi"
-    val oraclePassword = "usrnifi"
-    val oracleURL = "jdbc:oracle:thin:@10.250.11.15:1521:PTAXDESA"
-
-    val ods = new OracleDataSource()
-    ods.setUser(oracleUser)
-    ods.setURL(oracleURL)
-    ods.setPassword(oraclePassword)
-
-    val con = ods.getConnection()
-    val statement = con.createStatement()
-
-    statement.setFetchSize(1000)      // important
-
-    statement.executeUpdate(query)
 
 
-  }*/
+
 
   def connOracleReadsideToCass(ev_id: String) = {
     val form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
@@ -99,30 +76,9 @@ object oracle {
     statement.executeUpdate(query)
 
   }
-  //connOracleWriteSideToKafka("20-06411831-7","i","270618850898","201500098")
-  //connOracleReadsideToCass("20-06411831-7","I","270618850898","201500098")
 
 
 
 
-}
-object demo extends App{
 
-
-  import java.util.Calendar
-
-  val dT = Calendar.getInstance
-
-
-  //val time = dT.get(Calendar.YEAR) + '-' + dT.get(Calendar.MONTH) + '-' + dT.get(Calendar.DATE) + ' ' + dT.get(Calendar.HOUR) + ':' + dT.get(Calendar.MINUTE) + ':' + dT.get(Calendar.SECOND) + .000
-
-  val form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-  val c = Calendar.getInstance();
-
-
-
-  val formattedDate = form.format(c.getTime());
-  println("Date formatted : "+formattedDate);
-
-  println(formattedDate)
 }
