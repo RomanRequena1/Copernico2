@@ -12,6 +12,9 @@ import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersi
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
+import oracle.oracle.connOracleWriteSideToKafka
+
+import scala.util.{Failure, Success}
 
 class ObligacionActor(requirements: MonitoringAndMessageProducer)
     extends PersistentBaseActor[ObligacionEvents, ObligacionState](requirements.monitoring) {
@@ -84,7 +87,13 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         )
       ),
       topic = kafkaTopic
-    )(_ => handler())
+    )(_ => handler())/*.onComplete {
+      case Failure(ex) => log.error("Cumbia Error when try to send to topic " + ex)
+      case Success(value) => {
+        log.debug("Cumbia Success,  sent to topic")
+        connOracleWriteSideToKafka(event.sujetoId,event.tipoObjeto,event.objetoId,event.obligacionId)
+      }
+    }*/
   }
 
   def deleteSnapshot()(handler: () => Unit): Unit = {
