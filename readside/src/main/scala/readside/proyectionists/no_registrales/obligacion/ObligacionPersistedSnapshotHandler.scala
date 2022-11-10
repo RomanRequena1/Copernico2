@@ -50,9 +50,9 @@ class ObligacionPersistedSnapshotHandler(
 
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
-          case Failure(exception) => log.error("Cumbia Dont persist " + exception )
-          case Success(value) => log.error("Cumbia Persist " + value )
-            connOracleReadsideToCass(registro.deliveryId.toString())
+          case Failure(exception) => log.error("Cumbia Dont persist obligacion" + exception )
+          case Success(value) => log.error("Cumbia Persist obligacion" + value )
+            connOracleReadsideToCass(registro.deliveryId.toString(),"obligacion")
         }
 
 
