@@ -3,82 +3,84 @@ import java.sql.Connection
 import _root_.oracle.jdbc.pool.OracleDataSource
 import org.slf4j.LoggerFactory
 
-//import java.text.SimpleDateFormat
-//import java.util.Calendar
 object oracle {
 
-
   private val log = LoggerFactory.getLogger(this.getClass)
-  def connOracleKafkaToWriteside(ev_id: String) = {
+  def connOracleKafkaToWriteside(ev_id: String, entidad: String, bob_canal_origen: String) = {
 
-    /*val form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-    val c = Calendar.getInstance();
-
-
-
-    val formattedDate = form.format(c.getTime());*/
-    val query = s"""
-            update tax.EVENTOS_OBN_LOGS
-            set PASO = '05'
-            where EV_ID = '${ev_id}'
+    val queryObligacion = s"""
+           update tax.EVENTOS_OBN_LOGS
+           set PASO = '05'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
-    //log.debug("\nTime when pcs comes in " + formattedDate)
+    val queryObjeto = s"""
+           update tax.EVENTOS_OBN_LOGS
+           set PASO = '05'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
+    """
+    val querySujeto = s"""
+           update tax.EVENTOS_OBN_LOGS
+           set PASO = '05'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
+    """
     val connection : Connection = null
     val oracleUser = "usrnifi"
     val oraclePassword = "usrnifi"
     val oracleURL = "jdbc:oracle:thin:@10.250.11.15:1521/PTAXDESA"
-
     val ods = new OracleDataSource()
     ods.setUser(oracleUser)
     ods.setURL(oracleURL)
     ods.setPassword(oraclePassword)
-
     val con = ods.getConnection()
     val statement = con.createStatement()
-
     statement.setFetchSize(1000)      // important
 
-    statement.executeUpdate(query)
-
+    entidad match {
+      case x if x == "obligacio" => statement.executeUpdate(queryObligacion)
+      case x if x == "objeto" => statement.executeUpdate(queryObjeto)
+      case x if x == "sujeto" => statement.executeUpdate(querySujeto)
+      case _ => log.error("Dont exist this entity")
+    }
   }
 
+  def connOracleReadsideToCass(ev_id: String,  entidad: String, bob_canal_origen:String) = {
 
-
-
-  def connOracleReadsideToCass(ev_id: String) = {
-    /*val form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-    val c = Calendar.getInstance();
-
-
-
-    val formattedDate = form.format(c.getTime());*/
-    val query = s"""
+    val queryObligacion = s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '06'
-           where EV_ID = '${ev_id}'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
-    //log.debug("Time when readside comes out " + formattedDate)
+    val queryObjeto = s"""
+           update tax.EVENTOS_OBN_LOGS
+           set PASO = '06'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
+    """
+    val querySujeto = s"""
+           update tax.EVENTOS_OBN_LOGS
+           set PASO = '06'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
+    """
+
     val connection : Connection = null
     val oracleUser = "usrnifi"
     val oraclePassword = "usrnifi"
     val oracleURL = "jdbc:oracle:thin:@10.250.11.15:1521/PTAXDESA"
-
     val ods = new OracleDataSource()
     ods.setUser(oracleUser)
     ods.setURL(oracleURL)
     ods.setPassword(oraclePassword)
-
     val con = ods.getConnection()
     val statement = con.createStatement()
+    statement.setFetchSize(1000)  // important
 
-    statement.setFetchSize(1000)      // important
-
-    statement.executeUpdate(query)
+    entidad match {
+      case x if x == "obligacio" => statement.executeUpdate(queryObligacion)
+      case x if x == "objeto" => statement.executeUpdate(queryObjeto)
+      case x if x == "sujeto" => statement.executeUpdate(querySujeto)
+      case _ => log.error("Dont exist this entity")
+    }
 
   }
 
-
-
-
-
 }
+

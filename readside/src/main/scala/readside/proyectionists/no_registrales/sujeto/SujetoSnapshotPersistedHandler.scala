@@ -9,8 +9,11 @@ import consumers.no_registral.sujeto.domain.SujetoEvents.SujetoSnapshotPersisted
 import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import monitoring.Monitoring
+import oracle.oracle.connOracleReadsideToCass
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.sujeto.projections.SujetoSnapshotPersistedProjection
+
+import scala.util.{Failure, Success}
 
 class SujetoSnapshotPersistedHandler(
     implicit
@@ -34,9 +37,10 @@ class SujetoSnapshotPersistedHandler(
     //recordLag(calculateLag(registro.deliveryId.toString))
     val projection = SujetoSnapshotPersistedProjection(registro)
     for {
-      done <- cassandra.writeState(projection).recover { ex: Throwable =>
-        log.error(ex.getMessage)
-        ex
+      done <- r.cassandraWrite.writeState(projection).andThen {
+        case Failure(exception) => log.error("Dont persist sujeto " + exception )
+        case Success(value) => log.error("Persist sujeto " + value )
+          connOracleReadsideToCass(registro.deliveryId.toString(),"sujeto", registro.registro.get.SUJ_CANAL_ORIGEN.getOrElse("TAX"))
       }
     } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
   }
