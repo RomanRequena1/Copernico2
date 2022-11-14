@@ -29,7 +29,7 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
     maybeDecode[ObjetosTri](input)
 
   def processMessage(registro: ObjetosTri): Future[Response.SuccessProcessing] = {
-    connOracleKafkaToWriteside(registro.EV_ID.toString(), "objeto")
+    connOracleKafkaToWriteside(registro.EV_ID.toString(), "objeto", registro.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
     implicit val a: Reads[Seq[ObjetosTri]] = Reads.seq(ObjetosTriF.reads)
     implicit val b: Reads[Seq[ObjetosTriOtrosAtributos]] = Reads.seq(ObjetosTriOtrosAtributosF.reads)
 

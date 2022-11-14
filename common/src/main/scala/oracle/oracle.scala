@@ -6,7 +6,8 @@ import org.slf4j.LoggerFactory
 object oracle {
 
   private val log = LoggerFactory.getLogger(this.getClass)
-  def connOracleKafkaToWriteside(ev_id: String, entidad: String) = {
+  def connOracleKafkaToWriteside(ev_id: String, entidad: String, bob_canal_origen: String) = {
+
     val queryObligacion = s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '05'
@@ -15,12 +16,12 @@ object oracle {
     val queryObjeto = s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '05'
-           where EV_ID = '${ev_id}'
+           where EV_ID = '${ev_id} and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
     val querySujeto = s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '05'
-           where EV_ID = '${ev_id}'
+           where EV_ID = '${ev_id} and BOB_CANAL_ORIGEN = '${bob_canal_origen}''
     """
     val connection : Connection = null
     val oracleUser = "usrnifi"
@@ -42,22 +43,22 @@ object oracle {
     }
   }
 
-  def connOracleReadsideToCass(ev_id: String,  entidad: String) = {
+  def connOracleReadsideToCass(ev_id: String,  entidad: String, bob_canal_origen:String) = {
 
     val queryObligacion = s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '06'
-           where EV_ID = '${ev_id}'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
     val queryObjeto = s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '06'
-           where EV_ID = '${ev_id}'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
     val querySujeto = s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '06'
-           where EV_ID = '${ev_id}'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
 
     val connection : Connection = null
