@@ -11,17 +11,17 @@ object oracle {
     val queryObligacion = s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '05'
-           where EV_ID = '${ev_id}'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
     val queryObjeto = s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '05'
-           where EV_ID = '${ev_id} and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
     val querySujeto = s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '05'
-           where EV_ID = '${ev_id} and BOB_CANAL_ORIGEN = '${bob_canal_origen}''
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
     val connection : Connection = null
     val oracleUser = "usrnifi"
