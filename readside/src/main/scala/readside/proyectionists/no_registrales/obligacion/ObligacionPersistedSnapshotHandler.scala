@@ -56,12 +56,12 @@ class ObligacionPersistedSnapshotHandler(
         }
 
 
-          /*recover { ex: Throwable =>
-          connOracleReadsideToCass(registro.sujetoId,registro.tipoObjeto,registro.objetoId,registro.obligacionId)
-          log.error(ex.getMessage)
-          log.error("Cumbia readside oracle")
-          ex
-        }*/
+        /*recover { ex: Throwable =>
+        connOracleReadsideToCass(registro.sujetoId,registro.tipoObjeto,registro.objetoId,registro.obligacionId)
+        log.error(ex.getMessage)
+        log.error("Cumbia readside oracle")
+        ex
+      }*/
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
     } else {
       val cassandra = new CassandraWriteProduction()
@@ -76,9 +76,10 @@ class ObligacionPersistedSnapshotHandler(
               s""" and bob_soj_identificador = '${registro.objetoId}' """ +
               s""" and bob_obn_id = '${registro.obligacionId}' """
           )
-          .recover { ex: Throwable =>
-            log.error(ex.getMessage)
-            ex
+          .andThen {
+            case Failure(exception) => log.error("Dont persist obligacion" + exception )
+            case Success(value) => log.error("Persist obligacion" + value )
+              connOracleReadsideToCass(registro.deliveryId.toString(),"obligacion", registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX") )
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
     }
