@@ -50,7 +50,7 @@ class ObligacionPersistedSnapshotHandler(
 
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
-          case Failure(exception) => log.error("Dont persist obligacion" + exception )
+          case Failure(exception) => log.error("Dont persist obligacions" + exception )
           case Success(value) => log.error("Persist obligacion" + value )
             connOracleReadsideToCass(registro.deliveryId.toString(),"obligacion", registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX") )
         }
