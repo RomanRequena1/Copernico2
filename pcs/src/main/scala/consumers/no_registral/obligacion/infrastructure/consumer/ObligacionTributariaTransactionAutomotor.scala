@@ -8,6 +8,8 @@ import consumers.no_registral.obligacion.application.entities.ObligacionExternal
 import consumers.no_registral.obligacion.infrastructure.json._
 import design_principles.actor_model.{Command, Response}
 import monitoring.Monitoring
+import oracle.oracle.connOracleKafkaToWriteside
+import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.maybeDecode
 
@@ -18,6 +20,7 @@ case class ObligacionTributariaTransactionAutomotor(actorRef: ActorRef, monitori
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
+  private val log = LoggerFactory.getLogger(this.getClass)
 
   /** Handles the deserialization of detalles de obligaciones tributarias */
   implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
@@ -30,6 +33,9 @@ case class ObligacionTributariaTransactionAutomotor(actorRef: ActorRef, monitori
     maybeDecode[ObligacionesTri](input)
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
+
+    log.debug("KW oracle")
+    connOracleKafkaToWriteside(obligacion.EV_ID.toString(), "obligacion", obligacion.BOB_CANAL_ORIGEN.getOrElse("TAX"))
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative

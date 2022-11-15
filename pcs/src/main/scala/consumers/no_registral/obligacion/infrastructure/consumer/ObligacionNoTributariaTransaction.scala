@@ -12,6 +12,8 @@ import consumers.no_registral.obligacion.application.entities.ObligacionExternal
 import consumers.no_registral.obligacion.infrastructure.json._
 import design_principles.actor_model.Response
 import monitoring.Monitoring
+import oracle.oracle.connOracleKafkaToWriteside
+import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.{decodeF, maybeDecode}
 
@@ -21,6 +23,7 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesAnt](monitoring) {
+  private val log = LoggerFactory.getLogger(this.getClass)
 
   def topic = "DGR-COP-OBLIGACIONES-ANT"
   def topicRetry = "DGR-COP-OBLIGACIONES-ANT_retry"
@@ -32,6 +35,8 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
 
   def processMessage(obligacion: ObligacionesAnt): Future[Response.SuccessProcessing] = {
 
+    log.debug("KW oracle")
+    connOracleKafkaToWriteside(obligacion.EV_ID.toString(), "obligacion", obligacion.BOB_CANAL_ORIGEN.getOrElse("TAX"))
     implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
 
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
