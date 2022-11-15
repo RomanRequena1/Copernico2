@@ -36,7 +36,7 @@ object oracle {
     statement.setFetchSize(1000)      // important
 
     entidad match {
-      case x if x == "obligacio" => statement.executeUpdate(queryObligacion)
+      case x if x == "obligacion" => statement.executeUpdate(queryObligacion)
       case x if x == "objeto" => statement.executeUpdate(queryObjeto)
       case x if x == "sujeto" => statement.executeUpdate(querySujeto)
       case _ => log.error("Dont exist this entity")
@@ -74,7 +74,7 @@ object oracle {
     statement.setFetchSize(1000)  // important
 
     entidad match {
-      case x if x == "obligacio" => statement.executeUpdate(queryObligacion)
+      case x if x == "obligacion" => statement.executeUpdate(queryObligacion)
       case x if x == "objeto" => statement.executeUpdate(queryObjeto)
       case x if x == "sujeto" => statement.executeUpdate(querySujeto)
       case _ => log.error("Dont exist this entity")
