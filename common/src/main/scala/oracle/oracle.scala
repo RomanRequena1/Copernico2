@@ -1,13 +1,12 @@
 package oracle
-import java.sql.Connection
 import _root_.oracle.jdbc.pool.OracleDataSource
 import com.typesafe.config.{Config, ConfigFactory}
 import org.slf4j.LoggerFactory
 
 object oracle {
   private val config: Config = ConfigFactory.load()
-  val ip = config.getString("oracle.ip")
-  val port = config.getString("oracle.port")
+  val url = config.getString("oracle.url")
+
   private val log = LoggerFactory.getLogger(this.getClass)
   def connOracleKafkaToWriteside(ev_id: String, entidad: String, bob_canal_origen: String) = {
 
@@ -28,7 +27,7 @@ object oracle {
     """
     val oracleUser = "usrnifi"
     val oraclePassword = "usrnifi"
-    val oracleURL = s"jdbc:oracle:thin:@${ip}:${port}/PTAXDESA"
+    val oracleURL = s"${url}"
     val ods = new OracleDataSource()
     ods.setUser(oracleUser)
     ods.setURL(oracleURL)
@@ -65,7 +64,7 @@ object oracle {
 
     val oracleUser = "usrnifi"
     val oraclePassword = "usrnifi"
-    val oracleURL = s"jdbc:oracle:thin:@${ip}:${port}/PTAXDESA"
+    val oracleURL = s"${url}"
     val ods = new OracleDataSource()
     ods.setUser(oracleUser)
     ods.setURL(oracleURL)
