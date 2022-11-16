@@ -3,11 +3,13 @@ import _root_.oracle.jdbc.pool.OracleDataSource
 import com.typesafe.config.{Config, ConfigFactory}
 import org.slf4j.LoggerFactory
 
+import scala.util.Try
+
 object Oracle {
   private val config: Config = ConfigFactory.load()
-  val url = config.getString("oracle.url")
-  val user = config.getString("oracle.user")
-  val password = config.getString("oracle.password")
+  val url = Try(System.getenv("STRING_CONEXION_ORACLE")).getOrElse("no")
+  val user = Try(System.getenv("USER_ORACLE")).getOrElse("no")
+  val password = Try(System.getenv("PASSWORD_ORACLE")).getOrElse("no")
 
   private val log = LoggerFactory.getLogger(this.getClass)
 
@@ -51,13 +53,14 @@ object Oracle {
         case _ => log.error("Dont exist this entity")
       }
     } catch {
-      case e: Exception => log.error("Error connection to Oracle - " + e)
+      case e: Exception => log.error("Error connection to Oracle - " + e + " - [" + ev_id + "]")
     }
   }
 
   def connOracleReadsideToCass(ev_id: String,  entidad: String, bob_canal_origen:String) = {
     try {
       val con = ods.getConnection()
+
       val statement = con.createStatement()
       val queryObligacion =
         s"""
@@ -85,7 +88,7 @@ object Oracle {
         case _ => log.error("Dont exist this entity")
       }
     } catch {
-      case e: Exception => log.error("Error connection to Oracle - " + e)
+      case e: Exception => log.error("Error connection to Oracle - " + e + " - [" + ev_id + "]")
     }
   }
 
