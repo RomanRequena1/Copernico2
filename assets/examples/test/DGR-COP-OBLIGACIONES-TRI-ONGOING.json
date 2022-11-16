@@ -1,45 +1,45 @@
 {
-  "EV_ID": "202202081443160000000000008488819930",
-  "BOB_SUJ_IDENTIFICADOR": "20-06411831-8",
-  "BOB_SOJ_TIPO_OBJETO": "I",
-  "BOB_SOJ_IDENTIFICADOR": "270618850878",
-  "BOB_FECHASANCION": "11-5",
-  "BOB_SUB_ESTADO": "test",
-  "BOB_TPBID": "666",
-  "BOB_OBN_ID": "201500098",
-  "BOB_SALDO": "3000",
-  "BOB_CUOTA": "5",
-  "BOB_ESTADO": "ADMINISTRATIVA",
-  "BOB_FISCALIZADA": "N",
-  "BOB_INDICE_INT_PUNIT": null,
-  "BOB_INDICE_INT_RESAR": null,
-  "BOB_INTERES_PUNIT": null,
-  "BOB_INTERES_RESAR": null,
-  "BOB_JUI_ID": null,
-  "BOB_PERIODO": "2015",
-  "BOB_PLN_ID": null,
-  "BOB_OGA_ID": "12352252255552555254155251",
-  "BOB_PRORROGA": "2015-05-13 00:00:00.0",
-  "BOB_TIPO": "tributaria",
-  "BOB_TOTAL": null,
-  "BOB_VENCIMIENTO": "2015-05-13 00:00:00.0",
-  "BOB_CAPITAL": "1260",
-  "BOB_CONCEPTO": "700",
-  "BOB_IMPUESTO": "600",
-  "FECHA_BAJA": "2021-11-26 11:44:18.0",
-  "BOB_ADHERIDO_DEBITO": "N",
-  "SOJ_IDEXTERNO" : "1234567",
-  "BOB_OTROS_ATRIBUTOS": {
-    "BOB_DETALLES": [
-      {
-        "EVO_OBN_PEO_ID_MATERIAL": "APEX",
-        "BOB_MUNICIPIO": null,
-        "BOB_INTERES_FINANCIACION": null,
-        "JUICIO_MULTIOBJETO": "N",
-        "RULE_NUMBER": "1",
-        "EVO_OBN_PEO_ID_FORMAL": "NC",
-        "PLAN_MULTIOBJETO": "N"
-      }
-    ]
-  }
+    "EV_ID": "20221006120407468000001084718669",
+    "BOB_SUJ_IDENTIFICADOR": "20-06411831-8",
+    "BOB_SOJ_TIPO_OBJETO": "E",
+    "BOB_SOJ_IDENTIFICADOR": "2102464288",
+    "BOB_OBN_ID": "201500128",
+    "BOB_SALDO": "12",
+    "BOB_CUOTA": "5",
+    "BOB_ESTADO": "ADMINISTRATIVA",
+    "BOB_FISCALIZADA": "N",
+    "BOB_INDICE_INT_PUNIT": null,
+    "BOB_INDICE_INT_RESAR": null,
+    "BOB_INTERES_PUNIT": null,
+    "BOB_INTERES_RESAR": null,
+    "BOB_JUI_ID": null,
+    "BOB_PERIODO": "2015",
+    "BOB_PLN_ID": null,
+    "BOB_PRORROGA": "2015-05-13 00:00:00.0",
+    "BOB_TIPO": "tributaria",
+    "BOB_TOTAL": null,
+    "BOB_VENCIMIENTO": "2015-05-13 00:00:00.0",
+    "BOB_CAPITAL": "1260",
+    "BOB_CONCEPTO": "700",
+    "BOB_IMPUESTO": "600",
+    "FECHA_BAJA": "2021-11-26 11:44:18.0",
+    "BOB_ADHERIDO_DEBITO": "N",
+    "BOB_CANAL_ORIGEN": "bbbb",
+    "BOB_TPBID": "cccc",
+    "BOB_FECHASANCION": "ddddd",
+    "BOB_SUB_ESTADO": "eeeee",
+    "BOB_OGA_ID": "fffff",
+    "BOB_OTROS_ATRIBUTOS": {
+        "BOB_DETALLES": [
+            {
+                "EVO_OBN_PEO_ID_MATERIAL": "APEX",
+                "BOB_MUNICIPIO": null,
+                "BOB_INTERES_FINANCIACION": null,
+                "JUICIO_MULTIOBJETO": "N",
+                "RULE_NUMBER": "1",
+                "EVO_OBN_PEO_ID_FORMAL": "NC",
+                "PLAN_MULTIOBJETO": "N"
+            }
+        ]
+    }
 }

@@ -9,7 +9,7 @@ import consumers.no_registral.sujeto.application.entity.{SujetoCommands, SujetoE
 import consumers.no_registral.sujeto.infrastructure.json._
 import design_principles.actor_model.Response
 import monitoring.Monitoring
-import oracle.oracle.connOracleKafkaToWriteside
+import oracle.Oracle.connOracleKafkaToWriteside
 import serialization.maybeDecode
 
 import scala.util.Try

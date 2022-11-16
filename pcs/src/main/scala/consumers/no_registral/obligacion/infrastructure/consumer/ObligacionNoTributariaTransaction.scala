@@ -12,7 +12,7 @@ import consumers.no_registral.obligacion.application.entities.ObligacionExternal
 import consumers.no_registral.obligacion.infrastructure.json._
 import design_principles.actor_model.Response
 import monitoring.Monitoring
-import oracle.oracle.connOracleKafkaToWriteside
+import oracle.Oracle.connOracleKafkaToWriteside
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.{decodeF, maybeDecode}

@@ -9,7 +9,7 @@ import consumers.no_registral.sujeto.domain.SujetoEvents.SujetoSnapshotPersisted
 import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import monitoring.Monitoring
-import oracle.oracle.connOracleReadsideToCass
+import oracle.Oracle.connOracleReadsideToCass
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.sujeto.projections.SujetoSnapshotPersistedProjection
 
