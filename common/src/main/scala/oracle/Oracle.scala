@@ -58,9 +58,12 @@ object Oracle {
   }
 
   def connOracleReadsideToCass(ev_id: String,  entidad: String, bob_canal_origen:String) = {
+    log.error("Llego BEFORE TRY 1")
     try {
+      log.error("Llego AFTER TRY 1")
       val con = ods.getConnection()
-
+      println("CUMBIA LLEGO 1")
+      log.error("Llego 1")
       val statement = con.createStatement()
       val queryObligacion =
         s"""
@@ -80,6 +83,45 @@ object Oracle {
            set PASO = '06'
            where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
+      statement.setFetchSize(1000) // important
+
+      entidad match {
+        case x if x == "obligacion" => statement.executeUpdate(queryObligacion)
+        case x if x == "objeto" => statement.executeUpdate(queryObjeto)
+        case x if x == "sujeto" => statement.executeUpdate(querySujeto)
+        case _ => log.error("Dont exist this entity")
+      }
+    } catch {
+      case e: Exception => log.error("Error connection to Oracle - " + e + " - [" + ev_id + "]")
+    }
+  }
+  def connOracleReadsideToCass1(ev_id: String,  entidad: String, bob_canal_origen:String) = {
+    log.error("Llego BEFORE TRY -1")
+    try {
+      log.error("Llego AFTER TRY -1")
+      val con = ods.getConnection()
+      println("CUMBIA LLEGO -1")
+      log.error("Llego -1")
+      val statement = con.createStatement()
+      val queryObligacion =
+        s"""
+           update tax.EVENTOS_OBN_LOGS
+           set PASO = '06'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
+    """
+      val queryObjeto =
+        s"""
+           update tax.EVENTOS_OBN_LOGS
+           set PASO = '06'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
+    """
+      val querySujeto =
+        s"""
+           update tax.EVENTOS_OBN_LOGS
+           set PASO = '06'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
+    """
+      statement.setFetchSize(1000) // important
 
       entidad match {
         case x if x == "obligacion" => statement.executeUpdate(queryObligacion)

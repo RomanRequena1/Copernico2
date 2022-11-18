@@ -1,0 +1,5 @@
+package oracle
+
+object oraclereadside {
+
+}

@@ -74,7 +74,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
       saldo = state.saldo,
-      operacion = ObligacionEvents.operaciones.get("Upsert").get
+      operacion = "U"
     )
     import serialization.encode
     requirements.messageProducer.produce(
@@ -109,7 +109,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
       saldo = state.saldo,
-      operacion = ObligacionEvents.operaciones.get("Delete").get
+      operacion = "D"
     )
     import serialization.encode
     requirements.messageProducer.produce(

@@ -6,7 +6,7 @@ import cassandra.write.CassandraWriteProduction
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
-import oracle.Oracle.connOracleReadsideToCass
+import oracle.Oracle.{connOracleReadsideToCass, connOracleReadsideToCass1}
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
 
@@ -35,7 +35,60 @@ class ObligacionPersistedSnapshotHandler(
   override def processMessage(registro: ObligacionPersistedSnapshot): Future[Response.SuccessProcessing] = {
 
     //recordLag(calculateLag(registro.deliveryId.toString))
+    log.error("operacion: " + registro.operacion)
+    registro.operacion match {
+      case x if x == "D" => val projection = ObligacionSnapshotProjection(registro)
+        log.error("operacio 1: " + registro.operacion)
+        /*r.cassandraWrite.writeState(projection).onComplete {
+          case Failure(exception) => log.error("Cumbia------- Dont persist" + exception)
+
+          case Success(value) =>
+
+            connOracleReadsideToCass(registro.sujetoId,registro.tipoObjeto,registro.objetoId,registro.obligacionId)
+            SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
+
+        }*/
+
+        for {
+          done <- r.cassandraWrite.writeState(projection).andThen {
+            case Failure(exception) => log.error("Dont persist obligacion" + exception )
+            case Success(value) => log.error("Persist obligacion" + value )
+              connOracleReadsideToCass(registro.deliveryId.toString(),"obligacion", registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX") )
+          }
+
+
+          /*recover { ex: Throwable =>
+          connOracleReadsideToCass(registro.sujetoId,registro.tipoObjeto,registro.objetoId,registro.obligacionId)
+          log.error(ex.getMessage)
+          log.error("Cumbia readside oracle")
+          ex
+        }*/
+        } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
+      case x if x == "U" => val cassandra = new CassandraWriteProduction()
+        log.error("operacio -1: " + registro.operacion)
+        for {
+          done <- cassandra
+            .cql(
+              s"""
+          DELETE FROM read_side.buc_obligaciones """ +
+                """ WHERE bob_suj_identificador = """ +
+                s""" '${registro.sujetoId}' """ +
+                s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """ +
+                s""" and bob_soj_identificador = '${registro.objetoId}' """ +
+                s""" and bob_obn_id = '${registro.obligacionId}' """
+            )
+            .andThen {
+              case Failure(exception) => log.error("Dont persist obligacion" + exception )
+              case Success(value) => {
+                connOracleReadsideToCass1(registro.deliveryId.toString(), "obligacion", registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
+                log.error("Persist obligacion -1" + value)
+              }
+            }
+        } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
+    }
+    /*log.error("operacion: " + registro.operacion)
     if (registro.operacion.equals("U")) {
+      log.error("operacio 1: " + registro.operacion)
       val projection = ObligacionSnapshotProjection(registro)
 
       /*r.cassandraWrite.writeState(projection).onComplete {
@@ -64,6 +117,7 @@ class ObligacionPersistedSnapshotHandler(
       }*/
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
     } else {
+      log.error("operacio -1: " + registro.operacion)
       val cassandra = new CassandraWriteProduction()
       for {
         done <- cassandra
@@ -78,10 +132,10 @@ class ObligacionPersistedSnapshotHandler(
           )
           .andThen {
             case Failure(exception) => log.error("Dont persist obligacion" + exception )
-            case Success(value) => log.error("Persist obligacion" + value )
+            case Success(value) => log.error("Persist obligacion -1" + value )
               connOracleReadsideToCass(registro.deliveryId.toString(),"obligacion", registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX") )
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
-    }
+    }*/
   }
 }
