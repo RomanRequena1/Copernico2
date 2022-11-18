@@ -59,69 +59,77 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
   import consumers.no_registral.obligacion.infrastructure.json._
   def persistSnapshot()(handler: () => Unit): Unit = {
+    state.operacionState match {
+      case x if x == "U" => {
+        val ids = ObligacionMessageRoots.extractor(persistenceId)
 
-    val ids = ObligacionMessageRoots.extractor(persistenceId)
+        val kafkaTopic = "ObligacionPersistedSnapshot"
 
-    val kafkaTopic = "ObligacionPersistedSnapshot"
+        val event = ObligacionPersistedSnapshot(
+          deliveryId = lastDeliveryId,
+          sujetoId = ids.sujetoId,
+          objetoId = ids.objetoId,
+          tipoObjeto = ids.tipoObjeto,
+          obligacionId = ids.obligacionId,
+          registro = state.registro,
+          exenta = state.exenta,
+          porcentajeExencion = state.porcentajeExencion.getOrElse(0),
+          saldo = state.saldo,
 
-    val event = ObligacionPersistedSnapshot(
-      deliveryId = lastDeliveryId,
-      sujetoId = ids.sujetoId,
-      objetoId = ids.objetoId,
-      tipoObjeto = ids.tipoObjeto,
-      obligacionId = ids.obligacionId,
-      registro = state.registro,
-      exenta = state.exenta,
-      porcentajeExencion = state.porcentajeExencion.getOrElse(0),
-      saldo = state.saldo,
-      operacion = "U"
-    )
-    import serialization.encode
-    requirements.messageProducer.produce(
-      data = Seq(
-        KafkaKeyValue(
-          persistenceId,
-          encode(event)
+          operacion = state.operacionState
         )
-      ),
-      topic = kafkaTopic
-    )(_ => handler())/*.onComplete {
+        import serialization.encode
+        requirements.messageProducer.produce(
+          data = Seq(
+            KafkaKeyValue(
+              persistenceId,
+              encode(event)
+            )
+          ),
+          topic = kafkaTopic
+        )(_ => handler())/*.onComplete {
       case Failure(ex) => log.error("Cumbia Error when try to send to topic " + ex)
       case Success(value) => {
         log.debug("Cumbia Success,  sent to topic")
         connOracleWriteSideToKafka(event.sujetoId,event.tipoObjeto,event.objetoId,event.obligacionId)
       }
     }*/
-  }
+      }
+      case x if x == "D" => {
+        val ids = ObligacionMessageRoots.extractor(persistenceId)
 
-  def deleteSnapshot()(handler: () => Unit): Unit = {
-    val ids = ObligacionMessageRoots.extractor(persistenceId)
+        val kafkaTopic = "ObligacionPersistedDeleteSnapshot"
 
-    val kafkaTopic = "ObligacionPersistedSnapshot"
-
-    val event = ObligacionPersistedSnapshot(
-      deliveryId = lastDeliveryId,
-      sujetoId = ids.sujetoId,
-      objetoId = ids.objetoId,
-      tipoObjeto = ids.tipoObjeto,
-      obligacionId = ids.obligacionId,
-      registro = state.registro,
-      exenta = state.exenta,
-      porcentajeExencion = state.porcentajeExencion.getOrElse(0),
-      saldo = state.saldo,
-      operacion = "D"
-    )
-    import serialization.encode
-    requirements.messageProducer.produce(
-      data = Seq(
-        KafkaKeyValue(
-          persistenceId,
-          encode(event)
+        val event = ObligacionPersistedSnapshot(
+          deliveryId = lastDeliveryId,
+          sujetoId = ids.sujetoId,
+          objetoId = ids.objetoId,
+          tipoObjeto = ids.tipoObjeto,
+          obligacionId = ids.obligacionId,
+          registro = state.registro,
+          exenta = state.exenta,
+          porcentajeExencion = state.porcentajeExencion.getOrElse(0),
+          saldo = state.saldo,
+          operacion = state.operacionState
         )
-      ),
-      topic = kafkaTopic
-    )(_ => handler())
+        import serialization.encode
+        requirements.messageProducer.produce(
+          data = Seq(
+            KafkaKeyValue(
+              persistenceId,
+              encode(event)
+            )
+          ),
+          topic = kafkaTopic
+        )(_ => handler())
+      }
+    }
+
   }
+
+  /*def deleteSnapshot()(handler: () => Unit): Unit = {
+
+  }*/
 }
 
 object ObligacionActor {
