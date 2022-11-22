@@ -16,7 +16,9 @@ services:
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
       #PASSIVATE: '20s'
-
+      STRING_CONEXION_ORACLE: 'jdbc:oracle:thin:@172.22.2.1:1521:xe'
+      PASSWORD_ORACLE: 'usrnifi'
+      USER_ORACLE: 'usrnifi'  
       PROJECTIONIST_PARALELLISM: 1
       LOGSTASH: '172.22.5.3:5000'
       CLUSTER_IP: 172.22.4.3
@@ -40,9 +42,12 @@ services:
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
 
-      STRING_CONEXION_ORACLE: ''
+      STRING_CONEXION_ORACLE: 'jdbc:oracle:thin:@172.22.2.1:1521:xe'
       PASSWORD_ORACLE: 'usrnifi'
       USER_ORACLE: 'usrnifi'
+      STRING_CONEXION_ORACLE1: 'jdbc:oracle:thin:@172.22.2.1:1521:xe'
+      PASSWORD_ORACLE1: 'usrnifi'
+      USER_ORACLE1: 'usrnifi'
       AKKA_DEBUG_MODE: 'INFO'
       AKKA_KAFKA_DEBUG_MODE: 'OFF'
       APACHE_ZOOKEEPER_DEBUG_MODE: 'OFF'
