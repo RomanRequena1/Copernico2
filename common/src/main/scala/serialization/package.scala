@@ -1,3 +1,4 @@
+import oracle.Oracle.connOracleKafkaToWriteside
 import play.api.libs.json.{Format, JsValue, Json}
 
 import scala.reflect.ClassTag

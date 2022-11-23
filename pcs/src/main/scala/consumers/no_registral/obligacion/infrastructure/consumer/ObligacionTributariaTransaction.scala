@@ -29,6 +29,8 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
+    //log.error("input" + input)
+
     maybeDecode[ObligacionesTri](input)
   }
 
