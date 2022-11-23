@@ -11,6 +11,7 @@ import consumers.no_registral.objeto.infrastructure.json._
 import design_principles.actor_model.Response
 import monitoring.Monitoring
 import oracle.Oracle.connOracleKafkaToWriteside
+import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.{decodeF, maybeDecode}
 
@@ -24,9 +25,11 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
   def topic = "DGR-COP-OBJETOS-TRI"
   def topicRetry = "DGR-COP-OBJETOS-TRI_retry"
   def topicError = "DGR-COP-OBJETOS-TRI_error"
+  private val log = LoggerFactory.getLogger(this.getClass)
+  def processInput(input: String): Either[Throwable, ObjetosTri] = {
 
-  def processInput(input: String): Either[Throwable, ObjetosTri] =
     maybeDecode[ObjetosTri](input)
+  }
 
   def processMessage(registro: ObjetosTri): Future[Response.SuccessProcessing] = {
     connOracleKafkaToWriteside(registro.EV_ID.toString(), "objeto", registro.SOJ_CANAL_ORIGEN.getOrElse("TAX"))

@@ -23,10 +23,11 @@ object Oracle {
 
 
   def connOracleKafkaToWriteside(ev_id: String, entidad: String, bob_canal_origen: String) = {
+    log.error("url" + url)
+    log.error("user" + user)
+    log.error("password" + password)
     try {
-      log.error("url" + url)
-      log.error("user" + user)
-      log.error("password" + password)
+
       val con = ods.getConnection()
       val statement = con.createStatement()
       val queryObligacion =
@@ -61,6 +62,9 @@ object Oracle {
   }
 
   def connOracleReadsideToCass(ev_id: String,  entidad: String, bob_canal_origen:String) = {
+    log.error("url" + url)
+    log.error("user" + user)
+    log.error("password" + password)
     try {
       val con = ods.getConnection()
       log.error("url" + url)
@@ -85,7 +89,7 @@ object Oracle {
            set PASO = '06'
            where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
-
+      statement.setFetchSize(1000) // important
       entidad match {
         case x if x == "obligacion" => statement.executeUpdate(queryObligacion)
         case x if x == "objeto" => statement.executeUpdate(queryObjeto)
