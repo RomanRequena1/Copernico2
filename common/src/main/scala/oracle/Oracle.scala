@@ -22,13 +22,7 @@ object Oracle {
   ods.setPassword(oraclePassword)
 
 
-  def getString(text : String) = {
-    text match {
-      case x if x == "null" => "TAX"
-      case x if x != "null" => x
-    }
 
-  }
   def connOracleNifi(input: String, entidad: String, topico: String) = {
     val trimmedList: List[String] = input.split("\"").map(_.trim).toList
 
@@ -40,7 +34,7 @@ object Oracle {
       case _ if a.equals(-1) => "TAX"
       case _ => trimmedList(a+2)
     }
-    log.error("bob_canal_origen  " + bob_canal_origenA)
+    log.error("bob_canal_origen " + bob_canal_origenA)
     //log.error(trimmedList.toString())
     //val bob_canal_origen = trimmedList(89)
     //println("CUMBIA EVO " + trimmedList(3))
@@ -59,19 +53,19 @@ object Oracle {
         s"""
          update tax.EVENTOS_OBN_LOGS
          set PASO = '02' , topico = '${topico}'
-         where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${getString(bob_canal_origenA)}'
+         where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origenA}'
   """
       val queryObjeto =
         s"""
          update tax.EVENTOS_OBN_LOGS
          set PASO = '02' , topico = '${topico}'
-         where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${getString(bob_canal_origenA)}'
+         where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origenA}'
   """
       val querySujeto =
         s"""
          update tax.EVENTOS_OBN_LOGS
          set PASO = '02' , topico = '${topico}'
-         where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${getString(bob_canal_origenA)}'
+         where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origenA}'
   """
       statement.setFetchSize(1000) // important
       entidad match {

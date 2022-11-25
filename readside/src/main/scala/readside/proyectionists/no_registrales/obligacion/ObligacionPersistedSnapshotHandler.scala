@@ -89,7 +89,7 @@ class ObligacionPersistedSnapshotHandler(
               println("ERROR - -1 " + registro.deliveryId)
               //log.error("OPAAAA QUE PASOOOOOOO" + registro.deliveryId.toString() + " " + registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
               //log.error("OPAAAA QUE PASOOQque")
-              connOracleReadsideToCass(registro.deliveryId.toString(), "obligacionmenosUno", bco)
+              connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", bco)
             }
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
