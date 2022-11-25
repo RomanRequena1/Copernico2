@@ -1,7 +1,7 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
+import akka.persistence.SnapshotSelectionCriteria
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
-
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -40,7 +40,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
             actor.removeObligaciones()
           }*/
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-          if (actor.state.eventCounter > 9) {
+          if (actor.state.eventCounter > 100) {
             actor.saveSnapshot(actor.state.copy(eventCounter = 0))
           }
         }

@@ -20,8 +20,12 @@ case class ObligacionState(
     idExterno: Option[String] = None
 ) extends AbstractState[ObligacionEvents] {
 
-  override def +(event: ObligacionEvents): ObligacionState =
-    changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = eventCounter + 1)
+  override def +(event: ObligacionEvents): ObligacionState = {
+    eventCounter match {
+      case n if (n > 10) => changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = 0)
+      case n => changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = n + 1)
+    }
+  }
 
   private def changeState(event: ObligacionEvents): ObligacionState =
     event match {

@@ -1,5 +1,6 @@
 package consumers.no_registral.sujeto.application.cqrs.commands
 
+import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.sujeto.application.entity.SujetoCommands.SujetoUpdateFromObjeto
 import consumers.no_registral.sujeto.domain.SujetoEvents
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
@@ -28,7 +29,8 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
       actor.state += event
       actor.persistSnapshot(){ _ =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-        if (actor.state.eventCounter > 9) {
+        if (actor.state.eventCounter > 100) {
+          actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
       }
