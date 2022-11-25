@@ -1,5 +1,0 @@
-package oracle
-
-object oraclereadside {
-
-}

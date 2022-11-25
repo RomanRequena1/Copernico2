@@ -8,7 +8,7 @@ import consumers.no_registral.obligacion.application.entities.ObligacionExternal
 import consumers.no_registral.obligacion.infrastructure.json._
 import design_principles.actor_model.{Command, Response}
 import monitoring.Monitoring
-import oracle.Oracle.connOracleKafkaToWriteside
+import oracle.Oracle.{connOracleKafkaToWriteside, connOracleNifi}
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.maybeDecode
@@ -29,8 +29,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-    //log.error("input" + input)
-
+    connOracleNifi(input, "obligacion", "DGR-COP-OBLIGACIONES-TRI")
     maybeDecode[ObligacionesTri](input)
   }
 

@@ -17,7 +17,6 @@ case class ObligacionState(
     juicioId: Option[BigInt] = None,
     isAdheridoDebito: Boolean = false,
     eventCounter:Int = 0,
-    operacionState: String = "",
     idExterno: Option[String] = None
 ) extends AbstractState[ObligacionEvents] {
 
@@ -33,7 +32,7 @@ case class ObligacionState(
           lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, e.deliveryId))
         )
       case e: ObligacionEvents.ObligacionRemoved =>
-        copy(operacionState = "D")
+        copy(saldo = 0)
       case e: ObligacionEvents.ObligacionUpdatedFromDto =>
         copy(
           saldo = e.registro.BOB_SALDO,
@@ -42,9 +41,7 @@ case class ObligacionState(
           juicioId = e.registro.BOB_JUI_ID,
           lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, e.deliveryId)),
           isAdheridoDebito = e.isAdheridoDebito.getOrElse(false),
-          operacionState = "U",
           idExterno = e.registro.SOJ_ID_EXTERNO
-
         )
       case _ => this
     }
