@@ -70,7 +70,7 @@ class ObligacionPersistedSnapshotHandler(
       val projection = ObligacionSnapshotProjection(registro)
 
       /*r.cassandraWrite.writeState(projection).onComplete {
-        case Failure(exception) => log.error("Cumbia------- Dont persist" + exception)
+        case Failure(exception) => log.error(exception)
 
         case Success(value) =>
 
@@ -93,7 +93,7 @@ class ObligacionPersistedSnapshotHandler(
         /*recover { ex: Throwable =>
         connOracleReadsideToCass(registro.sujetoId,registro.tipoObjeto,registro.objetoId,registro.obligacionId)
         log.error(ex.getMessage)
-        log.error("Cumbia readside oracle")
+        log.error("readside oracle")
         ex
       }*/
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
@@ -118,8 +118,7 @@ class ObligacionPersistedSnapshotHandler(
             case Failure(exception) => log.error("Dont persist obligacion" + exception )
             case Success(_) => {
               println("ERROR - -1 " + registro.deliveryId)
-              //log.error("OPAAAA QUE PASOOOOOOO" + registro.deliveryId.toString() + " " + registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
-              //log.error("OPAAAA QUE PASOOQque")
+              //log.error("" + registro.deliveryId.toString() + " " + registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
               connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", bco)
             }
           }

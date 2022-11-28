@@ -33,7 +33,10 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       cmd.sujetoId,
       cmd.objetoId,
       cmd match {
-        case c: ObligacionCommands.ObligacionUpdateFromDto => c.registro.BOB_SOJ_IDENTIFICADOR_2
+        case c: ObligacionCommands.ObligacionUpdateFromDto => c.registro.BOB_SOJ_IDENTIFICADOR_2 match {
+          case Some(value) => Some(value)
+          case None => None
+        }
         case _ => None
       },
       cmd.tipoObjeto,
@@ -86,9 +89,9 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       ),
       topic = kafkaTopic
     )(_ => handler())/*.onComplete {
-      case Failure(ex) => log.error("Cumbia Error when try to send to topic " + ex)
+      case Failure(ex) => log.error("Error when try to send to topic " + ex)
       case Success(value) => {
-        log.debug("Cumbia Success,  sent to topic")
+        log.debug("Success,  sent to topic")
         connOracleWriteSideToKafka(event.sujetoId,event.tipoObjeto,event.objetoId,event.obligacionId)
       }
     }*/
