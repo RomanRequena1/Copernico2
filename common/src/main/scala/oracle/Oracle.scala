@@ -34,20 +34,20 @@ object Oracle {
       case _ if a.equals(-1) => "TAX"
       case _ => trimmedList(a+2)
     }
-    log.error("bob_canal_origen " + bob_canal_origenA)
+    //log.error("bob_canal_origen " + bob_canal_origenA)
     //log.error(trimmedList.toString())
     //val bob_canal_origen = trimmedList(89)
-    //println("CUMBIA EVO " + trimmedList(3))
-    //println("CUMBIA EVO " + getString(bob_canal_origen))
+    //println(trimmedList(3))
+    //println(getString(bob_canal_origen))
 
-    log.error("url" + url)
-    log.error("user" + user)
-    log.error("password" + password)
+    //log.error("url" + url)
+    //log.error("user" + user)
+    //log.error("password" + password)
     try {
       val con = ods.getConnection()
-      log.error("url" + url)
-      log.error("user" + user)
-      log.error("password" + password)
+      //log.error("url" + url)
+      //log.error("user" + user)
+      //log.error("password" + password)
       val statement = con.createStatement()
       val queryObligacion =
         s"""
@@ -120,7 +120,7 @@ object Oracle {
       case x => x
     }
 
-    log.error("esto ES " + entidad)
+    //log.error("esto ES " + entidad)
     try {
       val con = ods.getConnection()
 
@@ -143,7 +143,7 @@ object Oracle {
            set PASO = '06'
            where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bco}'
     """
-
+      statement.setFetchSize(1000)
       entidad match {
         case x if x == "obligacion" => statement.executeUpdate(queryObligacion)
         case x if x == "objeto" => statement.executeUpdate(queryObjeto)

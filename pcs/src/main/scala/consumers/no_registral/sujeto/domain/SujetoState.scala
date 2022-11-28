@@ -16,12 +16,26 @@ final case class SujetoState(
     eventCounter:Int = 0,
     lastInternalDeliveryId:BigInt = 0
 ) extends AbstractState[SujetoEvents] {
-  def +(event: SujetoEvents): SujetoState =
-    changeState(event).copy(
+  def +(event: SujetoEvents): SujetoState = {
+    eventCounter match {
+      case n if (n > 101) => changeState(event).copy(
+        fechaUltMod = LocalDateTime.now,
+        lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
+        eventCounter = 0
+      )
+      case n => changeState(event).copy(
+        fechaUltMod = LocalDateTime.now,
+        lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
+        eventCounter = n + 1
+      )
+    }
+    /*changeState(event).copy(
       fechaUltMod = LocalDateTime.now,
       lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
-      eventCounter = eventCounter + 1
-    )
+      eventCounter = c
+    )*/
+  }
+
 
   private def changeState(event: SujetoEvents): SujetoState =
     event match {

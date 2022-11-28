@@ -1,5 +1,6 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
+import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromObligacion
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -37,7 +38,8 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
         actor.informParent(command, actor.state)
       actor.persistSnapshot(event, actor.state){ () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-        if (actor.state.eventCounter > 9) {
+        if (actor.state.eventCounter > 100) {
+          actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
       }

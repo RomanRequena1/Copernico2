@@ -26,11 +26,23 @@ case class ObjetoState(
 ) extends AbstractState[ObjetoEvents] {
 
   override def +(event: ObjetoEvents): ObjetoState = {
-    changeState(event).copy(
+    eventCounter match {
+      case n if (n > 101) => changeState(event).copy(
+        fechaUltMod = LocalDateTime.now,
+        lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
+        eventCounter = 0
+      )
+      case n => changeState(event).copy(
+        fechaUltMod = LocalDateTime.now,
+        lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
+        eventCounter = n + 1
+      )
+    }
+    /*changeState(event).copy(
       fechaUltMod = LocalDateTime.now,
       lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
       eventCounter = eventCounter + 1
-    )
+    )*/
   }
 
   private def changeState(event: ObjetoEvents): ObjetoState =

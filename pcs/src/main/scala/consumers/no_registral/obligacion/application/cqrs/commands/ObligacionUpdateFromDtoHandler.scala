@@ -1,5 +1,6 @@
 package consumers.no_registral.obligacion.application.cqrs.commands
 
+import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionUpdateFromDto
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionUpdatedFromDto
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
@@ -47,6 +48,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         actor.persistSnapshot() { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           if (actor.state.eventCounter > 9) {
+            actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
             actor.saveSnapshot(actor.state.copy(eventCounter = 0))
           }
         }
