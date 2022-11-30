@@ -33,37 +33,6 @@ class ObligacionPersistedSnapshotHandler(
       .maybeDecode[ObligacionPersistedSnapshot](input)
 
   override def processMessage(registro: ObligacionPersistedSnapshot): Future[Response.SuccessProcessing] = {
-    //recordLag(calculateLag(registro.deliveryId.toString))
-    if (registro.operacion.equals("U")) {
-      val projection = ObligacionSnapshotProjection(registro)
-      for {
-        done <- r.cassandraWrite.writeState(projection).recover { ex: Throwable =>
-          log.error(ex.getMessage)
-          ex
-        }
-      } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
-    } else {
-      val cassandra = new CassandraWriteProduction()
-      for {
-        done <- cassandra
-          .cql(
-            s"""
-          DELETE FROM read_side.buc_obligaciones """ +
-              """ WHERE bob_suj_identificador = """ +
-              s""" '${registro.sujetoId}' """ +
-              s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """ +
-              s""" and bob_soj_identificador = '${registro.objetoId}' """ +
-              s""" and bob_obn_id = '${registro.obligacionId}' """
-          )
-          .recover { ex: Throwable =>
-            log.error(ex.getMessage)
-            ex
-          }
-      } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
-    }
-  }
-
-  /*override def processMessage(registro: ObligacionPersistedSnapshot): Future[Response.SuccessProcessing] = {
 
     //recordLag(calculateLag(registro.deliveryId.toString))
     if (registro.operacion.equals("U")) {
@@ -124,6 +93,6 @@ class ObligacionPersistedSnapshotHandler(
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
     }
-  }*/
+  }
 
 }
