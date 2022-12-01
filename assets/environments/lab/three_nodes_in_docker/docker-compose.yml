@@ -17,8 +17,8 @@ services:
       SEED_NODES: 'akka://PersonClassificationServiceReadSide@172.22.4.3:2554'
       KAFKA_BROKERS_LIST: 'kafka:29092'
       STRING_CONEXION_ORACLE: 'jdbc:oracle:thin:@172.22.2.1:1521:xe'
-      PASSWORD_ORACLE: 'usrnifi'
-      USER_ORACLE: 'usrnifi'
+      PASSWORD_ORACLE: '1234'
+      USER_ORACLE: 'sys as sysdba'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
       PROJECTIONIST_PARALELLISM: 3
       LOGSTASH: '172.22.5.3:5000'
@@ -112,8 +112,8 @@ services:
       KAFKA_BROKERS_LIST: 'kafka:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
       STRING_CONEXION_ORACLE: 'jdbc:oracle:thin:@172.22.2.1:1521:xe'
-      PASSWORD_ORACLE: 'usrnifi'
-      USER_ORACLE: 'usrnifi'
+      PASSWORD_ORACLE: '1234'
+      USER_ORACLE: 'sys as sysdba'
       CONSUMER_PARALLELISM: $CONSUMER_PARALLELISM
       INITIALIZATION: $INITIALIZATION
       NR_PARTITIONS: $NR_PARTITIONS
