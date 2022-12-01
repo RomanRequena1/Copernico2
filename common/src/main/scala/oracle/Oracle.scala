@@ -52,19 +52,19 @@ object Oracle {
       val queryObligacion =
         s"""
          update tax.EVENTOS_OBN_LOGS
-         set PASO = '02', BOB_CANAL_ORIGEN = '${bob_canal_origenA}'
+         set PASO = '02', BOB_CANAL_ORIGEN = '${bob_canal_origenA}', topico = '${topico}'
          where EV_ID = '${ev_id}'
   """
       val queryObjeto =
         s"""
          update tax.EVENTOS_OBN_LOGS
-         set PASO = '02', BOB_CANAL_ORIGEN = '${bob_canal_origenA}'
+         set PASO = '02', BOB_CANAL_ORIGEN = '${bob_canal_origenA}', topico = '${topico}'
          where EV_ID = '${ev_id}'
   """
       val querySujeto =
         s"""
          update tax.EVENTOS_OBN_LOGS
-         set PASO = '02', BOB_CANAL_ORIGEN = '${bob_canal_origenA}'
+         set PASO = '02', BOB_CANAL_ORIGEN = '${bob_canal_origenA}', topico = '${topico}'
          where EV_ID = '${ev_id}'
   """
       statement.setFetchSize(1000) // important
