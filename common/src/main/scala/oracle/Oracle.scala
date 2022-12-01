@@ -82,7 +82,7 @@ object Oracle {
 
   def connOracleKafkaToWriteside(ev_id: String, entidad: String, bob_canal_origen: String) = {
     try {
-      log.error("Entro WRITESIDE")
+      log.error("Entro WRITESIDES")
       val con = ods.getConnection()
       val statement = con.createStatement()
       val queryObligacion =
