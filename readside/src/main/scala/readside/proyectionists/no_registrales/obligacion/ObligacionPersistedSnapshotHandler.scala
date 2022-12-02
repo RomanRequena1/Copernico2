@@ -52,7 +52,7 @@ class ObligacionPersistedSnapshotHandler(
         done <- r.cassandraWrite.writeState(projection).andThen {
           case Failure(exception) => log.error("Dont persist obligacion" + exception )
           case Success(value) => {
-            println("ERROR - 1 " + registro.deliveryId)
+            log.error("ERROR - 1 " + registro.deliveryId)
             log.error("Persist obligacion" + value)
             connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
           }
@@ -86,7 +86,7 @@ class ObligacionPersistedSnapshotHandler(
           .andThen {
             case Failure(exception) => log.error("Dont persist obligacion" + exception )
             case Success(_) => {
-              println("ERROR - -1 " + registro.deliveryId)
+              log.error("ERROR - -1 " + registro.deliveryId)
               //log.error("" + registro.deliveryId.toString() + " " + registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
               connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", bco)
             }
