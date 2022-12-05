@@ -65,7 +65,7 @@ object Dependencies {
 
   object Akka extends Module {
     val akkaHttpVersion = "10.1.11"
-    val akkaManagementVersion = "1.1.0" //TODO Before 1.0.9
+    val akkaManagementVersion = "1.1.2" //TODO Before 1.0.9
     val alpakkaKafkaVersion = "2.1.0"
 
     private def akkaModule(name: String) = "com.typesafe.akka" %% name % akkaVersion
