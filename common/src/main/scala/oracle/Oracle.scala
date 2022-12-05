@@ -25,7 +25,7 @@ object Oracle {
 
   def connOracleNifi(input: String, entidad: String, topico: String) = {
     val trimmedList: List[String] = input.split("\"").map(_.trim).toList
-    log.error("Entro NIFI")
+
     val ev_id = trimmedList(3)
     val a = trimmedList.indexOf("BOB_CANAL_ORIGEN")
 
@@ -52,20 +52,20 @@ object Oracle {
       val queryObligacion =
         s"""
          update tax.EVENTOS_OBN_LOGS
-         set PASO = '02', BOB_CANAL_ORIGEN = '${bob_canal_origenA}', topico = '${topico}'
-         where EV_ID = '${ev_id}'
+         set PASO = '02' , topico = '${topico}'
+         where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origenA}'
   """
       val queryObjeto =
         s"""
          update tax.EVENTOS_OBN_LOGS
-         set PASO = '02', BOB_CANAL_ORIGEN = '${bob_canal_origenA}', topico = '${topico}'
-         where EV_ID = '${ev_id}'
+         set PASO = '02' , topico = '${topico}'
+         where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origenA}'
   """
       val querySujeto =
         s"""
          update tax.EVENTOS_OBN_LOGS
-         set PASO = '02', BOB_CANAL_ORIGEN = '${bob_canal_origenA}', topico = '${topico}'
-         where EV_ID = '${ev_id}'
+         set PASO = '02' , topico = '${topico}'
+         where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origenA}'
   """
       statement.setFetchSize(1000) // important
       entidad match {
@@ -74,7 +74,6 @@ object Oracle {
         case x if x == "sujeto" => statement.executeUpdate(querySujeto)
         case _ => log.error("Dont exist this entity")
       }
-
     } catch {
       case e: Exception => log.error("Error connection to Oracle NIFI (Paso 02) - " + e + " - [" + ev_id + "]")
     }
@@ -82,26 +81,25 @@ object Oracle {
 
   def connOracleKafkaToWriteside(ev_id: String, entidad: String, bob_canal_origen: String) = {
     try {
-      log.error("Entro WRITESIDES")
       val con = ods.getConnection()
       val statement = con.createStatement()
       val queryObligacion =
         s"""
            update tax.EVENTOS_OBN_LOGS
-           set PASO = '05', BOB_CANAL_ORIGEN = '${bob_canal_origen}'
-           where EV_ID = '${ev_id}'
+           set PASO = '05'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
       val queryObjeto =
         s"""
            update tax.EVENTOS_OBN_LOGS
-           set PASO = '05', BOB_CANAL_ORIGEN = '${bob_canal_origen}'
-           where EV_ID = '${ev_id}
+           set PASO = '05'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
       val querySujeto =
         s"""
            update tax.EVENTOS_OBN_LOGS
-           set PASO = '05', BOB_CANAL_ORIGEN = '${bob_canal_origen}'
-           where EV_ID = '${ev_id}'
+           set PASO = '05'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
 
       statement.setFetchSize(1000) // important
@@ -124,27 +122,26 @@ object Oracle {
 
     //log.error("esto ES " + entidad)
     try {
-      log.error("Entro READSIDE")
       val con = ods.getConnection()
 
       val statement = con.createStatement()
       val queryObligacion =
         s"""
            update tax.EVENTOS_OBN_LOGS
-           set PASO = '06', BOB_CANAL_ORIGEN = '${bco}'
-           where EV_ID = '${ev_id}'
+           set PASO = '06'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bco}'
     """
       val queryObjeto =
         s"""
            update tax.EVENTOS_OBN_LOGS
-           set PASO = '06', BOB_CANAL_ORIGEN = '${bco}'
-           where EV_ID = '${ev_id}'
+           set PASO = '06'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bco}'
     """
       val querySujeto =
         s"""
            update tax.EVENTOS_OBN_LOGS
-           set PASO = '06', BOB_CANAL_ORIGEN = '${bco}'
-           where EV_ID = '${ev_id}'
+           set PASO = '06'
+           where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bco}'
     """
       statement.setFetchSize(1000)
       entidad match {
