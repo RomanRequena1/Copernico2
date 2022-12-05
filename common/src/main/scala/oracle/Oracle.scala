@@ -2,7 +2,8 @@ package oracle
 import _root_.oracle.jdbc.pool.OracleDataSource
 import com.typesafe.config.{Config, ConfigFactory}
 import org.slf4j.LoggerFactory
-
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.util.Try
 
 object Oracle {
@@ -21,7 +22,15 @@ object Oracle {
   ods.setURL(oracleURL)
   ods.setPassword(oraclePassword)
 
+  def conec() = {
+    if (Future(ods.getConnection()).isCompleted) {
+      true
+    }
+    else {
+      false
+    }
 
+  }
 
   def connOracleNifi(input: String, entidad: String, topico: String) = {
     val trimmedList: List[String] = input.split("\"").map(_.trim).toList
@@ -43,40 +52,53 @@ object Oracle {
     //log.error("url" + url)
     //log.error("user" + user)
     //log.error("password" + password)
-    try {
-      val con = ods.getConnection()
-      //log.error("url" + url)
-      //log.error("user" + user)
-      //log.error("password" + password)
-      val statement = con.createStatement()
-      val queryObligacion =
-        s"""
+
+
+    conec() match {
+      case x if x == true => {
+        try {
+
+
+          val con = ods.getConnection()
+          //log.error("url" + url)
+          //log.error("user" + user)
+          //log.error("password" + password)
+          val statement = con.createStatement()
+          val queryObligacion =
+            s"""
          update tax.EVENTOS_OBN_LOGS
          set PASO = '02' , topico = '${topico}'
          where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origenA}'
   """
-      val queryObjeto =
-        s"""
+          val queryObjeto =
+            s"""
          update tax.EVENTOS_OBN_LOGS
          set PASO = '02' , topico = '${topico}'
          where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origenA}'
   """
-      val querySujeto =
-        s"""
+          val querySujeto =
+            s"""
          update tax.EVENTOS_OBN_LOGS
          set PASO = '02' , topico = '${topico}'
          where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origenA}'
   """
-      statement.setFetchSize(1000) // important
-      entidad match {
-        case x if x == "obligacion" => statement.executeUpdate(queryObligacion)
-        case x if x == "objeto" => statement.executeUpdate(queryObjeto)
-        case x if x == "sujeto" => statement.executeUpdate(querySujeto)
-        case _ => log.error("Dont exist this entity")
+          statement.setFetchSize(1000) // important
+          entidad match {
+            case x if x == "obligacion" => statement.executeUpdate(queryObligacion)
+            case x if x == "objeto" => statement.executeUpdate(queryObjeto)
+            case x if x == "sujeto" => statement.executeUpdate(querySujeto)
+            case _ => log.error("Dont exist this entity")
+          }
+
+        } catch {
+          case e: Exception => log.error("Error query to Oracle NIFI (Paso 02) - " + e + " - [" + ev_id + "]")
+        }
       }
     } catch {
       case e: Exception => log.error("Error connection to Oracle NIFI (Paso 02) - " + e + " - [" + ev_id + "]")
     }
+
+
   }
 
   def connOracleKafkaToWriteside(ev_id: String, entidad: String, bob_canal_origen: String) = {
@@ -89,30 +111,40 @@ object Oracle {
            set PASO = '05'
            where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
-      val queryObjeto =
-        s"""
+          val queryObjeto =
+            s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '05'
            where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
-      val querySujeto =
-        s"""
+          val querySujeto =
+            s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '05'
            where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bob_canal_origen}'
     """
 
-      statement.setFetchSize(1000) // important
-      entidad match {
-        case x if x == "obligacion" => statement.executeUpdate(queryObligacion)
-        case x if x == "objeto" => statement.executeUpdate(queryObjeto)
-        case x if x == "sujeto" => statement.executeUpdate(querySujeto)
-        case _ => log.error("Dont exist this entity")
+          statement.setFetchSize(1000) // important
+          entidad match {
+            case x if x == "obligacion" => statement.executeUpdate(queryObligacion)
+            case x if x == "objeto" => statement.executeUpdate(queryObjeto)
+            case x if x == "sujeto" => statement.executeUpdate(querySujeto)
+            case _ => log.error("Dont exist this entity")
+          }
+        } catch {
+
+          case e: Exception => log.error("Error query to Oracle (Paso 05) - " + e + " - [" + ev_id + "]")
+        }
       }
-    } catch {
-      case e: Exception => log.error("Error connection to Oracle (Paso 05) - " + e + " - [" + ev_id + "]")
+      case x if x == false => {
+        log.error("Error connection to Oracle (Paso 05) - [" + ev_id + "]")
+
+      }
     }
   }
+
+
+
 
   def connOracleReadsideToCass(ev_id: String,  entidad: String, bob_canal_origen:String) = {
     val bco = bob_canal_origen match {
@@ -124,36 +156,43 @@ object Oracle {
     try {
       val con = ods.getConnection()
 
-      val statement = con.createStatement()
-      val queryObligacion =
-        s"""
+          val statement = con.createStatement()
+          val queryObligacion =
+            s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '06'
            where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bco}'
     """
-      val queryObjeto =
-        s"""
+          val queryObjeto =
+            s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '06'
            where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bco}'
     """
-      val querySujeto =
-        s"""
+          val querySujeto =
+            s"""
            update tax.EVENTOS_OBN_LOGS
            set PASO = '06'
            where EV_ID = '${ev_id}' and BOB_CANAL_ORIGEN = '${bco}'
     """
-      statement.setFetchSize(1000)
-      entidad match {
-        case x if x == "obligacion" => statement.executeUpdate(queryObligacion)
-        case x if x == "objeto" => statement.executeUpdate(queryObjeto)
-        case x if x == "sujeto" => statement.executeUpdate(querySujeto)
-        case _ => log.error("Dont exist this entity")
+          statement.setFetchSize(1000)
+          entidad match {
+            case x if x == "obligacion" => statement.executeUpdate(queryObligacion)
+            case x if x == "objeto" => statement.executeUpdate(queryObjeto)
+            case x if x == "sujeto" => statement.executeUpdate(querySujeto)
+            case _ => log.error("Dont exist this entity")
+          }
+        } catch {
+          case e: Exception => log.error("Error query to Oracle (Paso 06) - " + e + " - [" + ev_id + "]")
+        }
       }
-    } catch {
-      case e: Exception => log.error("Error connection to Oracle (Paso 06) - " + e + " - [" + ev_id + "]")
+      case x if x == false => {
+        log.error("Error query to Oracle (Paso 06)e - [" + ev_id + "]")
+      }
     }
+
+    //log.error("esto ES " + entidad)
+
   }
 
 }
-
