@@ -27,7 +27,7 @@ case class SujetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
     maybeDecode[SujetoTri](input)
 
   def processMessage(registro: SujetoTri): Future[Response.SuccessProcessing] = {
-    //connOracleKafkaToWriteside(registro.EV_ID.toString(), "sujeto", registro.SUJ_CANAL_ORIGEN.getOrElse("TAX"))
+    connOracleKafkaToWriteside(registro.EV_ID.toString(), "sujeto", registro.SUJ_CANAL_ORIGEN.getOrElse("TAX"))
     val command = registro match {
       case _: SujetoExternalDto.SujetoTri =>
         SujetoCommands.SujetoUpdateFromTri(
