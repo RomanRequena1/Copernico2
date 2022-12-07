@@ -33,7 +33,7 @@ class ObligacionPersistedSnapshotHandler(
       .maybeDecode[ObligacionPersistedSnapshot](input)
 
   override def processMessage(registro: ObligacionPersistedSnapshot): Future[Response.SuccessProcessing] = {
-
+    log.error("llego event")
     //recordLag(calculateLag(registro.deliveryId.toString))
     if (registro.operacion.equals("U")) {
       val projection = ObligacionSnapshotProjection(registro)
