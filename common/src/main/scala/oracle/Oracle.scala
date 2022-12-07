@@ -2,9 +2,10 @@ package oracle
 import _root_.oracle.jdbc.pool.OracleDataSource
 import com.typesafe.config.{Config, ConfigFactory}
 import org.slf4j.LoggerFactory
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 object Oracle {
   private val config: Config = ConfigFactory.load()
@@ -22,15 +23,35 @@ object Oracle {
   ods.setURL(oracleURL)
   ods.setPassword(oraclePassword)
 
-  def conec() = {
-    if (Future(ods.getConnection()).isCompleted) {
+
+
+  /*def conec() = {
+    val f = Future(ods.getConnection())
+
+    f.onComplete {
+      case Failure(exception) => {
+        log.error(" erro " + exception)
+        log.error(" completed? 2" + f.isCompleted)
+        val p = false
+
+      }
+      case Success(value) => {
+        log.error(" ok " + value)
+        log.error(" completed? 2" + f.isCompleted)
+
+      }
+    }
+    log.error(" completed? " + f.isCompleted)
+    if (f.isCompleted) {
+      f.andThen( x => x.get.close())
+
       true
     }
     else {
       false
     }
 
-  }
+  }*/
 
   def connOracleNifi(input: String, entidad: String, topico: String) = {
     val trimmedList: List[String] = input.split("\"").map(_.trim).toList
@@ -43,19 +64,20 @@ object Oracle {
       case _ if a.equals(-1) => "TAX"
       case _ => trimmedList(a+2)
     }
-    //log.error("bob_canal_origen " + bob_canal_origenA)
-    //log.error(trimmedList.toString())
-    //val bob_canal_origen = trimmedList(89)
-    //println(trimmedList(3))
-    //println(getString(bob_canal_origen))
 
-    //log.error("url" + url)
-    //log.error("user" + user)
-    //log.error("password" + password)
+    val f = Future(ods.getConnection())
 
+    f.onComplete {
+      case Failure(exception) => {
+        log.error(" error " + exception)
+        log.error(" completed? 2" + f.isCompleted)
+        f.andThen(x => x.get.close())
 
-    conec() match {
-      case x if x == true => {
+      }
+      case Success(value) => {
+        log.error(" ok " + value)
+        log.error(" completed? 2" + f.isCompleted)
+        f.andThen(x => x.get.close())
         try {
 
 
@@ -93,9 +115,6 @@ object Oracle {
         } catch {
           case e: Exception => log.error("Error query to Oracle NIFI (Paso 02) - " + e + " - [" + ev_id + "]")
         }
-      }
-      case x if x == false => {
-        log.error("Error connection to Oracle (Paso 05) - [" + ev_id + "]")
 
       }
     }
@@ -105,9 +124,19 @@ object Oracle {
 
   def connOracleKafkaToWriteside(ev_id: String, entidad: String, bob_canal_origen: String) = {
 
+    val f = Future(ods.getConnection())
 
-    conec() match {
-      case x if x == true => {
+    f.onComplete {
+      case Failure(exception) => {
+        log.error(" erro " + exception)
+        log.error(" completed? 2" + f.isCompleted)
+        f.andThen(x => x.get.close())
+
+      }
+      case Success(value) => {
+        log.error(" ok " + value)
+        log.error(" completed? 2" + f.isCompleted)
+        f.andThen(x => x.get.close())
         try {
           log.error("Entro WRITESIDES")
           val con = ods.getConnection()
@@ -142,12 +171,10 @@ object Oracle {
 
           case e: Exception => log.error("Error query to Oracle (Paso 05) - " + e + " - [" + ev_id + "]")
         }
-      }
-      case x if x == false => {
-        log.error("Error connection to Oracle (Paso 05) - [" + ev_id + "]")
 
       }
     }
+
   }
 
 
@@ -158,9 +185,19 @@ object Oracle {
       case x if (x == null) => "TAX"
       case x => x
     }
+    val f = Future(ods.getConnection())
 
-    conec() match {
-      case x if x == true => {
+    f.onComplete {
+      case Failure(exception) => {
+        log.error(" erro " + exception)
+        log.error(" completed? 2" + f.isCompleted)
+        f.andThen(x => x.get.close())
+
+      }
+      case Success(value) => {
+        log.error(" ok " + value)
+        log.error(" completed? 2" + f.isCompleted)
+        f.andThen(x => x.get.close())
         try {
           log.error("Entro READSIDE")
           val con = ods.getConnection()
@@ -195,12 +232,7 @@ object Oracle {
           case e: Exception => log.error("Error query to Oracle (Paso 06) - " + e + " - [" + ev_id + "]")
         }
       }
-      case x if x == false => {
-        log.error("Error query to Oracle (Paso 06)e - [" + ev_id + "]")
-      }
     }
-
-    //log.error("esto ES " + entidad)
 
   }
 
