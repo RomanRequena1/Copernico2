@@ -71,12 +71,13 @@ object Oracle {
       case Failure(exception) => {
         log.error(" erro " + exception)
         log.error(" completed? 2" + f.isCompleted)
-
+        f.andThen(x => x.get.close())
 
       }
       case Success(value) => {
         log.error(" ok " + value)
         log.error(" completed? 2" + f.isCompleted)
+        f.andThen(x => x.get.close())
         try {
 
 
@@ -129,11 +130,13 @@ object Oracle {
       case Failure(exception) => {
         log.error(" erro " + exception)
         log.error(" completed? 2" + f.isCompleted)
+        f.andThen(x => x.get.close())
 
       }
       case Success(value) => {
         log.error(" ok " + value)
         log.error(" completed? 2" + f.isCompleted)
+        f.andThen(x => x.get.close())
         try {
           log.error("Entro WRITESIDES")
           val con = ods.getConnection()
@@ -188,11 +191,13 @@ object Oracle {
       case Failure(exception) => {
         log.error(" erro " + exception)
         log.error(" completed? 2" + f.isCompleted)
+        f.andThen(x => x.get.close())
 
       }
       case Success(value) => {
         log.error(" ok " + value)
         log.error(" completed? 2" + f.isCompleted)
+        f.andThen(x => x.get.close())
         try {
           log.error("Entro READSIDE")
           val con = ods.getConnection()
