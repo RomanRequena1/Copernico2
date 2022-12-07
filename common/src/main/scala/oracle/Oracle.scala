@@ -25,7 +25,7 @@ object Oracle {
 
 
 
-  def conec() = {
+  /*def conec() = {
     val f = Future(ods.getConnection())
 
     f.onComplete {
@@ -51,7 +51,7 @@ object Oracle {
       false
     }
 
-  }
+  }*/
 
   def connOracleNifi(input: String, entidad: String, topico: String) = {
     val trimmedList: List[String] = input.split("\"").map(_.trim).toList
