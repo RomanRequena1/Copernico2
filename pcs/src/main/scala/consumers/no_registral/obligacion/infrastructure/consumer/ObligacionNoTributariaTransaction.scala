@@ -57,6 +57,7 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
           objetoId = obn.BOB_SOJ_IDENTIFICADOR,
           tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
           obligacionId = obn.BOB_OBN_ID,
+          registro = obligacion,
           cuota = None
         )
       case obn: ObligacionesAnt =>

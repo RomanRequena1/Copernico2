@@ -12,7 +12,7 @@ final case class SujetoState(
     objetos: Set[(String, String)] = Set.empty,
     fechaUltMod: LocalDateTime = LocalDateTime.MIN,
     registro: Option[SujetoExternalDto] = None,
-    lastDeliveryIdByEvents: Map[String, BigInt] = Map.empty,
+    lastDeliveryIdByEvents:  BigInt = 0,
     eventCounter:Int = 0,
     lastInternalDeliveryId:BigInt = 0
 ) extends AbstractState[SujetoEvents] {
@@ -20,12 +20,12 @@ final case class SujetoState(
     eventCounter match {
       case n if (n > 101) => changeState(event).copy(
         fechaUltMod = LocalDateTime.now,
-        lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
+        lastDeliveryIdByEvents = event.deliveryId,
         eventCounter = 0
       )
       case n => changeState(event).copy(
         fechaUltMod = LocalDateTime.now,
-        lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
+        lastDeliveryIdByEvents = event.deliveryId,
         eventCounter = n + 1
       )
     }

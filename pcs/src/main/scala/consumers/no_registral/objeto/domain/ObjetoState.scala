@@ -16,7 +16,7 @@ case class ObjetoState(
     registro: Option[ObjetoExternalDto] = None,
     tags: Set[String] = Set.empty,
     isResponsable: Boolean = false,
-    lastDeliveryIdByEvents: Map[String, BigInt] = Map.empty,
+    lastDeliveryIdByEvents:  BigInt = 0,
     porcentajeResponsabilidad: BigDecimal = 0,
     exenciones: Set[Exencion] = Set.empty,
     isBaja: Boolean = false,
@@ -29,12 +29,12 @@ case class ObjetoState(
     eventCounter match {
       case n if (n > 101) => changeState(event).copy(
         fechaUltMod = LocalDateTime.now,
-        lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
+        lastDeliveryIdByEvents =  event.deliveryId,
         eventCounter = 0
       )
       case n => changeState(event).copy(
         fechaUltMod = LocalDateTime.now,
-        lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
+        lastDeliveryIdByEvents = event.deliveryId,
         eventCounter = n + 1
       )
     }

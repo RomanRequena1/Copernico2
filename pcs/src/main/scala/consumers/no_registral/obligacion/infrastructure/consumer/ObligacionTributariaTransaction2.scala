@@ -45,6 +45,7 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
           objetoId = obn.BOB_SOJ_IDENTIFICADOR,
           tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
           obligacionId = obn.BOB_OBN_ID,
+          registro = obligacion,
           cuota = obn.BOB_CUOTA
         )
       case obn: ObligacionesTri if isNotDeuda(obn) =>
@@ -54,6 +55,7 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
           objetoId = obn.BOB_SOJ_IDENTIFICADOR,
           tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
           obligacionId = obn.BOB_OBN_ID,
+          registro = obligacion,
           cuota = None
         )
       case obn: ObligacionesTri =>
