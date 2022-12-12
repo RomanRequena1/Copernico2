@@ -30,7 +30,7 @@ case class ObligacionTributariaTransaction3(actorRef: ActorRef, monitoring: Moni
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-    connOracleNifi(input, "obligacion", "DGR-COP-OBLIGACIONES-TRI")
+    connOracleNifi(input, "obligacion", "DGR-COP-OBLIGACIONES-TRI3")
     maybeDecode[ObligacionesTri](input)
   }
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {

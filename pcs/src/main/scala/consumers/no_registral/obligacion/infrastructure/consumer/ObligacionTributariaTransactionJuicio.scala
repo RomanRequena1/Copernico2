@@ -31,7 +31,7 @@ case class ObligacionTributariaTransactionJuicio(actorRef: ActorRef, monitoring:
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] =
   {
-    connOracleNifi(input, "obligacion", "DGR-COP-OBLIGACIONES-TRI")
+    connOracleNifi(input, "obligacion", "DGR-COP-OBLIGACIONES-TRI-J")
     maybeDecode[ObligacionesTri](input)
   }
 

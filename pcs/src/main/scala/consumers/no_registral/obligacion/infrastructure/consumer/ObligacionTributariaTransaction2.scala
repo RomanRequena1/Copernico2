@@ -24,7 +24,7 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
   /** Handles the deserialization of detalles de obligaciones tributarias */
   implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
 
-  def topic = "DGR-COP-OBLIGACIONES-TRI2"
+  def topic = "DGR-COP-OBLIGACIONES-TRI3"
   def topicRetry = "DGR-COP-OBLIGACIONES-TRI2_retry"
   def topicError = "DGR-COP-OBLIGACIONES-TRI2_error"
 
