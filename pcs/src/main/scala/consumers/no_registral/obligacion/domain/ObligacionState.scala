@@ -37,7 +37,8 @@ case class ObligacionState(
         )
       case e: ObligacionEvents.ObligacionRemoved =>
         copy(saldo = 0,
-          registro = Some(e.registro))
+          registro = Some(e.registro),
+          lastDeliveryIdByEvents =  e.registro.EV_ID)
       case e: ObligacionEvents.ObligacionUpdatedFromDto =>
         copy(
           saldo = e.registro.BOB_SALDO,

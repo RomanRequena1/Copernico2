@@ -23,6 +23,9 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
         command.registro,
         command.cuota
       )
+    log.error(" -1 id command CUMBIA " + command.deliveryId)
+
+    log.error(" -1 id lastDeliveryIdByEvents CUMBIA " + actor.state.lastDeliveryIdByEvents)
 
     if (DeliveryIdManagement.isIdempotent(event, command, actor.state.lastDeliveryIdByEvents)) {
       log.error(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
