@@ -5,6 +5,7 @@ import consumers.no_registral.obligacion.domain.ObligacionEvents
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
+import design_principles.actor_model.mechanism.DeliveryIdManagement
 
 import scala.util.{Success, Try}
 
@@ -19,9 +20,24 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
         command.objetoId,
         command.tipoObjeto,
         command.obligacionId,
+        command.registro,
         command.cuota
       )
+    log.error(" -1 id command CUMBIA " + command.deliveryId)
 
+    log.error(" -1 id lastDeliveryIdByEvents CUMBIA " + actor.state.lastDeliveryIdByEvents)
+
+    if (DeliveryIdManagement.isIdempotent(event, command, actor.state.lastDeliveryIdByEvents)) {
+      log.error(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
+
+      // Informs that operation has been ignored */
+      //todo check if this is desirable, why? signal the sender??
+
+      // In this case the sender is "EL OBJETO"
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+
+      Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
+    } else {
     actor.persistEvent(event) { () =>
       actor.state += event
 
@@ -34,6 +50,7 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
+  }
   }
 }
 /*val stateIsEmpty = state.equals(state.empty)

@@ -23,6 +23,10 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       command.detallesObligacion,
       command.isAdheridoDebito
     )
+
+    log.error(" 1 id command CUMBIA " + command.deliveryId)
+
+    log.error(" 1 id lastDeliveryIdByEvents CUMBIA " + actor.state.lastDeliveryIdByEvents)
     // check whether we are in initialization mode or not
     val initialization: String = {
       Try(System.getenv("INITIALIZATION")).getOrElse(null)

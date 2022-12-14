@@ -33,13 +33,18 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
 
   override def receiveRecover: Receive = {
     case e: E =>
+      logger.error("event recover CUMBIA" + e)
       (state + e) match {
-        case s: State => state = s
+        case s: State => {
+          logger.error("event recobver CUMBIA" + s)
+          state = s
+        }
         case e =>
           throw new Exception(
             "Unexpectedly an AbstractState[Event] returned a different AbstractState of the same Event"
           )
       }
+    case s: State =>
 
     case SnapshotOffer(_, snapshot: State) =>
       state = snapshot
@@ -62,7 +67,7 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
   def persistEvent(event: E, tags: Set[String] = Set.empty)(handler: () => Unit = () => ()): Unit = {
     //todo review the use of persistAsync
     persistAsync(event) { _ =>
-      logger.debug(s"[$persistenceId] Persist event | $event")
+      logger.error(s"[$persistenceId] Persist event | $event")
       persistedCounter.increment()
       monitoring.counter(s"$name-persisted-${utils.Inference.getSimpleName(event.getClass.getName)}").increment()
       handler()

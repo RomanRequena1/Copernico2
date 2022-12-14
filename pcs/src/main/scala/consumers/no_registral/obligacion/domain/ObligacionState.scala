@@ -12,7 +12,7 @@ case class ObligacionState(
     exenta: Boolean = false,
     porcentajeExencion: Option[BigDecimal] = None,
     registro: Option[ObligacionExternalDto] = None,
-    lastDeliveryIdByEvents: Map[String, BigInt] = Map.empty,
+    lastDeliveryIdByEvents: BigInt = 0,
     detallesObligacion: Seq[DetallesObligacion] = Seq.empty,
     juicioId: Option[BigInt] = None,
     isAdheridoDebito: Boolean = false,
@@ -33,24 +33,26 @@ case class ObligacionState(
         copy(
           exenta = true,
           porcentajeExencion = e.exencion.BEX_PORCENTAJE,
-          lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, e.deliveryId))
+          lastDeliveryIdByEvents =  e.deliveryId
         )
       case e: ObligacionEvents.ObligacionRemoved =>
-        copy(saldo = 0)
+        copy(saldo = 0,
+          registro = Some(e.registro),
+          lastDeliveryIdByEvents =  e.registro.EV_ID)
       case e: ObligacionEvents.ObligacionUpdatedFromDto =>
         copy(
           saldo = e.registro.BOB_SALDO,
           registro = Some(e.registro),
           detallesObligacion = e.detallesObligacion,
           juicioId = e.registro.BOB_JUI_ID,
-          lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, e.deliveryId)),
+          lastDeliveryIdByEvents =  e.deliveryId,
           isAdheridoDebito = e.isAdheridoDebito.getOrElse(false),
           idExterno = e.registro.SOJ_ID_EXTERNO
         )
       case _ => this
     }
 
-  def empty = ObligacionState()
+  //def empty = ObligacionState()
 
 
 }

@@ -24,6 +24,7 @@ object ObligacionCommands {
       objetoId: String,
       tipoObjeto: String,
       obligacionId: String,
+      registro: ObligacionExternalDto,
       cuota:Option[String]
   ) extends ObligacionCommands
 

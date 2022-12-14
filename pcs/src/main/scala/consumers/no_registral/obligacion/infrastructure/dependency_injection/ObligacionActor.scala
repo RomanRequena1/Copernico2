@@ -99,7 +99,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
   def deleteSnapshot()(handler: () => Unit): Unit = {
     val ids = ObligacionMessageRoots.extractor(persistenceId)
-    log.error("paso delete snapshot")
+
     val kafkaTopic = "ObligacionPersistedSnapshot"
 
     val event = ObligacionPersistedSnapshot(

@@ -38,7 +38,6 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
     //log.debug("KW oracle")
     connOracleKafkaToWriteside(obligacion.EV_ID.toString(), "obligacion", obligacion.BOB_CANAL_ORIGEN.getOrElse("TAX"))
-    log.error("paso conn wirteside")
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative
@@ -49,6 +48,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
           objetoId = obn.BOB_SOJ_IDENTIFICADOR,
           tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
           obligacionId = obn.BOB_OBN_ID,
+          registro = obligacion,
           cuota = obn.BOB_CUOTA
         )
       case obn: ObligacionesTri if isNotDeuda(obn) =>
@@ -58,6 +58,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
           objetoId = obn.BOB_SOJ_IDENTIFICADOR,
           tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
           obligacionId = obn.BOB_OBN_ID,
+          registro = obligacion,
           cuota = None
         )
       case obn: ObligacionesTri =>
