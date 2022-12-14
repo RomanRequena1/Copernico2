@@ -62,7 +62,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
   import consumers.no_registral.obligacion.infrastructure.json._
   def persistSnapshot()(handler: () => Unit): Unit = {
-    log.error("paso persist snapshot")
     val ids = ObligacionMessageRoots.extractor(persistenceId)
 
     val kafkaTopic = "ObligacionPersistedSnapshot"
