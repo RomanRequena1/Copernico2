@@ -54,7 +54,7 @@ class ObligacionPersistedSnapshotHandler(
           case Success(value) => {
             log.error("ERROR - 1 " + registro.deliveryId)
             log.error("Persist obligacion" + value)
-            connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
+            //connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
           }
         }
 
@@ -88,7 +88,7 @@ class ObligacionPersistedSnapshotHandler(
             case Success(_) => {
               log.error("ERROR - -1 " + registro.deliveryId)
               //log.error("" + registro.deliveryId.toString() + " " + registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
-              connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", bco)
+              //connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", bco)
             }
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
