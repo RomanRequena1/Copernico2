@@ -25,37 +25,8 @@ object Oracle {
 
 
 
-  /*def conec() = {
-    val f = Future(ods.getConnection())
-
-    f.onComplete {
-      case Failure(exception) => {
-        log.error(" erro " + exception)
-        log.error(" completed? 2" + f.isCompleted)
-        val p = false
-
-      }
-      case Success(value) => {
-        log.error(" ok " + value)
-        log.error(" completed? 2" + f.isCompleted)
-
-      }
-    }
-    log.error(" completed? " + f.isCompleted)
-    if (f.isCompleted) {
-      f.andThen( x => x.get.close())
-
-      true
-    }
-    else {
-      false
-    }
-
-  }*/
-
   def connOracleNifi(input: String, entidad: String, topico: String) = {
     val trimmedList: List[String] = input.split("\"").map(_.trim).toList
-    log.error("Entro NIFI")
     val ev_id = trimmedList(3)
     val a = trimmedList.indexOf("BOB_CANAL_ORIGEN")
 
@@ -69,22 +40,15 @@ object Oracle {
 
     f.onComplete {
       case Failure(exception) => {
-        log.error(" error " + exception)
-        log.error(" completed? 2" + f.isCompleted)
         f.andThen(x => x.get.close())
 
       }
       case Success(value) => {
-        log.error(" ok " + value)
-        log.error(" completed? 2" + f.isCompleted)
         f.andThen(x => x.get.close())
         try {
 
 
           val con = ods.getConnection()
-          //log.error("url" + url)
-          //log.error("user" + user)
-          //log.error("password" + password)
           val statement = con.createStatement()
           val queryObligacion =
             s"""
@@ -128,17 +92,12 @@ object Oracle {
 
     f.onComplete {
       case Failure(exception) => {
-        log.error(" erro " + exception)
-        log.error(" completed? 2" + f.isCompleted)
         f.andThen(x => x.get.close())
 
       }
       case Success(value) => {
-        log.error(" ok " + value)
-        log.error(" completed? 2" + f.isCompleted)
         f.andThen(x => x.get.close())
         try {
-          log.error("Entro WRITESIDES")
           val con = ods.getConnection()
           val statement = con.createStatement()
           val queryObligacion =
@@ -189,17 +148,12 @@ object Oracle {
 
     f.onComplete {
       case Failure(exception) => {
-        log.error(" erro " + exception)
-        log.error(" completed? 2" + f.isCompleted)
         f.andThen(x => x.get.close())
 
       }
       case Success(value) => {
-        log.error(" ok " + value)
-        log.error(" completed? 2" + f.isCompleted)
         f.andThen(x => x.get.close())
         try {
-          log.error("Entro READSIDE")
           val con = ods.getConnection()
 
           val statement = con.createStatement()

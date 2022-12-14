@@ -40,7 +40,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
             actor.removeObligaciones()
           }*/
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-          if (actor.state.eventCounter > 100) {
+          if (actor.state.eventCounter > 50) {
             actor.saveSnapshot(actor.state.copy(eventCounter = 0))
           }
         }

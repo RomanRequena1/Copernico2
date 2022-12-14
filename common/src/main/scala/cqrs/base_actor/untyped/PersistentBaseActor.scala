@@ -33,10 +33,8 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
 
   override def receiveRecover: Receive = {
     case e: E =>
-      logger.error("event recover CUMBIA" + e)
       (state + e) match {
         case s: State => {
-          logger.error("event recobver CUMBIA" + s)
           state = s
         }
         case e =>
