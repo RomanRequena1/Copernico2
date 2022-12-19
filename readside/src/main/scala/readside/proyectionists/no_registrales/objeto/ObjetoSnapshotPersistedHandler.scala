@@ -39,7 +39,7 @@ class ObjetoSnapshotPersistedHandler(
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
           case Failure(exception) => log.error("Dont persist objeto" + exception )
-          case Success(value) => log.error("Persist objeto" + value )
+          case Success(value) => log.debug("Persist objeto" + value )
             //connOracleReadsideToCass(registro.deliveryId.toString(),"objeto", registro.registro.get.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
         }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)

@@ -33,7 +33,7 @@ class ObligacionPersistedSnapshotHandler(
       .maybeDecode[ObligacionPersistedSnapshot](input)
 
   override def processMessage(registro: ObligacionPersistedSnapshot): Future[Response.SuccessProcessing] = {
-    log.error("llego event")
+    //log.error("llego event")
     //recordLag(calculateLag(registro.deliveryId.toString))
     if (registro.operacion.equals("U")) {
       val projection = ObligacionSnapshotProjection(registro)
@@ -52,9 +52,9 @@ class ObligacionPersistedSnapshotHandler(
         done <- r.cassandraWrite.writeState(projection).andThen {
           case Failure(exception) => log.error("Dont persist obligacion" + exception )
           case Success(value) => {
-            log.error("ERROR - 1 " + registro.deliveryId)
-            log.error("Persist obligacion" + value)
-            //connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
+            //log.error("ERROR - 1 " + registro.deliveryId)
+            log.debug("Persist obligacion" + value)
+            connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
           }
         }
 
@@ -86,9 +86,9 @@ class ObligacionPersistedSnapshotHandler(
           .andThen {
             case Failure(exception) => log.error("Dont persist obligacion" + exception )
             case Success(_) => {
-              log.error("ERROR - -1 " + registro.deliveryId)
-              //log.error("" + registro.deliveryId.toString() + " " + registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
-              //connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", bco)
+              //log.error("ERROR - -1 " + registro.deliveryId)
+              log.debug("Persiste Obligacion")
+              connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", bco)
             }
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
