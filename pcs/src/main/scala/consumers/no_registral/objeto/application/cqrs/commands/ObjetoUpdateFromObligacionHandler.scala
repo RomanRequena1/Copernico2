@@ -38,8 +38,8 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
         actor.informParent(command, actor.state)
       actor.persistSnapshot(event, actor.state){ () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-        if (actor.state.eventCounter > 50) {
-          actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
+        if (actor.state.eventCounter > 9) {
+          //actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
       }
