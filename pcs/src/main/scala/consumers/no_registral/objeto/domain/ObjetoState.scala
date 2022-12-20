@@ -27,7 +27,7 @@ case class ObjetoState(
 
   override def +(event: ObjetoEvents): ObjetoState = {
     eventCounter match {
-      case n if (n > 101) => changeState(event).copy(
+      case n if (n > 10) => changeState(event).copy(
         fechaUltMod = LocalDateTime.now,
         lastDeliveryIdByEvents =  event.deliveryId,
         eventCounter = 0

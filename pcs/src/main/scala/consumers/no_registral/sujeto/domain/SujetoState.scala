@@ -18,7 +18,7 @@ final case class SujetoState(
 ) extends AbstractState[SujetoEvents] {
   def +(event: SujetoEvents): SujetoState = {
     eventCounter match {
-      case n if (n > 101) => changeState(event).copy(
+      case n if (n > 10) => changeState(event).copy(
         fechaUltMod = LocalDateTime.now,
         lastDeliveryIdByEvents = event.deliveryId,
         eventCounter = 0

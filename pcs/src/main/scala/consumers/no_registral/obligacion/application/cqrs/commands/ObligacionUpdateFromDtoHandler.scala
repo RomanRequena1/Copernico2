@@ -49,7 +49,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         actor.persistSnapshot() { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           if (actor.state.eventCounter > 9) {
-            actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
+            //actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
             actor.saveSnapshot(actor.state.copy(eventCounter = 0))
           }
         }
