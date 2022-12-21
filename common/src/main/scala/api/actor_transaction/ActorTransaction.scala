@@ -25,13 +25,13 @@ abstract class ActorTransaction[ExternalDto](
     recordRequests()
     processInput(input) match {
       case Left(serializationError) =>
-        recordErrors(serializationError)
+        recordErrors(serializationError, input)
         Future.failed(serializationError)
 
       case Right(value) =>
         val future = processMessage(value)
         future.onComplete {
-          case Failure(exception) => recordErrors(exception)
+          case Failure(exception) => recordErrors(exception, input)
           case Success(_) => ()
         }(actorTransactionRequirements.executionContext)
         recordLatency(future)
