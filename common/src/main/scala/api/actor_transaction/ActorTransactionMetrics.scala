@@ -1,10 +1,12 @@
 package api.actor_transaction
 
 import akka.pattern.AskTimeoutException
+import com.datastax.oss.driver.api.core.DriverTimeoutException
+import ddd.ExternalDto
 import design_principles.actor_model.Response
 import monitoring.{Counter, Histogram, Monitoring}
 import org.slf4j.LoggerFactory
-import serialization.SerializationError
+import serialization.{SerializationError, maybeDecode}
 
 import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
@@ -20,6 +22,7 @@ abstract class ActorTransactionMetrics(
   final private val controllerId = api.Utils.Transformation.to_underscore(this.getClass.getSimpleName)
   final protected val requests: Counter = monitoring.counter(s"$metricPrefix-$controllerId-request")
   final protected val errors: Counter = monitoring.counter(s"$metricPrefix-$controllerId-error")
+  final protected val errorsATO: Counter = monitoring.counter(s"$metricPrefix-$controllerId-error-asktimeout")
   final protected val latency: Histogram = monitoring.histogram(s"$metricPrefix-$controllerId-latency")
   final protected val lag: Histogram = monitoring.histogram(s"$metricPrefix-$controllerId-lag")
 
@@ -33,18 +36,30 @@ abstract class ActorTransactionMetrics(
 
   final protected def recordLatency(future: Future[Response.SuccessProcessing]): Unit =
     latency.recordFuture(future)
-  final protected def recordErrors(throwable: Throwable): Unit =
+  final protected def recordErrors(throwable: Throwable, input: String): Unit = {
+
+    val trimmedList: List[String] = input.split("\"").map(_.trim).toList
+    val ev_id = trimmedList(3)
+    val a = trimmedList.indexOf("BOB_SUJ_IDENTIFICADOR")
+
+    val suj_iden = trimmedList(a + 1) match {
+      case _ if a.equals(-1) => ""
+      case _ => trimmedList(a + 2)
+    }
+
     throwable match {
       case e: SerializationError =>
         errors.increment()
         log.error(e.getMessage)
       case e: AskTimeoutException =>
         errors.increment()
-        log.error(e.getMessage)
+        errorsATO.increment()
+        log.error(e.getMessage + s" [${ev_id}  -  ${suj_iden}]")
       case unexpectedException: Throwable =>
         errors.increment()
         log.error(unexpectedException.getMessage)
     }
+  }
 
   private def toLocalDateTime(num: String) = {
      val fechaString =
