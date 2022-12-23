@@ -6,6 +6,7 @@ import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
+import ddd.eventCounterMax
 import design_principles.actor_model.Response
 
 import scala.util.{Success, Try}
@@ -40,7 +41,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
             actor.removeObligaciones()
           }*/
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-          if (actor.state.eventCounter > 9) {
+          if (actor.state.eventCounter.equals(eventCounterMax)) {
             actor.saveSnapshot(actor.state.copy(eventCounter = 0))
           }
         }

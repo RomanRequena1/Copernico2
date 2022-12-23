@@ -1,9 +1,10 @@
 package consumers.no_registral.sujeto.domain
 
 import java.time.LocalDateTime
-
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
-import ddd.AbstractState
+import ddd.{AbstractState, eventCounterMax}
+
+import scala.util.Try
 
 final case class SujetoState(
     saldo: BigDecimal = 0,
@@ -18,7 +19,7 @@ final case class SujetoState(
 ) extends AbstractState[SujetoEvents] {
   def +(event: SujetoEvents): SujetoState = {
     eventCounter match {
-      case n if (n > 10) => changeState(event).copy(
+      case n if (n > (eventCounterMax)) => changeState(event).copy(
         fechaUltMod = LocalDateTime.now,
         lastDeliveryIdByEvents = event.deliveryId,
         eventCounter = 0

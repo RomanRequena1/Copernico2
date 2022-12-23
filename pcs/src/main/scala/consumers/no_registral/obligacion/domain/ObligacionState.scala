@@ -1,10 +1,11 @@
 package consumers.no_registral.obligacion.domain
 
 import java.time.LocalDateTime
-
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.DetallesObligacion
 import ddd._
+
+import scala.util.Try
 
 case class ObligacionState(
     saldo: BigDecimal = 0,
@@ -20,9 +21,11 @@ case class ObligacionState(
     idExterno: Option[String] = None
 ) extends AbstractState[ObligacionEvents] {
 
+  //val eventCounterMax = Try(System.getenv("EVENT_COUNTER_MAX")).getOrElse(9)
+
   override def +(event: ObligacionEvents): ObligacionState = {
     eventCounter match {
-      case n if (n > 10) => changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = 0)
+      case n if (n > (eventCounterMax + 1)) => changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = 0)
       case n => changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = n + 1)
     }
   }
