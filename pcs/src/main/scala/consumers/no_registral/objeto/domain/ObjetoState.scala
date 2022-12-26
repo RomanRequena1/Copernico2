@@ -1,10 +1,9 @@
 package consumers.no_registral.objeto.domain
 
 import java.time.LocalDateTime
-
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import ddd.AbstractState
+import ddd.{AbstractState, eventCounterMax}
 
 case class ObjetoState(
     saldo: BigDecimal = 0,
@@ -27,7 +26,7 @@ case class ObjetoState(
 
   override def +(event: ObjetoEvents): ObjetoState = {
     eventCounter match {
-      case n if (n > 10) => changeState(event).copy(
+      case n if (n > (eventCounterMax)) => changeState(event).copy(
         fechaUltMod = LocalDateTime.now,
         lastDeliveryIdByEvents =  event.deliveryId,
         eventCounter = 0

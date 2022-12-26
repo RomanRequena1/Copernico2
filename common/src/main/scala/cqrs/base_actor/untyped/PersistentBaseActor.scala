@@ -65,7 +65,7 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
   def persistEvent(event: E, tags: Set[String] = Set.empty)(handler: () => Unit = () => ()): Unit = {
     //todo review the use of persistAsync
     persistAsync(event) { _ =>
-      logger.error(s"[$persistenceId] Persist event | $event")
+      logger.debug(s"[$persistenceId] Persist event | $event")
       persistedCounter.increment()
       monitoring.counter(s"$name-persisted-${utils.Inference.getSimpleName(event.getClass.getName)}").increment()
       handler()

@@ -6,6 +6,8 @@ import com.datastax.oss.driver.api.core.cql.BoundStatement
 import design_principles.actor_model.Event
 import org.slf4j.{Logger, LoggerFactory}
 
+import scala.util.Try
+
 package object ddd {
 
   trait Deliverable {
@@ -28,4 +30,6 @@ package object ddd {
     def updateReadside()(implicit ec: ExecutionContext): Future[Done]
     //def prepareStatement(session: CassandraSession)(implicit ec: ExecutionContext): Future[BoundStatement]
   }
+  val eventCounterMax: Int = Try(System.getenv("EVENT_COUNTER_MAX").toInt).getOrElse(9)
+
 }
