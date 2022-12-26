@@ -29,13 +29,13 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
 
     actor.persistEvent(event) { () =>
       actor.state += event
+      if (actor.state.eventCounter == eventCounterMax) {
+        actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
+        actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+      }
       actor.persistSnapshot(){ _ =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-        if (actor.state.eventCounter > eventCounterMax) {
-          //actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 51))
-          println("Snapshot suj -" + command.deliveryId + "Event counter: " + actor.state.eventCounter + " SeqNr: " + actor.lastSequenceNr)
-          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
-        }
+
       }
     }
 //    }

@@ -48,13 +48,14 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         if (!(initialization == "true" && command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {
           actor.informParent(command)
         }
+        if (actor.state.eventCounter == eventCounterMax) {
+          actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
+          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+        }
         actor.lastDeliveryId = command.registro.EV_ID
         actor.persistSnapshot() { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-          if (actor.state.eventCounter > eventCounterMax) {
-            //actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
-            actor.saveSnapshot(actor.state.copy(eventCounter = 0))
-          }
+
         }
       }
     }

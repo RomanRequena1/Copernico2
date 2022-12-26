@@ -24,11 +24,12 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
 
       actor.persistEvent(event) { () =>
         actor.state += event
+        if (actor.state.eventCounter == eventCounterMax) {
+          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+        }
         actor.persistSnapshot() { _ =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-          if (actor.state.eventCounter > eventCounterMax) {
-            actor.saveSnapshot(actor.state.copy(eventCounter = 0))
-          }
+
         }
       }
     }

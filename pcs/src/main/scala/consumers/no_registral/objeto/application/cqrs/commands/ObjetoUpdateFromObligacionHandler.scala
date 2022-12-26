@@ -39,13 +39,13 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
       actor.state += event
       if (initialization != "true")
         actor.informParent(command, actor.state)
+      if (actor.state.eventCounter == eventCounterMax) {
+        actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
+        actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+      }
       actor.persistSnapshot(event, actor.state){ () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-        if (actor.state.eventCounter > eventCounterMax) {
-          //actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 51))
-          println("Snapshot obj -" + command.deliveryId + "Event counter: " + actor.state.eventCounter + " SeqNr: " + actor.lastSequenceNr)
-          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
-        }
+
       }
     }
 

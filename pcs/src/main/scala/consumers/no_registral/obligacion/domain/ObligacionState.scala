@@ -25,7 +25,7 @@ case class ObligacionState(
 
   override def +(event: ObligacionEvents): ObligacionState = {
     eventCounter match {
-      case n if (n > (eventCounterMax + 1)) => changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = 0)
+      case n if (n > (eventCounterMax)) => changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = 0)
       case n => changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = n + 1)
     }
   }
