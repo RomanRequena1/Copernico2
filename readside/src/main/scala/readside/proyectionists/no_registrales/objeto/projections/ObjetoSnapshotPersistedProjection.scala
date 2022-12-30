@@ -9,6 +9,8 @@ case class ObjetoSnapshotPersistedProjection(
   val registro: Option[ObjetoExternalDto] = event.registro
   val fromRegistro: Option[List[(String, Option[Object])]] = registro match {
     case Some(r) => Some(List(
+      "soj_identificador_2" -> r.SOJ_IDENTIFICADOR_2,
+      "soj_subtipo" -> r.SOJ_SUBTIPO,
       "soj_canal_origen" -> r.SOJ_CANAL_ORIGEN,
       "soj_cat_soj_id" -> r.SOJ_CAT_SOJ_ID,
       "soj_descripcion" -> r.SOJ_DESCRIPCION,
@@ -20,7 +22,7 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_base_imponible" -> r.SOJ_BASE_IMPONIBLE,
       "soj_adherido_debito" -> r.SOJ_ADHERIDO_DEBITO,
       "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[",",","]"))
-    ))
+  ))
     case None => Some(List(
       "soj_cat_soj_id" -> None,
       "soj_descripcion" -> Some("Sin descripción"),
@@ -28,6 +30,7 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_fecha_fin" -> None,
       "soj_fecha_inicio" -> None,
       "soj_id_externo" -> event.idExterno,
+      "soj_identificador_2" -> event.objetoId2,
       "soj_otros_atributos" -> None,
       "soj_base_imponible" -> None,
       "soj_adherido_debito" -> None,

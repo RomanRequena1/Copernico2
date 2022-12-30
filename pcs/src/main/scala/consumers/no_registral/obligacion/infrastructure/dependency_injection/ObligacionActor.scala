@@ -13,6 +13,7 @@ import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionSta
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
 
+
 class ObligacionActor(requirements: MonitoringAndMessageProducer)
     extends PersistentBaseActor[ObligacionEvents, ObligacionState](requirements.monitoring) {
 
@@ -31,6 +32,13 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       cmd.deliveryId,
       cmd.sujetoId,
       cmd.objetoId,
+      cmd match {
+        case c: ObligacionCommands.ObligacionUpdateFromDto => c.registro.BOB_SOJ_IDENTIFICADOR_2 match {
+          case Some(value) => Some(value)
+          case None => None
+        }
+        case _ => None
+      },
       cmd.tipoObjeto,
       cmd.obligacionId,
       state.saldo,
@@ -54,7 +62,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
   import consumers.no_registral.obligacion.infrastructure.json._
   def persistSnapshot()(handler: () => Unit): Unit = {
-
     val ids = ObligacionMessageRoots.extractor(persistenceId)
 
     val kafkaTopic = "ObligacionPersistedSnapshot"
@@ -80,7 +87,13 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         )
       ),
       topic = kafkaTopic
-    )(_ => handler())
+    )(_ => handler())/*.onComplete {
+      case Failure(ex) => log.error("Error when try to send to topic " + ex)
+      case Success(value) => {
+        log.debug("Success,  sent to topic")
+        connOracleWriteSideToKafka(event.sujetoId,event.tipoObjeto,event.objetoId,event.obligacionId)
+      }
+    }*/
   }
 
   def deleteSnapshot()(handler: () => Unit): Unit = {

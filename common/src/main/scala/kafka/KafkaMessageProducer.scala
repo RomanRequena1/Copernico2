@@ -41,6 +41,7 @@ class KafkaMessageProducer()(
       case Success(Done) =>
         data foreach { s =>
           log.debug(s"""Published $s to $topic""")
+
         }
 
         handler(data)

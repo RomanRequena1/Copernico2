@@ -1,10 +1,9 @@
 package consumers.no_registral.objeto.domain
 
 import java.time.LocalDateTime
-
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import ddd.AbstractState
+import ddd.{AbstractState, eventCounterMax}
 
 case class ObjetoState(
     saldo: BigDecimal = 0,
@@ -16,7 +15,7 @@ case class ObjetoState(
     registro: Option[ObjetoExternalDto] = None,
     tags: Set[String] = Set.empty,
     isResponsable: Boolean = false,
-    lastDeliveryIdByEvents: Map[String, BigInt] = Map.empty,
+    lastDeliveryIdByEvents:  BigInt = 0,
     porcentajeResponsabilidad: BigDecimal = 0,
     exenciones: Set[Exencion] = Set.empty,
     isBaja: Boolean = false,
@@ -26,11 +25,23 @@ case class ObjetoState(
 ) extends AbstractState[ObjetoEvents] {
 
   override def +(event: ObjetoEvents): ObjetoState = {
-    changeState(event).copy(
+    eventCounter match {
+      case n if (n > (eventCounterMax)) => changeState(event).copy(
+        fechaUltMod = LocalDateTime.now,
+        lastDeliveryIdByEvents =  event.deliveryId,
+        eventCounter = 0
+      )
+      case n => changeState(event).copy(
+        fechaUltMod = LocalDateTime.now,
+        lastDeliveryIdByEvents = event.deliveryId,
+        eventCounter = n + 1
+      )
+    }
+    /*changeState(event).copy(
       fechaUltMod = LocalDateTime.now,
       lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
       eventCounter = eventCounter + 1
-    )
+    )*/
   }
 
   private def changeState(event: ObjetoEvents): ObjetoState =

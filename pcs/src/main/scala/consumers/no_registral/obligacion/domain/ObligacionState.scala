@@ -1,10 +1,11 @@
 package consumers.no_registral.obligacion.domain
 
 import java.time.LocalDateTime
-
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.DetallesObligacion
 import ddd._
+
+import scala.util.Try
 
 case class ObligacionState(
     saldo: BigDecimal = 0,
@@ -12,7 +13,7 @@ case class ObligacionState(
     exenta: Boolean = false,
     porcentajeExencion: Option[BigDecimal] = None,
     registro: Option[ObligacionExternalDto] = None,
-    lastDeliveryIdByEvents: Map[String, BigInt] = Map.empty,
+    lastDeliveryIdByEvents: BigInt = 0,
     detallesObligacion: Seq[DetallesObligacion] = Seq.empty,
     juicioId: Option[BigInt] = None,
     isAdheridoDebito: Boolean = false,
@@ -20,8 +21,14 @@ case class ObligacionState(
     idExterno: Option[String] = None
 ) extends AbstractState[ObligacionEvents] {
 
-  override def +(event: ObligacionEvents): ObligacionState =
-    changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = eventCounter + 1)
+  //val eventCounterMax = Try(System.getenv("EVENT_COUNTER_MAX")).getOrElse(9)
+
+  override def +(event: ObligacionEvents): ObligacionState = {
+    eventCounter match {
+      case n if (n > (eventCounterMax)) => changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = 0)
+      case n => changeState(event).copy(fechaUltMod = LocalDateTime.now, eventCounter = n + 1)
+    }
+  }
 
   private def changeState(event: ObligacionEvents): ObligacionState =
     event match {
@@ -29,24 +36,26 @@ case class ObligacionState(
         copy(
           exenta = true,
           porcentajeExencion = e.exencion.BEX_PORCENTAJE,
-          lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, e.deliveryId))
+          lastDeliveryIdByEvents =  e.deliveryId
         )
       case e: ObligacionEvents.ObligacionRemoved =>
-        empty
+        copy(saldo = 0,
+          registro = Some(e.registro),
+          lastDeliveryIdByEvents =  e.registro.EV_ID)
       case e: ObligacionEvents.ObligacionUpdatedFromDto =>
         copy(
           saldo = e.registro.BOB_SALDO,
           registro = Some(e.registro),
           detallesObligacion = e.detallesObligacion,
           juicioId = e.registro.BOB_JUI_ID,
-          lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, e.deliveryId)),
+          lastDeliveryIdByEvents =  e.deliveryId,
           isAdheridoDebito = e.isAdheridoDebito.getOrElse(false),
           idExterno = e.registro.SOJ_ID_EXTERNO
         )
       case _ => this
     }
 
-  def empty = ObligacionState()
+  //def empty = ObligacionState()
 
 
 }

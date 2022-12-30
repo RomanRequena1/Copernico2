@@ -115,6 +115,10 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         evt.deliveryId,
         evt.sujetoId,
         evt.objetoId,
+        objetoId2 = evt match {
+          case evt: ObjetoEvents.ObjetoUpdatedFromObligacion => evt.objetoId2
+          case _ => None
+         },
         evt.tipoObjeto,
         consolidatedState.saldo,
         consolidatedState.sujetos,
@@ -150,6 +154,10 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         evt.deliveryId,
         evt.sujetoId,
         evt.objetoId,
+        objetoId2 = evt match {
+          case evt: ObjetoEvents.ObjetoUpdatedFromObligacion => evt.objetoId2
+          case _ => None
+        },
         evt.tipoObjeto,
         consolidatedState.saldo,
         consolidatedState.sujetos,
@@ -185,6 +193,10 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         evt.deliveryId,
         evt.sujetoId,
         evt.objetoId,
+        objetoId2 = evt match {
+          case evt: ObjetoEvents.ObjetoUpdatedFromObligacion => evt.objetoId2
+          case _ => None
+        },
         evt.tipoObjeto,
         consolidatedState.saldo,
         consolidatedState.sujetos,

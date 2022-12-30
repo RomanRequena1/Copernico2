@@ -6,8 +6,7 @@ object DeliveryIdManagement {
   def isIdempotent(
       event: Event,
       command: Command,
-      lastDeliveryIdByEvents: Map[String, BigInt]
+      lastDeliveryIdByEvents: BigInt
   ): Boolean =
-    command.deliveryId <= lastDeliveryIdByEvents.getOrElse(utils.Inference.getSimpleName(event.getClass.getName),
-                                                           BigInt(0))
+    command.deliveryId <= lastDeliveryIdByEvents
 }

@@ -1,6 +1,6 @@
 package consumers.no_registral.sujeto.infrastructure.consumer
 
-import scala.concurrent.{Future}
+import scala.concurrent.Future
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
@@ -9,6 +9,7 @@ import consumers.no_registral.sujeto.application.entity.{SujetoCommands, SujetoE
 import consumers.no_registral.sujeto.infrastructure.json._
 import design_principles.actor_model.Response
 import monitoring.Monitoring
+import oracle.Oracle.connOracleKafkaToWriteside
 import serialization.maybeDecode
 
 import scala.util.Try
@@ -26,6 +27,7 @@ case class SujetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
     maybeDecode[SujetoTri](input)
 
   def processMessage(registro: SujetoTri): Future[Response.SuccessProcessing] = {
+    //connOracleKafkaToWriteside(registro.EV_ID.toString(), "sujeto", registro.SUJ_CANAL_ORIGEN.getOrElse("TAX"))
     val command = registro match {
       case _: SujetoExternalDto.SujetoTri =>
         SujetoCommands.SujetoUpdateFromTri(

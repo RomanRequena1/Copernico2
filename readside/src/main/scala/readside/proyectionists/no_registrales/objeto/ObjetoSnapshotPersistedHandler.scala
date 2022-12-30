@@ -6,10 +6,12 @@ import cassandra.write.CassandraWriteProduction
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
+import oracle.Oracle.connOracleReadsideToCass
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.objeto.projections.ObjetoSnapshotPersistedProjection
 
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 class ObjetoSnapshotPersistedHandler(
                                       implicit
@@ -35,7 +37,11 @@ class ObjetoSnapshotPersistedHandler(
     val projection = ObjetoSnapshotPersistedProjection(registro)
     if (registro.operacion.equals("U")) {
       for {
-        done <- r.cassandraWrite writeState projection
+        done <- r.cassandraWrite.writeState(projection).andThen {
+          case Failure(exception) => log.debug("Dont persist objeto" + exception )
+          case Success(value) => log.debug("Persist objeto" + value )
+            //connOracleReadsideToCass(registro.deliveryId.toString(),"objeto", registro.registro.get.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
+        }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
     } else if (registro.operacion.equals("FD")) {
       val cassandra = new CassandraWriteProduction()
