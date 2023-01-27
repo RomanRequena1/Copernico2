@@ -50,5 +50,5 @@ services:
 networks:
   kafka_copernico_net:
     external: true
-    name: kafka_copernico_net
+    
 
