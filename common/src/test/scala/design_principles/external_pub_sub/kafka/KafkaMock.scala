@@ -58,7 +58,7 @@ class KafkaMock() extends MessageProducer with MessageProcessor with MessageProc
 
   override type MessageProcessorKillSwitch = UniqueKillSwitch
 
-  override def run(SOURCE_TOPIC: String, SINK_TOPIC: String, algorithm: String => Future[Seq[String]]) =
+  override def run(SOURCE_TOPIC: String, SINK_TOPIC: String, RETRY_TOPIC: String, ERROR_TOPIC: String, algorithm: String => Future[Seq[String]]) =
     (None, {
       receive(PubSub.SubscribeMe(SOURCE_TOPIC, algorithm))
       Future.successful(Done)
@@ -82,6 +82,8 @@ object KafkaMock {
         case processor: KafkaTransactionalMessageProcessor =>
           processor.run(SOURCE_TOPIC,
                         SOURCE_TOPIC + "_done",
+                        SOURCE_TOPIC + "_retry",
+                        SOURCE_TOPIC + "_error",
                         message => actorTransaction.transaction(message).map(_ => Seq("Done")))
 
         case kafkaMock: KafkaMock =>
