@@ -53,6 +53,7 @@ object Settings extends Dependencies with CommonScalac {
   import sbtassembly.AssemblyKeys._
   lazy val assemblySettings = Seq(
     assembly / assemblyJarName := name.value + ".jar",
+    assembly / test := {},
     assembly / assemblyMergeStrategy := {
       case PathList("META-INF", xs @ _*) => MergeStrategy.discard
       case "application.conf" => MergeStrategy.concat
