@@ -1,7 +1,7 @@
 FROM openjdk:11
 
 WORKDIR /opt/docker
-COPY target/docker/stage/opt /opt
+COPY readside/target/docker/stage/opt /opt
 
 USER root
 RUN ["chmod", "-R", "u=rX,g=rX", "/opt/docker"]
