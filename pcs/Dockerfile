@@ -1,6 +1,6 @@
 FROM openjdk:11
 
-COPY target/docker/stage/opt /opt
+COPY pcs/target/docker/stage/opt /opt
 USER root
 RUN ["chmod", "-R", "u=rX,g=rX", "/opt/docker"]
 RUN ["chmod", "u+x,g+x", "/opt/docker/bin/pcs"]
