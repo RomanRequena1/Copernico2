@@ -70,16 +70,6 @@ lazy val pcs = project
     mainClass := Some("Main")
   )
   .settings(
-    Docker / packageName := sys.env.getOrElse("IMAGE_NAME", "pcs"),
-    Docker / version := sys.env.getOrElse("IMAGE_TAG", "1-0-0-0-test"),
-    dockerRepository := Some("registro.kolektor.com.ar:5000"),
-    dockerBaseImage := "openjdk:11",
-    dockerEntrypoint := Seq("/opt/docker/bin/pcs"),
-    dockerExposedPorts := Seq(
-        2551, 2552, 2553, 8081, 8083, 8084, 8558, 9095, 5266
-      )
-  )
-  .settings(
     Compile / mainClass := Some("Main"),
     //run / mainClass := Some("Main")
   )
@@ -105,20 +95,7 @@ lazy val readside = project
   .settings(
     mainClass := Some("readside.Main")
   )
-  .settings(
-    Docker / packageName := sys.env.getOrElse("IMAGE_NAME", "readside"),
-    Docker / version := sys.env.getOrElse("IMAGE_TAG", "1-0-0-0-test"),
-    dockerRepository := Some("registro.kolektor.com.ar:5000"),
-    dockerBaseImage := "openjdk:11",
-    dockerEntrypoint := Seq("/opt/docker/bin/readside"),
-    dockerExposedPorts := Seq(
-        2554,
-        8559,
-        8081,
-        9095,
-        5266
-      )
-  )
+
 
 lazy val it = project
   .settings(

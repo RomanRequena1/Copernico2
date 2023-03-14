@@ -1,1 +1,0 @@
-sbt readside/docker:stage
