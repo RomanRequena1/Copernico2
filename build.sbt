@@ -70,6 +70,14 @@ lazy val pcs = project
     mainClass := Some("Main")
   )
   .settings(
+    dockerBaseImage := "openjdk:11",
+    dockerUsername := Some("pcs"),
+    dockerEntrypoint := Seq("/opt/docker/bin/pcs"),
+    dockerExposedPorts := Seq(
+        2551, 2552, 2553, 8081, 8083, 8084, 8558, 9095, 5266
+      )
+  )
+  .settings(
     Compile / mainClass := Some("Main"),
     //run / mainClass := Some("Main")
   )
@@ -95,7 +103,18 @@ lazy val readside = project
   .settings(
     mainClass := Some("readside.Main")
   )
-
+  .settings(
+    dockerBaseImage := "openjdk:11",
+    dockerUsername := Some("readside"),
+    dockerEntrypoint := Seq("/opt/docker/bin/readside"),
+    dockerExposedPorts := Seq(
+        2554,
+        8559,
+        8081,
+        9095,
+        5266
+      )
+  )
 
 lazy val it = project
   .settings(
