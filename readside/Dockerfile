@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM registro.kolektor.com.ar:5000/java11:0.0.1
 
 WORKDIR /opt/docker
 COPY readside/target/docker/stage/opt /opt
