@@ -12,6 +12,9 @@ import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersi
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
+import timescaledb.Timescaledb.connOracleWriteSideToKafka
+
+import scala.util.{Failure, Success}
 
 
 class ObligacionActor(requirements: MonitoringAndMessageProducer)
@@ -87,13 +90,13 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         )
       ),
       topic = kafkaTopic
-    )(_ => handler())/*.onComplete {
+    )(_ => handler()).onComplete {
       case Failure(ex) => log.error("Error when try to send to topic " + ex)
       case Success(value) => {
         log.debug("Success,  sent to topic")
-        connOracleWriteSideToKafka(event.sujetoId,event.tipoObjeto,event.objetoId,event.obligacionId)
+        connOracleWriteSideToKafka(event.deliveryId.toString())
       }
-    }*/
+    }
   }
 
   def deleteSnapshot()(handler: () => Unit): Unit = {

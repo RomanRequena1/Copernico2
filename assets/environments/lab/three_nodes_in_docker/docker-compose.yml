@@ -16,9 +16,11 @@ services:
     environment:
       SEED_NODES: 'akka://PersonClassificationServiceReadSide@172.22.4.3:2554'
       KAFKA_BROKERS_LIST: 'kafka:29092'
-      STRING_CONEXION_ORACLE: 'jdbc:oracle:thin:@172.22.2.1:1521:xe'
-      PASSWORD_ORACLE: '1234'
-      USER_ORACLE: 'sys as sysdba'
+      STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
+      NAME_TABLE1: 'table_nifi_to_kafka'
+      NAME_TABLE2: 'table_kafka_to_pcs'
+      NAME_TABLE3: 'table_pcs_to_kafka'
+      NAME_TABLE4: 'table_readsie_to_cass'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
       PROJECTIONIST_PARALELLISM: 3
       LOGSTASH: '172.22.5.3:5000'
@@ -81,7 +83,11 @@ services:
       SEED_NODES: 'akka://PersonClassificationServiceReadSide@172.22.4.3:2556'
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
-
+      STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
+      NAME_TABLE1: 'table_nifi_to_kafka'
+      NAME_TABLE2: 'table_kafka_to_pcs'
+      NAME_TABLE3: 'table_pcs_to_kafka'
+      NAME_TABLE4: 'table_readsie_to_cass'
       PROJECTIONIST_PARALELLISM: 3
       LOGSTASH: '172.22.5.3:5000'
       CLUSTER_IP: 172.22.4.5
@@ -111,7 +117,11 @@ services:
       SEED_NODES: 'akka://PersonClassificationService@172.22.1.3:2551'
       KAFKA_BROKERS_LIST: 'kafka:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
-      STRING_CONEXION_ORACLE: 'jdbc:oracle:thin:@172.22.2.1:1521:xe'
+      STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
+      NAME_TABLE1: 'table_nifi_to_kafka'
+      NAME_TABLE2: 'table_kafka_to_pcs'
+      NAME_TABLE3: 'table_pcs_to_kafka'
+      NAME_TABLE4: 'table_readsie_to_cass'
       PASSWORD_ORACLE: '1234'
       USER_ORACLE: 'sys as sysdba'
       CONSUMER_PARALLELISM: $CONSUMER_PARALLELISM
@@ -144,6 +154,11 @@ services:
       SEED_NODES: 'akka://PersonClassificationService@172.22.1.4:2552'
       KAFKA_BROKERS_LIST: 'kafka2:29093'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
+      STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
+      NAME_TABLE1: 'table_nifi_to_kafka'
+      NAME_TABLE2: 'table_kafka_to_pcs'
+      NAME_TABLE3: 'table_pcs_to_kafka'
+      NAME_TABLE4: 'table_readsie_to_cass'
       CONSUMER_PARALLELISM: $CONSUMER_PARALLELISM
       INITIALIZATION: $INITIALIZATION
       NR_PARTITIONS: $NR_PARTITIONS
@@ -175,6 +190,11 @@ services:
       SEED_NODES: 'akka://PersonClassificationService@172.22.1.3:2551'
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
+      STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
+      NAME_TABLE1: 'table_nifi_to_kafka'
+      NAME_TABLE2: 'table_kafka_to_pcs'
+      NAME_TABLE3: 'table_pcs_to_kafka'
+      NAME_TABLE4: 'table_readsie_to_cass'
       CONSUMER_PARALLELISM: $CONSUMER_PARALLELISM
       INITIALIZATION: $INITIALIZATION
       NR_PARTITIONS: $NR_PARTITIONS
@@ -204,6 +224,11 @@ services:
     environment:
       SEED_NODES: 'akka://PersonClassificationService@172.22.1.3:2551'
       KAFKA_BROKERS_LIST: '172.22.2.5:29092, 172.22.2.6:39092'
+      STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
+      NAME_TABLE1: 'table_nifi_to_kafka'
+      NAME_TABLE2: 'table_kafka_to_pcs'
+      NAME_TABLE3: 'table_pcs_to_kafka'
+      NAME_TABLE4: 'table_readsie_to_cass'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
       CONSUMER_PARALLELISM: $CONSUMER_PARALLELISM
       INITIALIZATION: $INITIALIZATION
@@ -234,6 +259,11 @@ services:
       SEED_NODES: 'akka://PersonClassificationService@172.22.1.3:2551'
       KAFKA_BROKERS_LIST: '172.22.2.5:29092, 172.22.2.6:39092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
+      STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
+      NAME_TABLE1: 'table_nifi_to_kafka'
+      NAME_TABLE2: 'table_kafka_to_pcs'
+      NAME_TABLE3: 'table_pcs_to_kafka'
+      NAME_TABLE4: 'table_readsie_to_cass'
       CONSUMER_PARALLELISM: $CONSUMER_PARALLELISM
       INITIALIZATION: $INITIALIZATION
       #LOGSTASH: '172.22.5.3:5000'

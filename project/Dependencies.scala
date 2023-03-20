@@ -105,6 +105,7 @@ object Dependencies {
         // Add Lightbend Platform to your build as documented at https://developer.lightbend.com/docs/lightbend-platform/introduction/getting-started/subscription-and-credentials.html
         "com.lightbend.akka" %% "akka-diagnostics" % "1.1.16" ::
         "com.github.dnvriend" %% "akka-persistence-inmemory" % "2.5.15.2" ::
+        "org.postgresql" % "postgresql" % "42.2.5" ::
       Nil
   }
 

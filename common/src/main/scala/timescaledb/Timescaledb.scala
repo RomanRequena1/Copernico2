@@ -1,0 +1,219 @@
+package timescaledb
+
+import org.slf4j.LoggerFactory
+
+import java.sql.Connection
+
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
+
+
+
+object Timescaledb {
+
+
+  import java.sql.{DriverManager, SQLException}
+
+  val url = Try(System.getenv("STRING_CONEXION_TIMESCALEDB")).getOrElse("no")
+  val database_name1 = Try(System.getenv("NAME_TABLE1")).getOrElse("no")
+  val database_name2 = Try(System.getenv("NAME_TABLE2")).getOrElse("no")
+  val database_name3 = Try(System.getenv("NAME_TABLE3")).getOrElse("no")
+  val database_name4 = Try(System.getenv("NAME_TABLE4")).getOrElse("no")
+  private val log = LoggerFactory.getLogger(this.getClass)
+
+
+
+  def connOracleNifi(input: String, entidad: String, topico: String) = {
+    log.error("CUMBIA llego al test connOracleNifiT")
+
+    insertData(input, entidad, topico)
+
+  }
+
+  def connOracleKafkaToWriteside(ev_id: String, entidad: String, bob_canal_origen: String) = {
+    log.error("CUMBIA llego al test connOracleKafkaToWritesideT")
+    updateData(ev_id, "paso_2", "time_paso_2")
+  }
+  def connOracleWriteSideToKafka(ev_id: String) = {
+    log.error("CUMBIA llego al test connOracleWriteSideToKafka")
+    updateData(ev_id, "paso_3", "time_paso_3")
+  }
+  def connOracleReadsideToCass(ev_id: String,entidad: String, bob_canal_origen: String) = {
+    log.error("CUMBIA llego al test connOracleReadsideToCass")
+    updateData(ev_id, "paso_4", "time_paso_4")
+  }
+  def  connectToTimescaledb() = {
+    val conn = Future(DriverManager.getConnection(url))
+    conn
+  }
+
+
+  @throws[SQLException]
+  def insertData(input: String, entidad: String, topico: String): Unit = {
+    val conn: Future[Connection] = connectToTimescaledb()
+    val trimmedList: List[String] = input.split("\"").map(_.trim).toList
+    val ev_id = trimmedList(3)
+    val a = trimmedList.indexOf("BOB_CANAL_ORIGEN")
+
+    val bob_canal_origenA = trimmedList(a + 1) match {
+      case s if s.equals(": null,") => "TAX"
+      case _ if a.equals(-1) => "TAX"
+      case _ => trimmedList(a + 2)
+    }
+
+    conn.onComplete {
+      case Failure(exception) => {
+
+        log.error("ERROR after first connection failure "+ exception)
+
+      }
+      case Success(conn) => {
+        try {
+
+
+          val f = Future(conn)
+          f.onComplete {
+            case Failure(exception) => {
+              log.error("ERROR after second connection failure insert functions")
+              f.andThen(x => x.get.close())
+
+            }
+            case Success(conn) => {
+              try {
+
+                val batch = conn.createStatement()
+
+                batch.executeUpdate(
+                  s"""
+                      INSERT INTO $database_name1 (time,ev_id,bob_canal_origen,paso_1,time_paso_1,topico)
+                      VALUES (
+                          now(),
+                          '${ev_id}',
+                          '${bob_canal_origenA}',
+                          'PASO_1',
+                          now(),
+                          '${topico}'
+                      )
+                      """
+
+                )
+
+                conn.close()
+              } catch {
+                case ex: SQLException =>
+                  log.error("ERROR after executeUpdate of traz_obligacion_nifi " + ex.getMessage + " - " + ex.getCause)
+
+              }
+
+            }
+          }
+        }
+        catch {
+          case ex: SQLException =>
+            log.error("ERROR after success of ERROR after executeUpdate of traz_obligacion_nifi connection" + ex.getMessage + " - " + ex.getCause)
+            conn.close()    }
+      }
+    }
+
+
+
+  }
+
+  def updateData(ev_id: String, paso: String, time_paso: String): Unit = {
+    val conn: Future[Connection] = connectToTimescaledb()
+    conn.onComplete {
+
+      case Failure(exception) => {
+        log.error("ERROR after first connection failure update functions "+ exception)
+
+      }
+      case Success(conn) => {
+        try {
+
+
+          val f = Future(conn)
+          f.onComplete {
+            case Failure(exception) => {
+              log.error("ERROR after second connection failure update functions " + exception)
+              f.andThen(x => x.get.close())
+            }
+            case Success(conn) => {
+              try {
+                time_paso match {
+                  case tp if tp.equals("time_paso_2") => {
+                    val batch2 = conn.createStatement()
+
+                    batch2.executeUpdate(
+                      s"""
+                      INSERT INTO $database_name2 (time,ev_id,paso_2,time_paso_2)
+                      VALUES (
+                          now(),
+                          '${ev_id}',
+                          '${paso}',
+                          now()
+                      )
+                      """
+                    )
+
+                    conn.close()
+
+                  }
+
+                  case tp if tp.equals("time_paso_3") => {
+                    val batch3 = conn.createStatement()
+
+                    batch3.executeUpdate(
+                      s"""
+                      INSERT INTO $database_name3 (time,ev_id,paso_3,time_paso_3)
+                      VALUES (
+                          now(),
+                          '${ev_id}',
+                          '${paso}',
+                          now()
+                      )
+                      """
+                    )
+
+                    conn.close()
+                  }
+                  case tp if tp.equals("time_paso_4") => {
+                    val batch2 = conn.createStatement()
+
+                    batch2.executeUpdate(
+                      s"""
+                      INSERT INTO $database_name4 (time,ev_id,paso_4,time_paso_4)
+                      VALUES (
+                          now(),
+                          '${ev_id}',
+                          '${paso}',
+                          now()
+                      )
+                      """
+                    )
+
+                    conn.close()
+
+                  }
+                }
+              } catch {
+                case ex: SQLException =>
+                  log.error("ERROR after executeUpdate of updates " + ex.getMessage + " - " + ex.getCause)
+                  conn.close()
+              }
+            }
+          }
+
+        }
+        catch {
+          case ex: SQLException =>
+            log.error("ERROR after success of ERROR after executeUpdate of traz_obligacion_nifi connection" + ex.getMessage + " - " + ex.getCause)
+            conn.close()
+
+        }
+      }
+    }
+
+  }
+}
