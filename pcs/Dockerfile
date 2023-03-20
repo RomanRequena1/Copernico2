@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM registro.kolektor.com.ar:5000/openjdk:11
 
 COPY pcs/target/docker/stage/opt /opt
 USER root
