@@ -10,7 +10,6 @@ import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{Obj
 import consumers.no_registral.objeto.infrastructure.json._
 import design_principles.actor_model.Response
 import monitoring.Monitoring
-import oracle.Oracle.connOracleKafkaToWriteside
 import play.api.libs.json.Reads
 import serialization.{decodeF, maybeDecode}
 

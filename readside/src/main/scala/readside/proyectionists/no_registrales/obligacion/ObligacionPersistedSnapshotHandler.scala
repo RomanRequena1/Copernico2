@@ -6,7 +6,7 @@ import cassandra.write.CassandraWriteProduction
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
-import oracle.Oracle.connOracleReadsideToCass
+import timescaledb.Timescaledb._
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
 
@@ -54,7 +54,7 @@ class ObligacionPersistedSnapshotHandler(
           case Success(value) => {
             //log.error("ERROR - 1 " + registro.deliveryId)
             log.debug("Persist obligacion" + value)
-            //connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
+            connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", registro.registro.get.BOB_CANAL_ORIGEN.getOrElse("TAX"))
           }
         }
 

@@ -6,7 +6,6 @@ import cassandra.write.CassandraWriteProduction
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
-import oracle.Oracle.connOracleReadsideToCass
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.objeto.projections.ObjetoSnapshotPersistedProjection
 

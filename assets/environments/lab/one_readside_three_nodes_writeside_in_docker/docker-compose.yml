@@ -16,9 +16,11 @@ services:
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
       #PASSIVATE: '20s'
-      STRING_CONEXION_ORACLE: 'jdbc:oracle:thin:@172.22.2.1:1521:xe'
-      PASSWORD_ORACLE: '1234'
-      USER_ORACLE: 'sys as sysdba'
+      STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
+      NAME_TABLE1: 'table_nifi_to_kafka'
+      NAME_TABLE2: 'table_kafka_to_pcs'
+      NAME_TABLE3: 'table_pcs_to_kafka'
+      NAME_TABLE4: 'table_readsie_to_cass'
       PROJECTIONIST_PARALELLISM: 1
       LOGSTASH: '172.22.5.3:5000'
       CLUSTER_IP: 172.22.4.3
@@ -41,9 +43,11 @@ services:
       SEED_NODES: 'akka://PersonClassificationService@172.22.1.3:2551'
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
-
-
-      STRING_CONEXION_ORACLE: 'jdbc:oracle:thin:@172.22.2.1:1521:xe'
+      STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
+      NAME_TABLE1: 'table_nifi_to_kafka'
+      NAME_TABLE2: 'table_kafka_to_pcs'
+      NAME_TABLE3: 'table_pcs_to_kafka'
+      NAME_TABLE4: 'table_readsie_to_cass'
       PASSWORD_ORACLE: '1234'
       USER_ORACLE: 'sys as sysdba'
       AKKA_DEBUG_MODE: 'INFO'
@@ -91,7 +95,11 @@ services:
       CLUSTER_PORT: 2552
       HTTP_PORT: 8082
       PROMETHEUS_PORT: 9095
-      STRING_CONEXION_ORACLE: 'jdbc:oracle:thin:@10.250.11.15:1521/PTAXDESA'
+      STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
+      NAME_TABLE1: 'table_nifi_to_kafka'
+      NAME_TABLE2: 'table_kafka_to_pcs'
+      NAME_TABLE3: 'table_pcs_to_kafka'
+      NAME_TABLE4: 'table_readsie_to_cass'
       AKKA_DEBUG_MODE: 'OFF'
       AKKA_KAFKA_DEBUG_MODE: 'OFF'
       APACHE_ZOOKEEPER_DEBUG_MODE: 'OFF'
@@ -130,7 +138,11 @@ services:
       CLUSTER_PORT: 2553
       HTTP_PORT: 8083
       PROMETHEUS_PORT: 9095
-      STRING_CONEXION_ORACLE: 'jdbc:oracle:thin:@10.250.11.15:1521/PTAXDESA'
+      STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
+      NAME_TABLE1: 'table_nifi_to_kafka'
+      NAME_TABLE2: 'table_kafka_to_pcs'
+      NAME_TABLE3: 'table_pcs_to_kafka'
+      NAME_TABLE4: 'table_readsie_to_cass'
       AKKA_DEBUG_MODE: 'OFF'
       AKKA_KAFKA_DEBUG_MODE: 'OFF'
       APACHE_ZOOKEEPER_DEBUG_MODE: 'OFF'
