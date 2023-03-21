@@ -125,7 +125,13 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         )
       ),
       topic = kafkaTopic
-    )(_ => handler())
+    )(_ => handler()).onComplete {
+      case Failure(ex) => log.error("Error when try to send to topic " + ex)
+      case Success(value) => {
+        log.debug("Success,  sent to topic")
+        connOracleWriteSideToKafka(event.deliveryId.toString())
+      }
+    }
   }
 }
 

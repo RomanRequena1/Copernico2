@@ -39,6 +39,7 @@ sealed trait ObligacionExternalDto extends ExternalDto {
   def BOB_VENCIMIENTO: Option[LocalDateTime]
   def SOJ_ID_EXTERNO: Option[String]
   def BOB_OGA_ID: Option[String]
+  def BOB_VENCIMIENTO_2: Option[LocalDateTime]
 }
 
 object ObligacionExternalDto {
@@ -76,7 +77,8 @@ object ObligacionExternalDto {
       EV_ID: BigInt,
       RULE_NUMBER: Option[String],
       SOJ_ID_EXTERNO: Option[String],
-      BOB_OGA_ID: Option[String]
+      BOB_OGA_ID: Option[String],
+      BOB_VENCIMIENTO_2: Option[LocalDateTime]
   ) extends ObligacionExternalDto
 
   case class ObligacionesAnt(
@@ -112,7 +114,8 @@ object ObligacionExternalDto {
       EV_ID: BigInt,
       RULE_NUMBER: Option[String],
       SOJ_ID_EXTERNO: Option[String],
-      BOB_OGA_ID: Option[String]
+      BOB_OGA_ID: Option[String],
+      BOB_VENCIMIENTO_2: Option[LocalDateTime]
   ) extends ObligacionExternalDto
 
   case class DetallesObligacion(
