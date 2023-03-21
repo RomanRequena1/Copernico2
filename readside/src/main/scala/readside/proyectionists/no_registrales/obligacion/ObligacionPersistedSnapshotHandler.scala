@@ -88,7 +88,7 @@ class ObligacionPersistedSnapshotHandler(
             case Success(_) => {
               //log.error("ERROR - -1 " + registro.deliveryId)
               log.debug("Persiste Obligacion")
-              //connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", bco)
+              connOracleReadsideToCass(registro.deliveryId.toString(), "obligacion", bco)
             }
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
