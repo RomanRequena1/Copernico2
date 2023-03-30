@@ -25,31 +25,30 @@ object Timescaledb {
 
 
 
-  def connOracleNifi(input: String, entidad: String, topico: String) = {
+  def connOracleNifi(input: String, topico: String) = {
     //log.error("CUMBIA llego al test connOracleNifiT")
 
-    insertData(input, entidad, topico)
-
+    updateData(input,topico, "ev_id", "paso_1", "time_paso_1")
   }
 
-  def connOracleKafkaToWriteside(ev_id: String, entidad: String, bob_canal_origen: String) = {
+  def connOracleKafkaToWriteside(ev_id: String) = {
     //log.error("CUMBIA llego al test connOracleKafkaToWritesideT")
-    updateData(ev_id, "paso_2", "time_paso_2")
+    updateData("input","topico",ev_id,"paso_2", "time_paso_2")
   }
   def connOracleWriteSideToKafka(ev_id: String) = {
     //log.error("CUMBIA llego al test connOracleWriteSideToKafka")
-    updateData(ev_id, "paso_3", "time_paso_3")
+    updateData("input","topico",ev_id, "paso_3", "time_paso_3")
   }
-  def connOracleReadsideToCass(ev_id: String,entidad: String, bob_canal_origen: String) = {
+  def connOracleReadsideToCass(ev_id: String) = {
     //log.error("CUMBIA llego al test connOracleReadsideToCass")
-    updateData(ev_id, "paso_4", "time_paso_4")
+    updateData("input","topico",ev_id, "paso_4", "time_paso_4")
   }
   def  connectToTimescaledb() = {
     val conn = Future(DriverManager.getConnection(url))
     conn
   }
 
-
+/*
   @throws[SQLException]
   def insertData(input: String, entidad: String, topico: String): Unit = {
     val conn: Future[Connection] = connectToTimescaledb()
@@ -67,6 +66,7 @@ object Timescaledb {
       case Failure(exception) => {
 
         log.error("ERROR after first connection failure "+ exception)
+        conn.andThen(x => x.get.close())
 
       }
       case Success(conn) => {
@@ -120,13 +120,35 @@ object Timescaledb {
 
 
   }
+*/
+  @throws[SQLException]
+  def updateData(input: String, topico: String, ev_id: String,paso: String, time_paso: String): Unit = {
 
-  def updateData(ev_id: String, paso: String, time_paso: String): Unit = {
+
+    val a: List[String] = input match {
+      case i if i.equals("input") => List("None")
+      case _ => {
+        val trimmedList: List[String] = input.split("\"").map(_.trim).toList
+        val ev_id = trimmedList(3)
+        val a = trimmedList.indexOf("BOB_CANAL_ORIGEN")
+        val bob_canal_origenA = trimmedList(a + 1) match {
+          case s if s.equals(": null,") => "TAX"
+          case _ if a.equals(-1) => "TAX"
+          case _ => trimmedList(a + 2)
+        }
+        val l: List[String] = List(a.toString,ev_id.toString,bob_canal_origenA.toString )
+        l
+      }
+
+    }
+
+
     val conn: Future[Connection] = connectToTimescaledb()
     conn.onComplete {
 
       case Failure(exception) => {
         log.error("ERROR after first connection failure update functions "+ exception)
+        conn.andThen(x => x.get.close())
 
       }
       case Success(conn) => {
@@ -142,6 +164,28 @@ object Timescaledb {
             case Success(conn) => {
               try {
                 time_paso match {
+                  case tp if tp.equals("time_paso_1") => {
+                    val batch = conn.createStatement()
+
+                    batch.executeUpdate(
+                      s"""
+                      INSERT INTO $database_name1 (time,ev_id,bob_canal_origen,paso_1,time_paso_1,topico)
+                      VALUES (
+                          now(),
+                          '${a(1)}',
+                          '${a(2)}',
+                          'PASO_1',
+                          now(),
+                          '${topico}'
+                      )
+                      """
+
+                    )
+
+                    conn.close()
+
+                  }
+
                   case tp if tp.equals("time_paso_2") => {
                     val batch2 = conn.createStatement()
 
