@@ -147,8 +147,17 @@ object Timescaledb {
     conn.onComplete {
 
       case Failure(exception) => {
-        log.error("ERROR after first connection failure update functions "+ exception)
-        conn.andThen(x => x.get.close())
+        time_paso match {
+          case tp if tp.equals("ev_id") => {
+            log.error("ERROR after first connection failure update functions "+ exception + " -- ev_id: " + a(1))
+            conn.andThen(x => x.get.close())
+          }
+          case _ => {
+            log.error("ERROR after first connection failure update functions "+ exception + " -- ev_id: " + ev_id)
+            conn.andThen(x => x.get.close())
+          }
+        }
+
 
       }
       case Success(conn) => {
@@ -158,8 +167,16 @@ object Timescaledb {
           val f = Future(conn)
           f.onComplete {
             case Failure(exception) => {
-              log.error("ERROR after second connection failure update functions " + exception)
-              f.andThen(x => x.get.close())
+              time_paso match {
+                case tp if tp.equals("ev_id") => {
+                  log.error("ERROR after first connection failure update functions "+ exception + " -- ev_id: " + a(1))
+                  f.andThen(x => x.get.close())
+                }
+                case _ => {
+                  log.error("ERROR after first connection failure update functions "+ exception + " -- ev_id: " + ev_id)
+                  f.andThen(x => x.get.close())
+                }
+              }
             }
             case Success(conn) => {
               try {
