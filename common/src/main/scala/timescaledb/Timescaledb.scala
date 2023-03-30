@@ -26,22 +26,22 @@ object Timescaledb {
 
 
   def connOracleNifi(input: String, entidad: String, topico: String) = {
-    log.error("CUMBIA llego al test connOracleNifiT")
+    //log.error("CUMBIA llego al test connOracleNifiT")
 
     insertData(input, entidad, topico)
 
   }
 
   def connOracleKafkaToWriteside(ev_id: String, entidad: String, bob_canal_origen: String) = {
-    log.error("CUMBIA llego al test connOracleKafkaToWritesideT")
+    //log.error("CUMBIA llego al test connOracleKafkaToWritesideT")
     updateData(ev_id, "paso_2", "time_paso_2")
   }
   def connOracleWriteSideToKafka(ev_id: String) = {
-    log.error("CUMBIA llego al test connOracleWriteSideToKafka")
+    //log.error("CUMBIA llego al test connOracleWriteSideToKafka")
     updateData(ev_id, "paso_3", "time_paso_3")
   }
   def connOracleReadsideToCass(ev_id: String,entidad: String, bob_canal_origen: String) = {
-    log.error("CUMBIA llego al test connOracleReadsideToCass")
+    //log.error("CUMBIA llego al test connOracleReadsideToCass")
     updateData(ev_id, "paso_4", "time_paso_4")
   }
   def  connectToTimescaledb() = {
