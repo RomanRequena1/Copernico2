@@ -1,6 +1,6 @@
 package design_principles.microservice.kafka_consumer_microservice
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorSystem, Props}
 import akka.dispatchers.ActorsDispatchers
 import akka.http.AkkaHttpServer
 import akka.http.scaladsl.server.Directives._
@@ -10,6 +10,7 @@ import design_principles.actor_model.context_provider.{Guardian, GuardianRequire
 import design_principles.actor_model.mechanism.stream_supervision.MessageProcessorSupervisorActorController
 import life_cycle.AppLifecycleMicroservice
 import serialization.EventSerializer
+import timescaledb.{Connec, TimesActor}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -35,6 +36,7 @@ object MainApplication {
     ).reduce(_ withFallback _)
 
     implicit val system: ActorSystem = Guardian.getContext(GuardianRequirements(actorSystemName, config))
+
 
     val routes = ProductionMicroserviceContextProvider.getContext(system, config) { implicit microserviceProvisioning =>
       val microservices = microservicesFactory(microserviceProvisioning)

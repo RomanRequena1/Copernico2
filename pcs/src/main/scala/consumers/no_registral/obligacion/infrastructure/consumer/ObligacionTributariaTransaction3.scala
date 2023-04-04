@@ -8,7 +8,6 @@ import consumers.no_registral.obligacion.application.entities.ObligacionExternal
 import consumers.no_registral.obligacion.infrastructure.json._
 import design_principles.actor_model.{Command, Response}
 import monitoring.Monitoring
-import timescaledb.Timescaledb._
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.maybeDecode
@@ -30,13 +29,13 @@ case class ObligacionTributariaTransaction3(actorRef: ActorRef, monitoring: Moni
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-    connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI3")
+    //connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI3")
     maybeDecode[ObligacionesTri](input)
   }
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
 
     //log.debug("KW oracle")
-    connOracleKafkaToWriteside(obligacion.EV_ID.toString())
+    //connOracleKafkaToWriteside(obligacion.EV_ID.toString())
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative

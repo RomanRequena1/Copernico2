@@ -12,13 +12,14 @@ import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersi
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
-import timescaledb.Timescaledb.connOracleWriteSideToKafka
+import timescaledb.InsertFromActor
 
 import scala.util.{Failure, Success}
 
 
 class ObligacionActor(requirements: MonitoringAndMessageProducer)
     extends PersistentBaseActor[ObligacionEvents, ObligacionState](requirements.monitoring) {
+  val timescaledbActorSelector = context.actorSelection("akka://PersonClassificationService/user/timescaledb")
 
   var state = ObligacionState()
 
@@ -94,7 +95,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       case Failure(ex) => log.error("Error when try to send to topic " + ex)
       case Success(value) => {
         log.debug("Success,  sent to topic")
-        connOracleWriteSideToKafka(event.deliveryId.toString())
+        timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString())
+        //connOracleWriteSideToKafka(event.deliveryId.toString())
       }
     }
   }
@@ -129,7 +131,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       case Failure(ex) => log.error("Error when try to send to topic " + ex)
       case Success(value) => {
         log.debug("Success,  sent to topic")
-        connOracleWriteSideToKafka(event.deliveryId.toString())
+        timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString())
+        //connOracleWriteSideToKafka(event.deliveryId.toString())
       }
     }
   }
