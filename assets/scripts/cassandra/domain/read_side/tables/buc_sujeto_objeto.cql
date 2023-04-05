@@ -16,6 +16,7 @@ CREATE TABLE read_side.buc_sujeto_objeto (
     soj_canal_origen text,
     soj_subtipo text,
     soj_identificador_2 text,
+    soj_titularidad text,
     PRIMARY KEY (soj_suj_identificador, soj_tipo_objeto, soj_identificador)
 ) WITH CLUSTERING ORDER BY (soj_tipo_objeto ASC, soj_identificador ASC)
     AND bloom_filter_fp_chance = 0.01

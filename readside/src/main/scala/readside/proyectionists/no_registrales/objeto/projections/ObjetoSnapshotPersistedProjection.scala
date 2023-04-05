@@ -21,7 +21,8 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_otros_atributos" -> r.SOJ_OTROS_ATRIBUTOS,
       "soj_base_imponible" -> r.SOJ_BASE_IMPONIBLE,
       "soj_adherido_debito" -> r.SOJ_ADHERIDO_DEBITO,
-      "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[",",","]"))
+      "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[",",","]")),
+      "soj_titularidad" -> r.SOJ_TITULARIDAD
   ))
     case None => Some(List(
       "soj_descripcion" -> Some("Sin descripción"),
