@@ -16,7 +16,7 @@ object TimescaledbConnection {
 
 
   val config:HikariConfig = new HikariConfig();
-  config.setJdbcUrl("jdbc:postgresql://172.22.2.1:5432/postgres");
+  config.setJdbcUrl("jdbc:postgresql://172.22.0.24:5432/postgres");
   config.setUsername("postgres");
   config.setPassword("password");
   config.addDataSourceProperty("cachePrepStmts", "true");
@@ -34,7 +34,7 @@ object TimescaledbConnection {
       println("CUMBIA connect true" + x.conn.get.getClientInfo)
       x
     case x if x.status.equals(false) => {
-      println("CUMBIA connect false" + c.value.get.get.getClientInfo)
+      //println("CUMBIA connect false" + c.value.get.get.getClientInfo)
       Thread.sleep(10000)
       lazy val c: Future[Connection] = Future(ds.getConnection())
 
