@@ -14,10 +14,11 @@ import timescaledb.InsertFromReadside
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class ObligacionPersistedSnapshotHandler(
+class ObligacionPersistedSnapshotHandler(a: ActorSelection)(
                                           implicit
-                                          r: MonitoringAndCassandraWrite,
-                                          a: ActorSelection
+                                          r: MonitoringAndCassandraWrite
+
+
                                         ) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
 
   private val log = LoggerFactory.getLogger(this.getClass)
@@ -56,7 +57,9 @@ class ObligacionPersistedSnapshotHandler(
           case Success(value) => {
             //log.error("ERROR - 1 " + registro.deliveryId)
             log.debug("Persist obligacion" + value)
-            a ! InsertFromReadside(registro.deliveryId.toString())
+            println("CUMBIA actor " + a)
+            a ! InsertFromReadside(registro.deliveryId.toString(), a)
+            println("CUMBIA InsertFromReadside")
             //connOracleReadsideToCass(registro.deliveryId.toString())
           }
         }
@@ -91,7 +94,7 @@ class ObligacionPersistedSnapshotHandler(
             case Success(_) => {
               //log.error("ERROR - -1 " + registro.deliveryId)
               log.debug("Persiste Obligacion")
-              a ! InsertFromReadside(registro.deliveryId.toString())
+              a ! InsertFromReadside(registro.deliveryId.toString(), a)
              // connOracleReadsideToCass(registro.deliveryId.toString())
             }
           }

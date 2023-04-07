@@ -1,6 +1,6 @@
 package consumers.no_registral.obligacion.infrastructure.dependency_injection
 
-import akka.actor.Props
+import akka.actor.{ActorSelection, Props}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.obligacion.application.cqrs.commands._
@@ -19,7 +19,7 @@ import scala.util.{Failure, Success}
 
 class ObligacionActor(requirements: MonitoringAndMessageProducer)
     extends PersistentBaseActor[ObligacionEvents, ObligacionState](requirements.monitoring) {
-  val timescaledbActorSelector = context.actorSelection("akka://PersonClassificationService/user/timescaledb")
+  val timescaledbActorSelector: ActorSelection = context.actorSelection("akka://PersonClassificationService/user/timescaledb")
 
   var state = ObligacionState()
 
@@ -95,7 +95,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       case Failure(ex) => log.error("Error when try to send to topic " + ex)
       case Success(value) => {
         log.debug("Success,  sent to topic")
-        timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString())
+        println("CUMBIA actor " + timescaledbActorSelector)
+        timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
         //connOracleWriteSideToKafka(event.deliveryId.toString())
       }
     }
@@ -131,7 +132,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       case Failure(ex) => log.error("Error when try to send to topic " + ex)
       case Success(value) => {
         log.debug("Success,  sent to topic")
-        timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString())
+        timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
         //connOracleWriteSideToKafka(event.deliveryId.toString())
       }
     }

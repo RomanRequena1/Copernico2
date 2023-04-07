@@ -28,7 +28,7 @@ case class ObligacionTributariaTransaction(timescaledactorRef: ActorRef, actorRe
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-    timescaledactorRef ! Insert(input,"DGR-COP-OBLIGACIONES-TRI")
+    timescaledactorRef ! Insert(input,"DGR-COP-OBLIGACIONES-TRI",timescaledactorRef)
     //timescaledb.connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI")
     maybeDecode[ObligacionesTri](input)
   }
@@ -37,7 +37,7 @@ case class ObligacionTributariaTransaction(timescaledactorRef: ActorRef, actorRe
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
     //log.debug("KW oracle")
 
-    timescaledactorRef ! Insert2(obligacion.EV_ID.toString())
+    timescaledactorRef ! Insert2(obligacion.EV_ID.toString(), timescaledactorRef)
     //timescaledb.connOracleKafkaToWriteside(obligacion.EV_ID.toString())
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {

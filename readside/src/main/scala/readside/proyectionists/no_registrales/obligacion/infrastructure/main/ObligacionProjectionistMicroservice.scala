@@ -10,11 +10,13 @@ import readside.proyectionists.no_registrales.obligacion.{ObligacionAddedExencio
 class ObligacionProjectionistMicroservice(
     implicit m: KafkaConsumerMicroserviceRequirements
 ) extends KafkaConsumerMicroservice {
-  implicit val timescaledbActorSelector: ActorSelection = m.ctx.actorSelection("akka://PersonClassificationService/user/timescaledb")
+  //"akka.tcp://actorSystemName@10.0.0.1:2552/user/actorName"
+  //implicit val timescaledbActorSelector: ActorSelection = m.ctx.actorSelection("akka://PersonClassificationService/user/timescaledb")
+  val timescaledbActorSelector: ActorSelection = m.ctx.actorSelection("akka://PersonClassificationService@172.22.1.3:2551/user/timescaledb")
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       new ObligacionAddedExencionHandler,
-      new ObligacionPersistedSnapshotHandler
+      new ObligacionPersistedSnapshotHandler(timescaledbActorSelector)
     )
 
   override def route: Route =

@@ -1,39 +1,59 @@
 package timescaledb
 
-import akka.actor.Actor
+import akka.actor.{Actor, ActorRef, ActorSelection, scala2ActorRef}
+import org.slf4j.LoggerFactory
 import timescaledb.Timescaledb.{connOracleKafkaToWriteside, connOracleNifi, connOracleReadsideToCass, connOracleWriteSideToKafka}
-import timescaledb.TimescaledbConnection.connect
+import timescaledb.TimescaledbConnection.{connect, log}
 
-import java.sql.Connection
+import java.sql.{Connection, SQLException}
+import scala.concurrent.ExecutionContext.Implicits.global
 case object Connec
 case object Insert
 
-
-case class Insert(input: String, topico: String)
-case class InsertFromActor(ev_id: String)
-case class InsertFromReadside(ev_id: String)
-case class Insert2(ev_id: String)
+case class Insert(input: String, topico: String, actorRef: ActorRef)
+case class InsertFromActor(ev_id: String, actorRef: ActorSelection)
+case class InsertFromReadside(ev_id: String, actorRef: ActorSelection)
+case class Insert2(ev_id: String, actorRef: ActorRef)
 class TimesActor extends Actor {
-  var state = StateConnect()
+  private val log = LoggerFactory.getLogger(this.getClass)
+
+  var state: Option[Connection] = None
+  var stateInsert: String = "off"
   println("CUMBIA receive ")
   def receive = {
 
     case Connec =>
       println("CUMBIA receive 2 ")
-      val c = connect(Reconnet(false, None))
-      val t = c
+      println("CUMBIA receive 3" + state.getOrElse("None"))
+      val c =  connect(0)
+      println("CUMBIA + " + c)
+      println("CUMBIA ++ " + Some(c))
+      state = Some(c)
 
-      println("CUMBIA receive " + c.conn.get.getClientInfo)
-      state.copy(conn = t.conn)
+      println("CUMBIA receive 3.5 " + state.getOrElse("None"))
 
-    case Insert(input: String, topico: String) =>
-      connOracleNifi(input, topico, state.conn.get)
-    case Insert2(ev_id) =>
-      connOracleKafkaToWriteside(ev_id, state.conn.get)
-    case InsertFromActor(ev_id) =>
-      connOracleWriteSideToKafka(ev_id, state.conn.get)
-    case InsertFromReadside(ev_id) =>
-      connOracleReadsideToCass(ev_id, state.conn.get)
+
+
+      //println("CUMBIA receive 3" + c.conn.get.getClientInfo)
+      //state.copy(conn = c.conn)
+
+    case Insert(input: String, topico: String, actorRef: ActorRef) =>
+      stateInsert match {
+        case x if x.equals("off") => ???
+        case x if x.equals("on") => {
+          println("CUMBIA receive Insert 2 ")
+          connOracleNifi(input, topico, state.get, actorRef)
+        }
+      }
+    case Insert2(ev_id, actorRef: ActorRef) =>
+      connOracleKafkaToWriteside(ev_id, state.get, actorRef)
+      println("CUMBIA receive Insert2 2 ")
+    case InsertFromActor(ev_id, actorRef: ActorSelection) =>
+      println("CUMBIA receive InsertFromActor 2 ")
+      connOracleWriteSideToKafka(ev_id, state.get, actorRef)
+    case InsertFromReadside(ev_id, actorRef: ActorSelection) =>
+      println("CUMBIA receive InsertFromReadside 2 ")
+      connOracleReadsideToCass(ev_id, state.get, actorRef)
   }
 }
 
