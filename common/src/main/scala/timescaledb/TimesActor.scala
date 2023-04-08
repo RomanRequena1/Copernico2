@@ -23,13 +23,14 @@ class TimesActor extends Actor {
   def receive = {
 
     case Connec =>
+      stateInsert = "off"
       println("CUMBIA receive 2 ")
       println("CUMBIA receive 3" + state.getOrElse("None"))
       val c =  connect(0)
       println("CUMBIA + " + c)
       println("CUMBIA ++ " + Some(c))
       state = Some(c)
-
+      stateInsert = "on"
       println("CUMBIA receive 3.5 " + state.getOrElse("None"))
 
 
@@ -39,21 +40,35 @@ class TimesActor extends Actor {
 
     case Insert(input: String, topico: String, actorRef: ActorRef) =>
       stateInsert match {
-        case x if x.equals("off") => ???
         case x if x.equals("on") => {
           println("CUMBIA receive Insert 2 ")
           connOracleNifi(input, topico, state.get, actorRef)
         }
       }
     case Insert2(ev_id, actorRef: ActorRef) =>
-      connOracleKafkaToWriteside(ev_id, state.get, actorRef)
-      println("CUMBIA receive Insert2 2 ")
+      stateInsert match {
+        case x if x.equals("on") => {
+          connOracleKafkaToWriteside(ev_id, state.get, actorRef)
+          println("CUMBIA receive Insert2 2 ")
+        }
+      }
+
     case InsertFromActor(ev_id, actorRef: ActorSelection) =>
-      println("CUMBIA receive InsertFromActor 2 ")
-      connOracleWriteSideToKafka(ev_id, state.get, actorRef)
+      stateInsert match {
+        case x if x.equals("on") => {
+          println("CUMBIA receive InsertFromActor 2 ")
+          connOracleWriteSideToKafka(ev_id, state.get, actorRef)
+        }
+      }
+
     case InsertFromReadside(ev_id, actorRef: ActorSelection) =>
-      println("CUMBIA receive InsertFromReadside 2 ")
-      connOracleReadsideToCass(ev_id, state.get, actorRef)
+      stateInsert match {
+        case x if x.equals("on") => {
+          println("CUMBIA receive InsertFromReadside 2 ")
+          connOracleReadsideToCass(ev_id, state.get, actorRef)
+        }
+      }
+
   }
 }
 

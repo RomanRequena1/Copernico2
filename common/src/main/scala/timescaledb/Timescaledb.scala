@@ -72,7 +72,7 @@ object Timescaledb {
       //conn.close()
     }
     catch {
-      case ex: Throwable => println("CUMBIA error insert to timescaledb 2 Insert" + ex.getMessage + " - " + ex.getCause)
+      case ex: PSQLException => println("CUMBIA error insert to timescaledb 2 Insert" + ex.getMessage + " - " + ex.getCause)
       actorRef ! Connec
     }
   }
@@ -96,7 +96,7 @@ object Timescaledb {
       //conn.close()
     }
     catch {
-      case ex:Throwable => println("CUMBIA error insert to timescaledb 2 Insert2" + ex.getMessage + " - " + ex.getCause)
+      case ex:PSQLException => println("CUMBIA error insert to timescaledb 2 Insert2" + ex.getMessage + " - " + ex.getCause)
       actorRef ! Connec
     }
   }
@@ -119,7 +119,7 @@ object Timescaledb {
       //conn.close()
     }
     catch {
-      case ex: Throwable => println("CUMBIA error insert to timescaledb 2 InsertFromActor" + ex.getMessage + " - " + ex.getCause)
+      case ex: PSQLException => println("CUMBIA error insert to timescaledb 2 InsertFromActor" + ex.getMessage + " - " + ex.getCause)
       actorRef ! Connec
     }
   }
@@ -143,7 +143,7 @@ object Timescaledb {
       //conn.close()
     }
     catch {
-      case ex: Throwable => println("CUMBIA error insert to timescaledb 2 InsertFromReadside" + ex.getMessage + " - " + ex.getCause)
+      case ex: PSQLException => println("CUMBIA error insert to timescaledb 2 InsertFromReadside" + ex.getMessage + " - " + ex.getCause)
       actorRef ! Connec
     }
   }
