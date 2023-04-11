@@ -1,5 +1,4 @@
 package consumers.no_registral.obligacion.infrastructure.consumer
-
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
@@ -8,15 +7,15 @@ import consumers.no_registral.obligacion.application.entities.ObligacionExternal
 import consumers.no_registral.obligacion.infrastructure.json._
 import design_principles.actor_model.{Command, Response}
 import monitoring.Monitoring
-import timescaledb.Timescaledb._
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.maybeDecode
+import timescaledb.{Insert, Insert2}
 
 import scala.concurrent.Future
 import scala.util.Try
 
-case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monitoring)(
+case class ObligacionTributariaTransaction(timescaledactorRef: ActorRef, actorRef : ActorRef, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
@@ -29,14 +28,17 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-    connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI")
+    timescaledactorRef ! Insert(input,"DGR-COP-OBLIGACIONES-TRI",timescaledactorRef)
+    //timescaledb.connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI")
     maybeDecode[ObligacionesTri](input)
   }
 
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
     //log.debug("KW oracle")
-    connOracleKafkaToWriteside(obligacion.EV_ID.toString())
+
+    timescaledactorRef ! Insert2(obligacion.EV_ID.toString(), timescaledactorRef)
+    //timescaledb.connOracleKafkaToWriteside(obligacion.EV_ID.toString())
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative

@@ -1,21 +1,24 @@
 package readside.proyectionists.no_registrales.obligacion
 
+import akka.actor.{ActorRef, ActorSelection}
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
-import timescaledb.Timescaledb._
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
+import timescaledb.InsertFromReadside
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class ObligacionPersistedSnapshotHandler(
+class ObligacionPersistedSnapshotHandler(a: ActorSelection)(
                                           implicit
                                           r: MonitoringAndCassandraWrite
+
+
                                         ) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
 
   private val log = LoggerFactory.getLogger(this.getClass)
@@ -54,7 +57,10 @@ class ObligacionPersistedSnapshotHandler(
           case Success(value) => {
             //log.error("ERROR - 1 " + registro.deliveryId)
             log.debug("Persist obligacion" + value)
-            connOracleReadsideToCass(registro.deliveryId.toString())
+            println("CUMBIA actor " + a)
+            a ! InsertFromReadside(registro.deliveryId.toString(), a)
+            println("CUMBIA InsertFromReadside")
+            //connOracleReadsideToCass(registro.deliveryId.toString())
           }
         }
 
@@ -88,7 +94,8 @@ class ObligacionPersistedSnapshotHandler(
             case Success(_) => {
               //log.error("ERROR - -1 " + registro.deliveryId)
               log.debug("Persiste Obligacion")
-              connOracleReadsideToCass(registro.deliveryId.toString())
+              a ! InsertFromReadside(registro.deliveryId.toString(), a)
+             // connOracleReadsideToCass(registro.deliveryId.toString())
             }
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)

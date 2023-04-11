@@ -1,6 +1,6 @@
 package consumers.no_registral.obligacion.infrastructure.main
 
-import akka.actor.ActorRef
+import akka.actor.{ActorPath, ActorRef, Props}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
@@ -8,14 +8,20 @@ import consumers.no_registral.obligacion.infrastructure.consumer.{ObligacionNoTr
 import consumers.no_registral.obligacion.infrastructure.http.ObligacionStateAPI
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
+import timescaledb.{Connec, TimesActor, Timescaledb}
 
 class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
 
   implicit val actor: ActorRef = SujetoActor.startWithRequirements(monitoringAndMessageProducer)
 
+
+  val timescaledbActor: ActorRef = m.ctx.actorOf(Props[TimesActor](), "timescaledb")
+  println("CUMBIA " + timescaledbActor.path)
+  timescaledbActor ! Connec
+  //val obj = new Timescaledb(timescaledbActor)
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
-      ObligacionTributariaTransaction(actor, monitoring),
+      ObligacionTributariaTransaction(timescaledbActor, actor, monitoring),
 
       ObligacionTributariaTransactionBilletera(actor, monitoring),
       ObligacionTributariaTransactionInmueble(actor, monitoring),

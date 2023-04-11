@@ -23,6 +23,7 @@ object Main extends App {
   ): Seq[KafkaConsumerMicroservice] = {
     // localImplicit @deprecated | in Scala 3 we will be able to send first order functions with implicit parameters
     implicit val localImplicit: KafkaConsumerMicroserviceRequirements = microserviceProvisioning
+
     Seq(
       new readside.proyectionists.no_registrales.obligacion.infrastructure.main.ObligacionProjectionistMicroservice,
       new readside.proyectionists.no_registrales.objeto.infrastructure.main.ObjetoProjectionistMicroservice,

@@ -1,6 +1,7 @@
 import Settings._
 import sbt.Keys.scalaVersion
 
+
 run / javaOptions += "-Xmx4G -Xms2G -XX:MaxGCPauseMillis=500"
 
 lazy val commonSettings = Seq(
