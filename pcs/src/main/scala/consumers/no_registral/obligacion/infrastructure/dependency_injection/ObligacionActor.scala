@@ -95,7 +95,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       case Failure(ex) => log.error("Error when try to send to topic " + ex)
       case Success(value) => {
         log.debug("Success,  sent to topic")
-        println("CUMBIA actor " + timescaledbActorSelector)
+        //println("CUMBIA actor " + timescaledbActorSelector)
         timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
         //connOracleWriteSideToKafka(event.deliveryId.toString())
       }
