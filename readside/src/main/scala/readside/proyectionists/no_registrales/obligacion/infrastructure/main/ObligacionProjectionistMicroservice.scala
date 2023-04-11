@@ -16,7 +16,7 @@ class ObligacionProjectionistMicroservice(
   val PORT = Try(System.getenv("CLUSTER_PORT")).getOrElse("no")
   //"akka.tcp://actorSystemName@10.0.0.1:2552/user/actorName"
   //implicit val timescaledbActorSelector: ActorSelection = m.ctx.actorSelection("akka://PersonClassificationService/user/timescaledb")
-  val timescaledbActorSelector: ActorSelection = m.ctx.actorSelection(s"akka://PersonClassificationService@${IP}:${PORT}/user/timescaledb")
+  val timescaledbActorSelector: ActorSelection = m.ctx.actorSelection("akka://PersonClassificationService@$pcs-cop-desa:2551/user/timescaledb")
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       new ObligacionAddedExencionHandler,
