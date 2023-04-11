@@ -23,6 +23,7 @@ sealed trait ObjetoExternalDto extends ExternalDto {
   def SOJ_CANAL_ORIGEN: Option[String]
   def SOJ_SUBTIPO: Option[String]
   def SOJ_IDENTIFICADOR_2: Option[String]
+  def SOJ_TITULARIDAD: Option[String]
   def EV_ID: BigInt
 }
 
@@ -45,7 +46,8 @@ object ObjetoExternalDto {
       SOJ_CANT_CUOTAS_PAGADAS: Option[BigInt],
       SOJ_CANAL_ORIGEN: Option[String],
       SOJ_SUBTIPO: Option[String],
-      SOJ_IDENTIFICADOR_2: Option[String]
+      SOJ_IDENTIFICADOR_2: Option[String],
+      SOJ_TITULARIDAD: Option[String]
   ) extends ObjetoExternalDto
 
   case class ObjetosTriOtrosAtributos(
@@ -72,7 +74,8 @@ object ObjetoExternalDto {
       SOJ_CANT_CUOTAS_PAGADAS: Option[BigInt],
       SOJ_CANAL_ORIGEN: Option[String],
       SOJ_SUBTIPO: Option[String],
-      SOJ_IDENTIFICADOR_2: Option[String]
+      SOJ_IDENTIFICADOR_2: Option[String],
+      SOJ_TITULARIDAD: Option[String]
   ) extends ObjetoExternalDto
 
   case class Cotitularidad(
