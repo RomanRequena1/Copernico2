@@ -57,9 +57,9 @@ class ObligacionPersistedSnapshotHandler(a: ActorSelection)(
           case Success(value) => {
             //log.error("ERROR - 1 " + registro.deliveryId)
             log.debug("Persist obligacion" + value)
-            println("CUMBIA actor " + a)
+            //println("CUMBIA actor " + a)
             a ! InsertFromReadside(registro.deliveryId.toString(), a)
-            println("CUMBIA InsertFromReadside")
+            //println("CUMBIA InsertFromReadside")
             //connOracleReadsideToCass(registro.deliveryId.toString())
           }
         }
