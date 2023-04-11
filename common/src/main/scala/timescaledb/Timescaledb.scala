@@ -14,23 +14,23 @@ object Timescaledb {
   private val log = LoggerFactory.getLogger(this.getClass)
 
   def connOracleNifi(input: String, topico: String, conn: Connection, actorRef: ActorRef) = {
-    println("CUMBIA llego al test connOracleNifiT")
+    //println("CUMBIA llego al test connOracleNifiT")
 
     updateData(input, topico, "ev_id", "paso_1", "time_paso_1", conn, actorRef )
   }
 
   def connOracleKafkaToWriteside(ev_id: String, conn: Connection, actorRef: ActorRef) = {
-    println("CUMBIA llego al test connOracleKafkaToWritesideT")
+    //println("CUMBIA llego al test connOracleKafkaToWritesideT")
     updateData2("input", "topico", ev_id, "paso_2", "time_paso_2", conn, actorRef)
   }
 
   def connOracleWriteSideToKafka(ev_id: String, conn: Connection, actorRef: ActorSelection) = {
-    println("CUMBIA llego al test connOracleWriteSideToKafka")
+    //println("CUMBIA llego al test connOracleWriteSideToKafka")
     insertFromActor("input", "topico", ev_id, "paso_3", "time_paso_3", conn, actorRef)
   }
 
   def connOracleReadsideToCass(ev_id: String, conn: Connection, actorRef: ActorSelection) = {
-    println("CUMBIA llego al test connOracleReadsideToCass")
+    //println("CUMBIA llego al test connOracleReadsideToCass")
     insertFromReadside("input", "topico", ev_id, "paso_4", "time_paso_4", conn, actorRef)
   }
 
@@ -72,8 +72,9 @@ object Timescaledb {
       //conn.close()
     }
     catch {
-      case ex: PSQLException => println("CUMBIA error insert to timescaledb 2 Insert" + ex.getMessage + " - " + ex.getCause)
+      case ex: PSQLException => log.error("CUMBIA error insert to timescaledb 2 Insert" + ex.getMessage + " - " + ex.getCause)
       actorRef ! Connec
+      case e: Throwable => log.error("CUMBIA otro error en el insert " + e.getMessage + " - " + e.getCause)
     }
   }
 
@@ -96,8 +97,9 @@ object Timescaledb {
       //conn.close()
     }
     catch {
-      case ex:PSQLException => println("CUMBIA error insert to timescaledb 2 Insert2" + ex.getMessage + " - " + ex.getCause)
+      case ex:PSQLException => log.error("CUMBIA error insert to timescaledb 2 Insert2" + ex.getMessage + " - " + ex.getCause)
       actorRef ! Connec
+      case e: Throwable => log.error("CUMBIA otro error en el insert Insert2 " + e.getMessage + " - " + e.getCause)
     }
   }
   def insertFromActor(input: String, topico: String, ev_id: String, paso: String, time_paso: String, conn: Connection, actorRef: ActorSelection): Unit = {
@@ -119,8 +121,9 @@ object Timescaledb {
       //conn.close()
     }
     catch {
-      case ex: PSQLException => println("CUMBIA error insert to timescaledb 2 InsertFromActor" + ex.getMessage + " - " + ex.getCause)
+      case ex: PSQLException => log.error("CUMBIA error insert to timescaledb 2 InsertFromActor" + ex.getMessage + " - " + ex.getCause)
       actorRef ! Connec
+      case e: Throwable => log.error("CUMBIA otro error en el insert InsertFromActor " + e.getMessage + " - " + e.getCause)
     }
   }
 
@@ -143,8 +146,9 @@ object Timescaledb {
       //conn.close()
     }
     catch {
-      case ex: PSQLException => println("CUMBIA error insert to timescaledb 2 InsertFromReadside" + ex.getMessage + " - " + ex.getCause)
+      case ex: PSQLException => log.error("CUMBIA error insert to timescaledb 2 InsertFromReadside" + ex.getMessage + " - " + ex.getCause)
       actorRef ! Connec
+      case e: Throwable => log.error("CUMBIA otro error en el insert InsertFromReadside " + e.getMessage + " - " + e.getCause)
     }
   }
 

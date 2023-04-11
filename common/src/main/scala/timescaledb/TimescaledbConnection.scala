@@ -11,14 +11,16 @@ import scala.util.{Failure, Success, Try}
 object TimescaledbConnection {
 
   val url = Try(System.getenv("STRING_CONEXION_TIMESCALEDB")).getOrElse("no")
+  val user = Try(System.getenv("USER_POSTGRES")).getOrElse("no")
+  val password = Try(System.getenv("PASSWORD_POSTGRES")).getOrElse("no")
 
   private val log = LoggerFactory.getLogger(this.getClass)
 
-
   val config:HikariConfig = new HikariConfig();
-  config.setJdbcUrl("jdbc:postgresql://172.22.2.1:5432/postgres");
-  config.setUsername("postgres");
-  config.setPassword("password");
+  config.setJdbcUrl(url);
+  config.setPoolName("Pool-test-trazabilidad")
+  config.setUsername(user);
+  config.setPassword(password);
   config.addDataSourceProperty("cachePrepStmts", "true");
   config.addDataSourceProperty("prepStmtCacheSize", "250");
   config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
@@ -28,20 +30,20 @@ object TimescaledbConnection {
 
   def connect(count1: Int): Connection = {
 
-    println("CUMBIA count1 " + count1)
+    log.error("CUMBIA count1 " + count1)
     var count = count1
 
     try {
-      println("CUMBIA connect post Thread ")
+      //println("CUMBIA connect post Thread ")
       val c: Connection = new HikariDataSource(config).getConnection()
-      println("CUMBIA connect true")
+      //println("CUMBIA connect true")
       c
     }
     catch {
       case ex:Throwable=>
         count += 1
-        println("CUMBIA connect false")
-        println("CUMBIA open connection to timescaledb 2" + ex.getMessage + " - " + ex.getCause)
+        //println("CUMBIA connect false")
+        log.error("CUMBIA open connection to timescaledb 2" + ex.getMessage + " - " + ex.getCause)
         connect(count)
 
     }
