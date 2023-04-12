@@ -12,7 +12,7 @@ case object Insert
 
 case class Insert(input: String, topico: String, actorRef: ActorRef)
 case class InsertFromActor(ev_id: String, actorRef: ActorSelection)
-case class InsertFromReadside(ev_id: String, actorRef: ActorSelection)
+case class InsertFromReadside(ev_id: String, actorRef: ActorRef)
 case class Insert2(ev_id: String, actorRef: ActorRef)
 class TimesActor extends Actor {
   private val log = LoggerFactory.getLogger(this.getClass)
@@ -61,7 +61,7 @@ class TimesActor extends Actor {
         }
       }
 
-    case InsertFromReadside(ev_id, actorRef: ActorSelection) =>
+    case InsertFromReadside(ev_id, actorRef: ActorRef) =>
       stateInsert match {
         case x if x.equals("on") => {
           //println("CUMBIA receive InsertFromReadside 2 ")
