@@ -29,7 +29,7 @@ object Timescaledb {
     insertFromActor("input", "topico", ev_id, "paso_3", "time_paso_3", conn, actorRef)
   }
 
-  def connOracleReadsideToCass(ev_id: String, conn: Connection, actorRef: ActorSelection) = {
+  def connOracleReadsideToCass(ev_id: String, conn: Connection, actorRef: ActorRef) = {
     //println("CUMBIA llego al test connOracleReadsideToCass")
     insertFromReadside("input", "topico", ev_id, "paso_4", "time_paso_4", conn, actorRef)
   }
@@ -127,7 +127,7 @@ object Timescaledb {
     }
   }
 
-  def insertFromReadside(input: String, topico: String, ev_id: String, paso: String, time_paso: String, conn: Connection, actorRef: ActorSelection): Unit = {
+  def insertFromReadside(input: String, topico: String, ev_id: String, paso: String, time_paso: String, conn: Connection, actorRef: ActorRef): Unit = {
 
 
     try{

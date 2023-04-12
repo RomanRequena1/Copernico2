@@ -35,7 +35,7 @@ services:
 
   seed:
     container_name: seed
-    image: pcs/pcs:1.0
+    image: 'pcs/pcs:1.0'
     ports:
       - '2551:2551'
       - '8558:8558'
@@ -54,7 +54,7 @@ services:
       NAME_TABLE4: 'table_readsie_to_cass'
       PASSWORD_ORACLE: '1234'
       USER_ORACLE: 'sys as sysdba'
-      AKKA_DEBUG_MODE: 'INFO'
+      AKKA_DEBUG_MODE: 'ERROR'
       AKKA_KAFKA_DEBUG_MODE: 'OFF'
       APACHE_ZOOKEEPER_DEBUG_MODE: 'OFF'
       I0ITEC_ZKCLIENT_DEBUG_MODE: 'OFF'
@@ -104,7 +104,7 @@ services:
       NAME_TABLE2: 'table_kafka_to_pcs'
       NAME_TABLE3: 'table_pcs_to_kafka'
       NAME_TABLE4: 'table_readsie_to_cass'
-      AKKA_DEBUG_MODE: 'OFF'
+      AKKA_DEBUG_MODE: 'ERROR'
       AKKA_KAFKA_DEBUG_MODE: 'OFF'
       APACHE_ZOOKEEPER_DEBUG_MODE: 'OFF'
       I0ITEC_ZKCLIENT_DEBUG_MODE: 'OFF'

@@ -14,7 +14,7 @@ import timescaledb.InsertFromReadside
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class ObligacionPersistedSnapshotHandler(a: ActorSelection)(
+class ObligacionPersistedSnapshotHandler(a: ActorRef)(
                                           implicit
                                           r: MonitoringAndCassandraWrite
 
