@@ -106,7 +106,7 @@ object Dependencies {
         "com.lightbend.akka" %% "akka-diagnostics" % "1.1.16" ::
         "com.github.dnvriend" %% "akka-persistence-inmemory" % "2.5.15.2" ::
         "org.postgresql" % "postgresql" % "42.6.0" ::
-        "com.zaxxer" % "HikariCP" % "5.0.0" ::
+        "com.zaxxer" % "HikariCP" % "3.4.5" ::
       Nil
   }
 
