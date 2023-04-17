@@ -3,7 +3,7 @@ package timescaledb
 import akka.actor.{Actor, ActorRef, ActorSelection, scala2ActorRef}
 import org.slf4j.LoggerFactory
 import timescaledb.Timescaledb.{connOracleKafkaToWriteside, connOracleNifi, connOracleReadsideToCass, connOracleWriteSideToKafka}
-import timescaledb.TimescaledbConnection.{connect, log}
+import timescaledb.TimescaledbConnection.{connect, enable_traz_f, log}
 
 import java.sql.{Connection, SQLException}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -26,12 +26,19 @@ class TimesActor extends Actor {
       stateInsert = "off"
       //println("CUMBIA receive 2 ")
       //println("CUMBIA receive 3" + state.getOrElse("None"))
-      val c =  connect(0)
-      //println("CUMBIA + " + c)
-      //println("CUMBIA ++ " + Some(c))
-      state = Some(c)
-      stateInsert = "on"
-      log.error("CUMBIA receive 3.5 " + state.getOrElse("None"))
+      val b = enable_traz_f(0)
+      b match {
+        case x if x.equals(true) => {
+          val c = connect(0)
+          //println("CUMBIA + " + c)
+          //println("CUMBIA ++ " + Some(c))
+          state = Some(c)
+          stateInsert = "on"
+          log.error("CUMBIA receive 3.5 " + state.getOrElse("None"))
+        }
+      }
+
+
 
 
 
