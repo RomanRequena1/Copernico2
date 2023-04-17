@@ -14,6 +14,8 @@ object TimescaledbConnection {
   val user = Try(System.getenv("USER_POSTGRES")).getOrElse("no")
   val password = Try(System.getenv("PASSWORD_POSTGRES")).getOrElse("no")
 
+  val enable_traz = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
+
   private val log = LoggerFactory.getLogger(this.getClass)
 
   val config:HikariConfig = new HikariConfig();
@@ -27,11 +29,23 @@ object TimescaledbConnection {
 
   //val ds: HikariDataSource = new HikariDataSource(config);
 
-
+  def enable_traz_f(count1: Int): Boolean = {
+    log.error("CUMBIA count1 enable " + count1)
+    var count = count1
+    Thread.sleep(20000)
+    enable_traz match {
+      case x if x.equals("true") => true
+      case x if x.equals("false") => {
+        count += 1
+        enable_traz_f(count)
+      }
+    }
+  }
   def connect(count1: Int): Connection = {
 
     log.error("CUMBIA count1 " + count1)
     var count = count1
+    Thread.sleep(10000)
 
     try {
       //println("CUMBIA connect post Thread ")
