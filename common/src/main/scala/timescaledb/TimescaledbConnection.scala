@@ -23,9 +23,11 @@ object TimescaledbConnection {
   config.setPoolName("Pool-test-trazabilidad")
   config.setUsername(user);
   config.setPassword(password);
-  config.addDataSourceProperty("cachePrepStmts", "true");
-  config.addDataSourceProperty("prepStmtCacheSize", "250");
-  config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+  config.setMaximumPoolSize(10)
+  config.setMaxLifetime(60000)
+  config.addDataSourceProperty("cachePrepStmts", "false");
+  config.addDataSourceProperty("prepStmtCacheSize", "0");
+  config.addDataSourceProperty("prepStmtCacheSqlLimit", "0");
 
   //val ds: HikariDataSource = new HikariDataSource(config);
 
