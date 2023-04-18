@@ -17,7 +17,7 @@ services:
       SEED_NODES: 'akka://PersonClassificationServiceReadSide@172.22.4.3:2554'
       KAFKA_BROKERS_LIST: 'kafka:29092'
       STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres'
-      ENABLE_TRAZ: 'false'
+      ENABLE_TRAZ: 'true'
       USER_POSTGRES: 'postgres'
       PASSWORD_POSTGRES: 'password'
       NAME_TABLE1: 'table_nifi_to_kafka'
