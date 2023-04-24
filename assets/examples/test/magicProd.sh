@@ -15,7 +15,7 @@ do
     #echo "$2 $we $2 $1"
     #`expr $2 - $we * 100 / ($2 - $1) expr: syntax error: unexpected argument «CalculateLag.txt»
     echo "Obligacion $we"
-    #sleep $3
+    sleep $3
     kafkacat -b 0.0.0.0:9092 \
                 -t "DGR-COP-OBLIGACIONES-TRI" \
                 -P <<EOF
