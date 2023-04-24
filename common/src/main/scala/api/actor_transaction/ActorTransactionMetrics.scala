@@ -69,10 +69,15 @@ abstract class ActorTransactionMetrics(
          )
        }:${num(12)}${num(13)}.${num(14)}${num(15)}${num(16)}"
      val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+     log.error("CUMBIA fechaString " + fechaString)
+     log.error("CUMBIA formatter " + formatter)
+     log.error("CUMBIA final " + LocalDateTime.parse(fechaString, formatter))
+
      LocalDateTime.parse(fechaString, formatter)
   }
 
-  protected def calculateLag(evId: String) = {
+  protected def calculateLag(evId: String): Long = {
+
      //time in the source
      //GMT -3
      val ti: LocalDateTime = toLocalDateTime(evId)
@@ -80,6 +85,11 @@ abstract class ActorTransactionMetrics(
      //GMT -3
      val tf: LocalDateTime = ZonedDateTime.now(ZoneId.of("UTC-3")).toLocalDateTime
      //difference
+     log.error("CUMBIA evId " + evId)
+     log.error("CUMBIA ti " + ti)
+     log.error("CUMBIA tf " + tf)
+     log.error("CUMBIA tf - ti" + (ChronoUnit.MILLIS.between(ti, tf)))
+
      ChronoUnit.MILLIS.between(ti, tf)
   }
 
