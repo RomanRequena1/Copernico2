@@ -24,7 +24,9 @@ object TimescaledbConnection {
   config.setUsername(user);
   config.setPassword(password);
   config.setMaximumPoolSize(10)
-  config.setMaxLifetime(60000)
+  config.setMaxLifetime(0)
+  //config.setConnectionTimeout(600000)
+  config.addDataSourceProperty("tcpKeepAlive", true);
   config.addDataSourceProperty("cachePrepStmts", "false");
   config.addDataSourceProperty("prepStmtCacheSize", "0");
   config.addDataSourceProperty("prepStmtCacheSqlLimit", "0");
@@ -37,7 +39,7 @@ object TimescaledbConnection {
     }
 
     var count = count1
-    Thread.sleep(1000000)
+    Thread.sleep(10000)
     enable_traz match {
       case x if x.equals("true") => true
       case x if x.equals("false") => {
@@ -53,7 +55,7 @@ object TimescaledbConnection {
     }
 
     var count = count1
-    Thread.sleep(10000)
+    //Thread.sleep(10000)
 
     try {
       //println("CUMBIA connect post Thread ")
