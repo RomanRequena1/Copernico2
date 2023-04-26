@@ -24,8 +24,9 @@ object TimescaledbConnection {
   config.setUsername(user);
   config.setPassword(password);
   config.setMaximumPoolSize(10)
-  config.setMaxLifetime(0)
+  config.setMaxLifetime(6000000)
   config.setIdleTimeout(10000)
+  config.setMinimumIdle(5)
   //config.setConnectionTimeout(600000)
   config.addDataSourceProperty("tcpKeepAlive", true);
   config.addDataSourceProperty("cachePrepStmts", "false");
