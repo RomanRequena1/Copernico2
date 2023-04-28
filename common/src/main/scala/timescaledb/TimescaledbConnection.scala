@@ -23,13 +23,13 @@ object TimescaledbConnection {
   config.setPoolName("Pool-test-trazabilidad")
   config.setUsername(user);
   config.setPassword(password);
-  config.setMaximumPoolSize(10)
-  config.setMaxLifetime(1800000)
-  config.setIdleTimeout(600000)
-  config.setMinimumIdle(5)
+  config.setMaximumPoolSize(20)
+  config.setMaxLifetime(60000)
+  config.setIdleTimeout(120000)
+  config.setMinimumIdle(2)
   config.setConnectionTimeout(30000)
   //config.setConnectionTimeout(600000)
-  config.addDataSourceProperty("tcpKeepAlive", true);
+  //config.addDataSourceProperty("tcpKeepAlive", true);
   config.addDataSourceProperty("cachePrepStmts", "false");
   config.addDataSourceProperty("prepStmtCacheSize", "0");
   config.addDataSourceProperty("prepStmtCacheSqlLimit", "0");
