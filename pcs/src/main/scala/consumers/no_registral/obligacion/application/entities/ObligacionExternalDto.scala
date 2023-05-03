@@ -37,9 +37,10 @@ sealed trait ObligacionExternalDto extends ExternalDto {
   def BOB_SALDO: BigDecimal
   def BOB_TOTAL: Option[BigDecimal]
   def BOB_VENCIMIENTO: Option[LocalDateTime]
+  def BOB_VENCIMIENTO_2: Option[LocalDateTime]
   def SOJ_ID_EXTERNO: Option[String]
   def BOB_OGA_ID: Option[String]
-  def BOB_VENCIMIENTO_2: Option[LocalDateTime]
+
 }
 
 object ObligacionExternalDto {
@@ -74,11 +75,11 @@ object ObligacionExternalDto {
       BOB_TIPO: Option[String],
       BOB_TOTAL: Option[BigDecimal],
       BOB_VENCIMIENTO: Option[LocalDateTime],
+      BOB_VENCIMIENTO_2: Option[LocalDateTime],
+      BOB_OGA_ID: Option[String],
       EV_ID: BigInt,
       RULE_NUMBER: Option[String],
-      SOJ_ID_EXTERNO: Option[String],
-      BOB_OGA_ID: Option[String],
-      BOB_VENCIMIENTO_2: Option[LocalDateTime]
+      SOJ_ID_EXTERNO: Option[String]
   ) extends ObligacionExternalDto
 
   case class ObligacionesAnt(
@@ -111,11 +112,11 @@ object ObligacionExternalDto {
       BOB_TIPO: Option[String],
       BOB_TOTAL: Option[BigDecimal],
       BOB_VENCIMIENTO: Option[LocalDateTime],
+      BOB_VENCIMIENTO_2: Option[LocalDateTime],
+      BOB_OGA_ID: Option[String],
       EV_ID: BigInt,
       RULE_NUMBER: Option[String],
-      SOJ_ID_EXTERNO: Option[String],
-      BOB_OGA_ID: Option[String],
-      BOB_VENCIMIENTO_2: Option[LocalDateTime]
+      SOJ_ID_EXTERNO: Option[String]
   ) extends ObligacionExternalDto
 
   case class DetallesObligacion(
