@@ -69,7 +69,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     val ids = ObligacionMessageRoots.extractor(persistenceId)
 
     val kafkaTopic = "ObligacionPersistedSnapshot"
-
+    logger.error("V2 = " + state.registro.get.BOB_VENCIMIENTO_2.getOrElse("no esta"))
     val event = ObligacionPersistedSnapshot(
       deliveryId = lastDeliveryId,
       sujetoId = ids.sujetoId,
