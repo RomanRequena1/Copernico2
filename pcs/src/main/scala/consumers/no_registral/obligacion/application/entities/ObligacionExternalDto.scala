@@ -18,7 +18,6 @@ sealed trait ObligacionExternalDto extends ExternalDto {
   def BOB_CAPITAL: Option[BigDecimal]
   def BOB_CUOTA: Option[String]
   def BOB_ESTADO: Option[String]
-  def BOB_CONCEPTO: Option[String]
   def BOB_FECHASANCION: Option[String]
   def BOB_SUB_ESTADO: Option[String]
   def BOB_TPBID: Option[String]
@@ -58,7 +57,6 @@ object ObligacionExternalDto {
       BOB_CAPITAL: Option[BigDecimal],
       BOB_CUOTA: Option[String],
       BOB_ESTADO: Option[String],
-      BOB_CONCEPTO: Option[String],
       BOB_FECHASANCION: Option[String],
       BOB_FISCALIZADA: Option[String],
       BOB_IMPUESTO: Option[String],
@@ -96,7 +94,6 @@ object ObligacionExternalDto {
       BOB_CAPITAL: Option[BigDecimal],
       BOB_CUOTA: Option[String],
       BOB_ESTADO: Option[String],
-      BOB_CONCEPTO: Option[String],
       BOB_FECHASANCION: Option[String],
       BOB_FISCALIZADA: Option[String],
       BOB_IMPUESTO: Option[String],
