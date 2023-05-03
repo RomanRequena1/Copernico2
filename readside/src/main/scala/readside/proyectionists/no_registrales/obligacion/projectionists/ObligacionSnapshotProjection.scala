@@ -16,6 +16,7 @@ final case class ObligacionSnapshotProjection(
       "bob_capital" -> registro.BOB_CAPITAL,
       "bob_cuota" -> registro.BOB_CUOTA,
       "bob_estado" -> registro.BOB_ESTADO,
+      "bob_concepto" -> registro.BOB_CONCEPTO,
       "bob_fechasancion" -> registro.BOB_FECHASANCION,
       "bob_sub_estado" -> registro.BOB_SUB_ESTADO,
       "bob_tpbid" -> registro.BOB_TPBID,
