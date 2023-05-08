@@ -28,7 +28,7 @@ object Main extends App {
       new readside.proyectionists.no_registrales.obligacion.infrastructure.main.ObligacionProjectionistMicroservice,
       new readside.proyectionists.no_registrales.objeto.infrastructure.main.ObjetoProjectionistMicroservice,
       new readside.proyectionists.no_registrales.sujeto.infrastructure.main.SujetoProjectionistMicroservice,
-      new readside.proyectionists.registrales.cupon_descuento.infrastructure.main.CuponDescuentoProjectionistMicroservice,
+      //new readside.proyectionists.registrales.cupon_descuento.infrastructure.main.CuponDescuentoProjectionistMicroservice,
       new readside.proyectionists.registrales.actividad_sujeto.infrastructure.main.ActividadSujetoProjectionistMicroservice,
       new readside.proyectionists.registrales.declaracion_jurada.infrastructure.main.DeclaracionJuradaProjectionistMicroservice,
       new readside.proyectionists.registrales.domicilio_objeto.infrastructure.main.DomicilioObjetoProjectionistMicroservice,
