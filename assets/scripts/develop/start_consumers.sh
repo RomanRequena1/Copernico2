@@ -38,3 +38,4 @@ curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-TRAMITES
 
 
 curl -X POST http://0.0.0.0:8090/kafka/start/RemindMeTransaction
+curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-CUPON-DESCUENTO-TRI

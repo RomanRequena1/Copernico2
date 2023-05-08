@@ -1,0 +1,24 @@
+{
+   "EV_ID":"20230424110359329309971319807",
+   "BOB_SUJ_IDENTIFICADOR":"91-99999999-9",
+   "BOB_OBN_ID":"3099713198",
+   "BOB_SOJ_IDENTIFICADOR": "JJVB1977_5",
+   "BOB_SOJ_TIPO_OBJETO" : "A",
+   "BOB_CANAL_ORIGEN":"PSRM",
+   "bdc_vencimiento": "2023-10-10",
+   "bdc_prorroga": "2023-10-10",
+   "BOB_OTROS_ATRIBUTOS":{
+      "BOB_DETALLES":[
+         {
+            "bdc_tipo":"DESC1",
+            "bdc_descripcion":"Descuento 30% Provincial",
+            "bdc_monto":"13793.07"
+         },
+         {
+            "bdc_tipo":"DESC4",
+            "bdc_descripcion":"Descuento 30% Municipal",
+            "bdc_monto":"13793.07"
+         }
+      ]
+   }
+}

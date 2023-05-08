@@ -35,3 +35,4 @@ pcs.infrastructure.publish_to_kafka DGR-COP-SUBASTAS
 pcs.infrastructure.publish_to_kafka DGR-COP-SUJETO-ANT
 pcs.infrastructure.publish_to_kafka DGR-COP-SUJETO-TRI
 pcs.infrastructure.publish_to_kafka DGR-COP-TRAMITES
+pcs.infrastructure.publish_to_kafka DGR-COP-CUPON-DESCUENTO-TRI
