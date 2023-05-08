@@ -24,6 +24,7 @@ object Main extends App {
       new consumers.registral.actividad_sujeto.infrastructure.main.ActividadSujetoMicroservice,
       new consumers.registral.calendario.infrastructure.main.CalendarioMicroservice,
       //new consumers.registral.contacto.infrastructure.main.ContactoMicroservice,
+      //new consumers.registral.cupon_descuento.infrastructure.main.CuponDescuentoMicroservice,
       new consumers.registral.declaracion_jurada.infrastructure.main.DeclaracionJuradaMicroservice,
       new consumers.registral.domicilio_objeto.infrastructure.main.DomicilioObjetoMicroservice,
       new consumers.registral.domicilio_sujeto.infrastructure.main.DomicilioSujetoMicroservice,

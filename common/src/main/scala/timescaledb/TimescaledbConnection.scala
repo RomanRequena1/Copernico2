@@ -27,7 +27,7 @@ object TimescaledbConnection {
   config.setMaxLifetime(60000)
   config.setIdleTimeout(120000)
   config.setMinimumIdle(2)
-  config.setConnectionTimeout(30000)
+  config.setConnectionTimeout(300000)
   //config.setConnectionTimeout(600000)
   //config.addDataSourceProperty("tcpKeepAlive", true);
   config.addDataSourceProperty("cachePrepStmts", "false");

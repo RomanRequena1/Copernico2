@@ -19,3 +19,4 @@ docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scri
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_etapas_procesales.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_param_plan.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_param_recargo.cql
+docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_cupon_descuento.cql

@@ -45,6 +45,7 @@ curl -X POST http://0.0.0.0:8081/kafka/stop/ObjetoReceiveSnapshot
 
 curl -X POST http://0.0.0.0:8081/kafka/start/ObligacionPersistedSnapshot
 
+
 curl -X POST http://0.0.0.0:8081/kafka/start/SujetoReceiveSnapshot
 
 curl -X POST http://0.0.0.0:8081/kafka/stop/DGR-COP-EXENCIONES
