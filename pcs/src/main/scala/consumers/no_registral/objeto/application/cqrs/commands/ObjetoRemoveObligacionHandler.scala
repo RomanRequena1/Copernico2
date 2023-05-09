@@ -24,16 +24,9 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
     )
     actor.persistEvent(event) { () =>
       actor.state += event
-      if(!actor.state.isBaja && actor.state.saldo != 0){
+      if(!actor.state.isBaja){
         actor.informParent(command, actor.state)
         actor.persistSnapshot(event, actor.state)(() => ())
-
-      }
-      if(actor.state.saldo == 0){
-        actor.informBajaToParent(command)
-        actor.deleteSnapshot(event, actor.state)(() =>
-          actor.deleteObjetoObligacionesSnapshot(event, actor.state) { () => () }
-        )
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
