@@ -17,7 +17,7 @@ class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) 
 
   private val log = LoggerFactory.getLogger(this.getClass)
   val timescaledbActor: ActorRef = m.ctx.actorOf(Props[TimesActor](), "timescaledb")
-  //log.error("CUMBIA " + timescaledbActor.path)
+  log.error("CUMBIA " + timescaledbActor.path)
   timescaledbActor ! Connec
   //val obj = new Timescaledb(timescaledbActor)
   override def actorTransactions: Set[ActorTransaction[_]] =
