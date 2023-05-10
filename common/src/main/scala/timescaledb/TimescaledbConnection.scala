@@ -33,7 +33,7 @@ object TimescaledbConnection {
   config.addDataSourceProperty("cachePrepStmts", "false");
   config.addDataSourceProperty("prepStmtCacheSize", "0");
   config.addDataSourceProperty("prepStmtCacheSqlLimit", "0");
-
+  config.addDataSourceProperty("socketTimeout", 2147484)
   //val ds: HikariDataSource = new HikariDataSource(config);
 
   def enable_traz_f(count1: Int): Boolean = {
