@@ -11,9 +11,9 @@ final case class CuponDescuentoSnapshotProjection(
 
   val fromRegistro: Option[List[(String, Option[Serializable])]] = registro map { registro =>
     List(
-      "bob_canal_origen" -> registro.BOB_CANAL_ORIGEN,
-      "bob_otros_atributos" -> registro.BOB_OTROS_ATRIBUTOS,
-      "bob_soj_identificador_2" -> registro.BOB_SOJ_IDENTIFICADOR_2,
+      "bcd_canal_origen" -> registro.BOB_CANAL_ORIGEN,
+      "bcd_otros_atributos" -> registro.BOB_OTROS_ATRIBUTOS,
+      "bcd_soj_identificador_2" -> registro.BOB_SOJ_IDENTIFICADOR_2,
     )
   }
 

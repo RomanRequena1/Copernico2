@@ -34,7 +34,9 @@ object CuponDescuentoExternalDto {
 
 
   case class DetallesCuponDescuento(
+
                                  bdc_tipo: Option[String],
-                                 bdc_baja: Option[Boolean]
+                                 bdc_baja: Option[Boolean],
+                                 bdc_vencimiento:Option[LocalDateTime]
                                )
 }
