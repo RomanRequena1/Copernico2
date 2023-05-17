@@ -1,14 +1,14 @@
 
 CREATE TABLE IF NOT EXISTS read_side.buc_cupon_descuento (
-    bob_suj_identificador text,
-       bob_soj_tipo_objeto text,
-       bob_soj_identificador text,
-       bob_obn_id text,
-       bob_otros_atributos map<text, text>,
-       bob_canal_origen text,
-       bob_soj_identificador_2 text,
-    PRIMARY KEY (bob_suj_identificador, bob_soj_tipo_objeto, bob_soj_identificador, bob_obn_id)
-      ) WITH CLUSTERING ORDER BY (bob_soj_tipo_objeto ASC, bob_soj_identificador ASC, bob_obn_id ASC)
+       bcd_suj_identificador text,
+       bcd_soj_tipo_objeto text,
+       bcd_soj_identificador text,
+       bcd_obn_identificador text,
+       bcd_otros_atributos map<text, text>,
+       bcd_canal_origen text,
+       bcd_soj_identificador_2 text,
+       PRIMARY KEY (bcd_suj_identificador, bcd_soj_tipo_objeto, bcd_soj_identificador, bcd_obn_identificador)
+      ) WITH CLUSTERING ORDER BY (bcd_soj_tipo_objeto ASC, bcd_soj_identificador ASC, bcd_obn_identificador ASC)
           AND bloom_filter_fp_chance = 0.01
           AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
           AND comment = ''
