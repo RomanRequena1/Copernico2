@@ -9,12 +9,12 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
-import timescaledb.InsertFromReadside
+import timescaledb.Timescaledb2.connOracleReadsideToCass
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class ObligacionPersistedSnapshotHandler(a: ActorRef)(
+class ObligacionPersistedSnapshotHandler(
                                           implicit
                                           r: MonitoringAndCassandraWrite
 
@@ -58,9 +58,9 @@ class ObligacionPersistedSnapshotHandler(a: ActorRef)(
             //log.error("ERROR - 1 " + registro.deliveryId)
             log.debug("Persist obligacion" + value)
             //println("CUMBIA actor " + a)
-            a ! InsertFromReadside(registro.deliveryId.toString(), a)
+            //a ! InsertFromReadside(registro.deliveryId.toString(), a)
             //println("CUMBIA InsertFromReadside")
-            //connOracleReadsideToCass(registro.deliveryId.toString())
+            connOracleReadsideToCass(registro.deliveryId.toString())
           }
         }
 
@@ -94,8 +94,8 @@ class ObligacionPersistedSnapshotHandler(a: ActorRef)(
             case Success(_) => {
               //log.error("ERROR - -1 " + registro.deliveryId)
               log.debug("Persiste Obligacion")
-              a ! InsertFromReadside(registro.deliveryId.toString(), a)
-             // connOracleReadsideToCass(registro.deliveryId.toString())
+              //a ! InsertFromReadside(registro.deliveryId.toString(), a)
+              connOracleReadsideToCass(registro.deliveryId.toString())
             }
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)

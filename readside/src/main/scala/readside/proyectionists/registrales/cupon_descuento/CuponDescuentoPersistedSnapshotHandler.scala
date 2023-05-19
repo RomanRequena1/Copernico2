@@ -47,7 +47,7 @@ class CuponDescuentoPersistedSnapshotHandler(
 
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
-          case Failure(exception) => log.debug("Dont persist cupon" + exception )
+          case Failure(exception) => log.error("Dont persist cupon" + exception )
           case Success(value) => {
             //log.error("ERROR - 1 " + registro.deliveryId)
             log.debug("Persist cupon" + value)

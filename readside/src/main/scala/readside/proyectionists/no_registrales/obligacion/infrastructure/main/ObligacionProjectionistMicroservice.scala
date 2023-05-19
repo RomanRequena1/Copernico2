@@ -6,7 +6,6 @@ import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import readside.proyectionists.no_registrales.obligacion.{ObligacionAddedExencionHandler, ObligacionPersistedSnapshotHandler}
-import timescaledb.{Connec, TimesActor}
 
 import scala.util.Try
 
@@ -18,13 +17,13 @@ class ObligacionProjectionistMicroservice(
   //"akka.tcp://actorSystemName@10.0.0.1:2552/user/actorName"
   //implicit val timescaledbActorSelector: ActorSelection = m.ctx.actorSelection("akka://PersonClassificationService/user/timescaledb")
   //val timescaledbActorSelector: ActorSelection = m.ctx.actorSelection("akka://PersonClassificationService@$pcs-cop-desa:2551/user/timescaledb")
-  val timescaledbActor: ActorRef = m.ctx.actorOf(Props[TimesActor](), "timescaledbread")
+  //val timescaledbActor: ActorRef = m.ctx.actorOf(Props[TimesActor](), "timescaledbread")
   //println("CUMBIA " + timescaledbActor.path)
-  timescaledbActor ! Connec
+  //timescaledbActor ! Connec
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       new ObligacionAddedExencionHandler,
-      new ObligacionPersistedSnapshotHandler(timescaledbActor)
+      new ObligacionPersistedSnapshotHandler
     )
 
   override def route: Route =

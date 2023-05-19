@@ -12,14 +12,14 @@ import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersi
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
-import timescaledb.InsertFromActor
+import timescaledb.Timescaledb2.connOracleWriteSideToKafka
 
 import scala.util.{Failure, Success}
 
 
 class ObligacionActor(requirements: MonitoringAndMessageProducer)
     extends PersistentBaseActor[ObligacionEvents, ObligacionState](requirements.monitoring) {
-  val timescaledbActorSelector: ActorSelection = context.actorSelection("akka://PersonClassificationService/user/timescaledb")
+  //val timescaledbActorSelector: ActorSelection = context.actorSelection("akka://PersonClassificationService/user/timescaledb")
 
   var state = ObligacionState()
 
@@ -69,7 +69,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     val ids = ObligacionMessageRoots.extractor(persistenceId)
 
     val kafkaTopic = "ObligacionPersistedSnapshot"
-    logger.error("V2 = " + state.registro.get.BOB_VENCIMIENTO_2.getOrElse("no esta"))
+    //logger.error("V2 = " + state.registro.get.BOB_VENCIMIENTO_2.getOrElse("no esta"))
     val event = ObligacionPersistedSnapshot(
       deliveryId = lastDeliveryId,
       sujetoId = ids.sujetoId,
@@ -96,8 +96,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       case Success(value) => {
         log.debug("Success,  sent to topic")
         //println("CUMBIA actor " + timescaledbActorSelector)
-        timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
-        //connOracleWriteSideToKafka(event.deliveryId.toString())
+        //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
+        connOracleWriteSideToKafka(event.deliveryId.toString())
       }
     }
   }
@@ -132,8 +132,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       case Failure(ex) => log.error("Error when try to send to topic " + ex)
       case Success(value) => {
         log.debug("Success,  sent to topic")
-        timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
-        //connOracleWriteSideToKafka(event.deliveryId.toString())
+        //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
+        connOracleWriteSideToKafka(event.deliveryId.toString())
       }
     }
   }
