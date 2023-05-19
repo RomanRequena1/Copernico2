@@ -9,20 +9,19 @@ import consumers.no_registral.obligacion.infrastructure.http.ObligacionStateAPI
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import org.slf4j.LoggerFactory
-import timescaledb.{Connec, TimesActor, Timescaledb}
 
 class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
 
   implicit val actor: ActorRef = SujetoActor.startWithRequirements(monitoringAndMessageProducer)
 
-  private val log = LoggerFactory.getLogger(this.getClass)
-  val timescaledbActor: ActorRef = m.ctx.actorOf(Props[TimesActor](), "timescaledb")
-  log.error("CUMBIA " + timescaledbActor.path)
-  timescaledbActor ! Connec
+  //private val log = LoggerFactory.getLogger(this.getClass)
+  //val timescaledbActor: ActorRef = m.ctx.actorOf(Props[TimesActor](), "timescaledb")
+  //log.error("CUMBIA " + timescaledbActor.path)
+  //timescaledbActor ! Connec
   //val obj = new Timescaledb(timescaledbActor)
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
-      ObligacionTributariaTransaction(timescaledbActor, actor, monitoring),
+      ObligacionTributariaTransaction(actor, monitoring),
 
       ObligacionTributariaTransactionBilletera(actor, monitoring),
       ObligacionTributariaTransactionInmueble(actor, monitoring),

@@ -10,12 +10,12 @@ import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.maybeDecode
-import timescaledb.{Insert, Insert2}
+import timescaledb.Timescaledb2.{connOracleKafkaToWriteside, connOracleNifi}
 
 import scala.concurrent.Future
 import scala.util.Try
 
-case class ObligacionTributariaTransaction(timescaledactorRef: ActorRef, actorRef : ActorRef, monitoring: Monitoring)(
+case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
@@ -28,8 +28,8 @@ case class ObligacionTributariaTransaction(timescaledactorRef: ActorRef, actorRe
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-    timescaledactorRef ! Insert(input,"DGR-COP-OBLIGACIONES-TRI",timescaledactorRef)
-    //timescaledb.connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI")
+    //timescaledactorRef ! Insert(input,"DGR-COP-OBLIGACIONES-TRI",timescaledactorRef)
+    connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI")
     maybeDecode[ObligacionesTri](input)
   }
 
@@ -37,8 +37,8 @@ case class ObligacionTributariaTransaction(timescaledactorRef: ActorRef, actorRe
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
     //log.debug("KW oracle")
 
-    timescaledactorRef ! Insert2(obligacion.EV_ID.toString(), timescaledactorRef)
-    //timescaledb.connOracleKafkaToWriteside(obligacion.EV_ID.toString())
+    //timescaledactorRef ! Insert2(obligacion.EV_ID.toString(), timescaledactorRef)
+    connOracleKafkaToWriteside(obligacion.EV_ID.toString())
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative
