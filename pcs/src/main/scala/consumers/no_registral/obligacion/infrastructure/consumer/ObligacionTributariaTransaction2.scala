@@ -11,6 +11,7 @@ import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.maybeDecode
+import timescaledb.Timescaledb2.{connOracleKafkaToWriteside, connOracleNifi}
 
 import scala.concurrent.Future
 
@@ -23,17 +24,22 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
   /** Handles the deserialization of detalles de obligaciones tributarias */
   implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
 
-  def topic = "DGR-COP-OBLIGACIONES-TRI3"
+  def topic = "DGR-COP-OBLIGACIONES-TRI2"
+
   def topicRetry = "DGR-COP-OBLIGACIONES-TRI2_retry"
+
   def topicError = "DGR-COP-OBLIGACIONES-TRI2_error"
 
-  def processInput(input: String): Either[Throwable, ObligacionesTri] =
-    maybeDecode[ObligacionesTri](input)
+  def processInput(input: String): Either[Throwable, ObligacionesTri] = {
+    connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI2")
 
+
+    maybeDecode[ObligacionesTri](input)
+  }
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
 
     //log.debug("KW oracle")
-    //connOracleKafkaToWriteside(obligacion.EV_ID.toString())
+    connOracleKafkaToWriteside(obligacion.EV_ID.toString())
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative

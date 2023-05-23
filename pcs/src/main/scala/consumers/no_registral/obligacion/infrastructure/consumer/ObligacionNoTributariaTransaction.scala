@@ -15,6 +15,7 @@ import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.{decodeF, maybeDecode}
+import timescaledb.Timescaledb2.{connOracleKafkaToWriteside, connOracleNifi}
 
 import scala.util.Try
 
@@ -31,13 +32,14 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
 
   def processInput(input: String): Either[Throwable, ObligacionesAnt] = {
     //connOracleNifi(input, "DGR-COP-OBLIGACIONES-ANT")
+    connOracleNifi(input,"DGR-COP-OBLIGACIONES-ANT")
     maybeDecode[ObligacionesAnt](input)
 }
 
   def processMessage(obligacion: ObligacionesAnt): Future[Response.SuccessProcessing] = {
 
     //log.debug("KW oracle")
-    //connOracleKafkaToWriteside(obligacion.EV_ID.toString())
+    connOracleKafkaToWriteside(obligacion.EV_ID.toString())
     implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
 
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))

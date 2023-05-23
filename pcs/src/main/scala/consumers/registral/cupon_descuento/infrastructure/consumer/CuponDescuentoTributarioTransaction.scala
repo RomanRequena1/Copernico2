@@ -23,7 +23,7 @@ case class CuponDescuentoTributarioTransaction(actor: CuponDescuentoActor, monit
   def topic = "DGR-COP-CUPON-DESCUENTO-TRI"
   def topicRetry = "DGR-COP-CUPON-DESCUENTO-TRI_retry"
   def topicError = "DGR-COP-CUPON-DESCUENTO-TRI_error"
-  log.error("Cumbia 1"  )
+  log.error("Cumbia 1.7"  )
   def processInput(input: String): Either[Throwable, CuponDescuentoTri] = {
     log.error("Cumbia 2"  )
     maybeDecode[CuponDescuentoTri](input)
