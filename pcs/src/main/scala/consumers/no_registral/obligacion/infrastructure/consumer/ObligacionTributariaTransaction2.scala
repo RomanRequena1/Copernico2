@@ -31,7 +31,7 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
   def topicError = "DGR-COP-OBLIGACIONES-TRI2_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-    connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI2")
+    Future(connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI2"))
 
 
     maybeDecode[ObligacionesTri](input)
@@ -39,7 +39,7 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
 
     //log.debug("KW oracle")
-    connOracleKafkaToWriteside(obligacion.EV_ID.toString())
+    Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString()))
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative
