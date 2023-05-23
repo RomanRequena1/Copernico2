@@ -11,6 +11,7 @@ import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.maybeDecode
+import timescaledb.Timescaledb2.{connOracleKafkaToWriteside, connOracleNifi}
 
 import scala.concurrent.Future
 
@@ -29,13 +30,13 @@ case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitori
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] =
   {
-    //connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI-BILLETERA")
+    connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI-BILLETERA")
     maybeDecode[ObligacionesTri](input)
   }
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
     //log.debug("KW oracle BILLETERA ")
-    //connOracleKafkaToWriteside(obligacion.EV_ID.toString())
+    connOracleKafkaToWriteside(obligacion.EV_ID.toString())
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative
