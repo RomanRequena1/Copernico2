@@ -29,7 +29,7 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
     //timescaledactorRef ! Insert(input,"DGR-COP-OBLIGACIONES-TRI",timescaledactorRef)
-    connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI")
+    Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI"))
     maybeDecode[ObligacionesTri](input)
   }
 
@@ -38,7 +38,7 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
     //log.debug("KW oracle")
 
     //timescaledactorRef ! Insert2(obligacion.EV_ID.toString(), timescaledactorRef)
-    connOracleKafkaToWriteside(obligacion.EV_ID.toString())
+    Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString()))
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative

@@ -31,14 +31,14 @@ case class ObligacionTributariaTransactionEmbarcacion(actorRef: ActorRef, monito
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] =
   {
-    connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI-N")
+    Future(connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI-N"))
     maybeDecode[ObligacionesTri](input)
   }
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
 
     //log.debug("KW oracle")
-    connOracleKafkaToWriteside(obligacion.EV_ID.toString())
+    Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString()))
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative
