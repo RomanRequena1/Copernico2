@@ -10,7 +10,7 @@ import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.maybeDecode
-import timescaledb.Timescaledb2.{connOracleKafkaToWriteside, connOracleNifi}
+import timescaledb.TimescaledbKafkaToPcs.connOracleKafkaToWriteside
 
 import scala.concurrent.Future
 import scala.util.Try
@@ -26,10 +26,9 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
   def topic = "DGR-COP-OBLIGACIONES-TRI"
   def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
-
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
     //timescaledactorRef ! Insert(input,"DGR-COP-OBLIGACIONES-TRI",timescaledactorRef)
-    Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI"))
+    //Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI"))
     maybeDecode[ObligacionesTri](input)
   }
 
@@ -38,7 +37,9 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
     //log.debug("KW oracle")
 
     //timescaledactorRef ! Insert2(obligacion.EV_ID.toString(), timescaledactorRef)
-    Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString()))
+    connOracleKafkaToWriteside(obligacion.EV_ID.toString())
+
+
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative

@@ -2,7 +2,8 @@ package timescaledb
 
 import org.slf4j.LoggerFactory
 
-import java.sql.Connection
+import java.sql.{Connection, Statement}
+import java.time.{ZoneId, ZonedDateTime}
 import java.util.Properties
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -23,6 +24,37 @@ object Timescaledb2 {
   val database_name4 = Try(System.getenv("NAME_TABLE4")).getOrElse("no")
   val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   private val log = LoggerFactory.getLogger(this.getClass)
+
+  var count1 = 0
+  var count2 = 0
+  var count3 = 0
+  var count4 = 0
+  var INSERT_USERS_SQL  = "INSERT INTO users" + "  (id, name, email, country, password) VALUES " +
+  " (?, ?, ?, ?, ?);";
+  def bach(conn: Connection, count: Int): Unit = {
+
+  }
+
+  def connectNifiToKafkaTest(conn: Option[Connection], count: Int, a:List[String], topico: String): Unit = {
+    //TODO
+    if(!conn.getOrElse("no").equals("no")){
+      conn.get.createStatement().executeUpdate(
+        s"""
+                          INSERT INTO $database_name1 (time,ev_id,bob_canal_origen,paso_1,time_paso_1,topico)
+                          VALUES (
+                              now(),
+                              '${a(1)}',
+                              '${a(2)}',
+                              'PASO_1',
+                              now(),
+                              '${topico}'
+                          )
+                          """
+      )
+      conn.get.close()
+    }
+
+  }
   def connOracleNifi(input: String, topico: String) = {
     if(enable.equals("true")){
       updateData(input,topico, "ev_id", "paso_1", "time_paso_1")
@@ -76,25 +108,42 @@ object Timescaledb2 {
         l
       }
     }
+
+
+
     val conn = connectToTimescaledb(url)
     time_paso match {
       case tp if tp.equals("time_paso_1") => {
         try {
-          if(!conn.getOrElse("no").equals("no")){
-            conn.get.createStatement().executeUpdate(
-              s"""
-                          INSERT INTO $database_name1 (time,ev_id,bob_canal_origen,paso_1,time_paso_1,topico)
-                          VALUES (
-                              now(),
-                              '${a(1)}',
-                              '${a(2)}',
-                              'PASO_1',
-                              now(),
-                              '${topico}'
-                          )
-                          """
-            )
-            conn.get.close()
+
+          if(count1 == 0){
+            val conn = connectToTimescaledb(url)
+
+            if (!conn.getOrElse("no").equals("no")) {
+
+
+
+              conn.get.createStatement().executeUpdate(
+                s"""
+                                  INSERT INTO $database_name1 (time,ev_id,bob_canal_origen,paso_1,time_paso_1,topico)
+                                  VALUES (
+                                      now(),
+                                      '${a(1)}',
+                                      '${a(2)}',
+                                      'PASO_1',
+                                      now(),
+                                      '${topico}'
+                                  )
+                                  """
+              )
+            }
+            //connectNifiToKafkaTest(conn, count1, a, topico)
+          }
+          if(count1 > 0 && count1 < 30){
+
+          }
+          if(count1 == 30){
+
           }
         }
         catch {
@@ -173,4 +222,16 @@ object Timescaledb2 {
       }
     }
   }
+}
+
+object hola extends App{
+  def printName(firstName: String, lastName: Option[Connection], middleName: String = ""): Unit = {
+
+      println(firstName )
+  }
+
+  println(ZonedDateTime.now(ZoneId.of("UTC-3")))
+
+  printName("Anil",null)
+
 }

@@ -12,7 +12,7 @@ import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersi
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
-import timescaledb.Timescaledb2.connOracleWriteSideToKafka
+import timescaledb.TimescaledbPcsToKafka.connOracleWriteSideToKafka
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
@@ -98,7 +98,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         log.debug("Success,  sent to topic")
         //println("CUMBIA actor " + timescaledbActorSelector)
         //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
-        Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
+        //Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
       }
     }
   }
@@ -134,7 +134,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       case Success(value) => {
         log.debug("Success,  sent to topic")
         //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
-        Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
+        //Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
       }
     }
   }
