@@ -9,7 +9,7 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
-import timescaledb.Timescaledb2.connOracleReadsideToCass
+import timescaledb.TimescaledbReadsideToCass.connOracleReadsideToCass
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
@@ -60,7 +60,7 @@ class ObligacionPersistedSnapshotHandler(
             //println("CUMBIA actor " + a)
             //a ! InsertFromReadside(registro.deliveryId.toString(), a)
             //println("CUMBIA InsertFromReadside")
-            //Future(connOracleReadsideToCass(registro.deliveryId.toString()))
+            Future(connOracleReadsideToCass(registro.deliveryId.toString()))
           }
         }
 
@@ -95,7 +95,7 @@ class ObligacionPersistedSnapshotHandler(
               //log.error("ERROR - -1 " + registro.deliveryId)
               log.debug("Persiste Obligacion")
               //a ! InsertFromReadside(registro.deliveryId.toString(), a)
-              //Future(connOracleReadsideToCass(registro.deliveryId.toString()))
+              Future(connOracleReadsideToCass(registro.deliveryId.toString()))
             }
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)

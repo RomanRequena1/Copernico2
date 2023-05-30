@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.maybeDecode
 import timescaledb.TimescaledbKafkaToPcs.connOracleKafkaToWriteside
+import timescaledb.TimescaledbNifiToKafka.connOracleNifi
 
 import scala.concurrent.Future
 import scala.util.Try
@@ -28,7 +29,7 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
     //timescaledactorRef ! Insert(input,"DGR-COP-OBLIGACIONES-TRI",timescaledactorRef)
-    //Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI"))
+    Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI"))
     maybeDecode[ObligacionesTri](input)
   }
 
@@ -37,7 +38,7 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
     //log.debug("KW oracle")
 
     //timescaledactorRef ! Insert2(obligacion.EV_ID.toString(), timescaledactorRef)
-    connOracleKafkaToWriteside(obligacion.EV_ID.toString())
+    Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString()))
 
 
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))

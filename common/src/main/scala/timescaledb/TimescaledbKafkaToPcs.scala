@@ -1,6 +1,7 @@
 package timescaledb
 
 import org.slf4j.LoggerFactory
+import timescaledb.TimescaledbReadsideToCass.{connectToTimescaledb, log}
 
 import java.sql.{Connection, DriverManager, PreparedStatement, SQLException, Statement}
 import java.time.{ZoneId, ZonedDateTime}
@@ -25,6 +26,7 @@ object TimescaledbKafkaToPcs {
 
   def connectToTimescaledb(url: String): Option[Connection] = {
     try {
+      //log.error("connectToTimescaledb")
       val props = new Properties()
       props.setProperty("connectTimeout", "0")
       props.setProperty("socketTimeout", "0")
@@ -33,9 +35,10 @@ object TimescaledbKafkaToPcs {
       val conn = DriverManager.getConnection(url, props)
       Some(conn)
     } catch {
-      case e: SQLException =>
-        log.error("Error connectToTimescaledb 3 " + e)
-        None
+      case e: Exception =>
+        log.error("Error connectToTimescaledb 1 " + e)
+        Thread.sleep(5000)
+        connectToTimescaledb(url)
     }
   }
 
@@ -65,7 +68,7 @@ object TimescaledbKafkaToPcs {
           //stmt.get.setTimestamp(4, ZonedDateTime.now(ZoneId.of("UTC-3")))
           stmt.addBatch()
           //log.error("CUMBIA  addBatch ")
-          log.error("CUMBIA  stmt.get "+  stmt)
+          //log.error("CUMBIA  stmt.get "+  stmt)
           stmt.executeBatch()
           //count = count + 1
           //log.error("CUMBIA  count + 1 "+  count)
