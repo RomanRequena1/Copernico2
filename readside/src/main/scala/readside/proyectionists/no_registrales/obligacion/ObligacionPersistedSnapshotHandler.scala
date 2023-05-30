@@ -9,7 +9,7 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
-import timescaledb.Timescaledb2.connOracleReadsideToCass
+import timescaledb.TimescaledbReadsideToCass.connOracleReadsideToCass
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}

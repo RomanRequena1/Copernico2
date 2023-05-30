@@ -12,7 +12,7 @@ import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersi
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
-import timescaledb.Timescaledb2.connOracleWriteSideToKafka
+import timescaledb.TimescaledbPcsToKafka.connOracleWriteSideToKafka
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
