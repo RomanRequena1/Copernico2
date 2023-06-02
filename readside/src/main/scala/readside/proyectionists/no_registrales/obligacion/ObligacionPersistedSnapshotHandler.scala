@@ -60,7 +60,7 @@ class ObligacionPersistedSnapshotHandler(
             //println("CUMBIA actor " + a)
             //a ! InsertFromReadside(registro.deliveryId.toString(), a)
             //println("CUMBIA InsertFromReadside")
-            Future(connOracleReadsideToCass(registro.deliveryId.toString()))
+            //Future(connOracleReadsideToCass(registro.deliveryId.toString()))
           }
         }
 
@@ -95,7 +95,7 @@ class ObligacionPersistedSnapshotHandler(
               //log.error("ERROR - -1 " + registro.deliveryId)
               log.debug("Persiste Obligacion")
               //a ! InsertFromReadside(registro.deliveryId.toString(), a)
-              Future(connOracleReadsideToCass(registro.deliveryId.toString()))
+              //Future(connOracleReadsideToCass(registro.deliveryId.toString()))
             }
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
