@@ -16,7 +16,7 @@ object TimescaledbKafkaToPcs {
 
   val database_name2 = Try(System.getenv("NAME_TABLE2")).getOrElse("no")
 
-  val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
+  //val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   private val log = LoggerFactory.getLogger(this.getClass)
   //var count = 0
   //var conn: Option[Connection] = None
@@ -30,9 +30,9 @@ object TimescaledbKafkaToPcs {
       val props = new Properties()
       props.setProperty("connectTimeout", "0")
       props.setProperty("socketTimeout", "0")
-      props.setProperty("user", user)
-      props.setProperty("password", password)
-      val conn = DriverManager.getConnection(url, props)
+      props.setProperty("user", "copernico")
+      props.setProperty("password", "c0p3rn1c0.303")
+      val conn = DriverManager.getConnection("jdbc:postgresql://timescaledb-rentas.cba.gov.ar:5432/copernico", props)
       Some(conn)
     } catch {
       case e: Exception =>
@@ -43,9 +43,32 @@ object TimescaledbKafkaToPcs {
   }
 
   def connOracleKafkaToWriteside(ev_id: String) = {
-    if (enable.equals("true")) {
-      updateData( ev_id, "paso_2")
-    }
+
+      try {
+        //log.error("CUMBIA  try ")
+        if (!connection.getOrElse("no").equals("no")) {
+          //log.error("CUMBIA  if ")
+          val stmt = connection.get.prepareStatement(INSERT_NKAFKA_TO_PCS)
+          //stmt.get.set(1, ZonedDateTime.now(ZoneId.of("UTC-3")))
+          stmt.setString(1, ev_id)
+          //log.error("CUMBIA  setString(1, ev_id) ")
+          stmt.setString(2, "paso_2")
+          //log.error("CUMBIA  setString(2, paso) ")
+          //stmt.get.setTimestamp(4, ZonedDateTime.now(ZoneId.of("UTC-3")))
+          stmt.addBatch()
+          //log.error("CUMBIA  addBatch ")
+          //log.error("CUMBIA  stmt.get "+  stmt)
+          stmt.executeBatch()
+          //count = count + 1
+          //log.error("CUMBIA  count + 1 "+  count)
+        }
+
+      }
+      catch {
+        case e: SQLException =>
+          log.error("Error connOracleKafkaToWriteside -> " + e + " - id" + ev_id)
+      }
+
   }
   val connection = connectToTimescaledb(url)
 

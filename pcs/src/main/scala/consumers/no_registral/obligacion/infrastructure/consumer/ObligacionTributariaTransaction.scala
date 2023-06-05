@@ -14,7 +14,7 @@ import timescaledb.TimescaledbKafkaToPcs.connOracleKafkaToWriteside
 import timescaledb.TimescaledbNifiToKafka.connOracleNifi
 
 import scala.concurrent.Future
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Monitoring)(
     implicit
@@ -23,13 +23,19 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
   private val log = LoggerFactory.getLogger(this.getClass)
   /** Handles the deserialization of detalles de obligaciones tributarias */
   implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
-
+  val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   def topic = "DGR-COP-OBLIGACIONES-TRI"
   def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
     //timescaledactorRef ! Insert(input,"DGR-COP-OBLIGACIONES-TRI",timescaledactorRef)
-    Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI"))
+    //Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI"))
+    if (enable.equals("true")) {
+      Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI")).onComplete {
+        case Failure(exception) => log.error("ERROR Future(connOracleNifi(obligacion.EV_ID.toString())) -> " + exception)
+        case Success(value) => log.debug("Exito ")
+      }
+    }
     maybeDecode[ObligacionesTri](input)
   }
 
@@ -38,7 +44,12 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
     //log.debug("KW oracle")
 
     //timescaledactorRef ! Insert2(obligacion.EV_ID.toString(), timescaledactorRef)
-    Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString()))
+    if (enable.equals("true")) {
+      Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString())).onComplete {
+        case Failure(exception) => log.error("ERROR Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString())) -> " + exception )
+        case Success(value) => log.debug("Exito ")
+      }
+    }
 
 
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
