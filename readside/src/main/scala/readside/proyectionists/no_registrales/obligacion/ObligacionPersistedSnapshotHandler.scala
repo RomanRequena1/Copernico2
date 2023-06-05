@@ -12,7 +12,7 @@ import readside.proyectionists.no_registrales.obligacion.projectionists.Obligaci
 import timescaledb.TimescaledbReadsideToCass.connOracleReadsideToCass
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 class ObligacionPersistedSnapshotHandler(
                                           implicit
@@ -30,7 +30,7 @@ class ObligacionPersistedSnapshotHandler(
   override def topicError: String = "ObligacionPersistedSnapshot_error"
 
   import consumers.no_registral.obligacion.infrastructure.json._
-
+  val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   override def processInput(input: String): Either[Throwable, ObligacionPersistedSnapshot] =
     serialization
       .maybeDecode[ObligacionPersistedSnapshot](input)
@@ -61,6 +61,13 @@ class ObligacionPersistedSnapshotHandler(
             //a ! InsertFromReadside(registro.deliveryId.toString(), a)
             //println("CUMBIA InsertFromReadside")
             //Future(connOracleReadsideToCass(registro.deliveryId.toString()))
+            //Future(connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI"))
+            if (enable.equals("true")) {
+              Future(connOracleReadsideToCass(registro.deliveryId.toString())).onComplete {
+                case Failure(exception) => log.error("ERROR Future(connOracleReadsideToCass(obligacion.EV_ID.toString())) -> " + exception)
+                case Success(value) => log.debug("Exito ")
+              }
+            }
           }
         }
 
@@ -96,6 +103,12 @@ class ObligacionPersistedSnapshotHandler(
               log.debug("Persiste Obligacion")
               //a ! InsertFromReadside(registro.deliveryId.toString(), a)
               //Future(connOracleReadsideToCass(registro.deliveryId.toString()))
+              if (enable.equals("true")) {
+                Future(connOracleReadsideToCass(registro.deliveryId.toString())).onComplete {
+                  case Failure(exception) => log.error("ERROR Future(connOracleReadsideToCass(obligacion.EV_ID.toString())) -> " + exception)
+                  case Success(value) => log.debug("Exito ")
+                }
+              }
             }
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)

@@ -30,6 +30,12 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
     //timescaledactorRef ! Insert(input,"DGR-COP-OBLIGACIONES-TRI",timescaledactorRef)
     //Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI"))
+    if (enable.equals("true")) {
+      Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI")).onComplete {
+        case Failure(exception) => log.error("ERROR Future(connOracleNifi(obligacion.EV_ID.toString())) -> " + exception)
+        case Success(value) => log.debug("Exito ")
+      }
+    }
     maybeDecode[ObligacionesTri](input)
   }
 
@@ -41,7 +47,7 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
     if (enable.equals("true")) {
       Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString())).onComplete {
         case Failure(exception) => log.error("ERROR Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString())) -> " + exception )
-        case Success(value) => log.error("Exito ")
+        case Success(value) => log.debug("Exito ")
       }
     }
 

@@ -99,9 +99,16 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         log.debug("Success,  sent to topic")
         //println("CUMBIA actor " + timescaledbActorSelector)
         //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
+
         //if (enable.equals("true")) {
           //Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
         //}
+        if (enable.equals("true")) {
+          Future(connOracleWriteSideToKafka(event.deliveryId.toString())).onComplete {
+            case Failure(exception) => log.error("ERROR Future(connOracleWriteSideToKafka(obligacion.EV_ID.toString())) -> " + exception)
+            case Success(value) => log.debug("Exito ")
+          }
+        }
       }
     }
   }
@@ -139,6 +146,12 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
         //if (enable.equals("true")) {
           //Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
+        if (enable.equals("true")) {
+          Future(connOracleWriteSideToKafka(event.deliveryId.toString())).onComplete {
+            case Failure(exception) => log.error("ERROR Future(connOracleWriteSideToKafka(obligacion.EV_ID.toString())) -> " + exception)
+            case Success(value) => log.debug("Exito ")
+          }
+        }
         //}
       }
     }

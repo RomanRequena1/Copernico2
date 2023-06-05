@@ -25,9 +25,9 @@ object TimescaledbNifiToKafka {
       val props = new Properties()
       props.setProperty("connectTimeout", "0")
       props.setProperty("socketTimeout", "0")
-      props.setProperty("user", user)
-      props.setProperty("password", password)
-      val conn = DriverManager.getConnection(url, props)
+      props.setProperty("user", "copernico")
+      props.setProperty("password", "c0p3rn1c0.303")
+      val conn = DriverManager.getConnection("jdbc:postgresql://timescaledb-rentas.cba.gov.ar:5432/copernico", props)
       Some(conn)
     } catch {
       case e: Exception =>
