@@ -20,6 +20,18 @@ object TimescaledbPcsToKafka {
 
   val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   private val log = LoggerFactory.getLogger(this.getClass)
+  try {
+    val e = System.getenv("USER_POSTGRES")
+    val e1 = System.getenv("PASSWORD_POSTGRES")
+    val e2 = System.getenv("STRING_CONEXION_TIMESCALEDB")
+    val e3 = System.getenv("NAME_TABLE2")
+    log.error("CUMBIASO USER_POSTGRES -> " + e)
+    log.error("CUMBIASO PASSWORD_POSTGRES -> " + e1)
+    log.error("CUMBIASO STRING_CONEXION_TIMESCALEDB -> " + e2)
+    log.error("CUMBIASO NAME_TABLE3 -> " + e3)
+  } catch {
+    case e: Throwable => log.error("CUMBIASO TimescaledbPcsToKafka -> " + e)
+  }
   var INSERT_PCS_TO_KAFKA = s"INSERT INTO ${database_name3}" + "  (time,ev_id,paso_3,time_paso_3) VALUES " +
     " (now(), ?, ?, now());";
   def connectToTimescaledb(url: String): Option[Connection] = {
