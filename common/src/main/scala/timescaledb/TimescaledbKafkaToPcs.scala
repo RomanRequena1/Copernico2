@@ -9,10 +9,11 @@ import java.util.Properties
 import scala.util.{Failure, Success, Try}
 
 object TimescaledbKafkaToPcs {
-
+  private val log = LoggerFactory.getLogger(this.getClass)
   val user = Try(System.getenv("USER_POSTGRES")).getOrElse("no")
   val password = Try(System.getenv("PASSWORD_POSTGRES")).getOrElse("no")
   val url = Try(System.getenv("STRING_CONEXION_TIMESCALEDB")).getOrElse("no")
+
   try {
     val e = System.getenv("USER_POSTGRES")
     val e1 = System.getenv("PASSWORD_POSTGRES")
@@ -28,7 +29,7 @@ object TimescaledbKafkaToPcs {
   val database_name2 = Try(System.getenv("NAME_TABLE2")).getOrElse("no")
 
   //val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
-  private val log = LoggerFactory.getLogger(this.getClass)
+
   //var count = 0
   //var conn: Option[Connection] = None
   //var stmt: Option[PreparedStatement] = None
