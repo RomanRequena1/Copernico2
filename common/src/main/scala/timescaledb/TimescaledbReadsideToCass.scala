@@ -19,6 +19,18 @@ object TimescaledbReadsideToCass {
 
   val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   private val log = LoggerFactory.getLogger(this.getClass)
+  try {
+    val e = System.getenv("USER_POSTGRES")
+    val e1 = System.getenv("PASSWORD_POSTGRES")
+    val e2 = System.getenv("STRING_CONEXION_TIMESCALEDB")
+    val e3 = System.getenv("NAME_TABLE4")
+    log.error("CUMBIASO USER_POSTGRES -> " + e)
+    log.error("CUMBIASO PASSWORD_POSTGRES -> " + e1)
+    log.error("CUMBIASO STRING_CONEXION_TIMESCALEDB -> " + e2)
+    log.error("CUMBIASO NAME_TABLE2 -> " + e3)
+  } catch {
+    case e: Throwable => log.error("CUMBIASO TimescaledbReadsideToCass -> " + e)
+  }
   var INSERT_READSIDE_TO_CASS = s"INSERT INTO ${database_name4}" + "  (time,ev_id,paso_4,time_paso_4) VALUES " +
     " (now(), ?, ?, now());";
   def connectToTimescaledb(url: String): Option[Connection] = {
