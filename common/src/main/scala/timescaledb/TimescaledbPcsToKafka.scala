@@ -3,7 +3,7 @@ package timescaledb
 import org.slf4j.LoggerFactory
 import timescaledb.TimescaledbReadsideToCass.{connectToTimescaledb, log}
 
-import java.sql.{Connection, DriverManager, SQLException, Statement}
+import java.sql.{Connection, DriverManager, SQLException, Statement, Timestamp}
 import java.util.Properties
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -16,33 +16,35 @@ object TimescaledbPcsToKafka {
   val url = Try(System.getenv("STRING_CONEXION_TIMESCALEDB")).getOrElse("no")
 
   val database_name3 = Try(System.getenv("NAME_TABLE3")).getOrElse("no")
-
-
-  val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   private val log = LoggerFactory.getLogger(this.getClass)
+  log.error("CUMBIASO USER_POSTGRES -> " + user)
+  log.error("CUMBIASO PASSWORD_POSTGRES -> " + password)
+  log.error("CUMBIASO STRING_CONEXION_TIMESCALEDB -> " + url)
+  log.error("CUMBIASO NAME_TABLE3 -> " + database_name3)
+  val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
+
+
+
   try {
-    val e = System.getenv("USER_POSTGRES")
-    val e1 = System.getenv("PASSWORD_POSTGRES")
-    val e2 = System.getenv("STRING_CONEXION_TIMESCALEDB")
-    val e3 = System.getenv("NAME_TABLE2")
-    log.error("CUMBIASO USER_POSTGRES -> " + e)
-    log.error("CUMBIASO PASSWORD_POSTGRES -> " + e1)
-    log.error("CUMBIASO STRING_CONEXION_TIMESCALEDB -> " + e2)
-    log.error("CUMBIASO NAME_TABLE3 -> " + e3)
+    System.getenv("USER_POSTGRES")
+     System.getenv("PASSWORD_POSTGRES")
+     System.getenv("STRING_CONEXION_TIMESCALEDB")
+     System.getenv("NAME_TABLE2")
+
   } catch {
-    case e: Throwable => log.error("CUMBIASO TimescaledbPcsToKafka -> " + e)
+    case e: Exception => log.error("CUMBIASO TimescaledbKafkaToPcs-> " + e)
   }
   var INSERT_PCS_TO_KAFKA = s"INSERT INTO ${database_name3}" + "  (time,ev_id,paso_3,time_paso_3) VALUES " +
-    " (now(), ?, ?, now());";
+    " (now(), ?, ?, ?);";
   def connectToTimescaledb(url: String): Option[Connection] = {
     try {
       //log.error("connectToTimescaledb")
       val props = new Properties()
       props.setProperty("connectTimeout", "0")
       props.setProperty("socketTimeout", "0")
-      props.setProperty("user", "copernico")
-      props.setProperty("password", "c0p3rn1c0.303")
-      val conn = DriverManager.getConnection("jdbc:postgresql://timescaledb-rentas.cba.gov.ar:5432/copernico", props)
+      props.setProperty("user", user)
+      props.setProperty("password", password)
+      val conn = DriverManager.getConnection(url, props)
       Some(conn)
     } catch {
       case e: Exception =>
@@ -74,6 +76,7 @@ object TimescaledbPcsToKafka {
         //log.error("CUMBIA  setString(1, ev_id) ")
         stmt.setString(2, paso)
         //log.error("CUMBIA  setString(2, paso) ")
+        stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()))
         //stmt.get.setTimestamp(4, ZonedDateTime.now(ZoneId.of("UTC-3")))
         stmt.addBatch()
         //log.error("CUMBIA  addBatch ")

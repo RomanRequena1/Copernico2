@@ -3,7 +3,7 @@ package timescaledb
 import org.slf4j.LoggerFactory
 import timescaledb.TimescaledbReadsideToCass.{connectToTimescaledb, log}
 
-import java.sql.{Connection, DriverManager, PreparedStatement, SQLException, Statement}
+import java.sql.{Connection, DriverManager, PreparedStatement, SQLException, Statement, Timestamp}
 import java.time.{ZoneId, ZonedDateTime}
 import java.util.Properties
 import scala.util.{Failure, Success, Try}
@@ -13,20 +13,21 @@ object TimescaledbKafkaToPcs {
   val user = Try(System.getenv("USER_POSTGRES")).getOrElse("no")
   val password = Try(System.getenv("PASSWORD_POSTGRES")).getOrElse("no")
   val url = Try(System.getenv("STRING_CONEXION_TIMESCALEDB")).getOrElse("no")
-
-  try {
-    val e = System.getenv("USER_POSTGRES")
-    val e1 = System.getenv("PASSWORD_POSTGRES")
-    val e2 = System.getenv("STRING_CONEXION_TIMESCALEDB")
-    val e3 = System.getenv("NAME_TABLE2")
-    log.error("CUMBIASO USER_POSTGRES -> " + e)
-    log.error("CUMBIASO PASSWORD_POSTGRES -> " + e1)
-    log.error("CUMBIASO STRING_CONEXION_TIMESCALEDB -> " + e2)
-    log.error("CUMBIASO NAME_TABLE2 -> " + e3)
-  } catch {
-    case e: Throwable => log.error("CUMBIASO TimescaledbKafkaToPcs-> " + e)
-  }
   val database_name2 = Try(System.getenv("NAME_TABLE2")).getOrElse("no")
+  log.error("CUMBIASO USER_POSTGRES -> " + user)
+  log.error("CUMBIASO PASSWORD_POSTGRES -> " + password)
+  log.error("CUMBIASO STRING_CONEXION_TIMESCALEDB -> " + url)
+  log.error("CUMBIASO NAME_TABLE2 -> " + database_name2)
+  try {
+    System.getenv("USER_POSTGRES")
+     System.getenv("PASSWORD_POSTGRES")
+     System.getenv("STRING_CONEXION_TIMESCALEDB")
+     System.getenv("NAME_TABLE2")
+
+  } catch {
+    case e: Exception => log.error("CUMBIASO TimescaledbKafkaToPcs-> " + e)
+  }
+
 
   //val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
 
@@ -34,7 +35,7 @@ object TimescaledbKafkaToPcs {
   //var conn: Option[Connection] = None
   //var stmt: Option[PreparedStatement] = None
   var INSERT_NKAFKA_TO_PCS = s"INSERT INTO ${database_name2}" + "  (time,ev_id,paso_2,time_paso_2) VALUES " +
-    " (now(), ?, ?, now());";
+    " (now(), ?, ?, ?);";
 
   def connectToTimescaledb(url: String): Option[Connection] = {
     try {
@@ -42,9 +43,9 @@ object TimescaledbKafkaToPcs {
       val props = new Properties()
       props.setProperty("connectTimeout", "0")
       props.setProperty("socketTimeout", "0")
-      props.setProperty("user", "copernico")
-      props.setProperty("password", "c0p3rn1c0.303")
-      val conn = DriverManager.getConnection("jdbc:postgresql://timescaledb-rentas.cba.gov.ar:5432/copernico", props)
+      props.setProperty("user", user)
+      props.setProperty("password", password)
+      val conn = DriverManager.getConnection(url, props)
       Some(conn)
     } catch {
       case e: Exception =>
@@ -53,6 +54,7 @@ object TimescaledbKafkaToPcs {
         connectToTimescaledb(url)
     }
   }
+  val connection = connectToTimescaledb(url)
 
   def connOracleKafkaToWriteside(ev_id: String) = {
 
@@ -65,6 +67,7 @@ object TimescaledbKafkaToPcs {
           stmt.setString(1, ev_id)
           //log.error("CUMBIA  setString(1, ev_id) ")
           stmt.setString(2, "paso_2")
+          stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()))
           //log.error("CUMBIA  setString(2, paso) ")
           //stmt.get.setTimestamp(4, ZonedDateTime.now(ZoneId.of("UTC-3")))
           stmt.addBatch()
@@ -82,10 +85,10 @@ object TimescaledbKafkaToPcs {
       }
 
   }
-  val connection = connectToTimescaledb(url)
 
 
-  def updateData(ev_id: String, paso: String): Unit = {
+
+  /*def updateData(ev_id: String, paso: String): Unit = {
 
     //log.error("CUMBIA Llego a updateData")
     //log.error("CUMBIA count: " + count)
@@ -100,7 +103,7 @@ object TimescaledbKafkaToPcs {
           //log.error("CUMBIA  setString(1, ev_id) ")
           stmt.setString(2, paso)
           //log.error("CUMBIA  setString(2, paso) ")
-          //stmt.get.setTimestamp(4, ZonedDateTime.now(ZoneId.of("UTC-3")))
+          stmt.setTimestamp(4, ZonedDateTime.now(ZoneId.of("UTC-3")))
           stmt.addBatch()
           //log.error("CUMBIA  addBatch ")
           //log.error("CUMBIA  stmt.get "+  stmt)
@@ -114,5 +117,9 @@ object TimescaledbKafkaToPcs {
         case e: SQLException =>
           log.error("Error connOracleKafkaToWriteside -> " + e + " - id" + ev_id)
       }
-  }
+  }*/
+}
+object app extends App{
+  println(ZonedDateTime.now(ZoneId.of("UTC-3")).toLocalDateTime)
+  println(new Timestamp(System.currentTimeMillis()))
 }
