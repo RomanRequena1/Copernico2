@@ -16,21 +16,10 @@ object TimescaledbReadsideToCass {
   val url = Try(System.getenv("STRING_CONEXION_TIMESCALEDB")).getOrElse("no")
   val database_name4 = Try(System.getenv("NAME_TABLE4")).getOrElse("no")
   private val log = LoggerFactory.getLogger(this.getClass)
-  log.error("CUMBIASO USER_POSTGRES -> " + user)
-  log.error("CUMBIASO PASSWORD_POSTGRES -> " + password)
-  log.error("CUMBIASO STRING_CONEXION_TIMESCALEDB -> " + url)
-  log.error("CUMBIASO NAME_TABLE4 -> " + database_name4)
+
   val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
 
-  try {
-    System.getenv("USER_POSTGRES")
-    System.getenv("PASSWORD_POSTGRES")
-    System.getenv("STRING_CONEXION_TIMESCALEDB")
-    System.getenv("NAME_TABLE2")
 
-  } catch {
-    case e: Exception => log.error("CUMBIASO TimescaledbKafkaToPcs-> " + e)
-  }
   var INSERT_READSIDE_TO_CASS = s"INSERT INTO ${database_name4}" + "  (time,ev_id,paso_4,time_paso_4) VALUES " +
     " (now(), ?, ?, ?);";
   def connectToTimescaledb(url: String): Option[Connection] = {
@@ -46,7 +35,7 @@ object TimescaledbReadsideToCass {
     } catch {
       case e: Exception =>
         log.error("Error connectToTimescaledb 4 " + e)
-        Thread.sleep(5000)
+        Thread.sleep(300000)
         connectToTimescaledb(url)
     }
   }

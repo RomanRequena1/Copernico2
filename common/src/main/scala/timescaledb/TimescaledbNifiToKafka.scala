@@ -13,23 +13,12 @@ object TimescaledbNifiToKafka {
   val url = Try(System.getenv("STRING_CONEXION_TIMESCALEDB")).getOrElse("no")
   val database_name1 = Try(System.getenv("NAME_TABLE1")).getOrElse("no")
   private val log = LoggerFactory.getLogger(this.getClass)
-  log.error("CUMBIASO USER_POSTGRES -> " + user)
-  log.error("CUMBIASO PASSWORD_POSTGRES -> " + password)
-  log.error("CUMBIASO STRING_CONEXION_TIMESCALEDB -> " + url)
-  log.error("CUMBIASO NAME_TABLE1 -> " + database_name1)
+
   val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
 
 
 
-  try {
-    System.getenv("USER_POSTGRES")
-     System.getenv("PASSWORD_POSTGRES")
-     System.getenv("STRING_CONEXION_TIMESCALEDB")
-     System.getenv("NAME_TABLE1")
 
-  } catch {
-    case e: Exception => log.error("CUMBIASO TimescaledbKafkaToPcs-> " + e)
-  }
   var INSERT_NIFI_TO_KAFKA= s"INSERT INTO ${database_name1}" + "  (time,ev_id,bob_canal_origen,paso_1,time_paso_1,topico) VALUES " +
     " (now(), ?, ?, ?, ?, ?);";
 
@@ -46,7 +35,7 @@ object TimescaledbNifiToKafka {
     } catch {
       case e: Exception =>
         log.error("Error connectToTimescaledb 2 " + e)
-        Thread.sleep(5000)
+        Thread.sleep(300000)
         connectToTimescaledb(url)
     }
   }
