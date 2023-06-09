@@ -11,9 +11,11 @@ import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.maybeDecode
-import timescaledb.Timescaledb2.{connOracleKafkaToWriteside, connOracleNifi}
+import timescaledb.TimescaledbKafkaToPcs.connOracleKafkaToWriteside
+import timescaledb.TimescaledbNifiToKafka.connOracleNifi
 
 import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
 case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
@@ -23,7 +25,7 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
 
   /** Handles the deserialization of detalles de obligaciones tributarias */
   implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
-
+  val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   def topic = "DGR-COP-OBLIGACIONES-TRI2"
 
   def topicRetry = "DGR-COP-OBLIGACIONES-TRI2_retry"
@@ -31,7 +33,12 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
   def topicError = "DGR-COP-OBLIGACIONES-TRI2_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-    Future(connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI2"))
+    if (enable.equals("true")) {
+      Future(connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI")).onComplete {
+        case Failure(exception) => log.error("ERROR Future(connOracleNifi(obligacion.EV_ID.toString())) -> " + exception)
+        case Success(value) => log.debug("Exito ")
+      }
+    }
 
 
     maybeDecode[ObligacionesTri](input)
@@ -39,7 +46,12 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
 
     //log.debug("KW oracle")
-    Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString()))
+    if (enable.equals("true")) {
+      Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString())).onComplete {
+        case Failure(exception) => log.error("ERROR Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString())) -> " + exception)
+        case Success(value) => log.debug("Exito ")
+      }
+    }
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative

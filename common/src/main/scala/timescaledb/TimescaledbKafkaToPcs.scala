@@ -14,19 +14,8 @@ object TimescaledbKafkaToPcs {
   val password = Try(System.getenv("PASSWORD_POSTGRES")).getOrElse("no")
   val url = Try(System.getenv("STRING_CONEXION_TIMESCALEDB")).getOrElse("no")
   val database_name2 = Try(System.getenv("NAME_TABLE2")).getOrElse("no")
-  log.error("CUMBIASO USER_POSTGRES -> " + user)
-  log.error("CUMBIASO PASSWORD_POSTGRES -> " + password)
-  log.error("CUMBIASO STRING_CONEXION_TIMESCALEDB -> " + url)
-  log.error("CUMBIASO NAME_TABLE2 -> " + database_name2)
-  try {
-    System.getenv("USER_POSTGRES")
-     System.getenv("PASSWORD_POSTGRES")
-     System.getenv("STRING_CONEXION_TIMESCALEDB")
-     System.getenv("NAME_TABLE2")
 
-  } catch {
-    case e: Exception => log.error("CUMBIASO TimescaledbKafkaToPcs-> " + e)
-  }
+
 
 
   //val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
@@ -50,7 +39,7 @@ object TimescaledbKafkaToPcs {
     } catch {
       case e: Exception =>
         log.error("Error connectToTimescaledb 1 " + e)
-        Thread.sleep(5000)
+        Thread.sleep(300000)
         connectToTimescaledb(url)
     }
   }
@@ -118,8 +107,4 @@ object TimescaledbKafkaToPcs {
           log.error("Error connOracleKafkaToWriteside -> " + e + " - id" + ev_id)
       }
   }*/
-}
-object app extends App{
-  println(ZonedDateTime.now(ZoneId.of("UTC-3")).toLocalDateTime)
-  println(new Timestamp(System.currentTimeMillis()))
 }

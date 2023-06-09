@@ -11,16 +11,18 @@ import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import serialization.maybeDecode
-import timescaledb.Timescaledb2.{connOracleKafkaToWriteside, connOracleNifi}
+import timescaledb.TimescaledbKafkaToPcs.connOracleKafkaToWriteside
+import timescaledb.TimescaledbNifiToKafka.connOracleNifi
 
 import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
 case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
   private val log = LoggerFactory.getLogger(this.getClass)
-
+  val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   /** Handles the deserialization of detalles de obligaciones tributarias */
   implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
 
@@ -30,13 +32,23 @@ case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitori
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] =
   {
-    Future(connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI-BILLETERA"))
+    if (enable.equals("true")) {
+      Future(connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI")).onComplete {
+        case Failure(exception) => log.error("ERROR Future(connOracleNifi(obligacion.EV_ID.toString())) -> " + exception)
+        case Success(value) => log.debug("Exito ")
+      }
+    }
     maybeDecode[ObligacionesTri](input)
   }
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
     //log.debug("KW oracle BILLETERA ")
-    Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString()))
+    if (enable.equals("true")) {
+      Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString())).onComplete {
+        case Failure(exception) => log.error("ERROR Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString())) -> " + exception)
+        case Success(value) => log.debug("Exito ")
+      }
+    }
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative
