@@ -9,6 +9,7 @@ sealed trait ObjetoResponses extends Response
 
 object ObjetoResponses {
   case class GetObjetoResponse(
+      lastDeliveryIdByEvents: BigInt,
       saldo: BigDecimal,
       tags: Set[String] = Set.empty,
       obligaciones: Set[String] = Set.empty, // implement Json extension for tuples here: objetos: Set[(String, String)] = Set.empty,

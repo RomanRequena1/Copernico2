@@ -2,11 +2,14 @@ package readside.proyectionists.no_registrales.objeto.projections
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
+import org.slf4j.LoggerFactory
 
 case class ObjetoSnapshotPersistedProjection(
     event: ObjetoSnapshotPersisted
 ) extends ObjetoProjection {
+  private val log = LoggerFactory.getLogger(this.getClass)
   val registro: Option[ObjetoExternalDto] = event.registro
+
   val fromRegistro: Option[List[(String, Option[Object])]] = registro match {
     case Some(r) => Some(List(
       "soj_identificador_2" -> r.SOJ_IDENTIFICADOR_2,

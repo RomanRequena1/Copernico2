@@ -12,6 +12,7 @@ class GetStateObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetStat
     val sender = actor.context.sender()
 
     val response = GetObjetoResponse(
+      actor.state.lastDeliveryIdByEvents,
       actor.state.saldo,
       actor.state.tags,
       actor.state.obligaciones,
