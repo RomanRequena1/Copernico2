@@ -12,6 +12,7 @@ class GetSnapshotObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetS
     val sender = actor.context.sender()
 
     val response = GetObjetoResponse(
+      actor.state.lastDeliveryIdByEvents,
       actor.state.saldo,
       actor.state.tags,
       actor.state.obligaciones,

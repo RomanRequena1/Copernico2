@@ -7,6 +7,7 @@ import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoA
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
+import org.slf4j.LoggerFactory
 
 import scala.util.{Success, Try}
 
@@ -16,9 +17,9 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
       command: ObjetoCommands.ObjetoUpdateFromObligacion
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-
+    val log = LoggerFactory.getLogger(this.getClass)
     val event = ObjetoUpdatedFromObligacion(
-      command.deliveryId,
+      actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.objetoId2,
@@ -35,7 +36,10 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
 
     //val eventCounterMax = Try(System.getenv("EVENT-COUNTER-MAX")).getOrElse(9)
 
+
+
     actor.persistEvent(event) { () =>
+
       actor.state += event
       if (initialization != "true")
         actor.informParent(command, actor.state)

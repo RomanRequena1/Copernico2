@@ -27,12 +27,14 @@ class ObjetoSnapshotPersistedHandler(
 
   override def processInput(input: String): Either[Throwable, ObjetoSnapshotPersisted] = {
     import consumers.no_registral.objeto.infrastructure.json._
+
     serialization
       .maybeDecode[ObjetoSnapshotPersisted](input)
   }
 
   override def processMessage(registro: ObjetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
-    recordLag(calculateLag(registro.deliveryId.toString))
+    //recordLag(calculateLag(registro.deliveryId.toString))
+    log.error("CUMBIA input -> " + registro)
     val projection = ObjetoSnapshotPersistedProjection(registro)
     if (registro.operacion.equals("U")) {
       for {
