@@ -1,4 +1,6 @@
 import Utils.fancyPrompt
+
+import scala.util.Try
 //import org.scalafmt.sbt.ScalafmtPlugin.autoImport.{scalafmtConfig, scalafmtOnCompile}
 import sbt.Keys._
 import sbt._
@@ -7,6 +9,8 @@ import sbtassembly.PathList
 import scoverage.ScoverageKeys.{coverageEnabled, coverageExcludedPackages, coverageFailOnMinimum, coverageMinimum}
 
 object Settings extends Dependencies with CommonScalac {
+
+  val javaOpts = Try(System.getenv("JAVA_OPTS")).getOrElse("-Xmx4G -Xms2G -XX:MaxGCPauseMillis=500")
 
   lazy val globalResources = file("./common/src/main/resources")
   Compile / unmanagedResourceDirectories += globalResources
