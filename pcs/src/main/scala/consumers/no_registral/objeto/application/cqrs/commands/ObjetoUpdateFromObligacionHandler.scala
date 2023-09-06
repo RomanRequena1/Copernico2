@@ -19,7 +19,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
     val sender = actor.context.sender()
     val log = LoggerFactory.getLogger(this.getClass)
     val event = ObjetoUpdatedFromObligacion(
-      actor.state.lastDeliveryIdByEvents,
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.objetoId2,
