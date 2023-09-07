@@ -1,0 +1,21 @@
+ {
+  "EV_ID" : "20230803103654651464488618309",
+  "BOB_SUJ_IDENTIFICADOR" : "20-14921826-3",
+  "BOB_OBN_ID" : "4644886183",
+  "BOB_SOJ_IDENTIFICADOR" : "9115",
+  "BOB_SOJ_TIPO_OBJETO" : "N",
+  "BOB_CANAL_ORIGEN" : "PSRM",
+  "BOB_OTROS_ATRIBUTOS" : {
+    "BOB_DETALLES" : [ {
+      "sequence" : "1",
+      "ruleDescription" : "Crédito por Cota Mensual - Provincial",
+      "amountCalculated" : "-9647.4600000",
+      "distributionId" : "EMBACOTA"
+    }, {
+      "sequence" : "2",
+      "ruleDescription" : "Impuesto Básico - Provincial Mensual",
+      "amountCalculated" : "10261.5900000",
+      "distributionId" : "EMBASMT"
+    } ]
+  }
+}
