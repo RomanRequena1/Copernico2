@@ -48,5 +48,8 @@ curl -X POST http://0.0.0.0:8081/kafka/start/SujetoReceiveSnapshot
 curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-CUPON-DESCUENTO-TRI
 curl -X POST http://0.0.0.0:8084/kafka/start/CuponDescuentoPersistedSnapshot
 
+curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-COMPONENTE-I-TRI
+curl -X POST http://0.0.0.0:8084/kafka/start/ComponenteIPersistedSnapshot
+
 
 #curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-EXENCIONES
