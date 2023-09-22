@@ -3,7 +3,6 @@ package consumers.registral.juicio.application.cqrs.commands
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
-import consumers.registral.etapas_procesales.domain.EtapasProcesalesEvents.EtapasProcesalesUpdatedFromDto
 import consumers.registral.juicio.application.entities.JuicioCommands.JuicioUpdateFromDto
 import consumers.registral.juicio.domain.JuicioEvents.JuicioUpdatedFromDto
 import consumers.registral.juicio.domain.JuicioState
@@ -11,10 +10,11 @@ import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 import consumers.registral.juicio.infrastructure.json._
+import consumers.registral.juicio_tri.domain.JuicioDosState
 class JuicioUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
   def handle(
       command: JuicioUpdateFromDto
-  )(replyTo: ActorRef[Success]): ReplyEffect[JuicioUpdatedFromDto, JuicioState] = {
+  )(state: JuicioState)(replyTo: ActorRef[Success]): ReplyEffect[JuicioUpdatedFromDto, JuicioState] = {
     Effect
       .persist[
         JuicioUpdatedFromDto,

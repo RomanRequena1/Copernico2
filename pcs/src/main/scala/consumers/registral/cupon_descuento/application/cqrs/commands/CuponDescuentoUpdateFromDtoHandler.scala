@@ -13,9 +13,7 @@ import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 
 class CuponDescuentoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
-  def handle(
-              command: CuponDescuentoUpdateFromDto
-            )(replyTo: ActorRef[Success]): ReplyEffect[CuponDescuentoUpdatedFromDto, CuponDescuentoState] = {
+  def handle(command: CuponDescuentoUpdateFromDto)(state: CuponDescuentoState)(replyTo: ActorRef[Success]): ReplyEffect[CuponDescuentoUpdatedFromDto, CuponDescuentoState] = {
     Effect
       .persist[
         CuponDescuentoUpdatedFromDto,

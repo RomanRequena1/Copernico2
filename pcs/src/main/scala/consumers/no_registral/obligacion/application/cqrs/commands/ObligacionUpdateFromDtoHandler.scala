@@ -32,7 +32,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
 
     //val eventCounterMax = Try(System.getenv("EVENT-COUNTER-MAX")).getOrElse(9)
 
-    if (isIdempotent(event, command, actor.state.lastDeliveryIdByEvents)) {
+    if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
       log.error(s"[${actor.name} | ${actor.persistenceId}] -obligacion- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
 
       // Informs that operation has been ignored */

@@ -14,16 +14,17 @@ class SyncEffectCommandBus[Event, State](
     onFailure: Throwable => Unit = _ => ()
 ) extends CommandBus[Event, State] {
 
-  private var handlers = Map.empty[Class[_], Command => ActorRef[Success] => AkkaEffect]
+  private var handlers = Map.empty[Class[_], Command => State => ActorRef[Success] => AkkaEffect]
 
-  def publish[C <: Command, Response](command: C)(replyTo: ActorRef[Success]): AkkaEffect =
+  def publish[C <: Command, Response](state: State, command: C)(replyTo: ActorRef[Success]): AkkaEffect =
     handlers
       .get(command.getClass) match {
-      case Some(handler) => handleCommand(command, handler)(replyTo)
+      case Some(handler) =>
+        handleCommand(command, state, handler)(replyTo)
       case None => Effect.none
     }
 
-  def subscribe[C <: Command: ClassTag](handler: C => ActorRef[Success] => AkkaEffect): Unit = {
+  def subscribe[C <: Command: ClassTag](handler: C => State => ActorRef[Success] => AkkaEffect): Unit = {
     val classTag = implicitly[ClassTag[C]]
     if (handlers.contains(classTag.runtimeClass)) {
       logger.error("handler already subscribed", "handler_name" -> handler.getClass.getSimpleName)
@@ -35,9 +36,10 @@ class SyncEffectCommandBus[Event, State](
 
   private def handleCommand[C <: Command](
       command: C,
-      handler: C => ActorRef[Success] => AkkaEffect
+      state: State,
+      handler: C => State => ActorRef[Success] => AkkaEffect
   ): ActorRef[Success] => AkkaEffect =
-    handler(command)
+    handler(command)(state)
 
   case class CommandHandlerNotFound(commandName: String) extends Exception(s"handler for $commandName not found")
 }

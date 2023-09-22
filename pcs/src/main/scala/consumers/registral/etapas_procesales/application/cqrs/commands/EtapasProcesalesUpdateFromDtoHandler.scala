@@ -13,7 +13,7 @@ import kafka.MessageProducer
 
 class EtapasProcesalesUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
-  def handle(command: EtapasProcesalesUpdateFromDto)(replyTo: ActorRef[Success]) =
+  def handle(command: EtapasProcesalesUpdateFromDto)(state: EtapasProcesalesState)(replyTo: ActorRef[Success]) =
     Effect
       .persist[
         EtapasProcesalesUpdatedFromDto,

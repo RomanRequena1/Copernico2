@@ -13,7 +13,7 @@ import kafka.MessageProducer
 
 class CalendarioUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
-  def handle(command: CalendarioUpdateFromDto)(replyTo: ActorRef[Success]) =
+  def handle(command: CalendarioUpdateFromDto)(state: CalendarioState)(replyTo: ActorRef[Success]) =
     Effect
       .persist[
         CalendarioUpdatedFromDto,

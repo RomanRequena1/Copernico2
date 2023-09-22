@@ -13,7 +13,7 @@ import kafka.MessageProducer
 
 class TramiteUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
-  def handle(command: TramiteUpdateFromDto)(replyTo: ActorRef[Success]) = {
+  def handle(command: TramiteUpdateFromDto)(state: TramiteState)(replyTo: ActorRef[Success]) = {
     val event = TramiteUpdatedFromDto(
       command.deliveryId,
       command.sujetoId,

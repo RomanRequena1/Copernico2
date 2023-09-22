@@ -12,7 +12,7 @@ import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 class DeclaracionJuradaUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
-  def handle(command: DeclaracionJuradaUpdateFromDto)(replyTo: ActorRef[Success]) =
+  def handle(command: DeclaracionJuradaUpdateFromDto)(state: DeclaracionJuradaState)(replyTo: ActorRef[Success]) =
     Effect
       .persist[
         DeclaracionJuradaUpdatedFromDto,

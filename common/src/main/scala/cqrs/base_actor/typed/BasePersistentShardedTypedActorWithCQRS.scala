@@ -34,7 +34,7 @@ abstract class BasePersistentShardedTypedActorWithCQRS[
       case query: Query =>
         queryBus.ask(state, query)(command.replyTo.asInstanceOf[ActorRef[Query#ReturnType]])
       case cmd: Command =>
-        commandBus.publish(cmd)(command.replyTo.asInstanceOf[ActorRef[Success]])
+        commandBus.publish(state, cmd)(command.replyTo.asInstanceOf[ActorRef[Success]])
 
     }
   }
