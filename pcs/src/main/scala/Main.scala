@@ -1,4 +1,5 @@
 import com.typesafe.config.ConfigFactory
+import consumers.registral.juicio_obn.infrastructure.main.JuicioObnMicroservice
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import design_principles.microservice.kafka_consumer_microservice.MainApplication.startMicroservices
 
@@ -36,7 +37,8 @@ object Main extends App {
       new consumers.registral.parametrica_recargo.infrastructure.main.ParametricaRecargoMicroservice,
       new consumers.registral.plan_pago.infrastructure.main.PlanPagoMicroservice,
       new consumers.registral.subasta.infrastructure.main.SubastaMicroservice,
-      new consumers.registral.tramite.infrastructure.main.TramiteMicroservice
+      new consumers.registral.tramite.infrastructure.main.TramiteMicroservice,
+      new JuicioObnMicroservice
     )
   }
 }

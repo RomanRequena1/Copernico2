@@ -16,6 +16,7 @@ class JuicioDosUpdateFromDtoHandler(implicit messageProducer: MessageProducer){
   def handle(command: JuicioDosUpdateFromDto)(state: JuicioDosState)(replyTo: ActorRef[Success]): ReplyEffect[JuicioDosUpdatedFromDto, JuicioDosState] = {
 
     if (isIdempotent(command, state.lastDeliveryIdByEvents)) {
+      println(s"[ ${command.aggregateRoot}] -juicio_tri- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + state.lastDeliveryIdByEvents)
       Effect.reply(replyTo)(Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)))
 
     } else {
