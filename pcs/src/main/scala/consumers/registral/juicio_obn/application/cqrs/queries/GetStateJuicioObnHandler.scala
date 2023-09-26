@@ -18,7 +18,6 @@ class GetStateJuicioObnHandler(actor: JuicioObnActor)(implicit messageProducer: 
   def handle(
               query: GetStateJuicioObn
             )(state: JuicioObnState)(replyTo: ActorRef[GetJuicioObnResponses]): ReplyEffect[JuicioObnEvents, JuicioObnState] = {
-    println("CUMBIA -> " + state)
     Effect.reply[
       GetJuicioObnResponses,
       JuicioObnEvents,

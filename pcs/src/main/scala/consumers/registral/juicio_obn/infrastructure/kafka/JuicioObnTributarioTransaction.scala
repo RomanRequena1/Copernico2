@@ -33,7 +33,6 @@ case class JuicioObnTributarioTransaction(actor: JuicioObnActor, monitoring: Mon
 
     val command = juicioObn match {
       case obn: JuicioObnTri if isNotDeuda(obn) =>
-        println("CUMBIA -1 ")
         JuicioObnDeleteFromDto(
         deliveryId = juicioObn.EV_ID,
         juicioObnId = juicioObn.BJU_IDENTIFICADOR,
@@ -43,7 +42,6 @@ case class JuicioObnTributarioTransaction(actor: JuicioObnActor, monitoring: Mon
         registro = juicioObn
       )
       case _ =>
-        println("CUMBIA 1 ")
         JuicioObnUpdateFromDto(
         deliveryId = juicioObn.EV_ID,
         juicioObnId = juicioObn.BJU_IDENTIFICADOR,

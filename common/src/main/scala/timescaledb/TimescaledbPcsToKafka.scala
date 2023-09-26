@@ -66,7 +66,7 @@ object TimescaledbPcsToKafka {
         //stmt.get.setTimestamp(4, ZonedDateTime.now(ZoneId.of("UTC-3")))
         stmt.addBatch()
         //log.error("CUMBIA  addBatch ")
-        log.error("CUMBIA  stmt.get " + stmt)
+        //log.error("CUMBIA  stmt.get " + stmt)
         stmt.executeBatch()
         //count = count + 1
         //log.error("CUMBIA  count + 1 "+  count)

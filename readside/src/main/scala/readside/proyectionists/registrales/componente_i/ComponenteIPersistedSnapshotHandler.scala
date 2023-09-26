@@ -16,7 +16,6 @@ class ComponenteIPersistedSnapshotHandler(
                                         ) extends ActorTransaction[ComponenteIPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
 
   private val log = LoggerFactory.getLogger(this.getClass)
-  log.error("cumbia 3")
   override def topic: String = "ComponenteIPersistedSnapshot"
 
   override def topicRetry: String = "ComponenteIPersistedSnapshot_retry"

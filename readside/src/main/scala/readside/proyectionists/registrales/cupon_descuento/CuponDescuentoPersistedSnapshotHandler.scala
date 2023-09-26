@@ -17,7 +17,6 @@ class CuponDescuentoPersistedSnapshotHandler(
                                         ) extends ActorTransaction[CuponDescuentoPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
 
   private val log = LoggerFactory.getLogger(this.getClass)
-  log.error("cumbia 3")
   override def topic: String = "CuponDescuentoPersistedSnapshot"
 
   override def topicRetry: String = "CuponDescuentoPersistedSnapshot_retry"

@@ -36,7 +36,6 @@ class JuicioObnDeletedSnapshotHandler(
 
 
       val cassandra = new CassandraWriteProduction()
-      println("CUMBIA -1 READ ")
       for {
         done <- cassandra
           .cql(
