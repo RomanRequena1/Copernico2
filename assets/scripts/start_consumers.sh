@@ -14,7 +14,7 @@
 #curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-JUICIOS-ANT
 
 curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-JUICIOS-TRI
-
+curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-JUICIOS-OBLIGACIONES-TRI
 curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-OBJETOS-ANT
 curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-OBJETOS-TRI
 
@@ -51,5 +51,6 @@ curl -X POST http://0.0.0.0:8084/kafka/start/CuponDescuentoPersistedSnapshot
 curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-COMPONENTE-I-TRI
 curl -X POST http://0.0.0.0:8084/kafka/start/ComponenteIPersistedSnapshot
 
-
+curl -X POST http://0.0.0.0:8084/kafka/start/JuicioObnDeletedFronDto
+curl -X POST http://0.0.0.0:8084/kafka/start/JuicioObnUpdatedFronDto
 #curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-EXENCIONES
