@@ -13,7 +13,7 @@ import kafka.MessageProducer
 
 class ParametricaPlanUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
-  def handle(command: ParametricaPlanUpdateFromDto)(replyTo: ActorRef[Success]) = {
+  def handle(command: ParametricaPlanUpdateFromDto)(state: ParametricaPlanState)(replyTo: ActorRef[Success]) = {
     val event = ParametricaPlanEvents.ParametricaPlanUpdatedFromDto(
       command.deliveryId,
       bppRdlId = command.registro.BPP_RDL_ID,

@@ -12,7 +12,7 @@ import kafka.MessageProducer
 import consumers.registral.actividad_sujeto.infrastructure.json._
 class ActividadSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
-  def handle(command: ActividadSujetoUpdateFromDto)(replyTo: ActorRef[Success]) = {
+  def handle(command: ActividadSujetoUpdateFromDto)(state: ActividadSujetoState)(replyTo: ActorRef[Success]) = {
     Effect
       .persist[
         ActividadSujetoUpdatedFromDto,

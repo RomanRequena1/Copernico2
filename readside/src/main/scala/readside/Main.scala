@@ -1,13 +1,11 @@
 package readside
 
 import com.typesafe.config.{Config, ConfigFactory}
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import design_principles.microservice.kafka_consumer_microservice.MainApplication.startMicroservices
 import design_principles.microservice.kafka_consumer_microservice.KafkaConsumerMicroserviceRequirements
 import monitoring.KamonMonitoring
+import readside.proyectionists.registrales.juicio_obn.infrastructure.main.JuicioObnProjectionstMicroservice
 
 object Main extends App {
 
@@ -37,11 +35,13 @@ object Main extends App {
       new readside.proyectionists.registrales.etapas_procesales.infrastructure.main.EtapasProcesalesProjectionistMicroservice,
       new readside.proyectionists.registrales.exencion.infrastructure.main.ExencionProjectionistMicroservice,
       new readside.proyectionists.registrales.juicio.infrastructure.main.JuicioProjectionistMicroservice,
+      new readside.proyectionists.registrales.juicio_tri.infrastructure.main.JuicioDosProjectionistMicroservice,
       new readside.proyectionists.registrales.parametrica_plan.infrastructure.main.ParametricaPlanProjectionistMicroservice,
       new readside.proyectionists.registrales.parametrica_recargo.infrastructure.main.ParametricaRecargoProjectionistMicroservice,
       new readside.proyectionists.registrales.plan_pago.infrastructure.main.PlanPagoProjectionistMicroservice,
       new readside.proyectionists.registrales.subasta.infrastructure.main.SubastaProjectionistMicroservice,
-      new readside.proyectionists.registrales.tramite.infrastructure.main.TramiteProjectionistMicroservice
+      new readside.proyectionists.registrales.tramite.infrastructure.main.TramiteProjectionistMicroservice,
+      new JuicioObnProjectionstMicroservice
     )
   }
 }

@@ -11,8 +11,8 @@ trait CommandBus[Event, State] {
 
   type AkkaEffect = Effect[Event, State]
 
-  def publish[C <: Command, Response](command: C)(replyTo: ActorRef[Success]): AkkaEffect
+  def publish[C <: Command, Response](state: State, command: C)(replyTo: ActorRef[Success]): AkkaEffect
 
-  def subscribe[C <: Command: ClassTag](handler: C => ActorRef[Success] => AkkaEffect): Unit
+  def subscribe[C <: Command: ClassTag](handler: C => State => ActorRef[Success] => AkkaEffect): Unit
 
 }

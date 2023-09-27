@@ -13,7 +13,7 @@ import kafka.MessageProducer
 
 class PlanPagoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
-  def handle(command: PlanPagoUpdateFromDto)(replyTo: ActorRef[Success]) = {
+  def handle(command: PlanPagoUpdateFromDto)(state: PlanPagoState)(replyTo: ActorRef[Success]) = {
     val event = PlanPagoUpdatedFromDto(
       command.deliveryId,
       command.sujetoId,

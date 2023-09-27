@@ -13,7 +13,7 @@ import kafka.MessageProducer
 
 class ParametricaRecargoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
-  def handle(command: ParametricaRecargoUpdateFromDto)(replyTo: ActorRef[Success]) = {
+  def handle(command: ParametricaRecargoUpdateFromDto)(state: ParametricaRecargoState)(replyTo: ActorRef[Success]) = {
 
     val registro = command.registro
     val event = ParametricaRecargoEvents.ParametricaRecargoUpdatedFromDto(

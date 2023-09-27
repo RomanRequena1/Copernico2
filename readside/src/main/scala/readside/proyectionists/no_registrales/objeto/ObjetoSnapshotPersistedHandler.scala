@@ -34,7 +34,6 @@ class ObjetoSnapshotPersistedHandler(
 
   override def processMessage(registro: ObjetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
     //recordLag(calculateLag(registro.deliveryId.toString))
-    log.error("CUMBIA input -> " + registro)
     val projection = ObjetoSnapshotPersistedProjection(registro)
     if (registro.operacion.equals("U")) {
       for {

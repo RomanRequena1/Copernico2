@@ -13,7 +13,7 @@ import kafka.MessageProducer
 
 class DomicilioObjetoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
-  def handle(command: DomicilioObjetoUpdateFromDto)(replyTo: ActorRef[Success]) =
+  def handle(command: DomicilioObjetoUpdateFromDto)(state: DomicilioObjetoState)(replyTo: ActorRef[Success]) =
     Effect
       .persist[
         DomicilioObjetoUpdatedFromDto,

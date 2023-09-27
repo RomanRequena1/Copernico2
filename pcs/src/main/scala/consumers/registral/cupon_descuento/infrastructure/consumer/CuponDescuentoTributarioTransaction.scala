@@ -23,15 +23,13 @@ case class CuponDescuentoTributarioTransaction(actor: CuponDescuentoActor, monit
   def topic = "DGR-COP-CUPON-DESCUENTO-TRI"
   def topicRetry = "DGR-COP-CUPON-DESCUENTO-TRI_retry"
   def topicError = "DGR-COP-CUPON-DESCUENTO-TRI_error"
-  log.error("Cumbia 2.3"  )
+
   def processInput(input: String): Either[Throwable, CuponDescuentoTri] = {
-    log.error("Cumbia 2"  )
     maybeDecode[CuponDescuentoTri](input)
   }
 
   override def processMessage(registro: CuponDescuentoTri): Future[Response.SuccessProcessing] = {
     implicit val b: Reads[Seq[DetallesCuponDescuento]] = Reads.seq(DetallesCuponDescuentoF.reads)
-    log.error("Cumbia 3"  )
     val detalles: Option[Seq[DetallesCuponDescuento]] = for {
       bobDetalles <- (registro.BOB_OTROS_ATRIBUTOS.get \ "BOB_DETALLES").toOption
       detalles = serialization.decodeF[Seq[DetallesCuponDescuento]](bobDetalles.toString())

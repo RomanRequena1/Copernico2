@@ -12,9 +12,7 @@ import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 
 class ComponenteIUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
-  def handle(
-              command: ComponenteIUpdateFromDto
-            )(replyTo: ActorRef[Success]): ReplyEffect[ComponenteIUpdatedFromDto, ComponenteIState] = {
+  def handle(command: ComponenteIUpdateFromDto)(state: ComponenteIState)(replyTo: ActorRef[Success]): ReplyEffect[ComponenteIUpdatedFromDto, ComponenteIState] = {
     Effect
       .persist[
         ComponenteIUpdatedFromDto,

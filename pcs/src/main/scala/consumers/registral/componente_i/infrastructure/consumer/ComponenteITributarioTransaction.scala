@@ -22,15 +22,13 @@ case class ComponenteITributarioTransaction(actor: ComponenteIActor, monitoring:
   def topic = "DGR-COP-COMPONENTE-I-TRI"
   def topicRetry = "DGR-COP-COMPONENTE-I-TRI_retry"
   def topicError = "DGR-COP-COMPONENTE-I-TRI_error"
-  log.error("Cumbia 2.3"  )
+
   def processInput(input: String): Either[Throwable, ComponenteITri] = {
-    log.error("Cumbia 2"  )
     maybeDecode[ComponenteITri](input)
   }
 
   override def processMessage(registro: ComponenteITri): Future[Response.SuccessProcessing] = {
     implicit val b: Reads[Seq[DetallesComponenteI]] = Reads.seq(DetallesComponenteIF.reads)
-    log.error("Cumbia 3"  )
     val detalles: Option[Seq[DetallesComponenteI]] = for {
       bobDetalles <- (registro.BOB_OTROS_ATRIBUTOS.get \ "BOB_DETALLES").toOption
       detalles = serialization.decodeF[Seq[DetallesComponenteI]](bobDetalles.toString())

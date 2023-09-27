@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory
 class ComponenteIMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
   implicit val actor: ComponenteIActor = ComponenteIActor(ComponenteIState())
   private val log = LoggerFactory.getLogger(this.getClass)
-  log.error("Cumbia 1"  )
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       ComponenteITributarioTransaction(actor, monitoring)
