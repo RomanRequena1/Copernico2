@@ -14,8 +14,8 @@ object CassandraTypesAdapter {
   def int(s: Option[BigInt]): java.lang.Integer = (s map int) orNull // TODO cast BigInt -> Int?
   def float(s: BigDecimal): java.lang.Float = Float.box(s.toFloat)
   def float(s: Option[BigDecimal]): java.lang.Float = (s map float) orNull
-  def mapJson(s: JsObject): util.Map[String, String] = map(serialization.advanced.MapSerializer.jsonToMap(s))
-  def mapJson(s: Option[JsObject]): util.Map[String, String] = (s.map(mapJson)) orNull
+  //def mapJson(s: JsObject): util.Map[String, String] = map(serialization.advanced.MapSerializer.jsonToMap(s))
+  //def mapJson(s: Option[JsObject]): util.Map[String, String] = (s.map(mapJson)) orNull
   def map(s: Map[String, String]): util.Map[String, String] = s.asJava
   def map(s: Option[Map[String, String]]): util.Map[String, String] = s.getOrElse(Map.empty).asJava
   def set(s: Set[String]): util.Set[String] = s.asJava
@@ -41,8 +41,8 @@ object CassandraTypesAdapter {
       case v: BigDecimal => float(v)
       case Some(v: BigDecimal) => float(v)
 
-      case v: JsObject => mapJson(v)
-      case Some(v: JsObject) => mapJson(v)
+      //case v: JsObject => mapJson(v)
+      //case Some(v: JsObject) => mapJson(v)
 
       case v: Map[_, _] if v.nonEmpty && v.values.head.isInstanceOf[String] && v.keys.head.isInstanceOf[String] =>
         map(v.asInstanceOf[Map[String, String]])

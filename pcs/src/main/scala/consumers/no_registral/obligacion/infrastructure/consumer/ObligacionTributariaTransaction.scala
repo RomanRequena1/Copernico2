@@ -3,16 +3,15 @@ import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesTri}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json._
 import design_principles.actor_model.{Command, Response}
 import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
-import serialization.maybeDecode
 import timescaledb.TimescaledbKafkaToPcs.connOracleKafkaToWriteside
 import timescaledb.TimescaledbNifiToKafka.connOracleNifi
-
+import io.circe.parser.decode
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
@@ -22,7 +21,7 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
   private val log = LoggerFactory.getLogger(this.getClass)
   /** Handles the deserialization of detalles de obligaciones tributarias */
-  implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
+
   val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   def topic = "DGR-COP-OBLIGACIONES-TRI"
   def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
@@ -36,7 +35,7 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
         case Success(value) => log.debug("Exito ")
       }
     }
-    maybeDecode[ObligacionesTri](input)
+    decode[ObligacionesTri](input)
   }
 
 
