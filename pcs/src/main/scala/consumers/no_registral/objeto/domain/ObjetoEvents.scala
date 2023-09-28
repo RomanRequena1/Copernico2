@@ -1,10 +1,10 @@
 package consumers.no_registral.objeto.domain
 
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{Exencion, ObjetosAnt, ObjetosTri}
+import consumers.no_registral.objeto.application.entities.{Exencion, ObjetosAnt, ObjetosTri}
 import design_principles.actor_model.Event
+import serialization.CbroSerialization
 
-sealed trait ObjetoEvents extends Event {
+sealed trait ObjetoEvents extends Event  with CbroSerialization{
   def sujetoId: String
   def objetoId: String
   def tipoObjeto: String
@@ -34,7 +34,7 @@ object ObjetoEvents {
       tags: Set[String],
       sujetoResponsable: Option[String],
       porcentajeResponsabilidad: BigDecimal,
-      registro: Option[ObjetoExternalDto],
+      registro: Option[ObjetosTri],
       obligacionesSaldo: Map[String, BigDecimal] = Map.empty,
       cuotas:List[Boolean],
       operacion: String,
@@ -110,7 +110,7 @@ object ObjetoEvents {
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      registro: ObjetoExternalDto,
+      registro: ObjetosTri,
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String]
   ) extends ObjetoEvents

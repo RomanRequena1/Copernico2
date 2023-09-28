@@ -1,24 +1,24 @@
 package consumers.no_registral.obligacion.domain
 
 import java.time.LocalDateTime
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionExternalDto, ObligacionesTri}
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.DetallesObligacion
 import ddd._
 
 import scala.util.Try
 
 case class ObligacionState(
-    saldo: BigDecimal = 0,
-    fechaUltMod: LocalDateTime = LocalDateTime.MIN,
-    exenta: Boolean = false,
-    porcentajeExencion: Option[BigDecimal] = None,
-    registro: Option[ObligacionExternalDto] = None,
-    lastDeliveryIdByEvents: BigInt = 0,
-    detallesObligacion: Seq[DetallesObligacion] = Seq.empty,
-    juicioId: Option[BigInt] = None,
-    isAdheridoDebito: Boolean = false,
-    eventCounter:Int = 0,
-    idExterno: Option[String] = None
+                            saldo: BigDecimal = 0,
+                            fechaUltMod: LocalDateTime = LocalDateTime.MIN,
+                            exenta: Boolean = false,
+                            porcentajeExencion: Option[BigDecimal] = None,
+                            registro: Option[ObligacionesTri] = None,
+                            lastDeliveryIdByEvents: BigInt = 0,
+                            detallesObligacion: Seq[DetallesObligacion] = Seq.empty,
+                            juicioId: Option[BigInt] = None,
+                            isAdheridoDebito: Boolean = false,
+                            eventCounter:Int = 0,
+                            idExterno: Option[String] = None
 ) extends AbstractState[ObligacionEvents] {
 
   //val eventCounterMax = Try(System.getenv("EVENT_COUNTER_MAX")).getOrElse(9)

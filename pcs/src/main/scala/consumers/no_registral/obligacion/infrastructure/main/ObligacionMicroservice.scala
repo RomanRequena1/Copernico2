@@ -4,7 +4,7 @@ import akka.actor.{ActorPath, ActorRef, Props}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
-import consumers.no_registral.obligacion.infrastructure.consumer.{ObligacionNoTributariaTransaction, ObligacionTributariaTransaction, ObligacionTributariaTransaction2, ObligacionTributariaTransaction3, ObligacionTributariaTransactionAutomotor, ObligacionTributariaTransactionBilletera, ObligacionTributariaTransactionCuotaPlan, ObligacionTributariaTransactionEmbarcacion, ObligacionTributariaTransactionIngresoBruto, ObligacionTributariaTransactionInmueble, ObligacionTributariaTransactionJuicio, ObligacionTributariaTransactionMultiobjeto}
+import consumers.no_registral.obligacion.infrastructure.consumer.{ObligacionTributariaTransaction, ObligacionTributariaTransaction2, ObligacionTributariaTransaction3, ObligacionTributariaTransactionAutomotor, ObligacionTributariaTransactionBilletera, ObligacionTributariaTransactionCuotaPlan, ObligacionTributariaTransactionEmbarcacion, ObligacionTributariaTransactionIngresoBruto, ObligacionTributariaTransactionInmueble, ObligacionTributariaTransactionJuicio, ObligacionTributariaTransactionMultiobjeto}
 import consumers.no_registral.obligacion.infrastructure.http.ObligacionStateAPI
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
@@ -33,7 +33,7 @@ class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) 
       ObligacionTributariaTransactionJuicio(actor, monitoring),
       ObligacionTributariaTransaction2(actor, monitoring),
       ObligacionTributariaTransaction3(actor, monitoring),
-      ObligacionNoTributariaTransaction(actor, monitoring)
+      //ObligacionNoTributariaTransaction(actor, monitoring)
     )
 
   def route: Route = {

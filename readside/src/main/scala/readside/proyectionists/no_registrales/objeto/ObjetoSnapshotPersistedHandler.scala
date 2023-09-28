@@ -3,12 +3,14 @@ package readside.proyectionists.no_registrales.objeto
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
+import com.fasterxml.jackson.annotation.JsonIgnore
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.objeto.projections.ObjetoSnapshotPersistedProjection
-
+import io.circe.parser.decode
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
@@ -16,7 +18,7 @@ class ObjetoSnapshotPersistedHandler(
                                       implicit
                                       r: MonitoringAndCassandraWrite
                                     ) extends ActorTransaction[ObjetoSnapshotPersisted](r.monitoring)(r.actorTransactionRequirements) {
-
+  @JsonIgnore
   private val log = LoggerFactory.getLogger(this.getClass)
 
   override def topic: String = "ObjetoSnapshotPersistedReadside"
@@ -28,12 +30,12 @@ class ObjetoSnapshotPersistedHandler(
   override def processInput(input: String): Either[Throwable, ObjetoSnapshotPersisted] = {
     import consumers.no_registral.objeto.infrastructure.json._
 
-    serialization
-      .maybeDecode[ObjetoSnapshotPersisted](input)
+    decode[ObjetoSnapshotPersisted](input)
   }
 
   override def processMessage(registro: ObjetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
     //recordLag(calculateLag(registro.deliveryId.toString))
+    log.error("CUMBIA input -> " + registro)
     val projection = ObjetoSnapshotPersistedProjection(registro)
     if (registro.operacion.equals("U")) {
       for {

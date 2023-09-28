@@ -1,15 +1,25 @@
 package readside.proyectionists.no_registrales.objeto.projections
 
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
+import consumers.no_registral.objeto.application.entities.{ObjetosTri, ObjetosTriOtrosAtributos}
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
+import io.circe
 import org.slf4j.LoggerFactory
-
+import io.circe.syntax.EncoderOps
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 case class ObjetoSnapshotPersistedProjection(
     event: ObjetoSnapshotPersisted
 ) extends ObjetoProjection {
   private val log = LoggerFactory.getLogger(this.getClass)
-  val registro: Option[ObjetoExternalDto] = event.registro
+  val registro: Option[ObjetosTri] = event.registro
+  val sojDetailsResult: Option[Map[String, List[ObjetosTriOtrosAtributos]]] = circe.jawn.decode[Map[String, List[ObjetosTriOtrosAtributos]]](registro.get.SOJ_OTROS_ATRIBUTOS.asJson.toString()).toOption
+  println("CUMBIA bobDetailsResult -> " + sojDetailsResult)
 
+  val mao: Map[String, String] = Map("SOJ_DETALLES" -> sojDetailsResult.get("SOJ_DETALLES").asJson.noSpaces)
+  println("CUMBIA -> mao" + mao)
+
+
+
+  println("CUMBIAA " + registro)
   val fromRegistro: Option[List[(String, Option[Object])]] = registro match {
     case Some(r) => Some(List(
       "soj_identificador_2" -> r.SOJ_IDENTIFICADOR_2,

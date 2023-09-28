@@ -1,9 +1,8 @@
 package consumers.no_registral.objeto.application.entities
 
 import java.time.LocalDateTime
-
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
 import design_principles.actor_model.Response
+import serialization.CbroSerialization
 
 sealed trait ObjetoResponses extends Response
 
@@ -16,11 +15,13 @@ object ObjetoResponses {
       sujetos: Set[String] = Set.empty,
       sujetoResponsable: Option[String] = None,
       fechaUltMod: LocalDateTime = LocalDateTime.MIN,
-      registro: Option[ObjetoExternalDto] = None,
+      registro: Option[ObjetosTri] = None,
       exenciones: Set[Exencion]
-  ) extends ObjetoResponses
+  ) extends ObjetoResponses with CbroSerialization
 
+}
   case class GetExencionResponse(
       exencion: Option[Exencion]
-  ) extends ObjetoResponses
-}
+  ) extends ObjetoResponses with CbroSerialization
+
+

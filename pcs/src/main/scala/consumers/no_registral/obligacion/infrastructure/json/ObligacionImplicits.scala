@@ -1,6 +1,6 @@
 package consumers.no_registral.obligacion.infrastructure.json
 
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
+import consumers.no_registral.objeto.application.entities.Exencion
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateExencion, ObligacionUpdateFromDto}
 import consumers.no_registral.obligacion.application.entities.ObligacionResponses.GetObligacionResponse
 import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionesAnt, ObligacionesTri}
@@ -92,7 +92,7 @@ object ObligacionImplicits {
   // Now you can encode ListDetallesObligaciones to JSON
   val detalles: ListDetallesObligaciones = ??? // Your instance of ListDetallesObligaciones
   val json: Json = detalles.asJson*/
-}
+
 
 
 }

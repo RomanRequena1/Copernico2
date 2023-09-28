@@ -3,21 +3,21 @@ import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 
 import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import cassandra.write.CassandraWriteProduction
+import com.fasterxml.jackson.annotation.JsonIgnore
 import consumers.no_registral.sujeto.domain.SujetoEvents.SujetoSnapshotPersisted
 import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
-import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.sujeto.projections.SujetoSnapshotPersistedProjection
-
+import io.circe.parser.decode
 import scala.util.{Failure, Success}
 
 class SujetoSnapshotPersistedHandler(
     implicit
     r: MonitoringAndCassandraWrite
 ) extends ActorTransaction[SujetoSnapshotPersisted](r.monitoring)(r.actorTransactionRequirements) {
+  @JsonIgnore
   private val log = LoggerFactory.getLogger(this.getClass)
 
   override def topic: String = "SujetoSnapshotPersisted"
@@ -27,8 +27,7 @@ class SujetoSnapshotPersistedHandler(
   import consumers.no_registral.sujeto.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, SujetoSnapshotPersisted] =
-    serialization
-      .maybeDecode[SujetoSnapshotPersisted](input)
+    decode[SujetoSnapshotPersisted](input)
 
   val cassandra = new CassandraWriteProduction()
 

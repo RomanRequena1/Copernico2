@@ -8,7 +8,6 @@ import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
 import consumers.no_registral.objeto.infrastructure.consumer.{
   ObjetoExencionTransaction,
-  ObjetoNoTributarioTransaction,
   ObjetoTributarioTransaction,
   ObjetoUpdateNovedadTransaction
 }

@@ -4,12 +4,13 @@ import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
-import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionAddedExencion}
+import com.fasterxml.jackson.annotation.JsonIgnore
+import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionAddedExencion
 import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import org.slf4j.LoggerFactory
-import consumers.no_registral.obligacion.infrastructure.json._
-
+import io.circe.parser.decode
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 class ObligacionAddedExencionHandler(
     implicit
     r: MonitoringAndCassandraWrite
@@ -22,10 +23,10 @@ class ObligacionAddedExencionHandler(
   override def topicError: String = "ObligacionAddedExencion_error"
 
   override def processInput(input: String): Either[Throwable, ObligacionAddedExencion] =
-    serialization
-      .maybeDecode[ObligacionAddedExencion](input)
+    decode[ObligacionAddedExencion](input)
 
   val cassandra = new CassandraWriteProduction()
+  @JsonIgnore
   private val log = LoggerFactory.getLogger(this.getClass)
   override def processMessage(registro: ObligacionAddedExencion): Future[Response.SuccessProcessing] = {
     for {

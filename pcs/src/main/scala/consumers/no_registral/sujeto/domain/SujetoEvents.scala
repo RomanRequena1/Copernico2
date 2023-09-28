@@ -1,11 +1,11 @@
 package consumers.no_registral.sujeto.domain
 
-import consumers.no_registral.sujeto.application.entity.{SujetoExternalDto, SujetoMessage}
-import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.{SujetoAnt, SujetoTri}
+import consumers.no_registral.sujeto.application.entity.{SujetoAnt, SujetoMessage, SujetoTri}
 import ddd.Deliverable
 import design_principles.actor_model.Event
+import serialization.CbroSerialization
 
-sealed trait SujetoEvents extends Event with Deliverable with SujetoMessage {
+sealed trait SujetoEvents extends Event with Deliverable with SujetoMessage with CbroSerialization{
   def sujetoId: String
 }
 
@@ -14,7 +14,7 @@ object SujetoEvents {
   case class SujetoSnapshotPersisted(
       deliveryId: BigInt,
       sujetoId: String,
-      registro: Option[SujetoExternalDto],
+      registro: Option[SujetoTri],
       saldo: BigDecimal
   ) extends SujetoEvents
 

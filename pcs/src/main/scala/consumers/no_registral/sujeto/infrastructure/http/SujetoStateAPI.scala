@@ -9,7 +9,7 @@ import akka.http.scaladsl.server.Route
 import consumers.no_registral.obligacion.infrastructure.http.ObligacionStateAPI.withSujeto
 import consumers.no_registral.sujeto.application.entity.SujetoQueries.{GetSnapshotSujeto, GetStateSujeto}
 import consumers.no_registral.sujeto.application.entity.SujetoResponses.GetSujetoResponse
-import consumers.no_registral.sujeto.infrastructure.json._
+import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 import design_principles.actor_model.mechanism.QueryStateAPI
 import design_principles.actor_model.mechanism.QueryStateAPI.QueryStateApiRequirements
 import monitoring.Monitoring
@@ -38,7 +38,7 @@ case class SujetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
   def getState: Route =
     path("sujeto" / Segment) { sujetoId =>
       queryState[GetSujetoResponse](actor, GetStateSujeto(sujetoId))(
-        GetSujetoResponseF,
+        GetSujetoResponseEncoder,
         state => state.fechaUltMod == LocalDateTime.MIN
       )
     }
@@ -46,7 +46,7 @@ case class SujetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
   def getSnapshot: Route =
     path("sujeto" / Segment / "snapshot") { sujetoId =>
       queryState[GetSujetoResponse](actor, GetSnapshotSujeto(sujetoId))(
-        GetSujetoResponseF,
+        GetSujetoResponseEncoder,
         state => state.fechaUltMod == LocalDateTime.MIN
       )
     }

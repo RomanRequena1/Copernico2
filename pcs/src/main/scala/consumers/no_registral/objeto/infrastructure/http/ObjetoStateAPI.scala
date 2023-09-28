@@ -6,13 +6,10 @@ import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
-import consumers.no_registral.objeto.application.entities.ObjetoQueries.{
-  GetSnapshotObjeto,
-  GetStateExencion,
-  GetStateObjeto
-}
-import consumers.no_registral.objeto.application.entities.ObjetoResponses.{GetExencionResponse, GetObjetoResponse}
-import consumers.no_registral.objeto.infrastructure.json._
+import consumers.no_registral.objeto.application.entities.GetExencionResponse
+import consumers.no_registral.objeto.application.entities.ObjetoQueries.{GetSnapshotObjeto, GetStateExencion, GetStateObjeto}
+import consumers.no_registral.objeto.application.entities.ObjetoResponses.GetObjetoResponse
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import design_principles.actor_model.mechanism.QueryStateAPI
 import design_principles.actor_model.mechanism.QueryStateAPI.QueryStateApiRequirements
 import monitoring.Monitoring
@@ -52,7 +49,7 @@ case class ObjetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
       withObjeto { objetoId =>
         path("tipo" / Segment) { tipoObjeto =>
           queryState[GetObjetoResponse](actorRef = actor, GetStateObjeto(sujetoId, objetoId, tipoObjeto))(
-            GetObjetoResponseF,
+            GetObjetoResponseEncoder,
             _.fechaUltMod == LocalDateTime.MIN
           )
         }
@@ -68,7 +65,7 @@ case class ObjetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
               actorRef = actor,
               GetStateExencion(sujeto, objeto, tipoObjeto, id)
             )(
-              GetExencionResponseF,
+              GetExencionResponseEncoder,
               _.exencion.isEmpty
             )
           }
@@ -81,7 +78,7 @@ case class ObjetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
       withObjeto { objetoId =>
         path("tipo" / Segment / "snapshot") { tipoObjeto =>
           queryState[GetObjetoResponse](actorRef = actor, GetSnapshotObjeto(sujetoId, objetoId, tipoObjeto))(
-            GetObjetoResponseF,
+            GetObjetoResponseEncoder,
             _.fechaUltMod == LocalDateTime.MIN
           )
         }

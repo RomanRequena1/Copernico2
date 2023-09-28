@@ -4,13 +4,13 @@ import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesTri}
-import consumers.no_registral.obligacion.infrastructure.json._
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionesTri}
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import design_principles.actor_model.{Command, Response}
 import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
-import serialization.maybeDecode
+import io.circe.parser.decode
 import timescaledb.TimescaledbKafkaToPcs.connOracleKafkaToWriteside
 import timescaledb.TimescaledbNifiToKafka.connOracleNifi
 
@@ -24,7 +24,6 @@ case class ObligacionTributariaTransactionCuotaPlan(actorRef: ActorRef, monitori
   private val log = LoggerFactory.getLogger(this.getClass)
   val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   /** Handles the deserialization of detalles de obligaciones tributarias */
-  implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
 
   def topic = "DGR-COP-OBLIGACIONES-TRI-P"
   def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
@@ -38,7 +37,7 @@ case class ObligacionTributariaTransactionCuotaPlan(actorRef: ActorRef, monitori
         case Success(value) => log.debug("Exito ")
       }
     }
-    maybeDecode[ObligacionesTri](input)
+    decode[ObligacionesTri](input)
   }
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
@@ -135,11 +134,13 @@ case class ObligacionTributariaTransactionCuotaPlan(actorRef: ActorRef, monitori
   private def extractOtrosAtributos(obn: ObligacionesTri) = {
     val detalles = for {
       otrosAtributos <- obn.BOB_OTROS_ATRIBUTOS
-      bobDetalles <- (otrosAtributos \ "BOB_DETALLES").toOption
-      detalles = serialization.decodeF[Seq[DetallesObligacion]](bobDetalles.toString)
-    } yield (detalles)
+      detalles = decode[Seq[DetallesObligacion]](otrosAtributos.toString)
+
+    } yield (detalles.getOrElse(Seq()))
     detalles
+
   }
+
 
   private def extractRuleNumber(otrosAtributos: Seq[DetallesObligacion]) = {
     otrosAtributos.headOption.flatMap(_.RULE_NUMBER)

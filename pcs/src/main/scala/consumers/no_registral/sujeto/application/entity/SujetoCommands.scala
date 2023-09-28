@@ -3,8 +3,9 @@ package consumers.no_registral.sujeto.application.entity
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.{SujetoAnt, SujetoTri}
 import ddd.Deliverable
 import design_principles.actor_model.Command
+import serialization.CbroSerialization
 
-sealed trait SujetoCommands extends Command with SujetoMessage with Deliverable
+sealed trait SujetoCommands extends Command with SujetoMessage with Deliverable with CbroSerialization
 
 object SujetoCommands {
 

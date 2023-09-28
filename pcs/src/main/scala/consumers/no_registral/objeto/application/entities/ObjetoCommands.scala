@@ -1,9 +1,9 @@
 package consumers.no_registral.objeto.application.entities
 
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{Exencion, ObjetosAnt, ObjetosTri}
 import design_principles.actor_model.Command
+import serialization.CbroSerialization
 
-sealed trait ObjetoCommands extends Command with ObjetoMessage
+sealed trait ObjetoCommands extends Command with ObjetoMessage with CbroSerialization
 
 object ObjetoCommands {
 
@@ -106,7 +106,7 @@ object ObjetoCommands {
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      registro: ObjetoExternalDto,
+      registro: ObjetosTri,
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String]
   ) extends ObjetoCommands
