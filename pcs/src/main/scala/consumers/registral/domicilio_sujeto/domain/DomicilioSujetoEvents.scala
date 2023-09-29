@@ -1,6 +1,6 @@
 package consumers.registral.domicilio_sujeto.domain
 
-import consumers.registral.domicilio_sujeto.application.entities.{DomicilioSujetoExternalDto, DomicilioSujetoMessage}
+import consumers.registral.domicilio_sujeto.application.entities.{DomicilioSujetoMessage, DomicilioSujetoTri}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
@@ -11,6 +11,6 @@ object DomicilioSujetoEvents {
       deliveryId: BigInt,
       sujetoId: String,
       domicilioId: String,
-      registro: DomicilioSujetoExternalDto
+      registro: DomicilioSujetoTri
   ) extends DomicilioSujetoEvents
 }

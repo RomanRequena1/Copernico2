@@ -9,9 +9,9 @@ import consumers.registral.actividad_sujeto.infrastructure.json._
 import consumers.registral.juicio.infrastructure.dependency_injection.JuicioActor
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
+import io.circe.parser._
 import monitoring.Monitoring
 import serialization.maybeDecode
-
 import scala.concurrent.Future
 import scala.util.Try
 
@@ -25,7 +25,7 @@ case class ActividadSujetoTransaction(actor: ActividadSujetoActor, monitoring: M
 
 
   def processInput(input: String): Either[Throwable, ActividadSujeto] =
-    maybeDecode[ActividadSujeto](input)
+    decode[ActividadSujeto](input)
 
   override def processMessage(registro: ActividadSujeto): Future[Response.SuccessProcessing] = {
     val command =

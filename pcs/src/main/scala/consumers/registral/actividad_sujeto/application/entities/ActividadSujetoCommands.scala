@@ -13,6 +13,5 @@ object ActividadSujetoCommands {
       actividadSujetoId: String,
       deliveryId: BigInt,
       registro: ActividadSujeto
-  )
-
+  ) extends ActividadSujetoCommands
 }

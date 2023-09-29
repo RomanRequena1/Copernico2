@@ -1,32 +1,33 @@
 package consumers.registral.juicio.infrastructure
 
 import consumers.registral.juicio.application.entities.JuicioCommands.JuicioUpdateFromDto
-import consumers.registral.juicio.application.entities.JuicioExternalDto
-import consumers.registral.juicio.application.entities.JuicioExternalDto.{DetallesJuicio, JuicioAnt, JuicioTri}
 import consumers.registral.juicio.application.entities.JuicioResponses.GetJuicioResponse
+import consumers.registral.juicio.application.entities.{DetallesJuicio, JuicioTri}
 import consumers.registral.juicio.domain.JuicioEvents.JuicioUpdatedFromDto
-import play.api.libs.json.Json
-import serialization.EventSerializer
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
+import io.circe.{Decoder, Encoder}
 
 package object json {
 
-  implicit val localdatetimeF = serialization.advanced.LocalDateTimeSerializer.dateFormat
 
-  implicit val JuicioAntF = Json.format[JuicioAnt]
-  implicit val JuicioTriF = Json.format[JuicioTri]
+  //COMMANDS
+  implicit val JuicioUpdateFromDtoDecoder: Decoder[JuicioUpdateFromDto] = deriveDecoder
+  implicit val JuicioUpdateFromDtoEncoder: Encoder[JuicioUpdateFromDto] = deriveEncoder
 
-  import io.leonard.TraitFormat
-  import io.leonard.TraitFormat.traitFormat
-  implicit val JuicioExternalDtoF: TraitFormat[JuicioExternalDto] =
-    (traitFormat[JuicioExternalDto]
-    << JuicioAntF
-    << JuicioTriF)
+  //EXTERNALDTO
+  implicit val JuicioTriDecoder: Decoder[JuicioTri] = deriveDecoder
+  implicit val JuicioTriEncoder: Encoder[JuicioTri] = deriveEncoder
 
-  implicit val DetallesJuicioF = Json.format[DetallesJuicio]
-  implicit val JuicioUpdateFromDtoF = Json.format[JuicioUpdateFromDto]
-  implicit val JuicioUpdatedFromDtoF = Json.format[JuicioUpdatedFromDto]
-  class JuicioUpdatedFromDtoFS extends EventSerializer[JuicioUpdatedFromDto]
+  implicit val DetallesJuicioDecoder: Decoder[DetallesJuicio] = deriveDecoder
+  implicit val DetallesJuicioEncoder: Encoder[DetallesJuicio] = deriveEncoder
 
-  implicit val GetJuicioResponseF = Json.format[GetJuicioResponse]
+  //RESPONSES
+  implicit val GetJuicioResponseDecoder: Decoder[GetJuicioResponse] = deriveDecoder
+  implicit val GetJuicioResponseEncoder: Encoder[GetJuicioResponse] = deriveEncoder
+
+  //EVENTS
+  implicit val JuicioUpdatedFromDtoDecoder: Decoder[JuicioUpdatedFromDto] = deriveDecoder
+  implicit val JuicioUpdatedFromDtoEncoder: Encoder[JuicioUpdatedFromDto] = deriveEncoder
+
 
 }

@@ -1,6 +1,6 @@
 package consumers.registral.etapas_procesales.domain
 
-import consumers.registral.etapas_procesales.application.entities.{EtapasProcesalesExternalDto, EtapasProcesalesMessage}
+import consumers.registral.etapas_procesales.application.entities.{EtapasProcesalesMessage, EtapasProcesalesTri}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
@@ -14,7 +14,7 @@ object EtapasProcesalesEvents {
       deliveryId: BigInt,
       juicioId: String,
       etapaId: String,
-      registro: EtapasProcesalesExternalDto
+      registro: EtapasProcesalesTri
   ) extends EtapasProcesalesEvents
 
 }

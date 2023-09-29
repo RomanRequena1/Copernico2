@@ -2,17 +2,15 @@ package consumers.registral.etapas_procesales.infrastructure.kafka
 
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesCommands
-import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesExternalDto.EtapasProcesalesTri
+import consumers.registral.etapas_procesales.application.entities.{EtapasProcesalesCommands, EtapasProcesalesTri}
 import consumers.registral.etapas_procesales.infrastructure.dependency_injection.EtapasProcesalesActor
-import consumers.registral.etapas_procesales.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring
-import serialization.maybeDecode
+import io.circe.parser._
 
 import scala.concurrent.Future
-import scala.util.Try
+import consumers.registral.etapas_procesales.infrastructure.json._
 
 case class EtapasProcesalesTributarioTransaction(actor: EtapasProcesalesActor, monitoring: Monitoring)(
     implicit
@@ -23,7 +21,7 @@ case class EtapasProcesalesTributarioTransaction(actor: EtapasProcesalesActor, m
   def topicError = "DGR-COP-ETAPROCESALES-TRI_error"
 
   def processInput(input: String): Either[Throwable, EtapasProcesalesTri] =
-    maybeDecode[EtapasProcesalesTri](input)
+    decode[EtapasProcesalesTri](input)
 
   override def processMessage(registro: EtapasProcesalesTri): Future[Response.SuccessProcessing] = {
     val command = EtapasProcesalesCommands.EtapasProcesalesUpdateFromDto(
@@ -32,8 +30,6 @@ case class EtapasProcesalesTributarioTransaction(actor: EtapasProcesalesActor, m
       deliveryId = BigInt(registro.EV_ID),
       registro = registro
     )
-
     actor.ask(command)
   }
-
 }
