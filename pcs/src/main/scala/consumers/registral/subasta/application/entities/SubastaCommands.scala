@@ -1,6 +1,8 @@
 package consumers.registral.subasta.application.entities
 
-sealed trait SubastaCommands extends design_principles.actor_model.Command with SubastaMessage
+import serialization.CbroSerialization
+
+sealed trait SubastaCommands extends design_principles.actor_model.Command with SubastaMessage with CbroSerialization
 object SubastaCommands {
   case class SubastaUpdateFromDto(sujetoId: String,
                                   objetoId: String,

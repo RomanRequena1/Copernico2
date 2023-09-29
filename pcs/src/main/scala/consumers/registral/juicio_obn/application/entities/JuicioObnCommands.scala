@@ -1,6 +1,8 @@
 package consumers.registral.juicio_obn.application.entities
 
-sealed trait JuicioObnCommands extends design_principles.actor_model.Command with JuicioObnMessage
+import serialization.CbroSerialization
+
+sealed trait JuicioObnCommands extends design_principles.actor_model.Command with JuicioObnMessage with CbroSerialization
 
 
 object JuicioObnCommands {

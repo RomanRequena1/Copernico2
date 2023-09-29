@@ -1,19 +1,14 @@
 package consumers.no_registral.objeto.infrastructure.consumer
 
-import scala.concurrent.{ExecutionContext, Future}
-import akka.Done
+import scala.concurrent.Future
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{ObjetosAnt, ObjetosTri, ObjetosTriOtrosAtributos}
-import consumers.no_registral.objeto.infrastructure.json._
+import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetosTri, ObjetosTriOtrosAtributos}
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import design_principles.actor_model.Response
 import monitoring.Monitoring
-import play.api.libs.json.Reads
-import serialization.{decodeF, maybeDecode}
-
-import scala.util.Try
+import io.circe.parser.decode
 
 case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
@@ -25,18 +20,18 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
   def topicError = "DGR-COP-OBJETOS-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObjetosTri] =
-    maybeDecode[ObjetosTri](input)
+    decode[ObjetosTri](input)
+
 
   def processMessage(registro: ObjetosTri): Future[Response.SuccessProcessing] = {
     //connOracleKafkaToWriteside(registro.EV_ID.toString(), "objeto", registro.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
-    implicit val a: Reads[Seq[ObjetosTri]] = Reads.seq(ObjetosTriF.reads)
-    implicit val b: Reads[Seq[ObjetosTriOtrosAtributos]] = Reads.seq(ObjetosTriOtrosAtributosF.reads)
+
 
     val detalle: Option[ObjetosTriOtrosAtributos] = for {
       otrosAtributos <- registro.SOJ_OTROS_ATRIBUTOS
-      sojDetalles <- (otrosAtributos \ "SOJ_DETALLES").toOption
-      detalles <- serialization.decodeF[Seq[ObjetosTriOtrosAtributos]](sojDetalles.toString).headOption
-    } yield detalles
+
+      detalles = decode[Seq[ObjetosTriOtrosAtributos]](otrosAtributos.toString)
+    } yield detalles.getOrElse(Seq()).head
 
     val isResponsable = detalle map { d =>
       d.RESPONSABLE_OTROS_ATRIBUTOS contains "S"

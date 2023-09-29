@@ -1,11 +1,12 @@
 package consumers.registral.juicio_obn.application.entities
 
 import design_principles.actor_model.Response
+import serialization.CbroSerialization
 
 import java.time.LocalDateTime
 
 
-sealed trait JuicioObnResponses
+sealed trait JuicioObnResponses extends CbroSerialization
 
 object JuicioObnResponses {
 
@@ -13,6 +14,6 @@ object JuicioObnResponses {
                                   registro: Option[JuicioObnTri] = None,
                                   lastDeliveryIdByEvent: BigInt = 0,
                                   fechasUltMod: LocalDateTime
-                                  ) extends Response
+                                  ) extends Response with CbroSerialization
 
 }

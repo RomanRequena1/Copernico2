@@ -1,12 +1,12 @@
 package readside.proyectionists.no_registrales.sujeto.projections
-import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
+import consumers.no_registral.sujeto.application.entity.SujetoTri
 import consumers.no_registral.sujeto.domain.SujetoEvents
 
 final case class SujetoSnapshotPersistedProjection(
     event: SujetoEvents.SujetoSnapshotPersisted
 ) extends SujetoProjection {
 
-  val registro: Option[SujetoExternalDto] = event.registro
+  val registro: Option[SujetoTri] = event.registro
   val fromRegistro: Option[List[(String, Option[Object])]] = registro map { registro =>
     List(
       "suj_canal_origen" -> registro.SUJ_CANAL_ORIGEN,

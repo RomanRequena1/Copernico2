@@ -2,8 +2,9 @@ package consumers.registral.tramite.application.entities
 
 import consumers.registral.tramite.application.entities.TramiteExternalDto.Tramite
 import design_principles.actor_model.Command
+import serialization.CbroSerialization
 
-sealed trait TramiteCommands extends Command with TramiteMessage
+sealed trait TramiteCommands extends Command with TramiteMessage with CbroSerialization
 
 object TramiteCommands {
   case class TramiteUpdateFromDto(

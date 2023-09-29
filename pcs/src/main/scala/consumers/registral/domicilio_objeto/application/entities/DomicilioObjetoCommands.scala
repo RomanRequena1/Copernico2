@@ -1,8 +1,9 @@
 package consumers.registral.domicilio_objeto.application.entities
 
 import design_principles.actor_model.Command
+import serialization.CbroSerialization
 
-sealed trait DomicilioObjetoCommands extends Command with DomicilioObjetoMessage
+sealed trait DomicilioObjetoCommands extends Command with DomicilioObjetoMessage with CbroSerialization
 
 object DomicilioObjetoCommands {
   case class DomicilioObjetoUpdateFromDto(
@@ -11,6 +12,6 @@ object DomicilioObjetoCommands {
       tipoObjeto: String,
       domicilioId: String,
       deliveryId: BigInt,
-      registro: DomicilioObjetoExternalDto
+      registro: DomicilioObjetoTri
   ) extends DomicilioObjetoCommands
 }

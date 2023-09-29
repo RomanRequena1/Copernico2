@@ -1,11 +1,11 @@
 package consumers.registral.parametrica_plan.domain
 
 import java.time.LocalDateTime
-
 import consumers.registral.parametrica_plan.application.entities.{ParametricaPlanExternalDto, ParametricaPlanMessage}
 import design_principles.actor_model.Event
+import serialization.CbroSerialization
 
-sealed trait ParametricaPlanEvents extends Event with ParametricaPlanMessage {
+sealed trait ParametricaPlanEvents extends Event with ParametricaPlanMessage with CbroSerialization{
 
   override val parametricaPlanId: String = bppFpmId
 

@@ -6,7 +6,6 @@ import ddd.ExternalDto
 import design_principles.actor_model.Response
 import monitoring.{Counter, Histogram, Monitoring}
 import org.slf4j.LoggerFactory
-import serialization.{SerializationError, maybeDecode}
 
 import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
@@ -48,9 +47,9 @@ abstract class ActorTransactionMetrics(
     }
 
     throwable match {
-      case e: SerializationError =>
+      /*case e: SerializationError =>
         errors.increment()
-        log.error(e.getMessage)
+        log.error(e.getMessage)*/
       case e: AskTimeoutException =>
         errors.increment()
         errorsATO.increment()

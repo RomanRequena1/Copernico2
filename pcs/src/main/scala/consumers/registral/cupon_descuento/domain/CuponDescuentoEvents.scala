@@ -3,8 +3,9 @@ package consumers.registral.cupon_descuento.domain
 import consumers.registral.cupon_descuento.application.entities.{CuponDescuentoExternalDto, CuponDescuentoMessage}
 import consumers.registral.cupon_descuento.application.entities.CuponDescuentoExternalDto.DetallesCuponDescuento
 import design_principles.actor_model.Event
+import serialization.CbroSerialization
 
-sealed trait CuponDescuentoEvents extends Event with CuponDescuentoMessage {
+sealed trait CuponDescuentoEvents extends Event with CuponDescuentoMessage with CbroSerialization{
   def sujetoId: String
   def objetoId: String
   def tipoObjeto: String

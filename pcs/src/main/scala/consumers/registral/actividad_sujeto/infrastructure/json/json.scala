@@ -2,7 +2,7 @@ package consumers.registral.actividad_sujeto.infrastructure
 
 import ai.x.play.json.Jsonx
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoCommands.ActividadSujetoUpdateFromDto
-import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoExternalDto
+import consumers.registral.actividad_sujeto.application.entities.{ActividadSujeto, ActividadSujetoExternalDto}
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoResponses.GetActividadSujetoResponse
 import consumers.registral.actividad_sujeto.domain.{ActividadSujetoEvents, ActividadSujetoState}
 import io.leonard.TraitFormat
@@ -15,12 +15,12 @@ package object json {
 
   implicit val ActividadesSujetoF =
     Jsonx.formatCaseClass[
-      consumers.registral.actividad_sujeto.application.entities.ActividadSujetoExternalDto.ActividadSujeto
+      consumers.registral.actividad_sujeto.application.entities.ActividadSujeto
     ]
 
   implicit val ActividadSujetoUpdateFromDtoF = Json.format[ActividadSujetoUpdateFromDto]
-  implicit val actividadSujetoDto: TraitFormat[ActividadSujetoExternalDto] =
-    (traitFormat[ActividadSujetoExternalDto]
+  implicit val actividadSujetoDto: TraitFormat[ActividadSujeto] =
+    (traitFormat[ActividadSujeto]
     << ActividadesSujetoF)
   implicit val ActividadSujetoStateF =
     Jsonx.formatCaseClass[ActividadSujetoState]

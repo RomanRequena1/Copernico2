@@ -1,10 +1,11 @@
 package consumers.no_registral.obligacion.application.entities
 
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.DetallesObligacion
-import design_principles.actor_model.Command
+import consumers.no_registral.objeto.application.entities.Exencion
 
-sealed trait ObligacionCommands extends Command with ObligacionMessage
+import design_principles.actor_model.Command
+import serialization.CbroSerialization
+
+sealed trait ObligacionCommands extends Command with ObligacionMessage with CbroSerialization
 
 object ObligacionCommands {
   case class ObligacionUpdateFromDto(
@@ -13,7 +14,7 @@ object ObligacionCommands {
       tipoObjeto: String,
       obligacionId: String,
       deliveryId: BigInt,
-      registro: ObligacionExternalDto,
+      registro: ObligacionesTri,
       detallesObligacion: Seq[DetallesObligacion],
       isAdheridoDebito: Option[Boolean]
   ) extends ObligacionCommands
@@ -24,7 +25,7 @@ object ObligacionCommands {
       objetoId: String,
       tipoObjeto: String,
       obligacionId: String,
-      registro: ObligacionExternalDto,
+      registro: ObligacionesTri,
       cuota:Option[String]
   ) extends ObligacionCommands
 

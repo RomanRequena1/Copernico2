@@ -9,7 +9,6 @@ import com.typesafe.config.{Config, ConfigFactory}
 import design_principles.actor_model.context_provider.{Guardian, GuardianRequirements}
 import design_principles.actor_model.mechanism.stream_supervision.MessageProcessorSupervisorActorController
 import life_cycle.AppLifecycleMicroservice
-import serialization.EventSerializer
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -27,8 +26,6 @@ object MainApplication {
     val mainConfig = ConfigFactory.load()
     lazy val config = Seq(
       mainConfig,
-      ConfigFactory parseString EventSerializer.eventAdapterConf,
-      ConfigFactory parseString EventSerializer.serializationConf,
       //TODO
       ConfigFactory parseString new ActorsDispatchers(mainConfig).actorsDispatchers,
       extraConfigurations

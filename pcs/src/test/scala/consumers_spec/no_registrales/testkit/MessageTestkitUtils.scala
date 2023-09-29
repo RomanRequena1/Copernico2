@@ -9,17 +9,11 @@ import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import com.typesafe.config.ConfigFactory
 import consumers.no_registral.cotitularidad.infrastructure.kafka.ObjetoSnapshotPersistedHandler
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
-import consumers.no_registral.objeto.infrastructure.consumer.{ObjetoTributarioTransaction, _}
+import consumers.no_registral.objeto.infrastructure.consumer._
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
-import consumers.no_registral.obligacion.infrastructure.consumer.{
-  ObligacionNoTributariaTransaction,
-  ObligacionTributariaTransaction
-}
+import consumers.no_registral.obligacion.infrastructure.consumer.ObligacionTributariaTransaction
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
-import consumers.no_registral.sujeto.infrastructure.consumer.{
-  SujetoNoTributarioTransaction,
-  SujetoTributarioTransaction
-}
+import consumers.no_registral.sujeto.infrastructure.consumer.SujetoTributarioTransaction
 import design_principles.actor_model.Response
 import design_principles.external_pub_sub.kafka.KafkaMock.MessageProcessorImplicits
 import kafka.KafkaMessageProducer.KafkaKeyValue

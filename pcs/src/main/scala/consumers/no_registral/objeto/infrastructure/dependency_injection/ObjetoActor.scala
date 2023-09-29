@@ -5,8 +5,7 @@ import akka.actor.{ActorRef, Props}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.cqrs.commands._
 import consumers.no_registral.objeto.application.cqrs.queries.{GetSnapshotObjetoHandler, GetStateExencionHandler, GetStateObjetoHandler}
-import consumers.no_registral.objeto.application.entities.ObjetoMessage.ObjetoMessageRoots
-import consumers.no_registral.objeto.application.entities.ObjetoQueries.GetSnapshotObjeto
+
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoQueries}
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import consumers.no_registral.objeto.domain.{ObjetoEvents, ObjetoState}
@@ -19,7 +18,8 @@ import consumers.no_registral.sujeto.application.entity.SujetoCommands
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-
+import io.circe.syntax.EncoderOps
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[ObjetoEvents, ObjetoState](requirements.monitoring) {
   import ObjetoActor._
@@ -139,7 +139,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
       data = Seq(
         KafkaKeyValue(
           snapshot.aggregateRoot,
-          serialization.encode(snapshot)
+          snapshot.asJson.toString()
         )
       ),
       topic = kafkaTopic
@@ -178,7 +178,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
       data = Seq(
         KafkaKeyValue(
           snapshot.aggregateRoot,
-          serialization.encode(snapshot)
+          snapshot.asJson.toString()
         )
       ),
       topic = kafkaTopic
@@ -217,7 +217,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
       data = Seq(
         KafkaKeyValue(
           snapshot.aggregateRoot,
-          serialization.encode(snapshot)
+          snapshot.asJson.toString()
         )
       ),
       topic = kafkaTopic

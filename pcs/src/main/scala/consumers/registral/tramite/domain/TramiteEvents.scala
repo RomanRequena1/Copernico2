@@ -1,10 +1,10 @@
 package consumers.registral.tramite.domain
 
-import consumers.registral.tramite.application.entities.TramiteExternalDto.Tramite
-import consumers.registral.tramite.application.entities.TramiteMessage
+import consumers.registral.tramite.application.entities.{Tramite, TramiteMessage}
 import design_principles.actor_model.Event
+import serialization.CbroSerialization
 
-sealed trait TramiteEvents extends Event with TramiteMessage {
+sealed trait TramiteEvents extends Event with TramiteMessage with CbroSerialization{
   def sujetoId: String
   def tramiteId: String
 }

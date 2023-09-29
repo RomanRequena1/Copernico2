@@ -1,33 +1,7 @@
 package consumers.no_registral.objeto.application.entities
 
 import java.time.LocalDateTime
-
-import ddd.ExternalDto
-import play.api.libs.json.JsValue
-
-sealed trait ObjetoExternalDto extends ExternalDto {
-
-  def SOJ_SUJ_IDENTIFICADOR: String
-  def SOJ_TIPO_OBJETO: String
-  def SOJ_IDENTIFICADOR: String
-  def SOJ_CAT_SOJ_ID: Option[String]
-  def SOJ_DESCRIPCION: Option[String]
-  def SOJ_ESTADO: Option[String]
-  def SOJ_FECHA_INICIO: Option[LocalDateTime]
-  def SOJ_FECHA_FIN: Option[LocalDateTime]
-  def SOJ_ID_EXTERNO: Option[String]
-  def SOJ_OTROS_ATRIBUTOS: Option[JsValue]
-  def SOJ_BASE_IMPONIBLE: Option[BigDecimal]
-  def SOJ_ADHERIDO_DEBITO: Option[String]
-  def SOJ_CANT_CUOTAS_PAGADAS: Option[BigInt]
-  def SOJ_CANAL_ORIGEN: Option[String]
-  def SOJ_SUBTIPO: Option[String]
-  def SOJ_IDENTIFICADOR_2: Option[String]
-  def SOJ_TITULARIDAD: Option[String]
-  def EV_ID: BigInt
-}
-
-object ObjetoExternalDto {
+import serialization.CbroSerialization
 
   case class ObjetosAnt(
       EV_ID: BigInt,
@@ -40,7 +14,7 @@ object ObjetoExternalDto {
       SOJ_FECHA_INICIO: Option[LocalDateTime],
       SOJ_FECHA_FIN: Option[LocalDateTime],
       SOJ_ID_EXTERNO: Option[String],
-      SOJ_OTROS_ATRIBUTOS: Option[JsValue],
+      SOJ_OTROS_ATRIBUTOS: Option[ListObjetosTriOtrosAtributos],
       SOJ_BASE_IMPONIBLE: Option[BigDecimal],
       SOJ_ADHERIDO_DEBITO: Option[String],
       SOJ_CANT_CUOTAS_PAGADAS: Option[BigInt],
@@ -48,16 +22,20 @@ object ObjetoExternalDto {
       SOJ_SUBTIPO: Option[String],
       SOJ_IDENTIFICADOR_2: Option[String],
       SOJ_TITULARIDAD: Option[String]
-  ) extends ObjetoExternalDto
+  ) extends CbroSerialization
 
-  case class ObjetosTriOtrosAtributos(
+case class ListObjetosTriOtrosAtributos(SOJ_DETALLES: List[ObjetosTriOtrosAtributos])
+case class ObjetosTriOtrosAtributos(
       RESPONSABLE_OTROS_ATRIBUTOS: Option[String],
       PORCENTAJE_OTROS_ATRIBUTOS: Option[BigDecimal],
       CUENTA_SOJ_OTROS_ATRIBUTOS: Option[String],
       PERIODO_SOJ_OTROS_ATRIBUTOS: Option[String],
-      IMPORTE_SOJ_OTROS_ATRIBUTOS: Option[String]
-  )
-  case class ObjetosTri(
+      IMPORTE_SOJ_OTROS_ATRIBUTOS: Option[String],
+      SOJ_SEMAFORO_COLOR: Option[String],
+      SOJ_SEMAFORO_MARCA: Option[String]
+  ) extends CbroSerialization
+
+case class ObjetosTri(
       EV_ID: BigInt,
       SOJ_SUJ_IDENTIFICADOR: String,
       SOJ_TIPO_OBJETO: String,
@@ -68,7 +46,7 @@ object ObjetoExternalDto {
       SOJ_FECHA_INICIO: Option[LocalDateTime],
       SOJ_FECHA_FIN: Option[LocalDateTime],
       SOJ_ID_EXTERNO: Option[String],
-      SOJ_OTROS_ATRIBUTOS: Option[JsValue],
+      SOJ_OTROS_ATRIBUTOS: Option[ListObjetosTriOtrosAtributos],
       SOJ_BASE_IMPONIBLE: Option[BigDecimal],
       SOJ_ADHERIDO_DEBITO: Option[String],
       SOJ_CANT_CUOTAS_PAGADAS: Option[BigInt],
@@ -76,7 +54,7 @@ object ObjetoExternalDto {
       SOJ_SUBTIPO: Option[String],
       SOJ_IDENTIFICADOR_2: Option[String],
       SOJ_TITULARIDAD: Option[String]
-  ) extends ObjetoExternalDto
+  ) extends CbroSerialization
 
   case class Cotitularidad(
       SOJ_SUJ_IDENTIFICADOR: String,
@@ -87,7 +65,7 @@ object ObjetoExternalDto {
       REAL_RESPONSABLE: String,
       PORCENTAJE_RESPONSABILIDAD: BigDecimal,
       COTITULARES: Set[String]
-  ) extends ExternalDto
+  ) extends CbroSerialization
 
   case class Exencion(
       EV_ID: BigInt,
@@ -101,5 +79,5 @@ object ObjetoExternalDto {
       BEX_PERIODO: Option[String],
       BEX_PORCENTAJE: Option[BigDecimal],
       BEX_TIPO: Option[String]
-  ) extends ExternalDto
-}
+  ) extends CbroSerialization
+

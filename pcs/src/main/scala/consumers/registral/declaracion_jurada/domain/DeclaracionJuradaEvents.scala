@@ -1,12 +1,10 @@
 package consumers.registral.declaracion_jurada.domain
 
-import consumers.registral.declaracion_jurada.application.entities.{
-  DeclaracionJuradaExternalDto,
-  DeclaracionJuradaMessage
-}
+import consumers.registral.declaracion_jurada.application.entities.{DeclaracionJuradaExternalDto, DeclaracionJuradaMessage}
 import design_principles.actor_model.Event
+import serialization.CbroSerialization
 
-sealed trait DeclaracionJuradaEvents extends Event with DeclaracionJuradaMessage {
+sealed trait DeclaracionJuradaEvents extends Event with DeclaracionJuradaMessage with CbroSerialization{
   def sujetoId: String
   def objetoId: String
   def tipoObjeto: String
