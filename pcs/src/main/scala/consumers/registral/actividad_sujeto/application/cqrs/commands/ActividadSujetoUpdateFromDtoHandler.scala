@@ -10,6 +10,7 @@ import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 import consumers.registral.actividad_sujeto.infrastructure.json._
+import io.circe.syntax.EncoderOps
 class ActividadSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
   def handle(command: ActividadSujetoUpdateFromDto)(state: ActividadSujetoState)(replyTo: ActorRef[Success]) = {
@@ -30,14 +31,12 @@ class ActividadSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProdu
           Seq(
             KafkaKeyValue(
               command.aggregateRoot,
-              serialization.encode(
                 ActividadSujetoUpdatedFromDto(
                   command.deliveryId,
                   command.sujetoId,
                   command.actividadSujetoId,
                   command.registro
-                )
-              )
+                ).asJson.toString()
             )
           ),
           "ActividadSujetoUpdatedFromDto"

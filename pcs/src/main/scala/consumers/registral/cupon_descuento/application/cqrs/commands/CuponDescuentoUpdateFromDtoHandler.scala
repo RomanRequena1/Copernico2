@@ -9,6 +9,7 @@ import consumers.registral.cupon_descuento.domain.CuponDescuentoState
 import consumers.registral.cupon_descuento.domain.events.CuponDescuentoUpdatedFromDtoHandler
 import consumers.registral.cupon_descuento.infrastructure.json._
 import design_principles.actor_model.Response
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 
@@ -34,7 +35,6 @@ class CuponDescuentoUpdateFromDtoHandler(implicit messageProducer: MessageProduc
           Seq(
             KafkaKeyValue(
               command.aggregateRoot,
-              serialization.encode(
                 CuponDescuentoUpdatedFromDto(
                   command.deliveryId,
                   command.sujetoId,
@@ -43,8 +43,7 @@ class CuponDescuentoUpdateFromDtoHandler(implicit messageProducer: MessageProduc
                   command.obligacionId,
                   command.registro,
                   command.detallesCuponDescuento
-                )
-              )
+                ).asJson.toString()
             )
           ),
           "CuponDescuentoPersistedSnapshot"

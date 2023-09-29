@@ -19,6 +19,6 @@ class JuicioObnMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) e
 
   override def route: Route =
     (Seq(
-    JuicioObnStateAPI(actor, monitoring).route
+    //JuicioObnStateAPI(actor, monitoring).route
   ) ++ actorTransactions.map(_.route)) reduce (_ ~ _)
 }

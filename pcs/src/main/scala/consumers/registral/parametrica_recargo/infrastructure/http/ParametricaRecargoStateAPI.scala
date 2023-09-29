@@ -1,5 +1,5 @@
 package consumers.registral.parametrica_recargo.infrastructure.http
-
+/*
 import java.time.LocalDateTime
 
 import akka.http.scaladsl.server.Directives.{path, _}
@@ -31,3 +31,4 @@ object ParametricaRecargoStateAPI {
   def nestedRoute(name: String)(andThen: String => Route): Route = pathPrefix(name / Segment)(andThen)
   def withParametricaRecargo: Directive[Tuple1[String]] = path("parametrica_recargo" / Segment)
 }
+*/

@@ -1,22 +1,23 @@
 package consumers.registral.calendario.infrastructure
 
+import consumers.registral.calendario.application.entities.CalendarioCommands.CalendarioUpdateFromDto
 import consumers.registral.calendario.application.entities.CalendarioExternalDto
 import consumers.registral.calendario.application.entities.CalendarioResponses.GetCalendarioResponse
 import consumers.registral.calendario.domain.CalendarioEvents.CalendarioUpdatedFromDto
+import io.circe.{Decoder, Encoder}
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import play.api.libs.json.Json
-import serialization.EventSerializer
 
-package object json {
-  implicit val localdatetimeF = serialization.advanced.LocalDateTimeSerializer.dateFormat
+object json {
+  implicit val CalendarioUpdateFromDtoDecoder: Decoder[CalendarioUpdateFromDto] = deriveDecoder
+  implicit val CalendarioUpdateFromDtoEncoder: Encoder[CalendarioUpdateFromDto] = deriveEncoder
 
-  implicit val CalendarioF =
-    Json.format[CalendarioExternalDto]
+  implicit val CalendarioDecoder: Decoder[CalendarioExternalDto] = deriveDecoder
+  implicit val CalendarioEncoder: Encoder[CalendarioExternalDto] = deriveEncoder
 
-  implicit val CalendarioUpdateFromDtoF =
-    Json.format[consumers.registral.calendario.application.entities.CalendarioCommands.CalendarioUpdateFromDto]
-  implicit val CalendarioUpdatedFromDtoF =
-    Json.format[consumers.registral.calendario.domain.CalendarioEvents.CalendarioUpdatedFromDto]
-  class CalendarioUpdatedFromDtoFS extends EventSerializer[CalendarioUpdatedFromDto]
+  implicit val GetCalendarioResponseDecoder: Decoder[GetCalendarioResponse] = deriveDecoder
+  implicit val GetCalendarioResponseEncoder: Encoder[GetCalendarioResponse] = deriveEncoder
 
-  implicit val GetCalendarioResponseF = Json.format[GetCalendarioResponse]
+  implicit val CalendarioUpdatedFromDtoDecoder: Decoder[CalendarioUpdatedFromDto] = deriveDecoder
+  implicit val CalendarioUpdatedFromDtoEncoder: Encoder[CalendarioUpdatedFromDto] = deriveEncoder
 }

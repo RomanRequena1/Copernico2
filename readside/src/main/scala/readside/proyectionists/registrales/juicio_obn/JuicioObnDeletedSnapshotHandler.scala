@@ -7,10 +7,10 @@ import consumers.registral.juicio_obn.domain.JuicioObnEvents.JuicioObnDeletedFro
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
 import org.slf4j.LoggerFactory
-
+import io.circe.parser._
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-
+import consumers.registral.juicio_obn.infrastructure.json.json._
 class JuicioObnDeletedSnapshotHandler(
                                               implicit
                                               r: MonitoringAndCassandraWrite
@@ -28,8 +28,7 @@ class JuicioObnDeletedSnapshotHandler(
   import consumers.registral.juicio_obn.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, JuicioObnDeletedFromDto] =
-    serialization
-      .maybeDecode[JuicioObnDeletedFromDto](input)
+    decode[JuicioObnDeletedFromDto](input)
 
   override def processMessage(registro: JuicioObnDeletedFromDto): Future[Response.SuccessProcessing] = {
 

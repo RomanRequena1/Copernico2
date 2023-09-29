@@ -19,7 +19,7 @@ class SubastaMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) ext
 
   override def route: Route =
     (Seq(
-      SubastaStateAPI(actor, monitoring).route
+      //SubastaStateAPI(actor, monitoring).route
     ) ++ actorTransactions.map(_.route)) reduce (_ ~ _)
 
 }

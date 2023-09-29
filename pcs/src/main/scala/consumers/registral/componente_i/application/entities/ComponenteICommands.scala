@@ -15,7 +15,7 @@ object ComponenteICommands {
                                       objetoId: String,
                                       tipoObjeto: String,
                                       obligacionId: String,
-                                      registro: DetallesComponenteI,
+                                      registro: ComponenteITri,
                                       detallesComponenteI: Seq[DetallesComponenteI]
                                     ) extends ComponenteICommands
 
@@ -25,7 +25,7 @@ object ComponenteICommands {
                                objetoId: String,
                                tipoObjeto: String,
                                obligacionId: String,
-                               registro: DetallesComponenteI,
+                               registro: ComponenteITri,
                                detallesComponenteI: Seq[DetallesComponenteI]
                              ) extends ComponenteICommands
 }

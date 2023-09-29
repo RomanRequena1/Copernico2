@@ -1,4 +1,5 @@
 package consumers.registral.subasta.application.cqrs.commands
+import io.circe.syntax.EncoderOps
 
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
@@ -32,9 +33,9 @@ class SubastaUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
       .thenRun(state =>
         messageProducer.produce(Seq(
                                   KafkaKeyValue(command.aggregateRoot,
-                                                serialization.encode(
-                                                  event
-                                                ))
+
+                                                  event.asJson.toString()
+                                                )
                                 ),
                                 "SubastaUpdatedFromDto")(_ => ())
       )

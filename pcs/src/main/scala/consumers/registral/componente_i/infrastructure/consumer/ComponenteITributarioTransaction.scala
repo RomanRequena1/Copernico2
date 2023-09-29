@@ -2,16 +2,17 @@ package consumers.registral.componente_i.infrastructure.consumer
 
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.registral.componente_i.application.entities.ComponenteICommands
-import consumers.registral.componente_i.application.entities.ComponenteIExternalDto.{ComponenteITri, DetallesComponenteI}
+import consumers.registral.componente_i.application.entities.{ComponenteICommands, ComponenteITri, DetallesComponenteI}
 import consumers.registral.componente_i.infrastructure.dependency_injection.ComponenteIActor
-import consumers.registral.componente_i.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
-import serialization.maybeDecode
+import io.circe.parser._
+import consumers.registral.componente_i.infrastructure.json._
+import io.circe.Encoder
+
 import scala.concurrent.Future
 
 case class ComponenteITributarioTransaction(actor: ComponenteIActor, monitoring: Monitoring)(
@@ -24,14 +25,14 @@ case class ComponenteITributarioTransaction(actor: ComponenteIActor, monitoring:
   def topicError = "DGR-COP-COMPONENTE-I-TRI_error"
 
   def processInput(input: String): Either[Throwable, ComponenteITri] = {
-    maybeDecode[ComponenteITri](input)
+    decode[ComponenteITri](input)
   }
 
   override def processMessage(registro: ComponenteITri): Future[Response.SuccessProcessing] = {
-    implicit val b: Reads[Seq[DetallesComponenteI]] = Reads.seq(DetallesComponenteIF.reads)
+    implicit val b: Encoder[Seq[DetallesComponenteI]] = Encoder(DetallesComponenteIEncoder)
     val detalles: Option[Seq[DetallesComponenteI]] = for {
       bobDetalles <- (registro.BOB_OTROS_ATRIBUTOS.get \ "BOB_DETALLES").toOption
-      detalles = serialization.decodeF[Seq[DetallesComponenteI]](bobDetalles.toString())
+      detalles = decode[Seq[DetallesComponenteI]](bobDetalles.toString())
     } yield detalles
 
     val command: ComponenteICommands.ComponenteIUpdateFromDto =

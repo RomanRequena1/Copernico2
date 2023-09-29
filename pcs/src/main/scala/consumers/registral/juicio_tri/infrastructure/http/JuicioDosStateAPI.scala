@@ -1,5 +1,5 @@
 package consumers.registral.juicio_tri.infrastructure.http
-
+/*
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.juicio_tri.application.entities.JuicioDosQueries.GetStateJuicioDos
@@ -17,7 +17,7 @@ case class JuicioDosStateAPI (actor: JuicioDosActor, monitoring: Monitoring)(imp
   def getState: Route =
           withJuicioDos {juicioId =>
             queryState(actor, GetStateJuicioDos(juicioId))(
-              GetJuicioDosResponseF,
+              GetJuicioDosResponseEncoder,
               state => state.fechaUltMod == LocalDateTime.MIN
             )
           }
@@ -30,4 +30,4 @@ object JuicioDosStateAPI {
 
   def withJuicioDos = path("juicio" / Segment)
 
-}
+}*/

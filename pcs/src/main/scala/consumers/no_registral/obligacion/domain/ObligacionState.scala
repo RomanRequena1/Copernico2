@@ -1,8 +1,8 @@
 package consumers.no_registral.obligacion.domain
 
 import java.time.LocalDateTime
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionExternalDto, ObligacionesTri}
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.DetallesObligacion
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionesTri}
+import consumers.no_registral.obligacion.application.entities.DetallesObligacion
 import ddd._
 
 import scala.util.Try

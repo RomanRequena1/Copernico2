@@ -11,7 +11,7 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-
+import io.circe.syntax.EncoderOps
 class JuicioDosRemoveFromDtoHandler(implicit messageProducer: MessageProducer){
 
   def handle(command: JuicioDosRemoveFromDto)(state: JuicioDosState)(replyTo: ActorRef[Success]): ReplyEffect[JuicioDosRemovedFromDto, JuicioDosState] = {
@@ -36,13 +36,13 @@ class JuicioDosRemoveFromDtoHandler(implicit messageProducer: MessageProducer){
             Seq(
               KafkaKeyValue(
                 command.aggregateRoot,
-                serialization.encode(
+
                   JuicioDosRemovedFromDto(
                     command.juicioId,
                     command.deliveryId,
                     command.registro
-                  )
-                )
+
+                ).asJson.toString()
               )
             ),
             "JuicioDosRemovedSnapshot"

@@ -1,5 +1,5 @@
 package consumers.registral.juicio_obn.infrastructure.http
-
+/*
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.juicio_obn.application.entities.JuicioObnQueries.GetStateJuicioObn
@@ -39,4 +39,4 @@ object JuicioObnStateAPI {
   def withTipoObjeto: (String => Route) => Route = nestedRoute("tipo")
 
   def withObligacion = path("obligacion" / Segment)
-}
+}*/

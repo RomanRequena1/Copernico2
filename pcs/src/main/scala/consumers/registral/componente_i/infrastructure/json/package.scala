@@ -1,39 +1,35 @@
 package consumers.registral.componente_i.infrastructure
 
-import ai.x.play.json.Jsonx
-import consumers.registral.componente_i.application.entities.ComponenteICommands.ComponenteIUpdateFromDto
-import consumers.registral.componente_i.application.entities.ComponenteIExternalDto
-import consumers.registral.componente_i.application.entities.ComponenteIExternalDto.{ComponenteITri, DetallesComponenteI}
+import consumers.registral.componente_i.application.entities.ComponenteICommands.{ComponenteIRemove, ComponenteIUpdateFromDto}
 import consumers.registral.componente_i.application.entities.ComponenteIResponses.GetComponenteIResponse
+import consumers.registral.componente_i.application.entities.{ComponenteITri, DetallesComponenteI}
 import consumers.registral.componente_i.domain.ComponenteIEvents.{ComponenteIPersistedSnapshot, ComponenteIRemoved, ComponenteIUpdatedFromDto}
-import consumers.registral.componente_i.domain.ComponenteIState
-import io.leonard.TraitFormat
-import io.leonard.TraitFormat.traitFormat
-import play.api.libs.json.Json
-import serialization.EventSerializer
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
+import io.circe.{Decoder, Encoder}
+object json {
+  implicit val ComponenteIRemoveDecoder: Decoder[ComponenteIRemove] = deriveDecoder
+  implicit val ComponenteIRemoveEncoder: Encoder[ComponenteIRemove] = deriveEncoder
+  implicit val ComponenteIUpdateFromDtoDecoder: Decoder[ComponenteIUpdateFromDto] = deriveDecoder
+  implicit val ComponenteIUpdateFromDtoEncoder: Encoder[ComponenteIUpdateFromDto] = deriveEncoder
 
-package object json {
-  implicit val localdatetimeF = serialization.advanced.LocalDateTimeSerializer.dateFormat
+  implicit val ComponenteITriDecoder: Decoder[ComponenteITri] = deriveDecoder
+  implicit val ComponenteITriEncoder: Encoder[ComponenteITri] = deriveEncoder
 
-  //private implicit val ExencionFF = consumers.no_registral.objeto.infrastructure.json.ExencionF
+  implicit val DetallesComponenteIDecoder: Decoder[DetallesComponenteI] = deriveDecoder
+  implicit val DetallesComponenteIEncoder: Encoder[DetallesComponenteI] = deriveEncoder
 
-  implicit val DetallesComponenteIF = Json.format[DetallesComponenteI]
-  implicit val ComponenteIUpdateFromDtoF = Jsonx.formatCaseClass[ComponenteIUpdateFromDto]
+  implicit val GetComponenteIResponseDecoder: Decoder[GetComponenteIResponse] = deriveDecoder
+  implicit val GetComponenteIResponseEncoder: Encoder[GetComponenteIResponse] = deriveEncoder
 
-  implicit val ComponenteITriF = Jsonx.formatCaseClass[ComponenteITri]
-
-  implicit val ComponenteIDto: TraitFormat[ComponenteIExternalDto] =
-    (traitFormat[ComponenteIExternalDto]
-      << ComponenteITriF)
-  implicit val ComponenteIUpdatedFromDtoF = Jsonx.formatCaseClass[ComponenteIUpdatedFromDto]
-  class ComponenteIUpdatedFromDtoFS extends EventSerializer[ComponenteIUpdatedFromDto]
-  implicit val ComponenteIRemovedF = Jsonx.formatCaseClass[ComponenteIRemoved]
-  class ComponenteIRemovedFS extends EventSerializer[ComponenteIRemoved]
-
-  implicit val ComponenteIStateF = Jsonx.formatCaseClass[ComponenteIState]
+  implicit val ComponenteIPersistedSnapshotDecoder: Decoder[ComponenteIPersistedSnapshot] = deriveDecoder
+  implicit val ComponenteIPersistedSnapshotEncoder: Encoder[ComponenteIPersistedSnapshot] = deriveEncoder
 
 
-  implicit val ComponenteIPersistedSnapshotF = Json.format[ComponenteIPersistedSnapshot]
-  class ComponenteIPersistedSnapshotFS extends EventSerializer[ComponenteIPersistedSnapshot]
-  implicit val GetComponenteIResponseF = Json.format[GetComponenteIResponse]
+  implicit val ComponenteIUpdatedFromDtoDecoder: Decoder[ComponenteIUpdatedFromDto] = deriveDecoder
+  implicit val ComponenteIUpdatedFromDtoEncoder: Encoder[ComponenteIUpdatedFromDto] = deriveEncoder
+
+
+  implicit val ComponenteIRemovedDecoder: Decoder[ComponenteIRemoved] = deriveDecoder
+  implicit val ComponenteIRemovedEncoder: Encoder[ComponenteIRemoved] = deriveEncoder
+
 }

@@ -9,7 +9,8 @@ import design_principles.actor_model.Response.SuccessProcessing
 import org.slf4j.LoggerFactory
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-
+import io.circe.parser._
+import consumers.registral.juicio_tri.infrastructure.json._
 class JuicioDosRemovedSnapshotHandler(
                                      implicit r: MonitoringAndCassandraWrite
                                    ) extends ActorTransaction[JuicioDosRemovedFromDto](r.monitoring)(r.actorTransactionRequirements) {
@@ -25,8 +26,7 @@ class JuicioDosRemovedSnapshotHandler(
   import consumers.registral.juicio_tri.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, JuicioDosRemovedFromDto] =
-    serialization
-      .maybeDecode[JuicioDosRemovedFromDto](input)
+    decode[JuicioDosRemovedFromDto](input)
 
   override def processMessage(registro: JuicioDosRemovedFromDto): Future[Response.SuccessProcessing] = {
     val cassandra = new CassandraWriteProduction()

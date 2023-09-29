@@ -7,10 +7,10 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
 import org.slf4j.LoggerFactory
 import readside.proyectionists.registrales.juicio_obn.projections.JuicioObnUpdatedFromDtoProjection
-
+import consumers.registral.juicio_obn.infrastructure.json.json._
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-
+import io.circe.parser._
 class JuicioObnUpdatedSnapshotHandler(
                                               implicit
                                               r: MonitoringAndCassandraWrite
@@ -27,8 +27,7 @@ class JuicioObnUpdatedSnapshotHandler(
   import consumers.registral.juicio_obn.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, JuicioObnUpdatedFromDto] =
-    serialization
-      .maybeDecode[JuicioObnUpdatedFromDto](input)
+    decode[JuicioObnUpdatedFromDto](input)
 
   override def processMessage(registro: JuicioObnUpdatedFromDto): Future[Response.SuccessProcessing] = {
 

@@ -2,18 +2,16 @@ package consumers.registral.actividad_sujeto.infrastructure.kafka
 
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
+import consumers.registral.actividad_sujeto.application.entities.ActividadSujeto
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoCommands.ActividadSujetoUpdateFromDto
-import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoExternalDto.ActividadSujeto
 import consumers.registral.actividad_sujeto.infrastructure.dependency_injection.ActividadSujetoActor
-import consumers.registral.actividad_sujeto.infrastructure.json._
-import consumers.registral.juicio.infrastructure.dependency_injection.JuicioActor
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring
-import serialization.maybeDecode
-
+import io.circe.parser._
+import consumers.registral.actividad_sujeto.infrastructure.json._
+import io.circe.Encoder
 import scala.concurrent.Future
-import scala.util.Try
 
 case class ActividadSujetoTransaction(actor: ActividadSujetoActor, monitoring: Monitoring)(
     implicit
@@ -25,7 +23,7 @@ case class ActividadSujetoTransaction(actor: ActividadSujetoActor, monitoring: M
 
 
   def processInput(input: String): Either[Throwable, ActividadSujeto] =
-    maybeDecode[ActividadSujeto](input)
+    decode[ActividadSujeto](input)
 
   override def processMessage(registro: ActividadSujeto): Future[Response.SuccessProcessing] = {
     val command =

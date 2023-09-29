@@ -1,6 +1,6 @@
 package consumers.registral.juicio_tri.domain
 
-import consumers.registral.juicio_tri.application.entities.{JuicioDosExternalDto, JuicioDosMessage}
+import consumers.registral.juicio_tri.application.entities.{JuicioDosMessage, JuicioDosTri}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
@@ -10,12 +10,12 @@ object JuicioDosEvents {
   case class JuicioDosUpdatedFromDto(
                                    juicioId: String,
                                    deliveryId: BigInt,
-                                   registro: JuicioDosExternalDto)
+                                   registro: JuicioDosTri)
     extends JuicioDosEvents
 
   case class JuicioDosRemovedFromDto(
                              juicioId: String,
                              deliveryId: BigInt,
-                             registro: JuicioDosExternalDto)
+                             registro: JuicioDosTri)
     extends JuicioDosEvents
 }
