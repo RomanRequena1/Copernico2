@@ -2,14 +2,13 @@ package consumers.registral.parametrica_plan.infrastructure.kafka
 
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.registral.parametrica_plan.application.entities.ParametricaPlanCommands
-import consumers.registral.parametrica_plan.application.entities.ParametricaPlanExternalDto.ParametricaPlanTri
+import consumers.registral.parametrica_plan.application.entities.{ParametricaPlanCommands, ParametricaPlanTri}
 import consumers.registral.parametrica_plan.infrastructure.dependency_injection.ParametricaPlanActor
-import consumers.registral.parametrica_plan.infrastructure.json._
+import consumers.registral.parametrica_plan.infrastructure.json.ParametricaRecargoImplicits._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring
-import serialization.maybeDecode
+import io.circe.parser.decode
 
 import scala.concurrent.Future
 import scala.util.Try
@@ -23,7 +22,7 @@ case class ParametricaPlanTributarioTransaction(actor: ParametricaPlanActor, mon
   def topicError = "DGR-COP-PARAMPLAN-TRI_error"
 
   def processInput(input: String): Either[Throwable, ParametricaPlanTri] =
-    maybeDecode[ParametricaPlanTri](input)
+    decode[ParametricaPlanTri](input)
 
   override def processMessage(registro: ParametricaPlanTri): Future[Response.SuccessProcessing] = {
 

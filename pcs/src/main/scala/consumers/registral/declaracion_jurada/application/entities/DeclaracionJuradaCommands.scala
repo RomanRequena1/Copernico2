@@ -1,6 +1,5 @@
 package consumers.registral.declaracion_jurada.application.entities
 
-import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaExternalDto.DeclaracionJurada
 import serialization.CbroSerialization
 
 sealed trait DeclaracionJuradaCommands extends design_principles.actor_model.Command with DeclaracionJuradaMessage with CbroSerialization

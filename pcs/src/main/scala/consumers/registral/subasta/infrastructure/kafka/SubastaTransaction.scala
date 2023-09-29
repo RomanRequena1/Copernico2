@@ -8,7 +8,7 @@ import consumers.registral.subasta.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring
-import serialization.maybeDecode
+import io.circe.parser.decode
 
 import scala.concurrent.Future
 import scala.util.Try
@@ -22,7 +22,7 @@ case class SubastaTransaction(actor: SubastaActor, monitoring: Monitoring)(
   def topicError = "DGR-COP-SUBASTAS_error"
 
   def processInput(input: String): Either[Throwable, SubastaExternalDto] =
-    maybeDecode[SubastaExternalDto](input)
+    decode[SubastaExternalDto](input)
 
   override def processMessage(registro: SubastaExternalDto): Future[Response.SuccessProcessing] = {
     val command = SubastaCommands.SubastaUpdateFromDto(

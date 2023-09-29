@@ -3,7 +3,7 @@ package consumers.registral.juicio_obn.application.cqrs.commands
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
-import consumers.registral.juicio_obn.infrastructure.json._
+import consumers.registral.juicio_obn.infrastructure.json.json._
 import consumers.registral.juicio_obn.application.entities.JuicioObnCommands.JuicioObnUpdateFromDto
 import consumers.registral.juicio_obn.domain.JuicioObnEvents.JuicioObnUpdatedFromDto
 import consumers.registral.juicio_obn.domain.JuicioObnState
@@ -12,7 +12,7 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import org.slf4j.LoggerFactory
+import io.circe.syntax.EncoderOps
 
 class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProducer: MessageProducer) {
   def handle(
@@ -59,7 +59,7 @@ class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
             Seq(
               KafkaKeyValue(
                 command.aggregateRoot,
-                serialization.encode(
+
                   JuicioObnUpdatedFromDto(
                     command.deliveryId,
                     command.juicioObnId,
@@ -67,9 +67,8 @@ class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
                     command.tipoObjeto,
                     command.obligacionId,
                     command.registro
-                  )
-                )
-              )
+                  ).asJson.toString()
+                              )
             ),
             "JuicioObnUpdatedFronDto"
           )(_ => ())

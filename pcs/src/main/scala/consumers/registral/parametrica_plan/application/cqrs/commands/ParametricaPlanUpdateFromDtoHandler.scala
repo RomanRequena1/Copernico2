@@ -6,15 +6,16 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.parametrica_plan.application.entities.ParametricaPlanCommands.ParametricaPlanUpdateFromDto
 import consumers.registral.parametrica_plan.domain.ParametricaPlanEvents.ParametricaPlanUpdatedFromDto
 import consumers.registral.parametrica_plan.domain.{ParametricaPlanEvents, ParametricaPlanState}
-import consumers.registral.parametrica_plan.infrastructure.json._
+import consumers.registral.parametrica_plan.infrastructure.json.ParametricaRecargoImplicits._
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
+import io.circe.syntax.EncoderOps
 
 class ParametricaPlanUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
   def handle(command: ParametricaPlanUpdateFromDto)(state: ParametricaPlanState)(replyTo: ActorRef[Success]) = {
-    val event = ParametricaPlanEvents.ParametricaPlanUpdatedFromDto(
+    val event = ParametricaPlanUpdatedFromDto(
       command.deliveryId,
       bppRdlId = command.registro.BPP_RDL_ID,
       bppFpmId = command.registro.BPP_FPM_ID,
@@ -46,9 +47,9 @@ class ParametricaPlanUpdateFromDtoHandler(implicit messageProducer: MessageProdu
       .thenRun(state =>
         messageProducer.produce(Seq(
                                   KafkaKeyValue(command.aggregateRoot,
-                                                serialization.encode(
-                                                  event
-                                                ))
+
+                                                  event.asJson.toString()
+                                                )
                                 ),
                                 "ParametricaPlanUpdatedFromDto")(_ => ())
       )

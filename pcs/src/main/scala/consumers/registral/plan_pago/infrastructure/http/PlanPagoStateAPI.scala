@@ -1,5 +1,5 @@
 package consumers.registral.plan_pago.infrastructure.http
-
+/*
 import java.time.LocalDateTime
 
 import akka.http.scaladsl.server.Directives.{path, _}
@@ -40,3 +40,4 @@ object PlanPagoStateAPI {
   def withPlanPago = path("plan_pago" / Segment)
 
 }
+*/

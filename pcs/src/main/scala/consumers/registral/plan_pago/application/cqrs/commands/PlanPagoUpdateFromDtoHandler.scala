@@ -1,4 +1,5 @@
 package consumers.registral.plan_pago.application.cqrs.commands
+import io.circe.syntax.EncoderOps
 
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
@@ -32,9 +33,9 @@ class PlanPagoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
       .thenRun(state =>
         messageProducer.produce(Seq(
                                   KafkaKeyValue(command.aggregateRoot,
-                                                serialization.encode(
-                                                  event
-                                                ))
+
+                                                  event.asJson.toString()
+                                                )
                                 ),
                                 "PlanPagoUpdatedFromDto")(_ => ())
       )

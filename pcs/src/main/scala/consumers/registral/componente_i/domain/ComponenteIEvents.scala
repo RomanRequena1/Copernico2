@@ -1,7 +1,7 @@
 package consumers.registral.componente_i.domain
 
-import consumers.registral.componente_i.application.entities.ComponenteIExternalDto.DetallesComponenteI
-import consumers.registral.componente_i.application.entities.{ComponenteIExternalDto, ComponenteIMessage}
+import consumers.registral.componente_i.application.entities.DetallesComponenteI
+import consumers.registral.componente_i.application.entities.{ComponenteIMessage, ComponenteITri, DetallesComponenteI}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
@@ -21,7 +21,7 @@ object ComponenteIEvents {
                                           objetoId: String,
                                           tipoObjeto: String,
                                           obligacionId: String,
-                                          registro: Option[ComponenteIExternalDto],
+                                          registro: Option[ComponenteITri],
                                         ) extends ComponenteIEvents
   case class ComponenteIUpdatedFromDto(
                                        deliveryId: BigInt,
@@ -29,7 +29,7 @@ object ComponenteIEvents {
                                        objetoId: String,
                                        tipoObjeto: String,
                                        obligacionId: String,
-                                       registro: ComponenteIExternalDto,
+                                       registro: ComponenteITri,
                                        detallesComponenteI: Seq[DetallesComponenteI],
                                      ) extends ComponenteIEvents
 
@@ -39,6 +39,6 @@ object ComponenteIEvents {
                                 objetoId: String,
                                 tipoObjeto: String,
                                 obligacionId: String,
-                                registro: ComponenteIExternalDto,
+                                registro: ComponenteITri,
                               ) extends ComponenteIEvents
 }

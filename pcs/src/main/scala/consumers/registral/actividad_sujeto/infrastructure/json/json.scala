@@ -1,32 +1,23 @@
 package consumers.registral.actividad_sujeto.infrastructure
 
-import ai.x.play.json.Jsonx
+import consumers.registral.actividad_sujeto.application.entities.ActividadSujeto
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoCommands.ActividadSujetoUpdateFromDto
-import consumers.registral.actividad_sujeto.application.entities.{ActividadSujeto, ActividadSujetoExternalDto}
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoResponses.GetActividadSujetoResponse
-import consumers.registral.actividad_sujeto.domain.{ActividadSujetoEvents, ActividadSujetoState}
-import io.leonard.TraitFormat
-import io.leonard.TraitFormat.traitFormat
-import play.api.libs.json.Json
-import serialization.EventSerializer
+import consumers.registral.actividad_sujeto.domain.ActividadSujetoEvents.ActividadSujetoUpdatedFromDto
+import io.circe.{Decoder, Encoder}
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 
-package object json {
-  implicit val localdatetimeF = serialization.advanced.LocalDateTimeSerializer.dateFormat
 
-  implicit val ActividadesSujetoF =
-    Jsonx.formatCaseClass[
-      consumers.registral.actividad_sujeto.application.entities.ActividadSujeto
-    ]
+object json {
+  implicit val ActividadSujetoUpdateFromDtoDecoder: Decoder[ActividadSujetoUpdateFromDto] = deriveDecoder
+  implicit val ActividadSujetoUpdateFromDtoEncoder: Encoder[ActividadSujetoUpdateFromDto] = deriveEncoder
 
-  implicit val ActividadSujetoUpdateFromDtoF = Json.format[ActividadSujetoUpdateFromDto]
-  implicit val actividadSujetoDto: TraitFormat[ActividadSujeto] =
-    (traitFormat[ActividadSujeto]
-    << ActividadesSujetoF)
-  implicit val ActividadSujetoStateF =
-    Jsonx.formatCaseClass[ActividadSujetoState]
-  implicit val ActividadSujetoUpdatedF = Jsonx.formatCaseClass[ActividadSujetoEvents.ActividadSujetoUpdatedFromDto]
-  class ActividadSujetoUpdatedFromDtoFS extends EventSerializer[ActividadSujetoEvents.ActividadSujetoUpdatedFromDto]
+  implicit val ActividadSujetoDecoder: Decoder[ActividadSujeto] = deriveDecoder
+  implicit val ActividadSujetoEncoder: Encoder[ActividadSujeto] = deriveEncoder
 
-  implicit val GetActividadSujetoResponseF = Json.format[GetActividadSujetoResponse]
+  implicit val GetActividadSujetoResponseDecoder: Decoder[GetActividadSujetoResponse] = deriveDecoder
+  implicit val GetActividadSujetoResponseEncoder: Encoder[GetActividadSujetoResponse] = deriveEncoder
 
+  implicit val ActividadSujetoUpdatedFromDtoDecoder: Decoder[ActividadSujetoUpdatedFromDto] = deriveDecoder
+  implicit val ActividadSujetoUpdatedFromDtoEncoder: Encoder[ActividadSujetoUpdatedFromDto] = deriveEncoder
 }

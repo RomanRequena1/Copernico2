@@ -1,5 +1,5 @@
 package consumers.registral.parametrica_plan.infrastructure.http
-
+/*
 import java.time.LocalDateTime
 
 import akka.http.scaladsl.server.Directives.{path, _}
@@ -30,4 +30,4 @@ case class ParametricaPlanStateAPI(actor: ParametricaPlanActor, monitoring: Moni
 object ParametricaPlanStateAPI {
   def nestedRoute(name: String)(andThen: String => Route): Route = pathPrefix(name / Segment)(andThen)
   def withParametricaPlan: Directive[Tuple1[String]] = path("parametrica_plan" / Segment)
-}
+}*/

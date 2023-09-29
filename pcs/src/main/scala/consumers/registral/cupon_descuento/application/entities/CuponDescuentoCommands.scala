@@ -14,7 +14,7 @@ object CuponDescuentoCommands {
                                       objetoId: String,
                                       tipoObjeto: String,
                                       obligacionId: String,
-                                      registro: DetallesCuponDescuento,
+                                      registro: CuponDescuentoTri,
                                       detallesCuponDescuento: Seq[DetallesCuponDescuento]
                                     ) extends CuponDescuentoCommands
 
@@ -24,7 +24,7 @@ object CuponDescuentoCommands {
                                objetoId: String,
                                tipoObjeto: String,
                                obligacionId: String,
-                               registro: DetallesCuponDescuento,
+                               registro: CuponDescuentoTri,
                                detallesCuponDescuento: Seq[DetallesCuponDescuento]
                              ) extends CuponDescuentoCommands
 }

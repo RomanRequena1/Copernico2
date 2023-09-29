@@ -1,5 +1,5 @@
 package consumers.registral.subasta.infrastructure.http
-
+/*
 import java.time.LocalDateTime
 
 import akka.http.scaladsl.server.Directives.{path, _}
@@ -41,4 +41,4 @@ object SubastaStateAPI {
   def withTipoObjeto: (String => Route) => Route = nestedRoute("tipo") _
   def withSubasta = path("subasta" / Segment)
 
-}
+}*/

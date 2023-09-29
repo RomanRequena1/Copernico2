@@ -11,7 +11,7 @@ import consumers.registral.juicio_tri.infrastructure.json._
 import org.slf4j.LoggerFactory
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-
+import io.circe.parser._
 class JuicioDosUpdatedSnapshotHandler(
                                        implicit
                                        r: MonitoringAndCassandraWrite
@@ -27,8 +27,7 @@ class JuicioDosUpdatedSnapshotHandler(
 
 
   override def processInput(input: String): Either[Throwable, JuicioDosUpdatedFromDto] = {
-    serialization
-      .maybeDecode[JuicioDosUpdatedFromDto](input)
+    decode[JuicioDosUpdatedFromDto](input)
   }
 
   val cassandra = new CassandraWriteProduction()
