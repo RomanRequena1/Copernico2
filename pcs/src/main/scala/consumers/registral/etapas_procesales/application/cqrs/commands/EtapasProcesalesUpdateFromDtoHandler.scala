@@ -8,6 +8,7 @@ import consumers.registral.etapas_procesales.domain.EtapasProcesalesEvents.Etapa
 import consumers.registral.etapas_procesales.domain.EtapasProcesalesState
 import consumers.registral.etapas_procesales.infrastructure.json._
 import design_principles.actor_model.Response
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 
@@ -30,16 +31,13 @@ class EtapasProcesalesUpdateFromDtoHandler(implicit messageProducer: MessageProd
         messageProducer.produce(
           Seq(
             KafkaKeyValue(command.aggregateRoot,
-                          serialization.encode(
-                            EtapasProcesalesUpdatedFromDto(
-                              command.deliveryId,
-                              command.juicioId,
-                              command.etapaId,
-                              command.registro
-                            )
-                          ))
-          ),
-          "EtapasProcesalesUpdatedFromDto"
+                EtapasProcesalesUpdatedFromDto(
+                  command.deliveryId,
+                  command.juicioId,
+                  command.etapaId,
+                  command.registro
+                ).asJson.toString()
+              )), "EtapasProcesalesUpdatedFromDto"
         )(_ => ())
       )
       .thenReply(replyTo) { state =>

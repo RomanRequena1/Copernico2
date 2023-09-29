@@ -1,8 +1,7 @@
 package consumers.registral.juicio.application.entities
 
-import java.time.LocalDateTime
-import consumers.registral.juicio.application.entities.JuicioExternalDto.DetallesJuicio
 import serialization.CbroSerialization
+import java.time.LocalDateTime
 
 sealed trait JuicioResponses extends CbroSerialization
 object JuicioResponses {

@@ -24,7 +24,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       command.detallesObligacion,
       command.isAdheridoDebito
     )
-
     // check whether we are in initialization mode or not
     val initialization: String = {
       Try(System.getenv("INITIALIZATION")).getOrElse(null)

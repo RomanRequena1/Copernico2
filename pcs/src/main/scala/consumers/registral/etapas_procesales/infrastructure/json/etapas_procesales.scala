@@ -1,32 +1,31 @@
 package consumers.registral.etapas_procesales.infrastructure
 
 import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesCommands.EtapasProcesalesUpdateFromDto
-import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesExternalDto
-import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesExternalDto.{
-  EtapasProcesalesAnt,
-  EtapasProcesalesTri
-}
 import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesResponses.GetEtapasProcesalesResponse
+import consumers.registral.etapas_procesales.application.entities.{EtapasProcesalesAnt, EtapasProcesalesTri}
 import consumers.registral.etapas_procesales.domain.EtapasProcesalesEvents.EtapasProcesalesUpdatedFromDto
-import play.api.libs.json.Json
-import serialization.EventSerializer
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
+import io.circe.{Decoder, Encoder}
 
 package object json {
-  implicit val localdatetimeF = serialization.advanced.LocalDateTimeSerializer.dateFormat
 
-  implicit val EtapasProcesalesTriF = Json.format[EtapasProcesalesTri]
-  implicit val EtapasProcesalesAntF = Json.format[EtapasProcesalesAnt]
+  //COMMANDS
+  implicit val EtapasProcesalesUpdateFromDtoDecoder: Decoder[EtapasProcesalesUpdateFromDto] = deriveDecoder
+  implicit val EtapasProcesalesUpdateFromDtoEncoder: Encoder[EtapasProcesalesUpdateFromDto] = deriveEncoder
 
-  import io.leonard.TraitFormat
-  import io.leonard.TraitFormat.traitFormat
-  implicit val EtapasProcesalesExternalDtoF: TraitFormat[EtapasProcesalesExternalDto] =
-    (traitFormat[EtapasProcesalesExternalDto]
-    << EtapasProcesalesAntF
-    << EtapasProcesalesTriF)
+  //EXTERNALDTO
+  implicit val EtapasProcesalesTriDecoder: Decoder[EtapasProcesalesTri] = deriveDecoder
+  implicit val EtapasProcesalesTriEncoder: Encoder[EtapasProcesalesTri] = deriveEncoder
 
-  implicit val EtapasProcesalesUpdateFromDtoF = Json.format[EtapasProcesalesUpdateFromDto]
-  implicit val EtapasProcesalesUpdatedFromDtoF = Json.format[EtapasProcesalesUpdatedFromDto]
-  class EtapasProcesalesUpdatedFromDtoFS extends EventSerializer[EtapasProcesalesUpdatedFromDto]
+  implicit val EtapasProcesalesAntDecoder: Decoder[EtapasProcesalesAnt] = deriveDecoder
+  implicit val EtapasProcesalesAntEncoder: Encoder[EtapasProcesalesAnt] = deriveEncoder
 
-  implicit val GetEtapasProcesalesResponseF = Json.format[GetEtapasProcesalesResponse]
+  //RESPONSES
+  implicit val GetEtapasProcesalesResponseDecoder: Decoder[GetEtapasProcesalesResponse] = deriveDecoder
+  implicit val GetEtapasProcesalesResponseEncoder: Encoder[GetEtapasProcesalesResponse] = deriveEncoder
+
+  //EVENTS
+  implicit val EtapasProcesalesUpdatedFromDtoDecoder: Decoder[EtapasProcesalesUpdatedFromDto] = deriveDecoder
+  implicit val EtapasProcesalesUpdatedFromDtoEncoder: Encoder[EtapasProcesalesUpdatedFromDto] = deriveEncoder
+
 }

@@ -7,10 +7,9 @@ import consumers.registral.actividad_sujeto.application.entities.ActividadSujeto
 import consumers.registral.actividad_sujeto.infrastructure.dependency_injection.ActividadSujetoActor
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
-import monitoring.Monitoring
 import io.circe.parser._
-import consumers.registral.actividad_sujeto.infrastructure.json._
-import io.circe.Encoder
+import monitoring.Monitoring
+import serialization.maybeDecode
 import scala.concurrent.Future
 
 case class ActividadSujetoTransaction(actor: ActividadSujetoActor, monitoring: Monitoring)(

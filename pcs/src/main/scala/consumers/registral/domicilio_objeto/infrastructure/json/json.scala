@@ -1,37 +1,32 @@
 package consumers.registral.domicilio_objeto.infrastructure
 
-import ai.x.play.json.Jsonx
-import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoExternalDto
+import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoCommands.DomicilioObjetoUpdateFromDto
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoResponses.GetDomicilioObjetoResponse
-import consumers.registral.domicilio_objeto.domain.{DomicilioObjetoEvents, DomicilioObjetoState}
-import io.leonard.TraitFormat
-import io.leonard.TraitFormat.traitFormat
-import play.api.libs.json.Json
-import serialization.EventSerializer
+import consumers.registral.domicilio_objeto.application.entities.{DomicilioObjetoAnt, DomicilioObjetoTri}
+import consumers.registral.domicilio_objeto.domain.DomicilioObjetoEvents.DomicilioObjetoUpdatedFromDto
+import io.circe.{Decoder, Encoder}
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 
 package object json {
-  implicit val localdatetimeF = serialization.advanced.LocalDateTimeSerializer.dateFormat
 
-  implicit val DomicilioObjetoAntF =
-    Jsonx.formatCaseClass[
-      consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoExternalDto.DomicilioObjetoAnt
-    ]
+ //COMMANDS
+  implicit val DomicilioObjetoRemoveDecoder: Decoder[DomicilioObjetoUpdateFromDto] = deriveDecoder
+  implicit val DomicilioObjetoRemoveEncoder: Encoder[DomicilioObjetoUpdateFromDto] = deriveEncoder
 
-  implicit val DomicilioObjetoTriF =
-    Jsonx.formatCaseClass[
-      consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoExternalDto.DomicilioObjetoTri
-    ]
+  //EXTERNALDTO
+  implicit val DomicilioObjetoTriDecoder: Decoder[DomicilioObjetoTri] = deriveDecoder
+  implicit val DomicilioObjetoTriEncoder: Encoder[DomicilioObjetoTri] = deriveEncoder
 
-  implicit val domicilioObjetoDto: TraitFormat[DomicilioObjetoExternalDto] =
-    (traitFormat[DomicilioObjetoExternalDto]
-    << DomicilioObjetoAntF << DomicilioObjetoTriF)
+  implicit val DomicilioObjetoAntDecoder: Decoder[DomicilioObjetoAnt] = deriveDecoder
+  implicit val DomicilioObjetoAntEncoder: Encoder[DomicilioObjetoAnt] = deriveEncoder
 
-  implicit val DomicilioObjetoStateF =
-    Jsonx.formatCaseClass[DomicilioObjetoState]
+  //RESPONSES
+  implicit val GetDomicilioObjetoResponseDecoder: Decoder[GetDomicilioObjetoResponse] = deriveDecoder
+  implicit val GetDomicilioObjetoResponseEncoder: Encoder[GetDomicilioObjetoResponse] = deriveEncoder
 
-  implicit val DomiciliObjetoUpdatedF = Jsonx.formatCaseClass[DomicilioObjetoEvents.DomicilioObjetoUpdatedFromDto]
-  class DomicilioObjetoUpdatedFromDtoFS extends EventSerializer[DomicilioObjetoEvents.DomicilioObjetoUpdatedFromDto]
+  //EVENTS
+  implicit val DomicilioObjetoUpdatedFromDtoDecoder: Decoder[DomicilioObjetoUpdatedFromDto] = deriveDecoder
+  implicit val DomicilioObjetoUpdatedFromDtoEncoder: Encoder[DomicilioObjetoUpdatedFromDto] = deriveEncoder
 
-  implicit val GetDomicilioObjetoResponseF = Json.format[GetDomicilioObjetoResponse]
 
 }

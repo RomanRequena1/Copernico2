@@ -13,8 +13,8 @@ import java.time.format.DateTimeFormatter
 import scala.util.Try
 
 object ObligacionImplicits {
-  //COMMANDS
 
+  //COMMANDS
   implicit val ObligacionRemoveDecoder: Decoder[ObligacionRemove] = deriveDecoder
   implicit val ObligacionRemoveEncoder: Encoder[ObligacionRemove] = deriveEncoder
   implicit val ObligacionUpdateFromDtoDecoder: Decoder[ObligacionUpdateFromDto] = deriveDecoder
@@ -62,7 +62,6 @@ object ObligacionImplicits {
 
 
   //EVENTS
-
   implicit val ObligacionPersistedSnapshotDecoder: Decoder[ObligacionPersistedSnapshot] = deriveDecoder
   implicit val ObligacionPersistedSnapshotEncoder: Encoder[ObligacionPersistedSnapshot] = deriveEncoder
 

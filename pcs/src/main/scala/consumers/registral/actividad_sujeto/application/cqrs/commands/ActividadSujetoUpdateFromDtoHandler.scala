@@ -9,8 +9,8 @@ import consumers.registral.actividad_sujeto.domain.ActividadSujetoState
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import consumers.registral.actividad_sujeto.infrastructure.json._
 import io.circe.syntax.EncoderOps
+
 class ActividadSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
   def handle(command: ActividadSujetoUpdateFromDto)(state: ActividadSujetoState)(replyTo: ActorRef[Success]) = {

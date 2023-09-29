@@ -14,5 +14,4 @@ object ActividadSujetoCommands {
       deliveryId: BigInt,
       registro: ActividadSujeto
   ) extends ActividadSujetoCommands
-
 }
