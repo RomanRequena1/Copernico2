@@ -1,14 +1,11 @@
 package consumers.registral.parametrica_recargo.domain
 
 import java.time.LocalDateTime
-
-import consumers.registral.parametrica_recargo.application.entities.{
-  ParametricaRecargoExternalDto,
-  ParametricaRecargoMessage
-}
+import consumers.registral.parametrica_recargo.application.entities.{ParametricaRecargoExternalDto, ParametricaRecargoMessage}
 import design_principles.actor_model.Event
+import serialization.CbroSerialization
 
-sealed trait ParametricaRecargoEvents extends Event with ParametricaRecargoMessage {
+sealed trait ParametricaRecargoEvents extends Event with ParametricaRecargoMessage with CbroSerialization{
 
   override val parametricaRecargoId: String = bprIndice
 

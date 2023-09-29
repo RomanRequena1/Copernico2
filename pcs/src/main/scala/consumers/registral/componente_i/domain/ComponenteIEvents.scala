@@ -3,8 +3,9 @@ package consumers.registral.componente_i.domain
 import consumers.registral.componente_i.application.entities.ComponenteIExternalDto.DetallesComponenteI
 import consumers.registral.componente_i.application.entities.{ComponenteIExternalDto, ComponenteIMessage}
 import design_principles.actor_model.Event
+import serialization.CbroSerialization
 
-sealed trait ComponenteIEvents extends Event with ComponenteIMessage {
+sealed trait ComponenteIEvents extends Event with ComponenteIMessage with CbroSerialization{
   def sujetoId: String
   def objetoId: String
   def tipoObjeto: String

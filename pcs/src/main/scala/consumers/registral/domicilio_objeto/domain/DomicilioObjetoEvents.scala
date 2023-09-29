@@ -2,8 +2,9 @@ package consumers.registral.domicilio_objeto.domain
 
 import consumers.registral.domicilio_objeto.application.entities.{DomicilioObjetoExternalDto, DomicilioObjetoMessage}
 import design_principles.actor_model.Event
+import serialization.CbroSerialization
 
-sealed trait DomicilioObjetoEvents extends Event with DomicilioObjetoMessage
+sealed trait DomicilioObjetoEvents extends Event with DomicilioObjetoMessage with CbroSerialization
 
 object DomicilioObjetoEvents {
   case class DomicilioObjetoUpdatedFromDto(

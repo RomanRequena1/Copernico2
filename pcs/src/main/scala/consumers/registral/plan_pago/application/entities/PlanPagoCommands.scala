@@ -1,13 +1,15 @@
 package consumers.registral.plan_pago.application.entities
 
-sealed trait PlanPagoCommands extends design_principles.actor_model.Command with PlanPagoMessage
+import serialization.CbroSerialization
+
+sealed trait PlanPagoCommands extends design_principles.actor_model.Command with PlanPagoMessage with CbroSerialization
 object PlanPagoCommands {
   case class PlanPagoUpdateFromDto(objetoId: String,
                                    tipoObjeto: String,
                                    planPagoId: String,
                                    deliveryId: BigInt,
                                    sujetoId: String,
-                                   registro: PlanPagoExternalDto)
+                                   registro: PlanPagoTri)
       extends PlanPagoCommands
 
 }

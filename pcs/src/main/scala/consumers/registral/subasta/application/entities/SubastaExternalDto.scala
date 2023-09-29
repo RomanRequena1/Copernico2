@@ -1,5 +1,7 @@
 package consumers.registral.subasta.application.entities
 
+import serialization.CbroSerialization
+
 import java.time.LocalDateTime
 
 case class SubastaExternalDto(BSB_SUB_ID: String,
@@ -12,4 +14,4 @@ case class SubastaExternalDto(BSB_SUB_ID: String,
                               BSB_FECHA_INICIO: Option[LocalDateTime],
                               BSB_SUJ_IDENTIFICADOR_SUB: Option[String],
                               BSB_TIPO: Option[String])
-    extends ddd.ExternalDto
+    extends CbroSerialization

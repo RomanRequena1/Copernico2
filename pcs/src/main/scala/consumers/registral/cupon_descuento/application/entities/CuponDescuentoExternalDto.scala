@@ -1,24 +1,11 @@
 package consumers.registral.cupon_descuento.application.entities
 
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
 import ddd.ExternalDto
 import play.api.libs.json.JsObject
+import serialization.CbroSerialization
 
 import java.time.LocalDateTime
 
-sealed trait CuponDescuentoExternalDto extends ExternalDto {
-  def EV_ID: BigInt
-  def BOB_SUJ_IDENTIFICADOR: String
-  def BOB_SOJ_TIPO_OBJETO: String
-  def BOB_SOJ_IDENTIFICADOR: String
-  def BOB_SOJ_IDENTIFICADOR_2: Option[String]
-  def BOB_OBN_ID: String
-  def BOB_CANAL_ORIGEN: Option[String]
-  def BOB_OTROS_ATRIBUTOS: Option[JsObject]
-
-}
-
-object CuponDescuentoExternalDto {
 
   case class CuponDescuentoTri(
                               EV_ID: BigInt,
@@ -30,7 +17,7 @@ object CuponDescuentoExternalDto {
                               BOB_CANAL_ORIGEN: Option[String],
                               BOB_OTROS_ATRIBUTOS: Option[JsObject],
 
-                            ) extends CuponDescuentoExternalDto
+                            ) extends CbroSerialization
 
 
   case class DetallesCuponDescuento(
@@ -39,4 +26,3 @@ object CuponDescuentoExternalDto {
                                  bdc_baja: Option[Boolean],
                                  bdc_vencimiento:Option[LocalDateTime]
                                )
-}
