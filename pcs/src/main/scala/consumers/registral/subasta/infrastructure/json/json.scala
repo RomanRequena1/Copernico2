@@ -1,4 +1,4 @@
-package consumers.registral.subasta.infrastructure
+package consumers.registral.subasta.infrastructure.json
 
 import ai.x.play.json.Jsonx
 import consumers.registral.subasta.application.entities.SubastaCommands.SubastaUpdateFromDto

@@ -5,7 +5,6 @@ import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
 import consumers.registral.subasta.domain.SubastaState
 import consumers.registral.subasta.infrastructure.dependency_injection.SubastaActor
-import consumers.registral.subasta.infrastructure.http.SubastaStateAPI
 import consumers.registral.subasta.infrastructure.kafka.SubastaTransaction
 import design_principles.microservice.kafka_consumer_microservice.{
   KafkaConsumerMicroservice,

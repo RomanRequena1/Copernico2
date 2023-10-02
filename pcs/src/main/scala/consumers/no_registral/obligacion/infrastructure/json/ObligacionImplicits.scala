@@ -7,7 +7,8 @@ import consumers.no_registral.obligacion.application.entities.{DetallesObligacio
 import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionAddedExencion, ObligacionPersistedSnapshot, ObligacionRemoved, ObligacionUpdatedFromDto}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}
-
+import io.circe._
+import io.circe.syntax._
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.util.Try
@@ -36,8 +37,7 @@ object ObligacionImplicits {
   //implicit val ListDetallesObligacionesEncoder: Encoder[ListDetallesObligaciones] = deriveEncoder
   //implicit val ListDetallesObligacionesDecoder: Decoder[ListDetallesObligaciones] = deriveDecoder
 
-  import io.circe._
-  import io.circe.syntax._
+
 
   implicit val ListDetallesObligacionesEncoder: Encoder[ListDetallesObligaciones] =
     (detallesObligaciones: ListDetallesObligaciones) =>

@@ -1,7 +1,7 @@
 package consumers.registral.parametrica_recargo.infrastructure.json
 
 import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoCommands.ParametricaRecargoUpdateFromDto
-import consumers.registral.parametrica_recargo.application.entities.{ParametricaRecargoAnt,  ParametricaRecargoTri}
+import consumers.registral.parametrica_recargo.application.entities.{ParametricaRecargoAnt, ParametricaRecargoTri}
 import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoResponses.GetParametricaRecargoResponse
 import consumers.registral.parametrica_recargo.domain.ParametricaRecargoEvents.ParametricaRecargoUpdatedFromDto
 import play.api.libs.json.Json
@@ -10,6 +10,10 @@ import io.circe.{Decoder, Encoder}
 import io.leonard.TraitFormat
 import io.leonard.TraitFormat.traitFormat
 import play.api.libs.json.Json
+
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import scala.util.Try
 
 object json {
 
@@ -22,7 +26,12 @@ object json {
   //EVENT
   implicit val ParametricaRecargoUpdatedFromDtoDecoder: Decoder[ParametricaRecargoUpdatedFromDto] = deriveDecoder
   implicit val ParametricaRecargoUpdatedFromDtoEncoder: Encoder[ParametricaRecargoUpdatedFromDto] = deriveEncoder
-
+  implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
+    Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
+  }
+  implicit val localDateTimeEncoder: Encoder[LocalDateTime] = Encoder.encodeString.contramap { dateTime =>
+    dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
+  }
 
   //COMMAND
 

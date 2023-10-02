@@ -7,7 +7,7 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.subasta.application.entities.SubastaCommands.SubastaUpdateFromDto
 import consumers.registral.subasta.domain.SubastaEvents.SubastaUpdatedFromDto
 import consumers.registral.subasta.domain.SubastaState
-import consumers.registral.subasta.infrastructure.json._
+import consumers.registral.subasta.infrastructure.json.json._
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer

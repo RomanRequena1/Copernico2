@@ -1,13 +1,13 @@
 package readside.proyectionists.registrales.cupon_descuento.projectionists
 
-import consumers.registral.cupon_descuento.application.entities.CuponDescuentoExternalDto
+import consumers.registral.cupon_descuento.application.entities.CuponDescuentoTri
 import consumers.registral.cupon_descuento.domain.CuponDescuentoEvents
 
 final case class CuponDescuentoSnapshotProjection(
     event: CuponDescuentoEvents.CuponDescuentoPersistedSnapshot
 ) extends CuponDescuentoProjection {
 
-  val registro: Option[CuponDescuentoExternalDto] = event.registro
+  val registro: Option[CuponDescuentoTri] = event.registro
 
   val fromRegistro: Option[List[(String, Option[Serializable])]] = registro map { registro =>
     List(

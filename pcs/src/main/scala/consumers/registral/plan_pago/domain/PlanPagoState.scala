@@ -1,7 +1,7 @@
 package consumers.registral.plan_pago.domain
 
 import java.time.LocalDateTime
-import consumers.registral.plan_pago.application.entities.{PlanPagoExternalDto, PlanPagoMessage, PlanPagoTri}
+import consumers.registral.plan_pago.application.entities.{ PlanPagoMessage, PlanPagoTri}
 import cqrs.base_actor.typed.AbstractStateWithCQRS
 
 case class PlanPagoState(

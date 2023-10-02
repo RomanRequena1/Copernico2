@@ -26,7 +26,7 @@ import serialization.CbroSerialization
       BJU_PROCURADOR: Option[String],
       BJU_TIPO: Option[String],
       BJU_TOTAL: Option[BigDecimal],
-      BJU_OTROS_ATRIBUTOS: JsObject
+      BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio]
   ) extends CbroSerialization
 
   case class JuicioTri(
@@ -51,7 +51,7 @@ import serialization.CbroSerialization
       BJU_PROCURADOR: Option[String],
       BJU_TIPO: Option[String],
       BJU_TOTAL: Option[BigDecimal],
-      BJU_OTROS_ATRIBUTOS: JsObject
+      BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio]
   ) extends CbroSerialization
 
   case class DetallesJuicio(
@@ -70,3 +70,5 @@ import serialization.CbroSerialization
       BJU_ID_MARTILLERO_OTROS_ATRIBUTOS: Option[String], // null,
       BJU_MARTILLERO_OTROS_ATRIBUTOS: Option[String] // null
   )
+
+case class ListDetallesJuicio(BJU_DETALLES: List[DetallesJuicio]) extends CbroSerialization

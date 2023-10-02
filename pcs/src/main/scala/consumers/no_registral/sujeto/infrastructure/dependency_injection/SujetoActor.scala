@@ -18,6 +18,7 @@ import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoA
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import io.circe.syntax.EncoderOps
+import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[SujetoEvents, SujetoState](requirements.monitoring) {
 

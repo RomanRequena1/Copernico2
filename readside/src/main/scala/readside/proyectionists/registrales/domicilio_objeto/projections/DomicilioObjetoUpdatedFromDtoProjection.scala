@@ -1,11 +1,11 @@
 package readside.proyectionists.registrales.domicilio_objeto.projections
-import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoExternalDto
+import consumers.registral.domicilio_objeto.application.entities.{ DomicilioObjetoTri}
 import consumers.registral.domicilio_objeto.domain.DomicilioObjetoEvents
 
 case class DomicilioObjetoUpdatedFromDtoProjection(
     event: DomicilioObjetoEvents.DomicilioObjetoUpdatedFromDto
 ) extends DomicilioObjetoProjection {
-  val registro: DomicilioObjetoExternalDto = event.registro
+  val registro: DomicilioObjetoTri = event.registro
   def bindings: List[(String, Option[String])] = List(
     "bdo_barrio" -> registro.BDO_BARRIO,
     "bdo_calle" -> registro.BDO_CALLE,

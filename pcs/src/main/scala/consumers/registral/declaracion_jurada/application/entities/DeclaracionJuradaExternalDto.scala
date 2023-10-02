@@ -15,7 +15,7 @@ import serialization.CbroSerialization
                                BDJ_FISCALIZADA: Option[String],
                                BDJ_IMPUESTO_DETERMINADO: Option[BigDecimal],
                                BDJ_OBN_ID: Option[String],
-                               BDJ_OTROS_ATRIBUTOS: JsObject,
+                               BDJ_OTROS_ATRIBUTOS: Option[DetalleDeclaracionJurada],
                                BDJ_PERCEPCIONES: Option[BigDecimal],
                                BDJ_PERIODO: Option[String],
                                BDJ_PRORROGA: Option[LocalDateTime],
@@ -26,3 +26,4 @@ import serialization.CbroSerialization
                                BDJ_VENCIMIENTO: Option[LocalDateTime])
       extends  CbroSerialization
 
+case class DetalleDeclaracionJurada(BDJ_DETALLES: String) extends  CbroSerialization

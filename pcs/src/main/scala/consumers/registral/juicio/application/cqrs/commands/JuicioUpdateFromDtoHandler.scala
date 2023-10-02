@@ -11,6 +11,7 @@ import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 import consumers.registral.juicio.infrastructure.json._
 import consumers.registral.juicio_tri.domain.JuicioDosState
+import io.circe.syntax.EncoderOps
 class JuicioUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
   def handle(
       command: JuicioUpdateFromDto
@@ -35,7 +36,7 @@ class JuicioUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
           Seq(
             KafkaKeyValue(
               command.aggregateRoot,
-              serialization.encode(
+
                 JuicioUpdatedFromDto(
                   command.deliveryId,
                   command.sujetoId,
@@ -44,8 +45,8 @@ class JuicioUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
                   command.juicioId,
                   command.registro,
                   command.detallesJuicio
-                )
-              )
+
+              ).asJson.toString()
             )
           ),
           "JuicioUpdatedFromDto"

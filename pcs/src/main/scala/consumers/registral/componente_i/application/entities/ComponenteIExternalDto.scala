@@ -15,7 +15,7 @@ import java.time.LocalDateTime
                               BOB_SOJ_IDENTIFICADOR: String,
                               BOB_OBN_ID: String,
                               BOB_CANAL_ORIGEN: Option[String],
-                              BOB_OTROS_ATRIBUTOS: Option[JsObject],
+                              BOB_OTROS_ATRIBUTOS: Option[ListDetallesComponenteI],
 
                             ) extends CbroSerialization
   case class DetallesComponenteI(
@@ -23,4 +23,6 @@ import java.time.LocalDateTime
                                  ruleDescription: Option[String],
                                  amountCalculated:Option[String],
                                  distributionId:Option[String]
-                               )
+                               ) extends CbroSerialization
+
+case class ListDetallesComponenteI(BOB_DETALLES: List[DetallesComponenteI]) extends CbroSerialization

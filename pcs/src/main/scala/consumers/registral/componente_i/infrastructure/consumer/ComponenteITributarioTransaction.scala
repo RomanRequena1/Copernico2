@@ -2,6 +2,7 @@ package consumers.registral.componente_i.infrastructure.consumer
 
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
+import consumers.no_registral.obligacion.application.entities.DetallesObligacion
 import consumers.registral.componente_i.application.entities.{ComponenteICommands, ComponenteITri, DetallesComponenteI}
 import consumers.registral.componente_i.infrastructure.dependency_injection.ComponenteIActor
 import design_principles.actor_model.Response
@@ -10,7 +11,7 @@ import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import io.circe.parser._
-import consumers.registral.componente_i.infrastructure.json._
+import consumers.registral.componente_i.infrastructure.json.json._
 import io.circe.Encoder
 
 import scala.concurrent.Future
@@ -29,11 +30,12 @@ case class ComponenteITributarioTransaction(actor: ComponenteIActor, monitoring:
   }
 
   override def processMessage(registro: ComponenteITri): Future[Response.SuccessProcessing] = {
-    implicit val b: Encoder[Seq[DetallesComponenteI]] = Encoder(DetallesComponenteIEncoder)
-    val detalles: Option[Seq[DetallesComponenteI]] = for {
-      bobDetalles <- (registro.BOB_OTROS_ATRIBUTOS.get \ "BOB_DETALLES").toOption
-      detalles = decode[Seq[DetallesComponenteI]](bobDetalles.toString())
-    } yield detalles
+
+    val detalles = for {
+      otrosAtributos <- registro.BOB_OTROS_ATRIBUTOS
+      detalles = decode[Seq[DetallesComponenteI]](otrosAtributos.toString)
+
+    } yield (detalles.getOrElse(Seq()))
 
     val command: ComponenteICommands.ComponenteIUpdateFromDto =
       ComponenteICommands.ComponenteIUpdateFromDto(

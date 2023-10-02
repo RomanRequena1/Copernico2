@@ -4,7 +4,7 @@ import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.subasta.application.entities.{SubastaCommands, SubastaExternalDto}
 import consumers.registral.subasta.infrastructure.dependency_injection.SubastaActor
-import consumers.registral.subasta.infrastructure.json._
+import consumers.registral.subasta.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring

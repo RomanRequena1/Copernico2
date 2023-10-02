@@ -7,7 +7,7 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.plan_pago.application.entities.PlanPagoCommands.PlanPagoUpdateFromDto
 import consumers.registral.plan_pago.domain.PlanPagoEvents.PlanPagoUpdatedFromDto
 import consumers.registral.plan_pago.domain.PlanPagoState
-import consumers.registral.plan_pago.infrastructure.json._
+import consumers.registral.plan_pago.infrastructure.json.json._
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer

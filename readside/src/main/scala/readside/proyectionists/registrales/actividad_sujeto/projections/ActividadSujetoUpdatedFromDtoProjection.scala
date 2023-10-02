@@ -1,12 +1,12 @@
 package readside.proyectionists.registrales.actividad_sujeto.projections
 
-import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoExternalDto
+import consumers.registral.actividad_sujeto.application.entities.ActividadSujeto
 import consumers.registral.actividad_sujeto.domain.ActividadSujetoEvents
 
 case class ActividadSujetoUpdatedFromDtoProjection(
     event: ActividadSujetoEvents.ActividadSujetoUpdatedFromDto
 ) extends ActividadSujetoProjection {
-  val registro: ActividadSujetoExternalDto = event.registro
+  val registro: ActividadSujeto = event.registro
   def bindings: List[(String, Serializable)] = List(
     "bat_descripcion" -> registro.BAT_DESCRIPCION,
     "bat_fecha_fin" -> registro.BAT_FECHA_FIN,

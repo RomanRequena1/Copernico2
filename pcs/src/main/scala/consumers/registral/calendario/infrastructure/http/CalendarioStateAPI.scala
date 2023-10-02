@@ -9,25 +9,25 @@ import consumers.registral.calendario.infrastructure.dependency_injection.Calend
 import consumers.registral.calendario.infrastructure.json._
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
-
-case class CalendarioStateAPI(actor: CalendarioActor, monitoring: Monitoring)(
-    implicit
-    system: akka.actor.typed.ActorSystem[_]
-) extends QueryStateAPI(monitoring) {
-  import CalendarioStateAPI._
-  def getState: Route =
-    withCalendario { calendarioId =>
-      queryState(actor, GetStateCalendario(calendarioId))(
-        GetCalendarioResponseF,
-        state => state.fechaUltMod == LocalDateTime.MIN
-      )
-    }
-
-  def route: Route = GET(getState)
-}
-
-object CalendarioStateAPI {
-  def nestedRoute(name: String)(andThen: String => Route): Route = pathPrefix(name / Segment)(andThen)
-  def withCalendario = path("calendario" / Segment)
-
-}
+//
+//case class CalendarioStateAPI(actor: CalendarioActor, monitoring: Monitoring)(
+//    implicit
+//    system: akka.actor.typed.ActorSystem[_]
+//) extends QueryStateAPI(monitoring) {
+//  import CalendarioStateAPI._
+//  def getState: Route =
+//    withCalendario { calendarioId =>
+//      queryState(actor, GetStateCalendario(calendarioId))(
+//        GetCalendarioResponseF,
+//        state => state.fechaUltMod == LocalDateTime.MIN
+//      )
+//    }
+//
+//  def route: Route = GET(getState)
+//}
+//
+//object CalendarioStateAPI {
+//  def nestedRoute(name: String)(andThen: String => Route): Route = pathPrefix(name / Segment)(andThen)
+//  def withCalendario = path("calendario" / Segment)
+//
+//}

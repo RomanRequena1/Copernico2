@@ -1,11 +1,12 @@
-package consumers.registral.cupon_descuento.infrastructure
+package consumers.registral.cupon_descuento.infrastructure.json
 
 import consumers.registral.cupon_descuento.application.entities.CuponDescuentoCommands.{CuponDescuentoRemove, CuponDescuentoUpdateFromDto}
 import consumers.registral.cupon_descuento.application.entities.CuponDescuentoResponses.GetCuponDescuentoResponse
-import consumers.registral.cupon_descuento.application.entities.{CuponDescuentoTri, DetallesCuponDescuento}
+import consumers.registral.cupon_descuento.application.entities.{CuponDescuentoTri, DetallesCuponDescuento, ListDetalleCuponDescuenta}
 import consumers.registral.cupon_descuento.domain.CuponDescuentoEvents.{CuponDescuentoPersistedSnapshot, CuponDescuentoRemoved, CuponDescuentoUpdatedFromDto}
-import io.circe.{Decoder, Encoder}
+import io.circe.{Decoder, Encoder, Json}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
+import io.circe.syntax.EncoderOps
 
 object json {
   implicit val CuponDescuentoRemoveDecoder: Decoder[CuponDescuentoRemove] = deriveDecoder
@@ -24,7 +25,14 @@ object json {
 
   implicit val CuponDescuentoPersistedSnapshotDecoder: Decoder[CuponDescuentoPersistedSnapshot] = deriveDecoder
   implicit val CuponDescuentoPersistedSnapshotEncoder: Encoder[CuponDescuentoPersistedSnapshot] = deriveEncoder
+  implicit val ListDetallesComponenteIDecoder: Decoder[ListDetalleCuponDescuenta] = deriveDecoder
 
+
+  implicit val ListDetallesComponenteIEncoder: Encoder[ListDetalleCuponDescuenta] =
+    (detallesObligaciones: ListDetalleCuponDescuenta) =>
+      Json.obj(
+        "BOB_DETALLES" -> detallesObligaciones.BOB_DETALLES.asJson
+      )
 
   implicit val CuponDescuentoUpdatedFromDtoDecoder: Decoder[CuponDescuentoUpdatedFromDto] = deriveDecoder
   implicit val CuponDescuentoUpdatedFromDtoEncoder: Encoder[CuponDescuentoUpdatedFromDto] = deriveEncoder

@@ -10,7 +10,7 @@ import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import monitoring.Monitoring
 import readside.proyectionists.registrales.plan_pago.projections.PlanPagoUpdatedFromDtoProjection
-import consumers.registral.plan_pago.infrastructure.json._
+import consumers.registral.plan_pago.infrastructure.json.json._
 import io.circe.parser._
 class PlanPagoUpdatedFromDtoHandler(
     implicit

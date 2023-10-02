@@ -6,7 +6,6 @@ import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
 import consumers.registral.declaracion_jurada.domain.DeclaracionJuradaState
 import consumers.registral.declaracion_jurada.infrastructure.dependency_injection.DeclaracionJuradaActor
-import consumers.registral.declaracion_jurada.infrastructure.http.DeclaracionJuradaStateAPI
 import consumers.registral.declaracion_jurada.infrastructure.kafka.DeclaracionJuradaTransaction
 import design_principles.actor_model.mechanism.tell_supervision.TellSupervisor
 import design_principles.microservice.kafka_consumer_microservice.{
@@ -23,7 +22,7 @@ class DeclaracionJuradaMicroservice(implicit m: KafkaConsumerMicroserviceRequire
 
   override def route: Route =
     (Seq(
-      DeclaracionJuradaStateAPI(actor, monitoring).route
+      //DeclaracionJuradaStateAPI(actor, monitoring).route
     ) ++ actorTransactions.map(_.route)) reduce (_ ~ _)
 
 }

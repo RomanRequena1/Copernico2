@@ -2,7 +2,7 @@ package consumers.registral.etapas_procesales.infrastructure
 
 import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesCommands.EtapasProcesalesUpdateFromDto
 import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesResponses.GetEtapasProcesalesResponse
-import consumers.registral.etapas_procesales.application.entities.{EtapasProcesalesAnt, EtapasProcesalesTri}
+import consumers.registral.etapas_procesales.application.entities.{DetalleEtapasProcesalesTri, EtapasProcesalesAnt, EtapasProcesalesTri}
 import consumers.registral.etapas_procesales.domain.EtapasProcesalesEvents.EtapasProcesalesUpdatedFromDto
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}
@@ -19,6 +19,9 @@ package object json {
 
   implicit val EtapasProcesalesAntDecoder: Decoder[EtapasProcesalesAnt] = deriveDecoder
   implicit val EtapasProcesalesAntEncoder: Encoder[EtapasProcesalesAnt] = deriveEncoder
+
+  implicit val DetalleEtapasProcesalesTriDecoder: Decoder[DetalleEtapasProcesalesTri] = deriveDecoder
+  implicit val DetalleEtapasProcesalesTriEncoder: Encoder[DetalleEtapasProcesalesTri] = deriveEncoder
 
   //RESPONSES
   implicit val GetEtapasProcesalesResponseDecoder: Decoder[GetEtapasProcesalesResponse] = deriveDecoder

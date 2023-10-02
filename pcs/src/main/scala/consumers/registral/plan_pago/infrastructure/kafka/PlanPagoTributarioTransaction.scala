@@ -4,7 +4,7 @@ import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.plan_pago.application.entities.{PlanPagoCommands, PlanPagoTri}
 import consumers.registral.plan_pago.infrastructure.dependency_injection.PlanPagoActor
-import consumers.registral.plan_pago.infrastructure.json._
+import consumers.registral.plan_pago.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring

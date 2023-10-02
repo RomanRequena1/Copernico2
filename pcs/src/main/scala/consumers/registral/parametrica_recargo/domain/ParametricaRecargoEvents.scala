@@ -1,7 +1,7 @@
 package consumers.registral.parametrica_recargo.domain
 
 import java.time.LocalDateTime
-import consumers.registral.parametrica_recargo.application.entities.{ParametricaRecargoExternalDto, ParametricaRecargoMessage, ParametricaRecargoTri}
+import consumers.registral.parametrica_recargo.application.entities.{ ParametricaRecargoMessage, ParametricaRecargoTri}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 

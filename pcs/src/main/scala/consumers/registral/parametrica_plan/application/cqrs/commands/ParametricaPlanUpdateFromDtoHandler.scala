@@ -2,7 +2,7 @@ package consumers.registral.parametrica_plan.application.cqrs.commands
 
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
-import akka.persistence.typed.scaladsl.Effect
+import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
 import consumers.registral.parametrica_plan.application.entities.ParametricaPlanCommands.ParametricaPlanUpdateFromDto
 import consumers.registral.parametrica_plan.domain.ParametricaPlanEvents.ParametricaPlanUpdatedFromDto
 import consumers.registral.parametrica_plan.domain.{ParametricaPlanEvents, ParametricaPlanState}
@@ -14,7 +14,7 @@ import io.circe.syntax.EncoderOps
 
 class ParametricaPlanUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
-  def handle(command: ParametricaPlanUpdateFromDto)(state: ParametricaPlanState)(replyTo: ActorRef[Success]) = {
+  def handle(command: ParametricaPlanUpdateFromDto)(state: ParametricaPlanState)(replyTo: ActorRef[Success]): ReplyEffect[ParametricaPlanUpdatedFromDto, ParametricaPlanState] = {
     val event = ParametricaPlanUpdatedFromDto(
       command.deliveryId,
       bppRdlId = command.registro.BPP_RDL_ID,

@@ -5,7 +5,6 @@ import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
 import consumers.registral.tramite.domain.TramiteState
 import consumers.registral.tramite.infrastructure.dependency_injection.TramiteActor
-import consumers.registral.tramite.infrastructure.http.TramiteStateAPI
 import consumers.registral.tramite.infrastructure.kafka.TramiteTransaction
 import design_principles.microservice.kafka_consumer_microservice.{
   KafkaConsumerMicroservice,
@@ -18,7 +17,7 @@ class TramiteMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) ext
 
   override def route: Route =
     (Seq(
-      TramiteStateAPI(actor, monitoring).route
+      //TramiteStateAPI(actor, monitoring).route
     ) ++ actorTransactions.map(_.route)) reduce (_ ~ _)
 
 }

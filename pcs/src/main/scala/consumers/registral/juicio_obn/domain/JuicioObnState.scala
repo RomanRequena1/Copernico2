@@ -1,6 +1,5 @@
 package consumers.registral.juicio_obn.domain
 
-import consumers.registral.juicio.application.entities.JuicioExternalDto.JuicioTri
 import consumers.registral.juicio_obn.application.entities.{JuicioObnMessage, JuicioObnTri}
 import cqrs.base_actor.typed.AbstractStateWithCQRS
 

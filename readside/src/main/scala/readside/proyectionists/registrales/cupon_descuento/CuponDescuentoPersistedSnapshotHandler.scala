@@ -7,7 +7,8 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
 import org.slf4j.LoggerFactory
 import readside.proyectionists.registrales.cupon_descuento.projectionists.CuponDescuentoSnapshotProjection
-
+import consumers.registral.cupon_descuento.infrastructure.json.json._
+import io.circe.parser._
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
@@ -23,10 +24,9 @@ class CuponDescuentoPersistedSnapshotHandler(
 
   override def topicError: String = "CuponDescuentoPersistedSnapshot_error"
 
-  import consumers.registral.cupon_descuento.infrastructure.json._
+  import consumers.registral.cupon_descuento.infrastructure.json.json._
   override def processInput(input: String): Either[Throwable, CuponDescuentoPersistedSnapshot] =
-    serialization
-      .maybeDecode[CuponDescuentoPersistedSnapshot](input)
+    decode[CuponDescuentoPersistedSnapshot](input)
 
   override def processMessage(registro: CuponDescuentoPersistedSnapshot): Future[Response.SuccessProcessing] = {
     //log.error("llego event")

@@ -9,8 +9,8 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import io.circe.parser._
 import monitoring.Monitoring
-import serialization.maybeDecode
 import scala.concurrent.Future
+import consumers.registral.actividad_sujeto.infrastructure.json.json._
 
 case class ActividadSujetoTransaction(actor: ActividadSujetoActor, monitoring: Monitoring)(
     implicit

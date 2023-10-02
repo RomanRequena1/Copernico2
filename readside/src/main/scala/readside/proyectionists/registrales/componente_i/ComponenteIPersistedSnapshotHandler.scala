@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory
 import readside.proyectionists.registrales.componente_i.projectionists.ComponenteISnapshotProjection
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-import consumers.registral.componente_i.infrastructure.json._
+import consumers.registral.componente_i.infrastructure.json.json._
+import io.circe.parser._
 class ComponenteIPersistedSnapshotHandler(
                                           implicit
                                           r: MonitoringAndCassandraWrite
@@ -22,8 +23,7 @@ class ComponenteIPersistedSnapshotHandler(
 
   override def topicError: String = "ComponenteIPersistedSnapshot_error"
   override def processInput(input: String): Either[Throwable, ComponenteIPersistedSnapshot] =
-    serialization
-      .maybeDecode[ComponenteIPersistedSnapshot](input)
+    decode[ComponenteIPersistedSnapshot](input)
   override def processMessage(registro: ComponenteIPersistedSnapshot): Future[Response.SuccessProcessing] = {
     //log.error("llego event")
     //recordLag(calculateLag(registro.deliveryId.toString))

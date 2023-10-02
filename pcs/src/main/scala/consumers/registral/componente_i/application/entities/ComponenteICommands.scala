@@ -1,7 +1,6 @@
 package consumers.registral.componente_i.application.entities
 
-import consumers.registral.componente_i.application.entities.ComponenteIExternalDto.DetallesComponenteI
-import consumers.registral.cupon_descuento.application.entities.CuponDescuentoExternalDto.DetallesCuponDescuento
+
 import design_principles.actor_model.Command
 import serialization.CbroSerialization
 

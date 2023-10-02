@@ -6,7 +6,7 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.calendario.application.entities.CalendarioCommands.CalendarioUpdateFromDto
 import consumers.registral.calendario.domain.CalendarioEvents.CalendarioUpdatedFromDto
 import consumers.registral.calendario.domain.CalendarioState
-import consumers.registral.calendario.infrastructure.json._
+import consumers.registral.calendario.infrastructure.json.json._
 import design_principles.actor_model.Response
 import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue

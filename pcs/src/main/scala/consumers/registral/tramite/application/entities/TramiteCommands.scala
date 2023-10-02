@@ -1,6 +1,5 @@
 package consumers.registral.tramite.application.entities
 
-import consumers.registral.tramite.application.entities.TramiteExternalDto.Tramite
 import design_principles.actor_model.Command
 import serialization.CbroSerialization
 

@@ -1,12 +1,12 @@
 package readside.proyectionists.registrales.juicio_tri.projections
 
-import consumers.registral.juicio_tri.application.entities.JuicioDosExternalDto
+import consumers.registral.juicio_tri.application.entities.{JuicioDosTri}
 import consumers.registral.juicio_tri.domain.JuicioDosEvents
 
 case class JuicioDosUpdatedFromDtoProjection(
                                             event: JuicioDosEvents.JuicioDosUpdatedFromDto
                                             ) extends JuicioDosProjection {
-  val registro: JuicioDosExternalDto = event.registro
+  val registro: JuicioDosTri = event.registro
 
   def bindings: List[(String, Serializable)] = List(
     "bju_jui_id" -> registro.BJU_JUI_ID,

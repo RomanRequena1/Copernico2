@@ -1,11 +1,12 @@
-package consumers.registral.componente_i.infrastructure
+package consumers.registral.componente_i.infrastructure.json
 
 import consumers.registral.componente_i.application.entities.ComponenteICommands.{ComponenteIRemove, ComponenteIUpdateFromDto}
 import consumers.registral.componente_i.application.entities.ComponenteIResponses.GetComponenteIResponse
-import consumers.registral.componente_i.application.entities.{ComponenteITri, DetallesComponenteI}
+import consumers.registral.componente_i.application.entities.{ComponenteITri, DetallesComponenteI, ListDetallesComponenteI}
 import consumers.registral.componente_i.domain.ComponenteIEvents.{ComponenteIPersistedSnapshot, ComponenteIRemoved, ComponenteIUpdatedFromDto}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
-import io.circe.{Decoder, Encoder}
+import io.circe.{Decoder, Encoder, Json}
+import io.circe.syntax.EncoderOps
 object json {
   implicit val ComponenteIRemoveDecoder: Decoder[ComponenteIRemove] = deriveDecoder
   implicit val ComponenteIRemoveEncoder: Encoder[ComponenteIRemove] = deriveEncoder
@@ -14,6 +15,16 @@ object json {
 
   implicit val ComponenteITriDecoder: Decoder[ComponenteITri] = deriveDecoder
   implicit val ComponenteITriEncoder: Encoder[ComponenteITri] = deriveEncoder
+
+
+  implicit val ListDetallesComponenteIDecoder: Decoder[ListDetallesComponenteI] = deriveDecoder
+
+
+  implicit val ListDetallesComponenteIEncoder: Encoder[ListDetallesComponenteI] =
+    (detallesObligaciones: ListDetallesComponenteI) =>
+      Json.obj(
+        "BOB_DETALLES" -> detallesObligaciones.BOB_DETALLES.asJson
+      )
 
   implicit val DetallesComponenteIDecoder: Decoder[DetallesComponenteI] = deriveDecoder
   implicit val DetallesComponenteIEncoder: Encoder[DetallesComponenteI] = deriveEncoder

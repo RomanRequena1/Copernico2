@@ -1,4 +1,4 @@
-package consumers.registral.contacto.application
+package consumers.registral.contacto.application.json
 
 import consumers.registral.contacto.domain.ContactoCommands.ContactoUpdateFromDto
 import consumers.registral.contacto.domain.ContactoEvents.ContactoUpdatedFromDto
@@ -10,6 +10,9 @@ import play.api.libs.json.Json
  object json {
    implicit val ContactoUpdateFromDtoDecoder: Decoder[ContactoUpdateFromDto] = deriveDecoder
    implicit val ContactoUpdateFromDtoEncoder: Encoder[ContactoUpdateFromDto] = deriveEncoder
+
+   implicit val ContactoExternalDtoDecoder: Decoder[ContactoExternalDto] = deriveDecoder
+   implicit val ContactoExternalDtoEncoder: Encoder[ContactoExternalDto] = deriveEncoder
 
    implicit val ContactoUpdatedFromDtoDecoder: Decoder[ContactoUpdatedFromDto] = deriveDecoder
    implicit val ContactoUpdatedFromDtoEncoder: Encoder[ContactoUpdatedFromDto] = deriveEncoder

@@ -19,7 +19,7 @@ import serialization.CbroSerialization
                          BPL_IMPORTE_FINANCIADO: Option[BigDecimal],
                          BPL_NRO_REFERENCIA: Option[String],
                          BPL_TIPO: Option[String],
-                         BPL_OTROS_ATRIBUTOS: JsObject)
+                         BPL_OTROS_ATRIBUTOS: Option[ListaDetallePlanPlago])
       extends CbroSerialization
 
   case class PlanPagoAnt(EV_ID: String,
@@ -36,5 +36,15 @@ import serialization.CbroSerialization
                          BPL_IMPORTE_FINANCIADO: Option[BigDecimal],
                          BPL_NRO_REFERENCIA: Option[String],
                          BPL_TIPO: Option[String],
-                         BPL_OTROS_ATRIBUTOS: JsObject)
+                         BPL_OTROS_ATRIBUTOS: Option[ListaDetallePlanPlago])
       extends CbroSerialization
+case class DetallePlanPago(
+    BPL_OBN_ID : Option[String],
+    BPL_PERIODO : Option[String],
+    BPL_CUOTA : Option[String],
+    BPL_VENCIMIENTO : Option[LocalDateTime],
+    BPL_OBJETO : Option[String],
+    BPL_TIPO_OBJETO : Option[String]
+                          ) extends CbroSerialization
+
+case class ListaDetallePlanPlago(BPL_DETALLES: List[DetallePlanPago]) extends CbroSerialization

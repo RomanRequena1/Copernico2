@@ -24,7 +24,7 @@ class SujetoSnapshotPersistedHandler(
   override def topicRetry: String =  "SujetoSnapshotPersisted_retry"
   override def topicError: String = "SujetoSnapshotPersisted_error"
 
-  import consumers.no_registral.sujeto.infrastructure.json._
+  import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 
   override def processInput(input: String): Either[Throwable, SujetoSnapshotPersisted] =
     decode[SujetoSnapshotPersisted](input)

@@ -8,7 +8,7 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring
 import io.circe.parser._
-import consumers.registral.calendario.infrastructure.json._
+import consumers.registral.calendario.infrastructure.json.json._
 import io.circe.Encoder
 import scala.concurrent.Future
 

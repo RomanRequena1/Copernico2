@@ -1,11 +1,11 @@
 package readside.proyectionists.registrales.tramite.projections
-import consumers.registral.tramite.application.entities.TramiteExternalDto
+import consumers.registral.tramite.application.entities.{Tramite, TramiteExternalDto}
 import consumers.registral.tramite.domain.TramiteEvents
 
 case class TramiteUpdatedFromDtoProjection(
     event: TramiteEvents.TramiteUpdatedFromDto
 ) extends TramiteProjection {
-  val registro: TramiteExternalDto.Tramite = event.registro
+  val registro: Tramite = event.registro
 
   def bindings: List[(String, IterableOnce[Serializable] with Equals)] = List(
     "btr_archivos" -> registro.BTR_ARCHIVOS,

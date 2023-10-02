@@ -78,9 +78,9 @@ case class JuicioObnTributarioTransaction(actor: JuicioObnActor, monitoring: Mon
   private def extractOtrosAtributos(obn: JuicioObnTri) = {
     val detalles = for {
       otrosAtributos <- obn.BJD_OTROS_ATRIBUTOS
-      bobDetalles <- (otrosAtributos \ "BJD_DETALLES").toOption
-      detalles = decode[Seq[DetallesJuicioTri]](bobDetalles.toString)
-    } yield (detalles)
+      detalles = decode[Seq[DetallesJuicioTri]](otrosAtributos.toString)
+
+    } yield (detalles.getOrElse(Seq()))
     detalles
   }
 

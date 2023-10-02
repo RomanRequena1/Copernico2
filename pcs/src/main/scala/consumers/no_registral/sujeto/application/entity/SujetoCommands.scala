@@ -1,6 +1,5 @@
 package consumers.no_registral.sujeto.application.entity
 
-import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.{SujetoAnt, SujetoTri}
 import ddd.Deliverable
 import design_principles.actor_model.Command
 import serialization.CbroSerialization

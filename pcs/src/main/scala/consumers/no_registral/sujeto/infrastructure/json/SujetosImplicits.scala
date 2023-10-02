@@ -7,6 +7,10 @@ import consumers.no_registral.sujeto.domain.SujetoEvents.{SujetoBajaFromObjetoSe
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import scala.util.Try
+
 
 object SujetosImplicits {
   //COMMANDS
@@ -56,5 +60,12 @@ object SujetosImplicits {
 
   implicit val SujetoBajaFromObjetoSetDecoder: Decoder[SujetoBajaFromObjetoSet] = deriveDecoder
   implicit val SujetoBajaFromObjetoSetEncoder: Encoder[SujetoBajaFromObjetoSet] = deriveEncoder
+
+  implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
+    Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
+  }
+  implicit val localDateTimeEncoder: Encoder[LocalDateTime] = Encoder.encodeString.contramap { dateTime =>
+    dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
+  }
 
 }

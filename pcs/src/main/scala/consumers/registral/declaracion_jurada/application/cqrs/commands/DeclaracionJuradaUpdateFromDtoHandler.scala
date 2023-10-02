@@ -6,7 +6,7 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaCommands.DeclaracionJuradaUpdateFromDto
 import consumers.registral.declaracion_jurada.domain.DeclaracionJuradaEvents.DeclaracionJuradaUpdatedFromDto
 import consumers.registral.declaracion_jurada.domain.DeclaracionJuradaState
-import consumers.registral.declaracion_jurada.infrastructure.json._
+import consumers.registral.declaracion_jurada.infrastructure.json.json._
 import design_principles.actor_model.Response
 import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue

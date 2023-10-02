@@ -5,7 +5,6 @@ import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
 import consumers.registral.parametrica_recargo.domain.ParametricaRecargoState
 import consumers.registral.parametrica_recargo.infrastructure.dependency_injection.ParametricaRecargoActor
-import consumers.registral.parametrica_recargo.infrastructure.http.ParametricaRecargoStateAPI
 import consumers.registral.parametrica_recargo.infrastructure.kafka.ParametricaRecargoTributarioTransaction
 import design_principles.microservice.kafka_consumer_microservice.{
   KafkaConsumerMicroservice,

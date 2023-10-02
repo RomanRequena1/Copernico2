@@ -3,13 +3,13 @@ package consumers.registral.juicio_obn.infrastructure.json
 import ai.x.play.json.Jsonx
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionRemove
 import consumers.registral.juicio_obn.application.entities.JuicioObnCommands.{JuicioObnDeleteFromDto, JuicioObnUpdateFromDto}
-import consumers.registral.juicio_obn.application.entities.{DetallesJuicioTri, JuicioObnTri}
+import consumers.registral.juicio_obn.application.entities.{DetallesJuicioTri, JuicioObnTri, ListDetallesJuicioTri}
 import consumers.registral.juicio_obn.application.entities.JuicioObnResponses.GetJuicioObnResponses
 import consumers.registral.juicio_obn.domain.JuicioObnEvents.{JuicioObnDeletedFromDto, JuicioObnUpdatedFromDto}
-import io.circe.{Decoder, Encoder}
+import io.circe.{Decoder, Encoder, Json}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
-import play.api.libs.json.Json
-import serialization.EventSerializer
+import io.circe.syntax.EncoderOps
+
 
 
 object json {
@@ -36,7 +36,14 @@ object json {
 
   implicit val JuicioObnDeleteFromDtoDecoder: Decoder[JuicioObnDeleteFromDto] = deriveDecoder
   implicit val JuicioObnDeleteFromDtoEncoder: Encoder[JuicioObnDeleteFromDto] = deriveEncoder
+  implicit val ListDetallesComponenteIDecoder: Decoder[ListDetallesJuicioTri] = deriveDecoder
 
+
+  implicit val ListDetallesComponenteIEncoder: Encoder[ListDetallesJuicioTri] =
+    (detallesObligaciones: ListDetallesJuicioTri) =>
+      Json.obj(
+        "BJD_DETALLES" -> detallesObligaciones.BJD_DETALLES.asJson
+      )
   //REPONDS
 
   implicit val GetJuicioObnResponsesDecoder: Decoder[GetJuicioObnResponses] = deriveDecoder

@@ -21,7 +21,7 @@ class SubastaUpdatedFromDtoHandler(
   override def topicError: String = "SubastaUpdatedFromDto_error"
   override def topicRetry: String = "SubastaUpdatedFromDto_retry"
 
-  import consumers.registral.subasta.infrastructure.json._
+  import consumers.registral.subasta.infrastructure.json.json._
 
   override def processInput(input: String): Either[Throwable, SubastaUpdatedFromDto] =
     decode[SubastaUpdatedFromDto](input)

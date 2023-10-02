@@ -10,7 +10,7 @@ import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Reads
 import io.circe.parser._
-import consumers.registral.cupon_descuento.infrastructure.json._
+import consumers.registral.cupon_descuento.infrastructure.json.json._
 import io.circe.Encoder
 
 import scala.concurrent.Future
@@ -29,11 +29,12 @@ case class CuponDescuentoTributarioTransaction(actor: CuponDescuentoActor, monit
   }
 
   override def processMessage(registro: CuponDescuentoTri): Future[Response.SuccessProcessing] = {
-    implicit val b: Encoder[Seq[DetallesCuponDescuento]] = Encoder(CuponDescuentoUpdateFromDtoEncoder)
-    val detalles: Option[Seq[DetallesCuponDescuento]] = for {
-      bobDetalles <- (registro.BOB_OTROS_ATRIBUTOS.get \ "BOB_DETALLES").toOption
-      detalles = decode[Seq[DetallesCuponDescuento]](bobDetalles.toString())
-    } yield detalles
+
+    val detalles = for {
+      otrosAtributos <- registro.BOB_OTROS_ATRIBUTOS
+      detalles = decode[Seq[DetallesCuponDescuento]](otrosAtributos.toString)
+
+    } yield (detalles.getOrElse(Seq()))
 
     val command: CuponDescuentoCommands.CuponDescuentoUpdateFromDto =
       CuponDescuentoCommands.CuponDescuentoUpdateFromDto(

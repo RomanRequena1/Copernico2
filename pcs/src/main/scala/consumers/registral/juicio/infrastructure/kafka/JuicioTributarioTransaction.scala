@@ -28,12 +28,13 @@ case class JuicioTributarioTransaction(actor: JuicioActor, monitoring: Monitorin
   }
 
   override def processMessage(registro: JuicioTri): Future[Response.SuccessProcessing] = {
-    implicit val b: Encoder[Seq[DetallesJuicio]] = Encoder(DetallesJuicioEncoder)
 
-    val detalles: Option[Seq[DetallesJuicio]] = for {
-      bjuDetalles <- (registro.BJU_OTROS_ATRIBUTOS \ "BJU_DETALLES").toOption
-      detalles = decode[Seq[DetallesJuicio]](bjuDetalles.toString)
-    } yield detalles
+
+    val detalles = for {
+      otrosAtributos <- registro.BJU_OTROS_ATRIBUTOS
+      detalles = decode[Seq[DetallesJuicio]](otrosAtributos.toString)
+
+    } yield (detalles.getOrElse(Seq()))
 
     val command: JuicioCommands.JuicioUpdateFromDto =
       JuicioCommands.JuicioUpdateFromDto(

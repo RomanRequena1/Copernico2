@@ -5,11 +5,7 @@ import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
 import consumers.registral.domicilio_sujeto.domain.DomicilioSujetoState
 import consumers.registral.domicilio_sujeto.infrastructure.dependency_injection.DomicilioSujetoActor
-import consumers.registral.domicilio_sujeto.infrastructure.http.DomicilioSujetoStateAPI
-import consumers.registral.domicilio_sujeto.infrastructure.kafka.{
-  DomicilioSujetoNoTributarioTransaction,
-  DomicilioSujetoTributarioTransaction
-}
+import consumers.registral.domicilio_sujeto.infrastructure.kafka.DomicilioSujetoTributarioTransaction
 import design_principles.microservice.kafka_consumer_microservice.{
   KafkaConsumerMicroservice,
   KafkaConsumerMicroserviceRequirements
@@ -25,7 +21,7 @@ class DomicilioSujetoMicroservice(implicit m: KafkaConsumerMicroserviceRequireme
 
   override def route: Route =
     (Seq(
-      DomicilioSujetoStateAPI(actor, monitoring).route
+      //DomicilioSujetoStateAPI(actor, monitoring).route
     ) ++ actorTransactions.map(_.route)) reduce (_ ~ _)
 
 }

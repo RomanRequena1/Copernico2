@@ -1,13 +1,12 @@
 package readside.proyectionists.registrales.exencion.projections
 import java.time.chrono.ChronoLocalDateTime
-
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
+import consumers.no_registral.objeto.application.entities.{Exencion}
 import consumers.no_registral.objeto.domain.ObjetoEvents
 
 case class ObjetoAddedExencionProjection(
     event: ObjetoEvents.ObjetoAddedExencion
 ) extends ExencionProjection {
-  val registro: ObjetoExternalDto.Exencion = event.exencion
+  val registro: Exencion = event.exencion
 
   def bindings = List(
     "bex_descripcion" -> registro.BEX_DESCRIPCION,
