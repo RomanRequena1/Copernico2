@@ -7,7 +7,7 @@ import consumers.registral.juicio_tri.domain.JuicioDosEvents.JuicioDosUpdatedFro
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
 import readside.proyectionists.registrales.juicio_tri.projections.JuicioDosUpdatedFromDtoProjection
-import consumers.registral.juicio_tri.infrastructure.json._
+import consumers.registral.juicio_tri.infrastructure.json.json._
 import org.slf4j.LoggerFactory
 import scala.concurrent.Future
 import scala.util.{Failure, Success}

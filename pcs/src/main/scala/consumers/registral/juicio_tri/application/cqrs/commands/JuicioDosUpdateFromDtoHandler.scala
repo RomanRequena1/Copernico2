@@ -6,7 +6,7 @@ import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
 import consumers.registral.juicio_tri.application.entities.JuicioDosCommands.JuicioDosUpdateFromDto
 import consumers.registral.juicio_tri.domain.JuicioDosEvents.JuicioDosUpdatedFromDto
 import consumers.registral.juicio_tri.domain.JuicioDosState
-import consumers.registral.juicio_tri.infrastructure.json._
+import consumers.registral.juicio_tri.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
 import kafka.KafkaMessageProducer.KafkaKeyValue

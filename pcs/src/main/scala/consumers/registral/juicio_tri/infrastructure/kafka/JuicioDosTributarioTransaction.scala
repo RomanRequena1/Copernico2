@@ -5,7 +5,7 @@ import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.juicio_tri.application.entities.JuicioDosCommands.{JuicioDosRemoveFromDto, JuicioDosUpdateFromDto}
 import consumers.registral.juicio_tri.application.entities.JuicioDosTri
 import consumers.registral.juicio_tri.infrastructure.dependency_injection.JuicioDosActor
-import consumers.registral.juicio_tri.infrastructure.json._
+import consumers.registral.juicio_tri.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import monitoring.Monitoring
