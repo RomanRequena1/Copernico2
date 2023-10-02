@@ -55,12 +55,13 @@ abstract class QueryStateAPI(monitoring: Monitoring) extends Controller(monitori
                  Actor <: BasePersistentShardedTypedActorWithCQRS[ActorMessages, ActorEvents, ActorState],
                  QueryMessage <: ActorMessages](
       actor: BasePersistentShardedTypedActorWithCQRS[ActorMessages, ActorEvents, ActorState],
-      query: QueryMessage with Query
+      query: QueryMessage
   )(
-      format: Format[QueryMessage#ReturnType],
+      format: Encoder[QueryMessage#ReturnType],
       isEmpty: QueryMessage#ReturnType => Boolean
   )(implicit system: akka.actor.typed.ActorSystem[_]): Route = {
     implicit val ec: ExecutionContextExecutor = system.classicSystem.dispatcher
+    implicit val GetResponseEncoder: Encoder[QueryMessage#ReturnType] = format
     complete {
       actor
         .ask(query)
@@ -70,7 +71,7 @@ abstract class QueryStateAPI(monitoring: Monitoring) extends Controller(monitori
           case result =>
             HttpResponse(
               OK,
-              entity = QueryStateAPI.standarization(Json.prettyPrint(format.writes(result)))
+              entity = QueryStateAPI.standarization(json = result.asJson.toString())
             )
         }
         .recover { case e: Exception => HttpResponse(InternalServerError, entity = e.getMessage) }

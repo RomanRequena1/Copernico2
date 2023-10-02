@@ -1,5 +1,5 @@
 package readside.proyectionists.registrales.tramite.projections
-import consumers.registral.tramite.application.entities.{Tramite, TramiteExternalDto}
+import consumers.registral.tramite.application.entities.{Tramite}
 import consumers.registral.tramite.domain.TramiteEvents
 
 case class TramiteUpdatedFromDtoProjection(

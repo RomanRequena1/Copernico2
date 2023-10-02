@@ -49,4 +49,5 @@ object json {
   implicit val GetJuicioObnResponsesDecoder: Decoder[GetJuicioObnResponses] = deriveDecoder
   implicit val GetJuicioObnResponsesEncoder: Encoder[GetJuicioObnResponses] = deriveEncoder
 
+
 }

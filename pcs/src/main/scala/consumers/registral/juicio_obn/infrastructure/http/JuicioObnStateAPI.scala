@@ -1,12 +1,15 @@
 package consumers.registral.juicio_obn.infrastructure.http
-/*
+
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
+import consumers.registral.juicio_obn.application.entities.JuicioObnMessage
 import consumers.registral.juicio_obn.application.entities.JuicioObnQueries.GetStateJuicioObn
+import consumers.registral.juicio_obn.application.entities.JuicioObnResponses.GetJuicioObnResponses
+import consumers.registral.juicio_obn.domain.{JuicioObnEvents, JuicioObnState}
 import consumers.registral.juicio_obn.infrastructure.dependency_injection.JuicioObnActor
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
-import consumers.registral.juicio_obn.infrastructure.json._
+import consumers.registral.juicio_obn.infrastructure.json.json.GetJuicioObnResponsesEncoder
 
 import java.time.LocalDateTime
 
@@ -20,7 +23,7 @@ case class JuicioObnStateAPI(actor: JuicioObnActor, monitoring: Monitoring)(impl
         withTipoObjeto { tipoObjeto =>
           withObligacion { obligacionId =>
             queryState(actor, GetStateJuicioObn(juicioObnId, objetoId, tipoObjeto, obligacionId))(
-              GetJuicioObnResponseF,
+              GetJuicioObnResponsesEncoder,
               state => state.fechasUltMod == LocalDateTime.MIN
             )
           }
@@ -39,4 +42,4 @@ object JuicioObnStateAPI {
   def withTipoObjeto: (String => Route) => Route = nestedRoute("tipo")
 
   def withObligacion = path("obligacion" / Segment)
-}*/
+}

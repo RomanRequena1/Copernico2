@@ -24,6 +24,7 @@ case class JuicioObnTributarioTransaction(actor: JuicioObnActor, monitoring: Mon
   override def topicError: String = "DGR-COP-JUICIOS-OBLIGACIONES-TRI_error"
 
   override def processInput(input: String): Either[Throwable, JuicioObnTri] = {
+    println("CUMBIA ERRORR " + decode[JuicioObnTri](input))
     decode[JuicioObnTri](input)
   }
 

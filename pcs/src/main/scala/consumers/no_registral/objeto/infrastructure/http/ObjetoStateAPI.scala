@@ -50,7 +50,7 @@ case class ObjetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
         path("tipo" / Segment) { tipoObjeto =>
           queryState[GetObjetoResponse](actorRef = actor, GetStateObjeto(sujetoId, objetoId, tipoObjeto))(
             GetObjetoResponseEncoder,
-            _.fechaUltMod == LocalDateTime.MIN
+            t => t.fechaUltMod == LocalDateTime.MIN
           )
         }
       }

@@ -1,8 +1,6 @@
 package readside.proyectionists.registrales.juicio_obn.projections
 
-import consumers.registral.juicio.application.entities.JuicioExternalDto
-import consumers.registral.juicio.application.entities.JuicioExternalDto.JuicioTri
-import consumers.registral.juicio.domain.JuicioEvents
+
 import consumers.registral.juicio_obn.application.entities.JuicioObnTri
 import consumers.registral.juicio_obn.domain.JuicioObnEvents
 

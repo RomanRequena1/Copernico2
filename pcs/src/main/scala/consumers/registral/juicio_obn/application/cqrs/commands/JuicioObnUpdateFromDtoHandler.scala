@@ -27,7 +27,8 @@ class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
       command.obligacionId,
       command.registro
     )
-    //println("CUMBIA -> COMMAN -> " + e.deliveryId + " id " + e)
+
+    println("CUMBIA -> COMMAN -> " + e.deliveryId + " id " + e)
     if(isIdempotent(command, state.lastDeliveryIdByEvent)){
       println(s"[ ${command.aggregateRoot}] -juicio_obn- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + state.lastDeliveryIdByEvent)
 
