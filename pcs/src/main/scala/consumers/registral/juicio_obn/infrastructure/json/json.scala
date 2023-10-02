@@ -10,6 +10,10 @@ import io.circe.{Decoder, Encoder, Json}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax.EncoderOps
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import scala.util.Try
+
 
 
 object json {
@@ -17,7 +21,12 @@ object json {
   //DTO
   implicit val JuicioObnTriDecoder: Decoder[JuicioObnTri] = deriveDecoder
   implicit val JuicioObnTriEncoder: Encoder[JuicioObnTri] = deriveEncoder
-
+  implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
+    Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
+  }
+  implicit val localDateTimeEncoder: Encoder[LocalDateTime] = Encoder.encodeString.contramap { dateTime =>
+    dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
+  }
 
   implicit val DetallesJuicioTriDecoder: Decoder[DetallesJuicioTri] = deriveDecoder
   implicit val DetallesJuicioTriEncoder: Encoder[DetallesJuicioTri] = deriveEncoder

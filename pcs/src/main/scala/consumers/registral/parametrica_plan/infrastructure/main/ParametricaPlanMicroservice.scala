@@ -5,11 +5,9 @@ import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
 import consumers.registral.parametrica_plan.domain.ParametricaPlanState
 import consumers.registral.parametrica_plan.infrastructure.dependency_injection.ParametricaPlanActor
+import consumers.registral.parametrica_plan.infrastructure.http.ParametricaPlanStateAPI
 import consumers.registral.parametrica_plan.infrastructure.kafka.ParametricaPlanTributarioTransaction
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 class ParametricaPlanMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
   implicit val actor: ParametricaPlanActor = ParametricaPlanActor(ParametricaPlanState())
@@ -21,7 +19,7 @@ class ParametricaPlanMicroservice(implicit m: KafkaConsumerMicroserviceRequireme
 
   override def route: Route =
     (Seq(
-      //ParametricaPlanStateAPI(actor, monitoring).route
+      ParametricaPlanStateAPI(actor, monitoring).route
     ) ++ actorTransactions.map(_.route)) reduce (_ ~ _)
 
 }

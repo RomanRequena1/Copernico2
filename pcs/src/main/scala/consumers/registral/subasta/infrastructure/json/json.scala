@@ -10,13 +10,22 @@ import play.api.libs.json.Json
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import play.api.libs.json.{Format, Json}
+
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import scala.util.Try
 object json {
 
   //DTO
   implicit val SubastaExternalDtoDecoder: Decoder[SubastaExternalDto] = deriveDecoder
   implicit val SubastaExternalDtoEncoder: Encoder[SubastaExternalDto] = deriveEncoder
 
-
+  implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
+    Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
+  }
+  implicit val localDateTimeEncoder: Encoder[LocalDateTime] = Encoder.encodeString.contramap { dateTime =>
+    dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
+  }
   //EVENT
   implicit val SubastaUpdatedFromDtoDecoder: Decoder[SubastaUpdatedFromDto] = deriveDecoder
   implicit val SubastaUpdatedFromDtoEncoder: Encoder[SubastaUpdatedFromDto] = deriveEncoder

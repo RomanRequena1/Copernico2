@@ -1,12 +1,12 @@
 package consumers.registral.subasta.infrastructure.http
-/*
+
 import java.time.LocalDateTime
 
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.subasta.application.entities.SubastaQueries.GetStateSubasta
 import consumers.registral.subasta.infrastructure.dependency_injection.SubastaActor
-import consumers.registral.subasta.infrastructure.json._
+import consumers.registral.subasta.infrastructure.json.json.GetSubastaResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
 
@@ -25,7 +25,7 @@ case class SubastaStateAPI(actor: SubastaActor, monitoring: Monitoring)(implicit
                          objetoId,
                          tipoObjeto,
                          subastaId
-                       ))(GetSubastaResponseF, state => state.fechaUltMod == LocalDateTime.MIN)
+                       ))(GetSubastaResponseEncoder, state => state.fechaUltMod == LocalDateTime.MIN)
           }
         }
       }
@@ -41,4 +41,4 @@ object SubastaStateAPI {
   def withTipoObjeto: (String => Route) => Route = nestedRoute("tipo") _
   def withSubasta = path("subasta" / Segment)
 
-}*/
+}

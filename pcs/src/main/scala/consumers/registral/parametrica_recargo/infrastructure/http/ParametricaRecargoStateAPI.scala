@@ -1,12 +1,12 @@
 package consumers.registral.parametrica_recargo.infrastructure.http
-/*
+
 import java.time.LocalDateTime
 
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.{Directive, Route}
 import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoQueries.GetStateParametricaRecargo
 import consumers.registral.parametrica_recargo.infrastructure.dependency_injection.ParametricaRecargoActor
-import consumers.registral.parametrica_recargo.infrastructure.json._
+import consumers.registral.parametrica_recargo.infrastructure.json.json.GetParametricaRecargoResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
 
@@ -19,7 +19,7 @@ case class ParametricaRecargoStateAPI(actor: ParametricaRecargoActor, monitoring
   def getState: Route =
     withParametricaRecargo { parametricaRecargoId =>
       queryState(actor, GetStateParametricaRecargo(parametricaRecargoId))(
-        GetParametricaRecargoResponseF,
+        GetParametricaRecargoResponseEncoder,
         state => state.fechaUltMod == LocalDateTime.MIN
       )
     }
@@ -31,4 +31,3 @@ object ParametricaRecargoStateAPI {
   def nestedRoute(name: String)(andThen: String => Route): Route = pathPrefix(name / Segment)(andThen)
   def withParametricaRecargo: Directive[Tuple1[String]] = path("parametrica_recargo" / Segment)
 }
-*/

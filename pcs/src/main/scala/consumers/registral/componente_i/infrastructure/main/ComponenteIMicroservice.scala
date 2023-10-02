@@ -6,6 +6,7 @@ import api.actor_transaction.ActorTransaction
 import consumers.registral.componente_i.domain.ComponenteIState
 import consumers.registral.componente_i.infrastructure.consumer.ComponenteITributarioTransaction
 import consumers.registral.componente_i.infrastructure.dependency_injection.ComponenteIActor
+import consumers.registral.componente_i.infrastructure.http.ComponenteIStateAPI
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import org.slf4j.LoggerFactory
 
@@ -19,6 +20,6 @@ class ComponenteIMicroservice(implicit m: KafkaConsumerMicroserviceRequirements)
 
   override def route: Route =
     (Seq(
-      //ComponenteIStateAPI(actor, monitoring).route
+      ComponenteIStateAPI(actor, monitoring).route
     ) ++ actorTransactions.map(_.route)) reduce (_ ~ _)
 }

@@ -5,11 +5,9 @@ import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
 import consumers.registral.parametrica_recargo.domain.ParametricaRecargoState
 import consumers.registral.parametrica_recargo.infrastructure.dependency_injection.ParametricaRecargoActor
+import consumers.registral.parametrica_recargo.infrastructure.http.ParametricaRecargoStateAPI
 import consumers.registral.parametrica_recargo.infrastructure.kafka.ParametricaRecargoTributarioTransaction
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 class ParametricaRecargoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements)
     extends KafkaConsumerMicroservice {
@@ -22,7 +20,7 @@ class ParametricaRecargoMicroservice(implicit m: KafkaConsumerMicroserviceRequir
 
   override def route: Route =
     (Seq(
-      //ParametricaRecargoStateAPI(actor, monitoring).route
+      ParametricaRecargoStateAPI(actor, monitoring).route
     ) ++ actorTransactions.map(_.route)) reduce (_ ~ _)
 
 }

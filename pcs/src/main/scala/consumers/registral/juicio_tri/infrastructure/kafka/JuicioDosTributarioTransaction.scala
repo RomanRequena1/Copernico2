@@ -23,6 +23,7 @@ case class JuicioDosTributarioTransaction(actor: JuicioDosActor, monitoring: Mon
   def topicError = "DGR-COP-JUICIOS-CAB-TRI_error"
 
   def processInput(input: String): Either[Throwable, JuicioDosTri] = {
+    println("CUMBIA JUICIOS -> " + decode[JuicioDosTri](input))
     decode[JuicioDosTri](input)
   }
 
