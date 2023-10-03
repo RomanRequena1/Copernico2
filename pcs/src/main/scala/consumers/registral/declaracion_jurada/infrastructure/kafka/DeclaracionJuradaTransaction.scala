@@ -20,8 +20,10 @@ case class DeclaracionJuradaTransaction(actor: DeclaracionJuradaActor, monitorin
   def topicRetry = "DGR-COP-DECJURADAS_retry"
   def topicError = "DGR-COP-DECJURADAS_error"
 
-  def processInput(input: String): Either[Throwable, DeclaracionJurada] =
+  def processInput(input: String): Either[Throwable, DeclaracionJurada] = {
+    println("CUMBIA DECLARACION JURADA " + decode[DeclaracionJurada](input))
     decode[DeclaracionJurada](input)
+  }
 
   override def processMessage(registro: DeclaracionJurada): Future[Response.SuccessProcessing] = {
     val command = DeclaracionJuradaCommands.DeclaracionJuradaUpdateFromDto(

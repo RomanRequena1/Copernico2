@@ -7,6 +7,10 @@ import consumers.registral.domicilio_sujeto.domain.DomicilioSujetoEvents.Domicil
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import scala.util.Try
+
 package object json {
 
   //COMMANDS
@@ -16,7 +20,12 @@ package object json {
   //EXTERNALDTO
   implicit val DomicilioSujetoTriDecoder: Decoder[DomicilioSujetoTri] = deriveDecoder
   implicit val DomicilioSujetoTriEncoder: Encoder[DomicilioSujetoTri] = deriveEncoder
-
+  implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
+    Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
+  }
+  implicit val localDateTimeEncoder: Encoder[LocalDateTime] = Encoder.encodeString.contramap { dateTime =>
+    dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
+  }
   implicit val DomicilioSujetoAntDecoder: Decoder[DomicilioSujetoAnt] = deriveDecoder
   implicit val DomicilioSujetoAntEncoder: Encoder[DomicilioSujetoAnt] = deriveEncoder
 

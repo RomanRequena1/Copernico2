@@ -7,6 +7,10 @@ import consumers.registral.declaracion_jurada.domain.DeclaracionJuradaEvents.Dec
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder, Json}
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import scala.util.Try
+
 
 object json {
   implicit val DeclaracionJuradaUpdateFromDtoDecoder: Decoder[DeclaracionJuradaUpdateFromDto] = deriveDecoder
@@ -14,7 +18,12 @@ object json {
 
   implicit val ListDetallesComponenteIDecoder: Decoder[DetalleDeclaracionJurada] = deriveDecoder
   implicit val ListDetallesComponenteIEncoder: Encoder[DetalleDeclaracionJurada] = deriveEncoder
-
+  implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
+    Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
+  }
+  implicit val localDateTimeEncoder: Encoder[LocalDateTime] = Encoder.encodeString.contramap { dateTime =>
+    dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
+  }
   implicit val DeclaracionJuradaTriDecoder: Decoder[DeclaracionJurada] = deriveDecoder
   implicit val DeclaracionJuradaTriEncoder: Encoder[DeclaracionJurada] = deriveEncoder
 
