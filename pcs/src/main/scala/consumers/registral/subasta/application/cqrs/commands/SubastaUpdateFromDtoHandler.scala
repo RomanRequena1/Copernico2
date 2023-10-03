@@ -15,6 +15,7 @@ import kafka.MessageProducer
 class SubastaUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
   def handle(command: SubastaUpdateFromDto)(state: SubastaState)(replyTo: ActorRef[Success]) = {
+    println("CUMBIA STATE -> " + state)
     val event = SubastaUpdatedFromDto(
       command.deliveryId,
       command.sujetoId,

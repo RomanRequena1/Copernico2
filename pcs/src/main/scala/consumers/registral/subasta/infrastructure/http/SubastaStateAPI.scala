@@ -19,6 +19,7 @@ case class SubastaStateAPI(actor: SubastaActor, monitoring: Monitoring)(implicit
       withObjeto { objetoId =>
         withTipoObjeto { tipoObjeto =>
           withSubasta { subastaId =>
+            println("CUMBIA " + subastaId + " - " + sujetoId + " - " + objetoId + " - " + tipoObjeto)
             queryState(actor,
                        GetStateSubasta(
                          sujetoId,
@@ -39,6 +40,6 @@ object SubastaStateAPI {
   def withSujeto: (String => Route) => Route = nestedRoute("sujeto") _
   def withObjeto: (String => Route) => Route = nestedRoute("objeto") _
   def withTipoObjeto: (String => Route) => Route = nestedRoute("tipo") _
-  def withSubasta = path("subasta" / Segment)
+  def withSubasta = path("subasta_id" / Segment)
 
 }

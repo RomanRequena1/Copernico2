@@ -25,5 +25,7 @@ import java.time.LocalDateTime
                                  bdc_tipo: Option[String],
                                  bdc_baja: Option[Boolean],
                                  bdc_vencimiento:Option[LocalDateTime]
-                               )
-case class ListDetalleCuponDescuenta(BOB_DETALLES: List[DetallesCuponDescuento])
+                               ) extends CbroSerialization
+case class ListDetalleCuponDescuenta(
+                                      BOB_DETALLES: Option[List[DetallesCuponDescuento]]
+                                    ) extends CbroSerialization

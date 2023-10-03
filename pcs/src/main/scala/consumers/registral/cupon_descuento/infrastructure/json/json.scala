@@ -8,6 +8,10 @@ import io.circe.{Decoder, Encoder, Json}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax.EncoderOps
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import scala.util.Try
+
 object json {
   implicit val CuponDescuentoRemoveDecoder: Decoder[CuponDescuentoRemove] = deriveDecoder
   implicit val CuponDescuentoRemoveEncoder: Encoder[CuponDescuentoRemove] = deriveEncoder
@@ -19,6 +23,13 @@ object json {
 
   implicit val DetallesCuponDescuentoDecoder: Decoder[DetallesCuponDescuento] = deriveDecoder
   implicit val DetallesCuponDescuentoEncoder: Encoder[DetallesCuponDescuento] = deriveEncoder
+
+  implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
+    Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
+  }
+  implicit val localDateTimeEncoder: Encoder[LocalDateTime] = Encoder.encodeString.contramap { dateTime =>
+    dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
+  }
 
   implicit val GetCuponDescuentoResponseDecoder: Decoder[GetCuponDescuentoResponse] = deriveDecoder
   implicit val GetCuponDescuentoResponseEncoder: Encoder[GetCuponDescuentoResponse] = deriveEncoder

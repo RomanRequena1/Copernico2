@@ -26,4 +26,4 @@ import serialization.CbroSerialization
                                BDJ_VENCIMIENTO: Option[LocalDateTime])
       extends  CbroSerialization
 
-case class DetalleDeclaracionJurada(BDJ_DETALLES: String) extends  CbroSerialization
+case class DetalleDeclaracionJurada(BDJ_DETALLES: Option[String]) extends  CbroSerialization

@@ -36,6 +36,6 @@ object ComponenteIStateAPI {
   def withSujeto: (String => Route) => Route = nestedRoute("sujeto") _
   def withObjeto: (String => Route) => Route = nestedRoute("objeto") _
   def withTipoObjeto: (String => Route) => Route = nestedRoute("tipo") _
-  def withComponenteI = path("obligacion" / Segment)
+  def withComponenteI = path("componente_i" / Segment)
 }
 

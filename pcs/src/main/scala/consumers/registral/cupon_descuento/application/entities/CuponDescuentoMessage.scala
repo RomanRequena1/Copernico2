@@ -18,13 +18,13 @@ trait CuponDescuentoMessage extends design_principles.actor_model.ShardedMessage
 object CuponDescuentoMessage {
 
   case class CuponDescuentoMessageRoots(sujetoId: String, objetoId: String, tipoObjeto: String, obligacionId: String) {
-    override def toString = s"Sujeto-$sujetoId-Objeto-$objetoId-$tipoObjeto-Obligacion-$obligacionId-cupon-descuento"
+    override def toString = s"Sujeto-$sujetoId-Objeto-$objetoId-$tipoObjeto-Obligacion-$obligacionId-cupon_descuento"
   }
   object CuponDescuentoMessageRoots {
 
     def extractor(persistenceId: String): CuponDescuentoMessageRoots =
       persistenceId match {
-        case s"Sujeto-$sujetoId-Objeto-$objetoId-$tipoObjeto-Obligacion-$obligacionId-cupon-descuento" =>
+        case s"Sujeto-$sujetoId-Objeto-$objetoId-$tipoObjeto-Obligacion-$obligacionId-cupon_descuento" =>
           CuponDescuentoMessageRoots(sujetoId, objetoId, tipoObjeto, obligacionId)
       }
   }

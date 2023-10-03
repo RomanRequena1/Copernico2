@@ -66,9 +66,13 @@ abstract class QueryStateAPI(monitoring: Monitoring) extends Controller(monitori
       actor
         .ask(query)
         .map {
-          case result if isEmpty(result) => HttpResponse(NotFound)
+//          case result if isEmpty(result) => {
+//            println("CUMBIA ERROR QUERY" + result)
+//            HttpResponse(NotFound)
+//          }
 
           case result =>
+            println("CUMBIA QUERY" + result)
             HttpResponse(
               OK,
               entity = QueryStateAPI.standarization(json = result.asJson.toString())

@@ -5,7 +5,7 @@ import consumers.registral.declaracion_jurada.application.entities.DeclaracionJu
 import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaResponses.GetDeclaracionJuradaResponse
 import consumers.registral.declaracion_jurada.domain.DeclaracionJuradaEvents.DeclaracionJuradaUpdatedFromDto
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
-import io.circe.{Decoder, Encoder, Json}
+import io.circe.{Decoder, Encoder}
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -16,8 +16,9 @@ object json {
   implicit val DeclaracionJuradaUpdateFromDtoDecoder: Decoder[DeclaracionJuradaUpdateFromDto] = deriveDecoder
   implicit val DeclaracionJuradaUpdateFromDtoEncoder: Encoder[DeclaracionJuradaUpdateFromDto] = deriveEncoder
 
-  implicit val ListDetallesComponenteIDecoder: Decoder[DetalleDeclaracionJurada] = deriveDecoder
-  implicit val ListDetallesComponenteIEncoder: Encoder[DetalleDeclaracionJurada] = deriveEncoder
+  implicit val ListDetalleDeclaracionJuradaDecoder: Decoder[DetalleDeclaracionJurada] = deriveDecoder
+  implicit val ListDetalleDeclaracionJuradaEncoder: Encoder[DetalleDeclaracionJurada] = deriveEncoder
+
   implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
     Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
   }
