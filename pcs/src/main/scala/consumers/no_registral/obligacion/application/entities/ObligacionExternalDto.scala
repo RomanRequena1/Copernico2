@@ -83,6 +83,7 @@ import serialization.CbroSerialization
   ) extends CbroSerialization
 
 case class ListDetallesObligaciones(BOB_DETALLES: List[DetallesObligacion]) extends CbroSerialization
+
 case class DetallesObligacion(
                                  BOB_MUNICIPIO: Option[String],
                                  RULE_NUMBER: Option[String],
