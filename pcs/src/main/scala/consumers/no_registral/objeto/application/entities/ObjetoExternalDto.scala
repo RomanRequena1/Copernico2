@@ -24,11 +24,12 @@ import serialization.CbroSerialization
       SOJ_TITULARIDAD: Option[String]
   ) extends CbroSerialization
 
-case class ListObjetosTriOtrosAtributos(SOJ_DETALLES: List[ObjetosTriOtrosAtributos])
+case class ListObjetosTriOtrosAtributos(SOJ_DETALLES: List[ObjetosTriOtrosAtributos]) extends CbroSerialization
 case class ObjetosTriOtrosAtributos(
       RESPONSABLE_OTROS_ATRIBUTOS: Option[String],
       PORCENTAJE_OTROS_ATRIBUTOS: Option[BigDecimal],
       CUENTA_SOJ_OTROS_ATRIBUTOS: Option[String],
+      OTROS_ATRIBUTOS_ADHERIDO_DEBITO: Option[String],
       PERIODO_SOJ_OTROS_ATRIBUTOS: Option[String],
       IMPORTE_SOJ_OTROS_ATRIBUTOS: Option[String],
       SOJ_SEMAFORO_COLOR: Option[String],

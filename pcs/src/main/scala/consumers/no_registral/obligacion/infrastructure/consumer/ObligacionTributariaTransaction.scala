@@ -2,6 +2,7 @@ package consumers.no_registral.obligacion.infrastructure.consumer
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
+import com.fasterxml.jackson.annotation.JsonIgnore
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
 import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory
 import timescaledb.TimescaledbKafkaToPcs.connOracleKafkaToWriteside
 import timescaledb.TimescaledbNifiToKafka.connOracleNifi
 import io.circe.parser.decode
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
@@ -18,6 +20,7 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
+  @JsonIgnore
   private val log = LoggerFactory.getLogger(this.getClass)
   /** Handles the deserialization of detalles de obligaciones tributarias */
 
@@ -26,30 +29,59 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
   def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-    //timescaledactorRef ! Insert(input,"DGR-COP-OBLIGACIONES-TRI",timescaledactorRef)
-    //Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI"))
-    if (enable.equals("true")) {
-      Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI")).onComplete {
-        case Failure(exception) => log.error("ERROR Future(connOracleNifi(obligacion.EV_ID.toString())) -> " + exception)
-        case Success(value) => log.debug("Exito ")
-      }
-    }
+
+    println("CUMBIA -> " + decode[ObligacionesTri](input))
     decode[ObligacionesTri](input)
   }
 
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
-    //log.debug("KW oracle")
 
-    //timescaledactorRef ! Insert2(obligacion.EV_ID.toString(), timescaledactorRef)
-    if (enable.equals("true")) {
-      Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString())).onComplete {
-        case Failure(exception) => log.error("ERROR Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString())) -> " + exception )
-        case Success(value) => log.debug("Exito ")
-      }
+
+    println("CUMBIA ALL obn -> " + obligacion)
+    println("CUMBIA ALL obn 2 -> " + obligacion.BOB_OTROS_ATRIBUTOS.get)
+    println("CUMBIA ALL obn 3 -> " + obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES)
+  try{
+    val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
+    val command: Command = obligacion match {
+      //this pattern match isn't  commutative
+      case obn: ObligacionesTri if isCancelada(obn) =>
+        ObligacionRemove(
+          deliveryId = obn.EV_ID,
+          sujetoId = obn.BOB_SUJ_IDENTIFICADOR,
+          objetoId = obn.BOB_SOJ_IDENTIFICADOR,
+          tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
+          obligacionId = obn.BOB_OBN_ID,
+          registro = obligacion,
+          cuota = obn.BOB_CUOTA
+        )
+      case obn: ObligacionesTri if isNotDeuda(obn) =>
+        ObligacionRemove(
+          deliveryId = obn.EV_ID,
+          sujetoId = obn.BOB_SUJ_IDENTIFICADOR,
+          objetoId = obn.BOB_SOJ_IDENTIFICADOR,
+          tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
+          obligacionId = obn.BOB_OBN_ID,
+          registro = obligacion,
+          cuota = None
+        )
+      case obn: ObligacionesTri =>
+        ObligacionUpdateFromDto(
+          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+          obligacionId = obligacion.BOB_OBN_ID,
+          deliveryId = obligacion.EV_ID,
+          registro = obligacion,
+          //todo: fix
+          detallesObligacion = extractOtrosAtributos(obligacion).getOrElse(Seq.empty),
+          isAdheridoDebito = isAdheridoDebito
+        )
     }
-
-
+    println(command)
+  } catch {
+    case e: Exception => println("CUMBIA ERROR -> " + e)
+  }
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
     val command: Command = obligacion match {
       //this pattern match isn't  commutative
@@ -137,7 +169,9 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
       otrosAtributos <- obn.BOB_OTROS_ATRIBUTOS
       detalles = decode[Seq[DetallesObligacion]](otrosAtributos.toString)
 
+
     } yield (detalles.getOrElse(Seq()))
+    println("CUMBIA OBN ->" + detalles)
     detalles
 
   }

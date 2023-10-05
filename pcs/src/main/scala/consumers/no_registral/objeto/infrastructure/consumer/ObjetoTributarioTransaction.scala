@@ -4,7 +4,7 @@ import scala.concurrent.Future
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetosTri, ObjetosTriOtrosAtributos}
+import consumers.no_registral.objeto.application.entities.{ListObjetosTriOtrosAtributos, ObjetoCommands, ObjetosTri, ObjetosTriOtrosAtributos}
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import design_principles.actor_model.Response
 import monitoring.Monitoring
@@ -27,16 +27,10 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
     //connOracleKafkaToWriteside(registro.EV_ID.toString(), "objeto", registro.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
 
 
-    val detalle: Option[ObjetosTriOtrosAtributos] = for {
-      otrosAtributos <- registro.SOJ_OTROS_ATRIBUTOS
-
-      detalles = decode[Seq[ObjetosTriOtrosAtributos]](otrosAtributos.toString)
-    } yield detalles.getOrElse(Seq()).head
-
-    val isResponsable = detalle map { d =>
-      d.RESPONSABLE_OTROS_ATRIBUTOS contains "S"
+    val isResponsable = registro.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES map {
+      n => n.RESPONSABLE_OTROS_ATRIBUTOS contains "S"
     }
-    val sujetoResponsable = detalle flatMap { d =>
+    val sujetoResponsable = registro.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES map { d =>
       d.RESPONSABLE_OTROS_ATRIBUTOS.getOrElse("N") match {
         case "S" => Some(registro.SOJ_SUJ_IDENTIFICADOR)
         case "N" => None
@@ -53,8 +47,8 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
           tipoObjeto = registro.SOJ_TIPO_OBJETO,
           deliveryId = registro.EV_ID,
           registro = registro,
-          isResponsable = isResponsable,
-          sujetoResponsable = sujetoResponsable
+          isResponsable = Some(isResponsable.head),
+          sujetoResponsable = sujetoResponsable.head
         )
       else
         ObjetoCommands.ObjetoUpdateFromTri(
@@ -63,8 +57,8 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
           tipoObjeto = registro.SOJ_TIPO_OBJETO,
           deliveryId = registro.EV_ID,
           registro = registro,
-          isResponsable = isResponsable,
-          sujetoResponsable = sujetoResponsable,
+          isResponsable = Some(isResponsable.head),
+          sujetoResponsable = sujetoResponsable.head,
           isAdheridoDebito = isAdheridoDebito
         )
 

@@ -19,7 +19,6 @@ case class CuponDescuentoTributarioTransaction(actor: CuponDescuentoActor, monit
   implicit
   actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[CuponDescuentoTri](monitoring) {
-  private val log = LoggerFactory.getLogger(this.getClass)
   def topic = "DGR-COP-CUPON-DESCUENTO-TRI"
   def topicRetry = "DGR-COP-CUPON-DESCUENTO-TRI_retry"
   def topicError = "DGR-COP-CUPON-DESCUENTO-TRI_error"

@@ -17,7 +17,6 @@ class JuicioObnDeletedSnapshotHandler(
 
                                             ) extends ActorTransaction[JuicioObnDeletedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
-  private val log = LoggerFactory.getLogger(this.getClass)
 
   override def topic: String = "JuicioObnDeletedFronDto"
 

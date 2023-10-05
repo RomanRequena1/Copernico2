@@ -35,7 +35,7 @@ final case class ObligacionSnapshotProjection(
       "bob_interes_punit" -> registro.BOB_INTERES_PUNIT,
       "bob_interes_resar" -> registro.BOB_INTERES_RESAR,
       "bob_jui_id" -> registro.BOB_JUI_ID,
-      "bob_otros_atributos" -> registro.BOB_OTROS_ATRIBUTOS,
+      "bob_otros_atributos" -> Some(mao),
       "bob_periodo" -> registro.BOB_PERIODO,
       "bob_pln_id" -> registro.BOB_PLN_ID,
       "bob_prorroga" -> registro.BOB_PRORROGA,

@@ -9,7 +9,6 @@ import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 case class ObjetoSnapshotPersistedProjection(
     event: ObjetoSnapshotPersisted
 ) extends ObjetoProjection {
-  private val log = LoggerFactory.getLogger(this.getClass)
   val registro: Option[ObjetosTri] = event.registro
   val sojDetailsResult: Option[Map[String, List[ObjetosTriOtrosAtributos]]] = circe.jawn.decode[Map[String, List[ObjetosTriOtrosAtributos]]](registro.get.SOJ_OTROS_ATRIBUTOS.asJson.toString()).toOption
   println("CUMBIA bobDetailsResult -> " + sojDetailsResult)
@@ -31,7 +30,7 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_fecha_fin" -> r.SOJ_FECHA_FIN,
       "soj_fecha_inicio" -> r.SOJ_FECHA_INICIO,
       "soj_id_externo" -> r.SOJ_ID_EXTERNO,
-      "soj_otros_atributos" -> r.SOJ_OTROS_ATRIBUTOS,
+      "soj_otros_atributos" -> Some(mao),
       "soj_base_imponible" -> r.SOJ_BASE_IMPONIBLE,
       "soj_adherido_debito" -> r.SOJ_ADHERIDO_DEBITO,
       "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[",",","]")),

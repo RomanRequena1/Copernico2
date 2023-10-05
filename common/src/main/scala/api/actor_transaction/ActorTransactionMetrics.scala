@@ -2,6 +2,7 @@ package api.actor_transaction
 
 import akka.pattern.AskTimeoutException
 import com.datastax.oss.driver.api.core.DriverTimeoutException
+import com.fasterxml.jackson.annotation.JsonIgnore
 import ddd.ExternalDto
 import design_principles.actor_model.Response
 import monitoring.{Counter, Histogram, Monitoring}
@@ -25,6 +26,7 @@ abstract class ActorTransactionMetrics(
   final protected val latency: Histogram = monitoring.histogram(s"$metricPrefix-$controllerId-latency")
   final protected val lag: Histogram = monitoring.histogram(s"$metricPrefix-$controllerId-lag")
 
+  @JsonIgnore
   private final val log = LoggerFactory.getLogger(this.getClass)
 
   final protected def recordRequests(): Unit =

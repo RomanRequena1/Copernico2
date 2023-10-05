@@ -15,7 +15,6 @@ class JuicioDosRemovedSnapshotHandler(
                                      implicit r: MonitoringAndCassandraWrite
                                    ) extends ActorTransaction[JuicioDosRemovedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
-  private val log = LoggerFactory.getLogger(this.getClass)
 
   override def topic: String = "JuicioDosRemovedSnapshot"
 

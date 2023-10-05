@@ -1,5 +1,6 @@
 package cqrs.untyped.query
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import design_principles.actor_model.Query
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -8,6 +9,7 @@ import scala.util.Try
 
 trait QueryHandler[P[_], Q <: Query] {
   def handle(query: Q): P[Q#ReturnType]
+  @JsonIgnore
   val log: Logger = LoggerFactory.getLogger(this.getClass)
 
 }
