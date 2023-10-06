@@ -30,26 +30,17 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
 
     val isNotDeuda: List[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES map {
-      d =>
-        d.RULE_NUMBER match {
-          case "-1" => true
-          case _ => false
-        }
+      d => d.RULE_NUMBER.contains("-1")
     }
 
-    val isCancelada = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map {
-      d =>
-        d.RULE_NUMBER match {
-          case "-2" => true
-          case _ => false
-        }
+    val isCancelada: Seq[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map {
+      d => d.RULE_NUMBER.contains("-2")
     }
-
 
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
 
     val command: ObligacionCommands =
-      if (isCancelada.head)
+      if (isCancelada.head) {
         ObligacionCommands.ObligacionRemove(
           deliveryId = obligacion.EV_ID,
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
@@ -58,8 +49,8 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
           obligacionId = obligacion.BOB_OBN_ID,
           registro = obligacion,
           cuota = obligacion.BOB_CUOTA)
-
-      else if (isNotDeuda.head)
+      }
+      else if (isNotDeuda.head) {
         ObligacionCommands.ObligacionRemove(
           deliveryId = obligacion.EV_ID,
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
@@ -68,8 +59,8 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
           obligacionId = obligacion.BOB_OBN_ID,
           registro = obligacion,
           cuota = None)
-
-      else
+      }
+      else {
         ObligacionUpdateFromDto(
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
           objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
@@ -77,11 +68,9 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
           obligacionId = obligacion.BOB_OBN_ID,
           deliveryId = obligacion.EV_ID,
           registro = obligacion,
-          detallesObligacion = Seq[DetallesObligacion],
+          detallesObligacion = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES,
           isAdheridoDebito = isAdheridoDebito)
-
-
+      }
     actorRef.ask[Response.SuccessProcessing](command)
   }
-
 }
