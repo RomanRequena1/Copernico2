@@ -13,11 +13,11 @@ import serialization.CbroSerialization
       BAT_DESCRIPCION: Option[String],
       BAT_FECHA_INICIO: Option[LocalDateTime],
       BAT_FECHA_FIN: Option[LocalDateTime],
-      BAT_OTROS_ATRIBUTOS: DetallesActividadSujeto,
+      BAT_OTROS_ATRIBUTOS: Option[DetallesActividadSujeto],
       BAT_REFERENCIA: Option[String],
       BAT_TIPO: Option[String]
   ) extends CbroSerialization
 
 case class DetallesActividadSujeto(
-                                  BAT_DETALLE: String
+                                  BAT_DETALLE: Option[String]
                                   ) extends CbroSerialization

@@ -16,6 +16,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
   override def handle(
       command: ObjetoCommands.ObjetoUpdateFromObligacion
   ): Try[Response.SuccessProcessing] = {
+    println("ENTRO AL HANDLER DE OBJETO ::::::::::::::::::::::::::")
     val sender = actor.context.sender()
     val event = ObjetoUpdatedFromObligacion(
       actor.state.lastDeliveryIdByEvents,
@@ -40,6 +41,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
     actor.persistEvent(event) { () =>
 
       actor.state += event
+      println("ENTRO AL ACTOR PERSIST DE OBJETO ::::::::::::::::::::::::::")
       if (initialization != "true")
         actor.informParent(command, actor.state)
       if (actor.state.eventCounter == eventCounterMax) {

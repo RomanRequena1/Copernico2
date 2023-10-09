@@ -21,8 +21,9 @@ case class ActividadSujetoTransaction(actor: ActividadSujetoActor, monitoring: M
   def topicError = "DGR-COP-ACTIVIDADES_error"
 
 
-  def processInput(input: String): Either[Throwable, ActividadSujeto] =
+  def processInput(input: String): Either[Throwable, ActividadSujeto] = {
     decode[ActividadSujeto](input)
+  }
 
   override def processMessage(registro: ActividadSujeto): Future[Response.SuccessProcessing] = {
     val command =
