@@ -20,8 +20,12 @@ case class EtapasProcesalesTributarioTransaction(actor: EtapasProcesalesActor, m
   def topicRetry = "DGR-COP-ETAPROCESALES-TRI_retry"
   def topicError = "DGR-COP-ETAPROCESALES-TRI_error"
 
-  def processInput(input: String): Either[Throwable, EtapasProcesalesTri] =
+  def processInput(input: String): Either[Throwable, EtapasProcesalesTri] = {
+    println("CUMBIA EP -> " + decode[EtapasProcesalesTri](input))
     decode[EtapasProcesalesTri](input)
+  }
+
+
 
   override def processMessage(registro: EtapasProcesalesTri): Future[Response.SuccessProcessing] = {
     val command = EtapasProcesalesCommands.EtapasProcesalesUpdateFromDto(
