@@ -1,18 +1,17 @@
 package consumers.no_registral.obligacion.domain
 
-import java.time.LocalDateTime
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionesTri}
-import consumers.no_registral.obligacion.application.entities.DetallesObligacion
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesTri}
 import ddd._
 
-import scala.util.Try
+import java.time.LocalDateTime
 
 case class ObligacionState(
                             saldo: BigDecimal = 0,
                             fechaUltMod: LocalDateTime = LocalDateTime.MIN,
                             exenta: Boolean = false,
                             porcentajeExencion: Option[BigDecimal] = None,
-                            registro: Option[ObligacionesTri] = None,
+                            registro: Option[ObligacionExternalDto] = None,
                             lastDeliveryIdByEvents: BigInt = 0,
                             detallesObligacion: Seq[DetallesObligacion] = Seq.empty,
                             juicioId: Option[BigInt] = None,

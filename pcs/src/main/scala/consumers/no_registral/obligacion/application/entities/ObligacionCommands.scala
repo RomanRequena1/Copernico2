@@ -1,7 +1,7 @@
 package consumers.no_registral.obligacion.application.entities
 
 import consumers.no_registral.objeto.application.entities.Exencion
-
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesAnt, ObligacionesTri}
 import design_principles.actor_model.Command
 import serialization.CbroSerialization
 
@@ -14,7 +14,7 @@ object ObligacionCommands {
       tipoObjeto: String,
       obligacionId: String,
       deliveryId: BigInt,
-      registro: ObligacionesTri,
+      registro: ObligacionExternalDto,
       detallesObligacion: Seq[DetallesObligacion],
       isAdheridoDebito: Option[Boolean]
   ) extends ObligacionCommands
@@ -25,7 +25,7 @@ object ObligacionCommands {
       objetoId: String,
       tipoObjeto: String,
       obligacionId: String,
-      registro: ObligacionesTri,
+      registro: ObligacionExternalDto,
       cuota:Option[String]
   ) extends ObligacionCommands
 
@@ -37,5 +37,4 @@ object ObligacionCommands {
       obligacionId: String,
       exencion: Exencion
   ) extends ObligacionCommands
-
 }

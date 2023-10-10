@@ -2,17 +2,14 @@ package consumers.registral.componente_i.infrastructure.consumer
 
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.no_registral.obligacion.application.entities.DetallesObligacion
 import consumers.registral.componente_i.application.entities.{ComponenteICommands, ComponenteITri, DetallesComponenteI}
 import consumers.registral.componente_i.infrastructure.dependency_injection.ComponenteIActor
+import consumers.registral.componente_i.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
+import io.circe.parser._
 import monitoring.Monitoring
 import org.slf4j.LoggerFactory
-import play.api.libs.json.Reads
-import io.circe.parser._
-import consumers.registral.componente_i.infrastructure.json.json._
-import io.circe.Encoder
 
 import scala.concurrent.Future
 

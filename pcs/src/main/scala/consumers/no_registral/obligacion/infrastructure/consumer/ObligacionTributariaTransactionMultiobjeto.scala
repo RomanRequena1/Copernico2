@@ -3,15 +3,14 @@ package consumers.no_registral.obligacion.infrastructure.consumer
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionCommands, ObligacionesTri}
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.ObligacionesTri
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
-import design_principles.actor_model.{Command, Response}
+import design_principles.actor_model.Response
+import io.circe.parser.decode
 import monitoring.Monitoring
 import org.slf4j.LoggerFactory
-import play.api.libs.json.Reads
-import io.circe.parser.decode
-import timescaledb.TimescaledbKafkaToPcs.connOracleKafkaToWriteside
 import timescaledb.TimescaledbNifiToKafka.connOracleNifi
 
 import scala.concurrent.Future

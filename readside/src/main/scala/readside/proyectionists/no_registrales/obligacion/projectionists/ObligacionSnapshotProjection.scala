@@ -1,10 +1,9 @@
 package readside.proyectionists.no_registrales.obligacion.projectionists
-import io.circe.syntax.EncoderOps
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionesTri}
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesTri}
 import consumers.no_registral.obligacion.domain.ObligacionEvents
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
-import io.circe.Json
 import io.circe.parser._
+import io.circe.syntax.EncoderOps
 final case class ObligacionSnapshotProjection(
     event: ObligacionEvents.ObligacionPersistedSnapshot
 ) extends ObligacionProjection {

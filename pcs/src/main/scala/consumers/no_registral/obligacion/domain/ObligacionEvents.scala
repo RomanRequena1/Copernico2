@@ -1,9 +1,8 @@
 package consumers.no_registral.obligacion.domain
 
 import consumers.no_registral.objeto.application.entities.Exencion
-import consumers.no_registral.objeto.application.entities.Exencion
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionMessage, ObligacionesTri}
-import consumers.no_registral.obligacion.application.entities.DetallesObligacion
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesAnt, ObligacionesTri}
+import consumers.no_registral.obligacion.application.entities.{ObligacionExternalDto, ObligacionMessage}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
@@ -23,12 +22,13 @@ object ObligacionEvents {
                                           objetoId: String,
                                           tipoObjeto: String,
                                           obligacionId: String,
-                                          registro: Option[ObligacionesTri],
+                                          registro: Option[ObligacionExternalDto],
                                           exenta: Boolean,
                                           porcentajeExencion: BigDecimal,
                                           saldo: BigDecimal,
                                           operacion: String
   ) extends ObligacionEvents
+
 
   case class ObligacionUpdatedFromDto(
       deliveryId: BigInt,
@@ -36,10 +36,11 @@ object ObligacionEvents {
       objetoId: String,
       tipoObjeto: String,
       obligacionId: String,
-      registro: ObligacionesTri,
+      registro: ObligacionExternalDto,
       detallesObligacion: Seq[DetallesObligacion],
       isAdheridoDebito: Option[Boolean]
   ) extends ObligacionEvents
+
 
   case class ObligacionRemoved(
       deliveryId: BigInt,
@@ -47,7 +48,7 @@ object ObligacionEvents {
       objetoId: String,
       tipoObjeto: String,
       obligacionId: String,
-      registro: ObligacionesTri,
+      registro: ObligacionExternalDto,
       cuota:Option[String]
                               ) extends ObligacionEvents
 
