@@ -1,4 +1,5 @@
 package readside.proyectionists.no_registrales.obligacion.projectionists
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesTri}
 import consumers.no_registral.obligacion.domain.ObligacionEvents
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
@@ -8,7 +9,7 @@ final case class ObligacionSnapshotProjection(
     event: ObligacionEvents.ObligacionPersistedSnapshot
 ) extends ObligacionProjection {
 
-  val registro: Option[ObligacionesTri] = event.registro
+  val registro: Option[ObligacionExternalDto] = event.registro
 
 
 

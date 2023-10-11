@@ -9,6 +9,7 @@ import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionAdde
 import io.circe._
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax.EncoderOps
+
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.util.Try
@@ -26,18 +27,17 @@ object ObligacionImplicits {
   implicit val ExencionEncoder: Encoder[Exencion] = deriveEncoder
   //EXTERNALDTO
 
-  implicit val ObligacionesTriDecoder: Decoder[ObligacionExternalDto.ObligacionesTri] = deriveDecoder
-  implicit val ObligacionesTriEncoder: Encoder[ObligacionExternalDto.ObligacionesTri] = deriveEncoder
-
-  implicit val ObligacionesAntDecoder: Decoder[ObligacionExternalDto.ObligacionesAnt] = deriveDecoder
-  implicit val ObligacionesAntEncoder: Encoder[ObligacionExternalDto.ObligacionesAnt] = deriveEncoder
+//  implicit val ObligacionesTriDecoder: Decoder[ObligacionExternalDto.ObligacionesTri] = deriveDecoder
+//  implicit val ObligacionesTriEncoder: Encoder[ObligacionExternalDto.ObligacionesTri] = deriveEncoder
+//
+//  implicit val ObligacionesAntDecoder: Decoder[ObligacionExternalDto.ObligacionesAnt] = deriveDecoder
+//  implicit val ObligacionesAntEncoder: Encoder[ObligacionExternalDto.ObligacionesAnt] = deriveEncoder
 
   implicit val DetallesObligacionDecoder: Decoder[DetallesObligacion] = deriveDecoder
   implicit val DetallesObligacionEncoder: Encoder[DetallesObligacion] = deriveEncoder
 
   implicit val ListDetallesObligacionesDecoder: Decoder[ListDetallesObligaciones] = deriveDecoder
-  //implicit val ListDetallesObligacionesEncoder: Encoder[ListDetallesObligaciones] = deriveEncoder
-  //implicit val ListDetallesObligacionesDecoder: Decoder[ListDetallesObligaciones] = deriveDecoder
+
 
 
 
@@ -84,31 +84,19 @@ object ObligacionImplicits {
   implicit val encodeAnt: Encoder[ObligacionesAnt] = deriveEncoder
   implicit val decodeAnt: Decoder[ObligacionesAnt] = deriveDecoder
 
-  implicit val encodeVisitor: Encoder[ObligacionExternalDto] = Encoder.instance {
-    case u @ ObligacionesTri(_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_) => u.
-    case a@ObligacionesAnt(_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_) => a.
+  implicit val encodeObligacionExternalDto: Encoder[ObligacionExternalDto] = Encoder.instance {
+    case x: ObligacionesTri => x.asJson
+    case t: ObligacionesAnt => t.asJson
   }
 
-  implicit val decodeVisitor: Decoder[Visitor] = for {
+  implicit val decodeObligacionExternalDto: Decoder[ObligacionExternalDto] = for {
     visitorType <- Decoder[String].prepare(_.downField("type"))
     value <- visitorType match {
-      case "user" => Decoder[User]
-      case "anon" => Decoder[Anon]
+      case "ObligacionesTri" => Decoder[ObligacionesTri]
+      case "ObligacionesAnt" => Decoder[ObligacionesAnt]
       case other => Decoder.failedWithMessage(s"invalid type: $other")
     }
-
-  // Define a custom Encoder for ListDetallesObligaciones
-  /*implicit val listDetallesObligacionesEncoder: Encoder[ListDetallesObligaciones] =
-    (listDetalles: ListDetallesObligaciones) =>
-      Json.obj(
-        "field1" -> Json.fromString(listDetalles.field1), // Replace with actual field names and values
-        "field2" -> Json.fromInt(listDetalles.field2)
-        // Add more fields as needed
-      )
-
-  // Now you can encode ListDetallesObligaciones to JSON
-  val detalles: ListDetallesObligaciones = ??? // Your instance of ListDetallesObligaciones
-  val json: Json = detalles.asJson*/
+  } yield value
 
 
 

@@ -1,5 +1,7 @@
 package consumers.no_registral.obligacion.application.entities
 
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.ListDetallesObligaciones
+
 import java.time.LocalDateTime
 import ddd.ExternalDto
 import play.api.libs.json.JsObject
@@ -7,10 +9,74 @@ import serialization.CbroSerialization
 
 
 sealed trait ObligacionExternalDto extends ExternalDto {
+  def RULE_NUMBER: Option[String]
+
   def EV_ID: BigInt
-  def BOB_SALDO: BigDecimal
+
+  def BOB_SUJ_IDENTIFICADOR: String
+
+  def BOB_SOJ_TIPO_OBJETO: String
+
+  def BOB_SOJ_IDENTIFICADOR: String
+
+  def BOB_SOJ_IDENTIFICADOR_2: Option[String]
+
+  def BOB_OBN_ID: String
+
+  def BOB_ADHERIDO_DEBITO: Option[String]
+
+  def BOB_CANAL_ORIGEN: Option[String]
+
+  def BOB_CAPITAL: Option[BigDecimal]
+
+  def BOB_CUOTA: Option[String]
+
+  def BOB_ESTADO: Option[String]
+
+  def BOB_CONCEPTO: Option[String]
+
+  def BOB_FECHASANCION: Option[String]
+
+  def BOB_SUB_ESTADO: Option[String]
+
+  def BOB_TPBID: Option[String]
+
+  def BOB_FISCALIZADA: Option[String]
+
+  def BOB_IMPUESTO: Option[String]
+
+  def BOB_INDICE_INT_PUNIT: Option[String]
+
+  def BOB_INDICE_INT_RESAR: Option[String]
+
+  def BOB_INTERES_PUNIT: Option[BigDecimal]
+
+  def BOB_INTERES_RESAR: Option[BigDecimal]
+
   def BOB_JUI_ID: Option[BigInt]
+
+  def BOB_OTROS_ATRIBUTOS: Option[ListDetallesObligaciones]
+
+  def BOB_PERIODO: Option[String]
+
+  def BOB_PLN_ID: Option[String]
+
+  def BOB_PRORROGA: Option[LocalDateTime]
+
+  def BOB_TIPO: Option[String]
+
+  def BOB_SALDO: BigDecimal
+
+  def BOB_TOTAL: Option[BigDecimal]
+
+  def BOB_VENCIMIENTO: Option[LocalDateTime]
+
+  def BOB_VENCIMIENTO_2: Option[LocalDateTime]
+
   def SOJ_ID_EXTERNO: Option[String]
+
+  def BOB_OGA_ID: Option[String]
+
 }
 
   object ObligacionExternalDto {
@@ -88,7 +154,7 @@ sealed trait ObligacionExternalDto extends ExternalDto {
                                 SOJ_ID_EXTERNO: Option[String]
                               ) extends ObligacionExternalDto with CbroSerialization
 
-    case class ListDetallesObligaciones(BOB_DETALLES: List[DetallesObligacion]) extends ObligacionExternalDto with CbroSerialization
+    case class ListDetallesObligaciones(BOB_DETALLES: List[DetallesObligacion])  extends CbroSerialization
 
     case class DetallesObligacion(
                                    BOB_MUNICIPIO: Option[String],
@@ -97,7 +163,7 @@ sealed trait ObligacionExternalDto extends ExternalDto {
                                    BAND_BATCH: Option[Boolean],
                                    EV_ID: Option[BigInt],
                                    SOJ_ID_EXTERNO: Option[String]
-                                 ) extends ObligacionExternalDto with CbroSerialization
+                                 ) extends  CbroSerialization
 
 
 }
