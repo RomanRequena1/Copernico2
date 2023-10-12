@@ -22,7 +22,7 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
   def topicError = "DGR-COP-OBLIGACIONES-ANT_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesAnt] = {
-    //connOracleNifi(input, "DGR-COP-OBLIGACIONES-ANT")
+    println("CUMBIA -> " + decode[ObligacionesAnt](input))
     decode[ObligacionesAnt](input)
   }
 

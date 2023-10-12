@@ -27,11 +27,11 @@ object ObligacionImplicits {
   implicit val ExencionEncoder: Encoder[Exencion] = deriveEncoder
   //EXTERNALDTO
 
-//  implicit val ObligacionesTriDecoder: Decoder[ObligacionExternalDto.ObligacionesTri] = deriveDecoder
-//  implicit val ObligacionesTriEncoder: Encoder[ObligacionExternalDto.ObligacionesTri] = deriveEncoder
-//
-//  implicit val ObligacionesAntDecoder: Decoder[ObligacionExternalDto.ObligacionesAnt] = deriveDecoder
-//  implicit val ObligacionesAntEncoder: Encoder[ObligacionExternalDto.ObligacionesAnt] = deriveEncoder
+  implicit val ObligacionesTriDecoder: Decoder[ObligacionesTri] = deriveDecoder
+  implicit val ObligacionesTriEncoder: Encoder[ObligacionesTri] = deriveEncoder
+
+  implicit val ObligacionesAntDecoder: Decoder[ObligacionesAnt] = deriveDecoder
+  implicit val ObligacionesAntEncoder: Encoder[ObligacionesAnt] = deriveEncoder
 
   implicit val DetallesObligacionDecoder: Decoder[DetallesObligacion] = deriveDecoder
   implicit val DetallesObligacionEncoder: Encoder[DetallesObligacion] = deriveEncoder
@@ -39,7 +39,8 @@ object ObligacionImplicits {
   implicit val ListDetallesObligacionesDecoder: Decoder[ListDetallesObligaciones] = deriveDecoder
 
 
-
+  implicit val ObligacionExternalDtoDecoder: Decoder[ObligacionExternalDto] = deriveDecoder
+  implicit val ObligacionExternalDtoEncoder: Encoder[ObligacionExternalDto] = deriveEncoder
 
   implicit val ListDetallesObligacionesEncoder: Encoder[ListDetallesObligaciones] =
     (detallesObligaciones: ListDetallesObligaciones) =>
@@ -79,24 +80,7 @@ object ObligacionImplicits {
   implicit val ObligacionAddedExencionEncoder: Encoder[ObligacionAddedExencion] = deriveEncoder
 
 
-  implicit val encodeTri: Encoder[ObligacionesTri] = deriveEncoder
-  implicit val decodeTri: Decoder[ObligacionesTri] = deriveDecoder
-  implicit val encodeAnt: Encoder[ObligacionesAnt] = deriveEncoder
-  implicit val decodeAnt: Decoder[ObligacionesAnt] = deriveDecoder
 
-  implicit val encodeObligacionExternalDto: Encoder[ObligacionExternalDto] = Encoder.instance {
-    case x: ObligacionesTri => x.asJson
-    case t: ObligacionesAnt => t.asJson
-  }
-
-  implicit val decodeObligacionExternalDto: Decoder[ObligacionExternalDto] = for {
-    visitorType <- Decoder[String].prepare(_.downField("type"))
-    value <- visitorType match {
-      case "ObligacionesTri" => Decoder[ObligacionesTri]
-      case "ObligacionesAnt" => Decoder[ObligacionesAnt]
-      case other => Decoder.failedWithMessage(s"invalid type: $other")
-    }
-  } yield value
 
 
 

@@ -8,7 +8,7 @@ import play.api.libs.json.JsObject
 import serialization.CbroSerialization
 
 
-sealed trait ObligacionExternalDto extends ExternalDto {
+sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization{
   def RULE_NUMBER: Option[String]
 
   def EV_ID: BigInt

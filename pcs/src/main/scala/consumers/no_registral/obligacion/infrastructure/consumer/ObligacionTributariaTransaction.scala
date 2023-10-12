@@ -25,11 +25,57 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
 
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
+    println("CUMBIA -> " + decode[ObligacionesTri](input))
     decode[ObligacionesTri](input)
   }
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
+    try{
+      val isNotDeuda: List[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES map {
+        d => d.RULE_NUMBER.contains("-1")
+      }
 
+      val isCancelada: Seq[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map {
+        d => d.RULE_NUMBER.contains("-2")
+      }
+
+      val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
+
+      val command: ObligacionCommands =
+        if (isCancelada.head) {
+          ObligacionCommands.ObligacionRemove(
+            deliveryId = obligacion.EV_ID,
+            sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+            objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+            tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+            obligacionId = obligacion.BOB_OBN_ID,
+            registro = obligacion,
+            cuota = obligacion.BOB_CUOTA)
+        }
+        else if (isNotDeuda.head) {
+          ObligacionCommands.ObligacionRemove(
+            deliveryId = obligacion.EV_ID,
+            sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+            objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+            tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+            obligacionId = obligacion.BOB_OBN_ID,
+            registro = obligacion,
+            cuota = None)
+        }
+        else {
+          ObligacionUpdateFromDto(
+            sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+            objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+            tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+            obligacionId = obligacion.BOB_OBN_ID,
+            deliveryId = obligacion.EV_ID,
+            registro = obligacion,
+            detallesObligacion = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES,
+            isAdheridoDebito = isAdheridoDebito)
+        }
+    }catch {
+      case e:Exception => println("CUMBIA -> " + e)
+    }
     val isNotDeuda: List[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES map {
       d => d.RULE_NUMBER.contains("-1")
     }
