@@ -80,8 +80,4 @@ object ObligacionImplicits {
   implicit val ObligacionAddedExencionEncoder: Encoder[ObligacionAddedExencion] = deriveEncoder
 
 
-
-
-
-
 }

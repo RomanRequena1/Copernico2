@@ -2,6 +2,7 @@ package consumers.no_registral.obligacion.infrastructure.consumer
  import akka.actor.ActorRef
  import api.actor_transaction.ActorTransaction
  import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
+ import consumers.no_registral.obligacion.application.entities.ObligacionCommands
  import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
  import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.ObligacionesAnt
  import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
@@ -27,6 +28,7 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
   }
 
   def processMessage(obligacion: ObligacionesAnt): Future[Response.SuccessProcessing] = {
+
     val isNotDeuda: List[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES map {
       d => d.RULE_NUMBER.contains("-1")
     }
@@ -36,18 +38,28 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
     }
 
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
-    val command = obligacion match {
-      case obn: ObligacionesAnt if isNotDeuda.head =>
+    val command: ObligacionCommands =
+      if (isNotDeuda.head) {
         ObligacionRemove(
-          deliveryId = obn.EV_ID,
-          sujetoId = obn.BOB_SUJ_IDENTIFICADOR,
-          objetoId = obn.BOB_SOJ_IDENTIFICADOR,
-          tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
-          obligacionId = obn.BOB_OBN_ID,
+          deliveryId = obligacion.EV_ID,
+          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+          obligacionId = obligacion.BOB_OBN_ID,
           registro = obligacion,
-          cuota = None
+          cuota = obligacion.BOB_CUOTA
         )
-      case obn: ObligacionesAnt =>
+      } else if (isCancelada.head) {
+        ObligacionRemove(
+          deliveryId = obligacion.EV_ID,
+          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+          obligacionId = obligacion.BOB_OBN_ID,
+          registro = obligacion,
+          cuota = obligacion.BOB_CUOTA
+        )
+      } else {
         ObligacionUpdateFromDto(
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
           objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
@@ -59,11 +71,8 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
           detallesObligacion = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES,
           isAdheridoDebito = isAdheridoDebito
         )
-    }
+      }
     actorRef.ask[Response.SuccessProcessing](command)
-    //???
   }
-
-
 }
 
