@@ -1,13 +1,12 @@
 package consumers.no_registral.sujeto.application.cqrs.commands
 
-import design_principles.actor_model.mechanism.DeliveryIdManagement._
-import akka.Done
 import consumers.no_registral.sujeto.application.entity.SujetoCommands.SujetoUpdateFromTri
 import consumers.no_registral.sujeto.domain.SujetoEvents.SujetoUpdatedFromTri
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
+import design_principles.actor_model.mechanism.DeliveryIdManagement._
 
 import scala.util.{Success, Try}
 

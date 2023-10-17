@@ -8,16 +8,17 @@ sealed trait SujetoCommands extends Command with SujetoMessage with Deliverable 
 
 object SujetoCommands {
 
+
   case class SujetoUpdateFromTri(
       deliveryId: BigInt,
       sujetoId: String,
-      registro: SujetoTri
+      registro: SujetoExternalDto
   ) extends SujetoCommands
 
   case class SujetoUpdateFromAnt(
       deliveryId: BigInt,
       sujetoId: String,
-      registro: SujetoAnt
+      registro: SujetoExternalDto
   ) extends SujetoCommands
 
   case class SujetoUpdateFromObjeto(

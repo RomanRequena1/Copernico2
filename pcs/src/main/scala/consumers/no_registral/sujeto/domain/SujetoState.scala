@@ -1,11 +1,10 @@
 package consumers.no_registral.sujeto.domain
 
-import java.time.LocalDateTime
-import consumers.no_registral.sujeto.application.entity.SujetoTri
+import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
 import ddd.{AbstractState, eventCounterMax}
 import serialization.CbroSerialization
 
-import scala.util.Try
+import java.time.LocalDateTime
 
 final case class SujetoState(
     saldo: BigDecimal = 0,
@@ -13,7 +12,7 @@ final case class SujetoState(
     saldoObligaciones: Map[String, BigDecimal] = Map.empty,
     objetos: Set[(String, String)] = Set.empty,
     fechaUltMod: LocalDateTime = LocalDateTime.MIN,
-    registro: Option[SujetoTri] = None,
+    registro: Option[SujetoExternalDto] = None,
     lastDeliveryIdByEvents:  BigInt = 0,
     eventCounter:Int = 0,
     lastInternalDeliveryId:BigInt = 0
@@ -45,10 +44,10 @@ final case class SujetoState(
         copy(
           registro = Some(registro)
         )
-//      case SujetoEvents.SujetoUpdatedFromAnt(_, _, registro) =>
-//        copy(
-//          registro = Some(registro)
-//        )
+      case SujetoEvents.SujetoUpdatedFromAnt(_, _, registro) =>
+        copy(
+          registro = Some(registro)
+        )
       case SujetoEvents.SujetoUpdatedFromObjeto(deliveryId, _, objetoId, tipoObjeto, saldoObjeto, _saldoObligaciones) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)

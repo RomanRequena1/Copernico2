@@ -26,13 +26,15 @@ class SujetoSnapshotPersistedHandler(
 
   import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 
-  override def processInput(input: String): Either[Throwable, SujetoSnapshotPersisted] =
+  override def processInput(input: String): Either[Throwable, SujetoSnapshotPersisted] = {
+    println("READSIDE SUJETO ::::::::::::::: "+decode[SujetoSnapshotPersisted](input))
     decode[SujetoSnapshotPersisted](input)
+  }
 
   val cassandra = new CassandraWriteProduction()
 
   override def processMessage(registro: SujetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
-    recordLag(calculateLag(registro.deliveryId.toString))
+    //recordLag(calculateLag(registro.deliveryId.toString))
     val projection = SujetoSnapshotPersistedProjection(registro)
     for {
       done <- r.cassandraWrite.writeState(projection).andThen {

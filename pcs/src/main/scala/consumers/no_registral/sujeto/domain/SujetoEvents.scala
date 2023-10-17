@@ -1,6 +1,6 @@
 package consumers.no_registral.sujeto.domain
 
-import consumers.no_registral.sujeto.application.entity.{SujetoAnt, SujetoMessage, SujetoTri}
+import consumers.no_registral.sujeto.application.entity.{SujetoExternalDto, SujetoMessage}
 import ddd.Deliverable
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
@@ -14,21 +14,23 @@ object SujetoEvents {
   case class SujetoSnapshotPersisted(
       deliveryId: BigInt,
       sujetoId: String,
-      registro: Option[SujetoTri],
+      registro: Option[SujetoExternalDto],
       saldo: BigDecimal
   ) extends SujetoEvents
+
 
   case class SujetoUpdatedFromTri(
       deliveryId: BigInt,
       sujetoId: String,
-      registro: SujetoTri
+      registro: SujetoExternalDto
   ) extends SujetoEvents
 
   case class SujetoUpdatedFromAnt(
       deliveryId: BigInt,
       sujetoId: String,
-      registro: SujetoAnt
+      registro: SujetoExternalDto
   ) extends SujetoEvents
+
 
   case class SujetoUpdatedFromObjeto(
       deliveryId: BigInt,
