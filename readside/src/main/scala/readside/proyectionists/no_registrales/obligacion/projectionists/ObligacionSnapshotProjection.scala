@@ -1,6 +1,6 @@
 package readside.proyectionists.no_registrales.obligacion.projectionists
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesTri}
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.DetallesObligacion
 import consumers.no_registral.obligacion.domain.ObligacionEvents
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import io.circe.parser._
@@ -11,14 +11,14 @@ final case class ObligacionSnapshotProjection(
 
   val registro: Option[ObligacionExternalDto] = event.registro
 
-
-
   val bobDetailsResult: Option[Map[String, List[DetallesObligacion]]] =
     decode[Map[String, List[DetallesObligacion]]](registro.get.BOB_OTROS_ATRIBUTOS.asJson.toString()).toOption
   println("CUMBIA bobDetailsResult -> " + bobDetailsResult)
 
   val mao: Map[String, String] = Map("BOB_DETALLES" -> bobDetailsResult.get("BOB_DETALLES").asJson.noSpaces)
   println("CUMBIA -> mao" + mao)
+
+
   val fromRegistro = registro map { registro =>
     List(
       "bob_adherido_debito" -> registro.BOB_ADHERIDO_DEBITO,

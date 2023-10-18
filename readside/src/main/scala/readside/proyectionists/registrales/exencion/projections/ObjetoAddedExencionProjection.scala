@@ -1,6 +1,5 @@
 package readside.proyectionists.registrales.exencion.projections
-import java.time.chrono.ChronoLocalDateTime
-import consumers.no_registral.objeto.application.entities.{Exencion}
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
 import consumers.no_registral.objeto.domain.ObjetoEvents
 
 case class ObjetoAddedExencionProjection(

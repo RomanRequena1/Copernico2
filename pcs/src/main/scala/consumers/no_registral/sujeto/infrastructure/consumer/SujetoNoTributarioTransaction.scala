@@ -18,7 +18,9 @@ case class SujetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
 ) extends ActorTransaction[SujetoAnt](monitoring) {
 
   def topic = "DGR-COP-SUJETO-ANT"
+
   def topicRetry = "DGR-COP-SUJETO-ANT_retry"
+
   def topicError = "DGR-COP-SUJETO-ANT_error"
 
   def processInput(input: String): Either[Throwable, SujetoAnt] = {
@@ -43,7 +45,6 @@ case class SujetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
       registro = registro
     )
     actorRef.ask[Response.SuccessProcessing](command)
-
   }
 }
 

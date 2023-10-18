@@ -1,9 +1,11 @@
 package consumers.no_registral.objeto.domain
 
-import java.time.LocalDateTime
-import consumers.no_registral.objeto.application.entities.{Exencion, ObjetosTri}
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
 import ddd.{AbstractState, eventCounterMax}
 import serialization.CbroSerialization
+
+import java.time.LocalDateTime
 
 case class ObjetoState(
     saldo: BigDecimal = 0,
@@ -12,7 +14,7 @@ case class ObjetoState(
     sujetos: Set[String] = Set.empty,
     sujetoResponsable: Option[String] = None,
     fechaUltMod: LocalDateTime = LocalDateTime.MIN,
-    registro: Option[ObjetosTri] = None,
+    registro: Option[ObjetoExternalDto] = None,
     tags: Set[String] = Set.empty,
     isResponsable: Boolean = false,
     lastDeliveryIdByEvents:  BigInt = 0,

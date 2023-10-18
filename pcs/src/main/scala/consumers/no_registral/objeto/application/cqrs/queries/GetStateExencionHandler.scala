@@ -1,7 +1,7 @@
 package consumers.no_registral.objeto.application.cqrs.queries
 
-import consumers.no_registral.objeto.application.entities.GetExencionResponse
 import consumers.no_registral.objeto.application.entities.ObjetoQueries.GetStateExencion
+import consumers.no_registral.objeto.application.entities.ObjetoResponses.GetExencionResponse
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.query.QueryHandler.SyncQueryHandler
 

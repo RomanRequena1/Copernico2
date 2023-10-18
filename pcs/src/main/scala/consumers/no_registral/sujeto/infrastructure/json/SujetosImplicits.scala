@@ -23,8 +23,6 @@ object SujetosImplicits {
   implicit val SujetoUpdateFromAntDecoder: Decoder[SujetoUpdateFromAnt] = deriveDecoder
   implicit val SujetoUpdateFromAntEncoder: Encoder[SujetoUpdateFromAnt] = deriveEncoder
 
-
-
   implicit val SujetoUpdateFromObjetoDecoder: Decoder[SujetoUpdateFromObjeto] = deriveDecoder
   implicit val SujetoUpdateFromObjetoEncoder: Encoder[SujetoUpdateFromObjeto] = deriveEncoder
 

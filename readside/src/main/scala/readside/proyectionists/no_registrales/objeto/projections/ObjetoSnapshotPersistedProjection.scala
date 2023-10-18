@@ -1,29 +1,24 @@
 package readside.proyectionists.no_registrales.objeto.projections
 
-import consumers.no_registral.objeto.application.entities.{ObjetosTri, ObjetosTriOtrosAtributos}
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.DetallesObjeto
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
-import io.circe
-import org.slf4j.LoggerFactory
-import io.circe.syntax.EncoderOps
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
+import io.circe.parser._
+import io.circe.syntax.EncoderOps
+
 case class ObjetoSnapshotPersistedProjection(
     event: ObjetoSnapshotPersisted
 ) extends ObjetoProjection {
-  val registro: Option[ObjetosTri] = event.registro
-  val test: Option[Map[String, String]] = registro match {
-    case Some(value) => {
-      val sojDetailsResult: Option[Map[String, List[ObjetosTriOtrosAtributos]]] = circe.jawn.decode[Map[String, List[ObjetosTriOtrosAtributos]]](registro.get.SOJ_OTROS_ATRIBUTOS.asJson.toString()).toOption
-      println("CUMBIA bobDetailsResult -> " + sojDetailsResult)
-      val mao: Map[String, String] = Map("SOJ_DETALLES" -> sojDetailsResult.get("SOJ_DETALLES").asJson.noSpaces)
-      Some(mao)}
 
-    case None => None
-  }
+  val registro: Option[ObjetoExternalDto] = event.registro
 
+  val bobDetailsResult: Option[Map[String, List[DetallesObjeto]]] =
+    decode[Map[String, List[DetallesObjeto]]](registro.get.SOJ_OTROS_ATRIBUTOS.asJson.toString()).toOption
+  println("CUMBIA bobDetailsResult -> " + bobDetailsResult)
 
-
-
-  println("CUMBIAA " + registro)
+  val mao: Map[String, String] = Map("BOB_DETALLES" -> bobDetailsResult.get("SOJ_DETALLES").asJson.noSpaces)
+  println("CUMBIA -> mao" + mao)
   val fromRegistro: Option[List[(String, Option[Object])]] = registro match {
     case Some(r) => Some(List(
       "soj_identificador_2" -> r.SOJ_IDENTIFICADOR_2,
@@ -35,7 +30,7 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_fecha_fin" -> r.SOJ_FECHA_FIN,
       "soj_fecha_inicio" -> r.SOJ_FECHA_INICIO,
       "soj_id_externo" -> r.SOJ_ID_EXTERNO,
-      "soj_otros_atributos" -> test,
+      "soj_otros_atributos" -> Some(mao),
       "soj_base_imponible" -> r.SOJ_BASE_IMPONIBLE,
       "soj_adherido_debito" -> r.SOJ_ADHERIDO_DEBITO,
       "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[",",","]")),

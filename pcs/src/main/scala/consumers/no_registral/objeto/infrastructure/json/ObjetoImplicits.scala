@@ -1,7 +1,8 @@
 package consumers.no_registral.objeto.infrastructure.json
 
 import consumers.no_registral.objeto.application.entities.ObjetoCommands._
-import consumers.no_registral.objeto.application.entities.ObjetoResponses.GetObjetoResponse
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{Cotitularidad, DetallesObjeto, Exencion, ListDetallesObjeto, ObjetosAnt, ObjetosTri}
+import consumers.no_registral.objeto.application.entities.ObjetoResponses.{GetExencionResponse, GetObjetoResponse}
 import consumers.no_registral.objeto.application.entities._
 import consumers.no_registral.objeto.domain.ObjetoEvents._
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
@@ -47,11 +48,24 @@ object ObjetoImplicits {
 
   // EXTERNALDTO
 
+  implicit val ObjetosTriDecoder: Decoder[ObjetosTri] = deriveDecoder
+  implicit val ObjetosTriEncoder: Encoder[ObjetosTri] = deriveEncoder
+
   implicit val ObjetosAntDecoder: Decoder[ObjetosAnt] = deriveDecoder
   implicit val ObjetosAntEncoder: Encoder[ObjetosAnt] = deriveEncoder
 
-  implicit val ObjetosTriOtrosAtributosDecoder: Decoder[ObjetosTriOtrosAtributos] = deriveDecoder
-  implicit val ObjetosTriOtrosAtributosEncoder: Encoder[ObjetosTriOtrosAtributos] = deriveEncoder
+  implicit val DetallesObjetoDecoder: Decoder[DetallesObjeto] = deriveDecoder
+  implicit val DetallesObjetoEncoder: Encoder[DetallesObjeto] = deriveEncoder
+
+  implicit val ObjetosExternalDtoDecoder: Decoder[ObjetoExternalDto] = deriveDecoder
+  implicit val ObjetosExternalDtoEncoder: Encoder[ObjetoExternalDto] = deriveEncoder
+
+  implicit val ListDetallesObjetoDecoder: Decoder[ListDetallesObjeto] = deriveDecoder
+  implicit val ListDetallesObjetoEncoder: Encoder[ListDetallesObjeto] =
+    (detallesObjeto: ListDetallesObjeto) =>
+      Json.obj(
+        "SOJ_DETALLES" -> detallesObjeto.SOJ_DETALLES.asJson
+      )
 
   implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
     Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
@@ -60,24 +74,15 @@ object ObjetoImplicits {
     dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
   }
 
-  implicit val ListDetallesObjetoDecoder: Decoder[ListObjetosTriOtrosAtributos] = deriveDecoder
-  implicit val ListDetallesObjetoEncoder: Encoder[ListObjetosTriOtrosAtributos] =
-    (detallesObligaciones: ListObjetosTriOtrosAtributos) =>
-      Json.obj(
-        "SOJ_DETALLES" -> detallesObligaciones.SOJ_DETALLES.asJson
-      )
-  implicit val ObjetosTriDecoder: Decoder[ObjetosTri] = deriveDecoder
-  implicit val ObjetosTriEncoder: Encoder[ObjetosTri] = deriveEncoder
-
   implicit val CotitularidadDecoder: Decoder[Cotitularidad] = deriveDecoder
   implicit val CotitularidadEncoder: Encoder[Cotitularidad] = deriveEncoder
+
+  implicit val ExencionDecoder: Decoder[Exencion] = deriveDecoder
+  implicit val ExencionEncoder: Encoder[Exencion] = deriveEncoder
 
   //RESPONSES
   implicit val GetObjetoResponseDecoder: Decoder[GetObjetoResponse] = deriveDecoder
   implicit val GetObjetoResponseEncoder: Encoder[GetObjetoResponse] = deriveEncoder
-
-  implicit val ExencionDecoder: Decoder[Exencion] = deriveDecoder
-  implicit val ExencionEncoder: Encoder[Exencion] = deriveEncoder
 
   implicit val GetExencionResponseDecoder: Decoder[GetExencionResponse] = deriveDecoder
   implicit val GetExencionResponseEncoder: Encoder[GetExencionResponse] = deriveEncoder

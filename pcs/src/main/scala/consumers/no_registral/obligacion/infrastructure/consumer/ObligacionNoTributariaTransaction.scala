@@ -16,6 +16,7 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
   implicit
   actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesAnt](monitoring) {
+
   def topic = "DGR-COP-OBLIGACIONES-ANT"
 
   def topicRetry = "DGR-COP-OBLIGACIONES-ANT_retry"

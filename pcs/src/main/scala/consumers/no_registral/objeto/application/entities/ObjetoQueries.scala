@@ -1,6 +1,6 @@
 package consumers.no_registral.objeto.application.entities
 
-import consumers.no_registral.objeto.application.entities.ObjetoResponses.GetObjetoResponse
+import consumers.no_registral.objeto.application.entities.ObjetoResponses.{GetExencionResponse, GetObjetoResponse}
 import design_principles.actor_model.Query
 
 sealed trait ObjetoQueries extends Query with ObjetoMessage

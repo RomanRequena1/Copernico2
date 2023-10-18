@@ -1,6 +1,7 @@
 package consumers.no_registral.objeto.domain
 
-import consumers.no_registral.objeto.application.entities.{Exencion, ObjetosAnt, ObjetosTri}
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
@@ -34,7 +35,7 @@ object ObjetoEvents {
       tags: Set[String],
       sujetoResponsable: Option[String],
       porcentajeResponsabilidad: BigDecimal,
-      registro: Option[ObjetosTri],
+      registro: Option[ObjetoExternalDto],
       obligacionesSaldo: Map[String, BigDecimal] = Map.empty,
       cuotas:List[Boolean],
       operacion: String,
@@ -46,7 +47,7 @@ object ObjetoEvents {
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      registro: ObjetosTri,
+      registro: ObjetoExternalDto,
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String],
       isAdheridoDebito: Option[Boolean],
@@ -57,7 +58,7 @@ object ObjetoEvents {
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      registro: ObjetosAnt
+      registro: ObjetoExternalDto
   ) extends ObjetoEvents
 
   case class ObjetoTagAdded(
@@ -110,7 +111,7 @@ object ObjetoEvents {
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      registro: ObjetosTri,
+      registro: ObjetoExternalDto,
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String]
   ) extends ObjetoEvents

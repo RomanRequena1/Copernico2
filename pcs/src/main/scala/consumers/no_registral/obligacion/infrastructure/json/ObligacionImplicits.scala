@@ -1,6 +1,6 @@
 package consumers.no_registral.obligacion.infrastructure.json
 
-import consumers.no_registral.objeto.application.entities.Exencion
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateExencion, ObligacionUpdateFromDto}
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ListDetallesObligaciones, ObligacionesAnt, ObligacionesTri}
@@ -25,6 +25,7 @@ object ObligacionImplicits {
   implicit val ObligacionUpdateExencionEncoder: Encoder[ObligacionUpdateExencion] = deriveEncoder
   implicit val ExencionDecoder: Decoder[Exencion] = deriveDecoder
   implicit val ExencionEncoder: Encoder[Exencion] = deriveEncoder
+
   //EXTERNALDTO
 
   implicit val ObligacionesTriDecoder: Decoder[ObligacionesTri] = deriveDecoder
@@ -36,12 +37,10 @@ object ObligacionImplicits {
   implicit val DetallesObligacionDecoder: Decoder[DetallesObligacion] = deriveDecoder
   implicit val DetallesObligacionEncoder: Encoder[DetallesObligacion] = deriveEncoder
 
-  implicit val ListDetallesObligacionesDecoder: Decoder[ListDetallesObligaciones] = deriveDecoder
-
-
   implicit val ObligacionExternalDtoDecoder: Decoder[ObligacionExternalDto] = deriveDecoder
   implicit val ObligacionExternalDtoEncoder: Encoder[ObligacionExternalDto] = deriveEncoder
 
+  implicit val ListDetallesObligacionesDecoder: Decoder[ListDetallesObligaciones] = deriveDecoder
   implicit val ListDetallesObligacionesEncoder: Encoder[ListDetallesObligaciones] =
     (detallesObligaciones: ListDetallesObligaciones) =>
       Json.obj(
@@ -69,7 +68,6 @@ object ObligacionImplicits {
 
   implicit val ObligacionUpdatedFromDtoDecoder: Decoder[ObligacionUpdatedFromDto] = deriveDecoder
   implicit val ObligacionUpdatedFromDtoEncoder: Encoder[ObligacionUpdatedFromDto] = deriveEncoder
-
 
 
   implicit val ObligacionRemovedDecoder: Decoder[ObligacionRemoved] = deriveDecoder

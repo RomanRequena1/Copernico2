@@ -1,15 +1,16 @@
 package consumers.no_registral.objeto.infrastructure.consumer
 
-import scala.concurrent.{ExecutionContext, Future}
-import akka.Done
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.no_registral.objeto.application.entities.{Exencion, ObjetoCommands}
+import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import design_principles.actor_model.Response
-import monitoring.Monitoring
 import io.circe.parser.decode
+import monitoring.Monitoring
+
+import scala.concurrent.Future
 
 case class ObjetoExencionTransaction(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
