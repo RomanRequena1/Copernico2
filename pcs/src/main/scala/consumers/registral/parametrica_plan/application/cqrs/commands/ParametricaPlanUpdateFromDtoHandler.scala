@@ -6,7 +6,7 @@ import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
 import consumers.registral.parametrica_plan.application.entities.ParametricaPlanCommands.ParametricaPlanUpdateFromDto
 import consumers.registral.parametrica_plan.domain.ParametricaPlanEvents.ParametricaPlanUpdatedFromDto
 import consumers.registral.parametrica_plan.domain.{ParametricaPlanEvents, ParametricaPlanState}
-import consumers.registral.parametrica_plan.infrastructure.json.ParametricaRecargoImplicits._
+import consumers.registral.parametrica_plan.infrastructure.json.ParametricaPlanImplicits._
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer

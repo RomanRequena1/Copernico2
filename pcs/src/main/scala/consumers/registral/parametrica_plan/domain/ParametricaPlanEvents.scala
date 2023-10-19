@@ -1,9 +1,10 @@
 package consumers.registral.parametrica_plan.domain
 
-import java.time.LocalDateTime
-import consumers.registral.parametrica_plan.application.entities.{ParametricaPlanMessage, ParametricaPlanTri}
+import consumers.registral.parametrica_plan.application.entities.{ParametricaPlanExternalDto, ParametricaPlanMessage}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
+
+import java.time.LocalDateTime
 
 sealed trait ParametricaPlanEvents extends Event with ParametricaPlanMessage with CbroSerialization{
 
@@ -49,6 +50,6 @@ object ParametricaPlanEvents {
       bppMontoMinCuota: BigDecimal,
       bppMontoMinDeuda: BigDecimal,
       bppPorcentajeAnticipo: BigDecimal,
-      registro: ParametricaPlanTri
+      registro: ParametricaPlanExternalDto
   ) extends ParametricaPlanEvents
 }

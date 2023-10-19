@@ -11,7 +11,7 @@ import design_principles.actor_model.Response
 import monitoring.Monitoring
 import readside.proyectionists.registrales.parametrica_plan.projections.ParametricaPlanUpdatedFromDtoProjection
 import io.circe.parser._
-import consumers.registral.parametrica_plan.infrastructure.json.ParametricaRecargoImplicits._
+import consumers.registral.parametrica_plan.infrastructure.json.ParametricaPlanImplicits._
 class ParametricaPlanUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite
