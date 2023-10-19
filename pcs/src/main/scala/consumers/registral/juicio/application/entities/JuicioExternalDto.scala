@@ -98,5 +98,5 @@ object JuicioExternalDto {
                              BJU_MARTILLERO_OTROS_ATRIBUTOS: Option[String] // null
                            )
 
-  case class ListDetallesJuicio(BJU_DETALLES: List[DetallesJuicio]) extends CbroSerialization
+  case class ListDetallesJuicio(BJU_DETALLES: Option[List[DetallesJuicio]]) extends CbroSerialization
 }

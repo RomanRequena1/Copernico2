@@ -5,8 +5,10 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.juicio.application.entities.JuicioQueries.GetStateJuicio
 import consumers.registral.juicio.application.entities.JuicioResponses.GetJuicioResponse
 import consumers.registral.juicio.domain.{JuicioEvents, JuicioState}
+import consumers.registral.juicio.infrastructure.dependency_injection.JuicioActor
+import kafka.MessageProducer
 
-class GetStateJuicioHandler() {
+class GetStateJuicioHandler(actor: JuicioActor)(implicit messageProducer: MessageProducer) {
   def handle(
       query: GetStateJuicio
   )(state: JuicioState)(replyTo: ActorRef[GetJuicioResponse]) =
