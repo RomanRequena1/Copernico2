@@ -24,7 +24,7 @@ case class JuicioActor(state: JuicioState = JuicioState())(
       JuicioEvents,
       JuicioState
     ](state) {
-  def ask(command: JuicioUpdateFromDto): _root_.scala.concurrent.Future[_root_.design_principles.actor_model.Response.SuccessProcessing] = ???
+ // def ask(command: JuicioUpdateFromDto): _root_.scala.concurrent.Future[_root_.design_principles.actor_model.Response.SuccessProcessing] = ???
 
   commandBus.subscribe[JuicioUpdateFromDto](new JuicioUpdateFromDtoHandler().handle)
   queryBus.subscribe[GetStateJuicio](new GetStateJuicioHandler().handle)

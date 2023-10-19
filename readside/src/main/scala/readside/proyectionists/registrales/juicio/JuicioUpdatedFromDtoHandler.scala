@@ -22,7 +22,11 @@ class JuicioUpdatedFromDtoHandler(
   import consumers.registral.juicio.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, JuicioUpdatedFromDto] = {
-    println("PROCESS INPUT READSIDE JUICIO :::::::::::::: "+ decode[JuicioUpdatedFromDto](input))
+    try{
+      decode[JuicioUpdatedFromDto](input)
+    }catch{
+      case e: Exception => println("ERROR TRYCATCH :::" + e)
+    }
     decode[JuicioUpdatedFromDto](input)
   }
 

@@ -7,6 +7,7 @@ import consumers.registral.juicio.application.entities.JuicioExternalDto.{Detall
 import consumers.registral.juicio.infrastructure.dependency_injection.JuicioActor
 import consumers.registral.juicio.infrastructure.json._
 import design_principles.actor_model.Response
+import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import io.circe.parser._
 import monitoring.Monitoring
 

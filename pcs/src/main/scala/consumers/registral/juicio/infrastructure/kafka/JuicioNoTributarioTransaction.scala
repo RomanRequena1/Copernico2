@@ -7,6 +7,7 @@ import consumers.registral.juicio.application.entities.JuicioExternalDto.{Detall
 import consumers.registral.juicio.infrastructure.dependency_injection.JuicioActor
 import consumers.registral.juicio.infrastructure.json._
 import design_principles.actor_model.Response
+import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import io.circe.parser._
 import monitoring.Monitoring
 
@@ -21,9 +22,14 @@ case class JuicioNoTributarioTransaction(actor: JuicioActor, monitoring: Monitor
   def topicError = "DGR-COP-JUICIOS-ANT_error"
 
   def processInput(input: String): Either[Throwable, JuicioAnt] = {
-    println("PROCESS INPUT CONSUMER JUICIO ::::::::::::::::::"+decode[JuicioAnt](input))
+    try{
+      println(decode[JuicioAnt](input))
+      decode[JuicioAnt](input)
+    }catch{
+      case e: Exception => println("ERROR CATCH PROCESS INPUT CONSUMER A N T " + e)
+    }
+    println(("FUERA DEL TRYCATCH CONSUMER A N T")+decode[JuicioAnt](input))
     decode[JuicioAnt](input)
-
   }
 
   override def processMessage(registro: JuicioAnt): Future[Response.SuccessProcessing] = {
