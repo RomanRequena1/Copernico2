@@ -3,7 +3,7 @@ package consumers.registral.juicio.infrastructure.kafka
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.juicio.application.entities.JuicioCommands
-import consumers.registral.juicio.application.entities.JuicioExternalDto.{DetallesJuicio, JuicioTri}
+import consumers.registral.juicio.application.entities.JuicioExternalDto.{DetallesJuicio, JuicioAnt}
 import consumers.registral.juicio.infrastructure.dependency_injection.JuicioActor
 import consumers.registral.juicio.infrastructure.json._
 import design_principles.actor_model.Response
@@ -11,20 +11,22 @@ import io.circe.parser._
 import monitoring.Monitoring
 
 import scala.concurrent.Future
-case class JuicioTributarioTransaction(actor: JuicioActor, monitoring: Monitoring)(
-    implicit
-    actorTransactionRequirements: ActorTransactionRequirements
-) extends ActorTransaction[JuicioTri](monitoring) {
+case class JuicioNoTributarioTransaction(actor: JuicioActor, monitoring: Monitoring)(
+  implicit
+  actorTransactionRequirements: ActorTransactionRequirements
+) extends ActorTransaction[JuicioAnt](monitoring) {
 
-  def topic = "DGR-COP-JUICIOS-TRI"
-  def topicRetry = "DGR-COP-JUICIOS-TRI_retry"
-  def topicError = "DGR-COP-JUICIOS-TRI_error"
+  def topic = "DGR-COP-JUICIOS-ANT"
+  def topicRetry = "DGR-COP-JUICIOS-ANT_retry"
+  def topicError = "DGR-COP-JUICIOS-ANT_error"
 
-  def processInput(input: String): Either[Throwable, JuicioTri] = {
-    decode[JuicioTri](input)
+  def processInput(input: String): Either[Throwable, JuicioAnt] = {
+    println("PROCESS INPUT CONSUMER JUICIO ::::::::::::::::::"+decode[JuicioAnt](input))
+    decode[JuicioAnt](input)
+
   }
 
-  override def processMessage(registro: JuicioTri): Future[Response.SuccessProcessing] = {
+  override def processMessage(registro: JuicioAnt): Future[Response.SuccessProcessing] = {
 
 
     val detalles = for {
@@ -48,3 +50,4 @@ case class JuicioTributarioTransaction(actor: JuicioActor, monitoring: Monitorin
   }
 
 }
+

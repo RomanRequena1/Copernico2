@@ -1,15 +1,14 @@
 package consumers.registral.cupon_descuento.infrastructure.dependency_injection
 
 import akka.actor.typed.ActorSystem
+import consumers.registral.cupon_descuento.application.cqrs.commands.CuponDescuentoUpdateFromDtoHandler
 import consumers.registral.cupon_descuento.application.cqrs.queries.GetStateCuponDescuentoHandler
 import consumers.registral.cupon_descuento.application.entities.CuponDescuentoCommands.CuponDescuentoUpdateFromDto
 import consumers.registral.cupon_descuento.application.entities.CuponDescuentoMessage
 import consumers.registral.cupon_descuento.application.entities.CuponDescuentoQueries.GetStateCuponDescuento
 import consumers.registral.cupon_descuento.domain.CuponDescuentoEvents.CuponDescuentoUpdatedFromDto
-import consumers.registral.cupon_descuento.domain.{CuponDescuentoEvents, CuponDescuentoState}
 import consumers.registral.cupon_descuento.domain.events.CuponDescuentoUpdatedFromDtoHandler
-import consumers.registral.juicio.application.cqrs.commands.{CuponDescuentoUpdateFromDtoHandler}
-
+import consumers.registral.cupon_descuento.domain.{CuponDescuentoEvents, CuponDescuentoState}
 import cqrs.base_actor.typed.BasePersistentShardedTypedActorWithCQRS
 import kafka.MessageProducer
 

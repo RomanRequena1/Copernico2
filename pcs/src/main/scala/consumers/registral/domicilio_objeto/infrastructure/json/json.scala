@@ -1,11 +1,12 @@
 package consumers.registral.domicilio_objeto.infrastructure
 
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoCommands.DomicilioObjetoUpdateFromDto
+import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoExternalDto
+import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoExternalDto.{DomicilioObjetoAnt, DomicilioObjetoTri}
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoResponses.GetDomicilioObjetoResponse
-import consumers.registral.domicilio_objeto.application.entities.{DomicilioObjetoAnt, DomicilioObjetoTri}
 import consumers.registral.domicilio_objeto.domain.DomicilioObjetoEvents.DomicilioObjetoUpdatedFromDto
-import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
+import io.circe.{Decoder, Encoder}
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -20,14 +21,18 @@ package object json {
   //EXTERNALDTO
   implicit val DomicilioObjetoTriDecoder: Decoder[DomicilioObjetoTri] = deriveDecoder
   implicit val DomicilioObjetoTriEncoder: Encoder[DomicilioObjetoTri] = deriveEncoder
+
+  implicit val DomicilioObjetoAntDecoder: Decoder[DomicilioObjetoAnt] = deriveDecoder
+  implicit val DomicilioObjetoAntEncoder: Encoder[DomicilioObjetoAnt] = deriveEncoder
+
+  implicit val DomicilioObjetoExternalDtoDecoder: Decoder[DomicilioObjetoExternalDto] = deriveDecoder
+  implicit val DomicilioObjetoExternalDtoEncoder: Encoder[DomicilioObjetoExternalDto] = deriveEncoder
  implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
   Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
  }
  implicit val localDateTimeEncoder: Encoder[LocalDateTime] = Encoder.encodeString.contramap { dateTime =>
   dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
  }
-  implicit val DomicilioObjetoAntDecoder: Decoder[DomicilioObjetoAnt] = deriveDecoder
-  implicit val DomicilioObjetoAntEncoder: Encoder[DomicilioObjetoAnt] = deriveEncoder
 
   //RESPONSES
   implicit val GetDomicilioObjetoResponseDecoder: Decoder[GetDomicilioObjetoResponse] = deriveDecoder

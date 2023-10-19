@@ -21,8 +21,10 @@ class JuicioUpdatedFromDtoHandler(
 
   import consumers.registral.juicio.infrastructure.json._
 
-  override def processInput(input: String): Either[Throwable, JuicioUpdatedFromDto] =
+  override def processInput(input: String): Either[Throwable, JuicioUpdatedFromDto] = {
+    println("PROCESS INPUT READSIDE JUICIO :::::::::::::: "+ decode[JuicioUpdatedFromDto](input))
     decode[JuicioUpdatedFromDto](input)
+  }
 
   val cassandra = new CassandraWriteProduction()
 

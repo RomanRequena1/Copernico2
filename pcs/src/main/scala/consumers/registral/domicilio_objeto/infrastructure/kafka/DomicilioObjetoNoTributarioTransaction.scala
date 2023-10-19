@@ -3,28 +3,29 @@ package consumers.registral.domicilio_objeto.infrastructure.kafka
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoCommands
-import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoExternalDto.DomicilioObjetoTri
+import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoExternalDto.DomicilioObjetoAnt
 import consumers.registral.domicilio_objeto.infrastructure.dependency_injection.DomicilioObjetoActor
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
-import io.circe.parser._
 import monitoring.Monitoring
+import io.circe.parser._
 import consumers.registral.domicilio_objeto.infrastructure.json._
-
 import scala.concurrent.Future
 
-case class DomicilioObjetoTributarioTransaction(actor: DomicilioObjetoActor, monitoring: Monitoring)(
-    implicit
-    actorTransactionRequirements: ActorTransactionRequirements
-) extends ActorTransaction[DomicilioObjetoTri](monitoring) {
-  def topic = "DGR-COP-DOMICILIO-OBJ-TRI"
-  def topicRetry = "DGR-COP-DOMICILIO-OBJ-TRI_retry"
-  def topicError = "DGR-COP-DOMICILIO-OBJ-TRI_error"
+case class DomicilioObjetoNoTributarioTransaction(actor: DomicilioObjetoActor, monitoring: Monitoring)(
+  implicit
+  actorTransactionRequirements: ActorTransactionRequirements
+) extends ActorTransaction[DomicilioObjetoAnt](monitoring) {
+  def topic = "DGR-COP-DOMICILIO-OBJ-ANT"
+  def topicRetry = "DGR-COP-DOMICILIO-OBJ-ANT_retry"
+  def topicError = "DGR-COP-DOMICILIO-OBJ-ANT_error"
 
-  def processInput(input: String): Either[Throwable, DomicilioObjetoTri] =
-    decode[DomicilioObjetoTri](input)
+  def processInput(input: String): Either[Throwable, DomicilioObjetoAnt] = {
+    println("PROCESS INPUT DOMICILIO OBJETO CONSUMER ::::::::::::::::::"+decode[DomicilioObjetoAnt](input))
+    decode[DomicilioObjetoAnt](input)
+  }
 
-  override def processMessage(registro: DomicilioObjetoTri): Future[Response.SuccessProcessing] = {
+  override def processMessage(registro: DomicilioObjetoAnt): Future[Response.SuccessProcessing] = {
     val command = DomicilioObjetoCommands.DomicilioObjetoUpdateFromDto(
       sujetoId = registro.BDO_SUJ_IDENTIFICADOR,
       objetoId = registro.BDO_SOJ_IDENTIFICADOR,

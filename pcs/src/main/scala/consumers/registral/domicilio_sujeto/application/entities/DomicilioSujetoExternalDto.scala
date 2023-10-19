@@ -3,7 +3,28 @@ package consumers.registral.domicilio_sujeto.application.entities
 import serialization.CbroSerialization
 
 
-case class DomicilioSujetoTri(EV_ID: String,
+sealed trait DomicilioSujetoExternalDto extends ddd.ExternalDto with CbroSerialization {
+  def EV_ID: String
+  def BDS_SUJ_IDENTIFICADOR: String
+  def BDS_DOM_ID: String
+  def BDS_BARRIO: Option[String]
+  def BDS_CALLE: Option[String]
+  def BDS_CODIGO_POSTAL: Option[String]
+  def BDS_DPTO: Option[String]
+  def BDS_ESTADO: Option[String]
+  def BDS_KILOMETRO: Option[String]
+  def BDS_LOCALIDAD: Option[String]
+  def BDS_LOTE: Option[String]
+  def BDS_MANZANA: Option[String]
+  def BDS_PISO: Option[String]
+  def BDS_PROVINCIA: Option[String]
+  def BDS_PUERTA: Option[String]
+  def BDS_TIPO: Option[String]
+  def BDS_TORRE: Option[String]
+  def BDS_OBSERVACIONES: Option[String]
+}
+object DomicilioSujetoExternalDto {
+  case class DomicilioSujetoTri(EV_ID: String,
                                 BDS_SUJ_IDENTIFICADOR: String,
                                 BDS_DOM_ID: String,
                                 BDS_BARRIO: Option[String],
@@ -21,7 +42,7 @@ case class DomicilioSujetoTri(EV_ID: String,
                                 BDS_TIPO: Option[String],
                                 BDS_TORRE: Option[String],
                                 BDS_OBSERVACIONES: Option[String])
-      extends CbroSerialization
+    extends DomicilioSujetoExternalDto with CbroSerialization
 
   case class DomicilioSujetoAnt(EV_ID: String,
                                 BDS_SUJ_IDENTIFICADOR: String,
@@ -41,6 +62,8 @@ case class DomicilioSujetoTri(EV_ID: String,
                                 BDS_TIPO: Option[String],
                                 BDS_TORRE: Option[String],
                                 BDS_OBSERVACIONES: Option[String])
-      extends CbroSerialization
+    extends DomicilioSujetoExternalDto with CbroSerialization
+
+}
 
 

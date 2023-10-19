@@ -1,8 +1,9 @@
 package consumers.registral.juicio.infrastructure
 
 import consumers.registral.juicio.application.entities.JuicioCommands.JuicioUpdateFromDto
+import consumers.registral.juicio.application.entities.JuicioExternalDto
+import consumers.registral.juicio.application.entities.JuicioExternalDto.{DetallesJuicio, JuicioAnt, JuicioTri, ListDetallesJuicio}
 import consumers.registral.juicio.application.entities.JuicioResponses.GetJuicioResponse
-import consumers.registral.juicio.application.entities.{DetallesJuicio, JuicioTri, ListDetallesJuicio}
 import consumers.registral.juicio.domain.JuicioEvents.JuicioUpdatedFromDto
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax.EncoderOps
@@ -30,8 +31,15 @@ package object json {
   implicit val JuicioTriDecoder: Decoder[JuicioTri] = deriveDecoder
   implicit val JuicioTriEncoder: Encoder[JuicioTri] = deriveEncoder
 
+  implicit val JuicioAntDecoder: Decoder[JuicioAnt] = deriveDecoder
+  implicit val JuicioAntEncoder: Encoder[JuicioAnt] = deriveEncoder
+
   implicit val DetallesJuicioDecoder: Decoder[DetallesJuicio] = deriveDecoder
   implicit val DetallesJuicioEncoder: Encoder[DetallesJuicio] = deriveEncoder
+
+  implicit val JuicioExternalDtoDecoder: Decoder[JuicioExternalDto] = deriveDecoder
+  implicit val JuicioExternalDtoEncoder: Encoder[JuicioExternalDto] = deriveEncoder
+
 
   //RESPONSES
   implicit val GetJuicioResponseDecoder: Decoder[GetJuicioResponse] = deriveDecoder

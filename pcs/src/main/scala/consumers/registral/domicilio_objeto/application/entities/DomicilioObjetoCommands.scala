@@ -12,6 +12,6 @@ object DomicilioObjetoCommands {
       tipoObjeto: String,
       domicilioId: String,
       deliveryId: BigInt,
-      registro: DomicilioObjetoTri
+      registro: DomicilioObjetoExternalDto
   ) extends DomicilioObjetoCommands
 }

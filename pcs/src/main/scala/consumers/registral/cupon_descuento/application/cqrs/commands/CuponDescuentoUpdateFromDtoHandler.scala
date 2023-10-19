@@ -1,4 +1,4 @@
-package consumers.registral.juicio.application.cqrs.commands
+package consumers.registral.cupon_descuento.application.cqrs.commands
 
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
@@ -35,15 +35,15 @@ class CuponDescuentoUpdateFromDtoHandler(implicit messageProducer: MessageProduc
           Seq(
             KafkaKeyValue(
               command.aggregateRoot,
-                CuponDescuentoUpdatedFromDto(
-                  command.deliveryId,
-                  command.sujetoId,
-                  command.objetoId,
-                  command.tipoObjeto,
-                  command.obligacionId,
-                  command.registro,
-                  command.detallesCuponDescuento
-                ).asJson.toString()
+              CuponDescuentoUpdatedFromDto(
+                command.deliveryId,
+                command.sujetoId,
+                command.objetoId,
+                command.tipoObjeto,
+                command.obligacionId,
+                command.registro,
+                command.detallesCuponDescuento
+              ).asJson.toString()
             )
           ),
           "CuponDescuentoPersistedSnapshot"

@@ -3,7 +3,7 @@ package consumers.registral.domicilio_sujeto.infrastructure.kafka
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoCommands
-import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoExternalDto.DomicilioSujetoTri
+import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoExternalDto.DomicilioSujetoAnt
 import consumers.registral.domicilio_sujeto.infrastructure.dependency_injection.DomicilioSujetoActor
 import consumers.registral.domicilio_sujeto.infrastructure.json._
 import design_principles.actor_model.Response
@@ -13,18 +13,18 @@ import monitoring.Monitoring
 
 import scala.concurrent.Future
 
-case class DomicilioSujetoTributarioTransaction(actor: DomicilioSujetoActor, monitoring: Monitoring)(
-    implicit
-    actorTransactionRequirements: ActorTransactionRequirements
-) extends ActorTransaction[DomicilioSujetoTri](monitoring) {
-  def topic = "DGR-COP-DOMICILIO-SUJ-TRI"
-  def topicRetry = "DGR-COP-DOMICILIO-SUJ-TRI_retry"
-  def topicError = "DGR-COP-DOMICILIO-SUJ-TRI_error"
+case class DomicilioSujetoNoTributarioTransaction(actor: DomicilioSujetoActor, monitoring: Monitoring)(
+  implicit
+  actorTransactionRequirements: ActorTransactionRequirements
+) extends ActorTransaction[DomicilioSujetoAnt](monitoring) {
+  def topic = "DGR-COP-DOMICILIO-SUJ-ANT"
+  def topicRetry = "DGR-COP-DOMICILIO-SUJ-ANT_retry"
+  def topicError = "DGR-COP-DOMICILIO-SUJ-ANT_error"
 
-  def processInput(input: String): Either[Throwable, DomicilioSujetoTri] =
-   decode[DomicilioSujetoTri](input)
+  def processInput(input: String): Either[Throwable, DomicilioSujetoAnt] =
+    decode[DomicilioSujetoAnt](input)
 
-  override def processMessage(registro: DomicilioSujetoTri): Future[Response.SuccessProcessing] = {
+  override def processMessage(registro: DomicilioSujetoAnt): Future[Response.SuccessProcessing] = {
     val command = DomicilioSujetoCommands.DomicilioSujetoUpdateFromDto(
       sujetoId = registro.BDS_SUJ_IDENTIFICADOR,
       domicilioId = registro.BDS_DOM_ID,

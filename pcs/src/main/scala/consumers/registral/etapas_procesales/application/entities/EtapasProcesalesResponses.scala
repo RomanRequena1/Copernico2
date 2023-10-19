@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 sealed trait EtapasProcesalesResponses extends CbroSerialization
 object EtapasProcesalesResponses {
 
-  case class GetEtapasProcesalesResponse(registro: Option[EtapasProcesalesTri] = None,
+  case class GetEtapasProcesalesResponse(registro: Option[EtapasProcesalesExternalDto] = None,
                                          fechaUltMod: LocalDateTime)
       extends design_principles.actor_model.Response with CbroSerialization
 }

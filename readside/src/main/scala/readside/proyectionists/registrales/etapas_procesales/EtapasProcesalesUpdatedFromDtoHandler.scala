@@ -22,8 +22,9 @@ class EtapasProcesalesUpdatedFromDtoHandler(
 
   import consumers.registral.etapas_procesales.infrastructure.json._
 
-  override def processInput(input: String): Either[Throwable, EtapasProcesalesUpdatedFromDto] =
+  override def processInput(input: String): Either[Throwable, EtapasProcesalesUpdatedFromDto] = {
     decode[EtapasProcesalesUpdatedFromDto](input)
+  }
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: EtapasProcesalesUpdatedFromDto): Future[Response.SuccessProcessing] = {

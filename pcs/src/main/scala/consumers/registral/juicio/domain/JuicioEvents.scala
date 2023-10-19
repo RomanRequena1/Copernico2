@@ -1,6 +1,7 @@
 package consumers.registral.juicio.domain
 
-import consumers.registral.juicio.application.entities.{DetallesJuicio, JuicioMessage, JuicioTri}
+import consumers.registral.juicio.application.entities.JuicioExternalDto.DetallesJuicio
+import consumers.registral.juicio.application.entities.{JuicioExternalDto, JuicioMessage}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
@@ -13,7 +14,7 @@ object JuicioEvents {
       objetoId: String,
       tipoObjeto: String,
       juicioId: String,
-      registro: JuicioTri,
+      registro: JuicioExternalDto,
       detallesJuicio: Seq[DetallesJuicio]
   ) extends JuicioEvents
 }

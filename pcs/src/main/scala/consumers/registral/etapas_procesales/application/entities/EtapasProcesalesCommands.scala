@@ -10,6 +10,6 @@ object EtapasProcesalesCommands {
       juicioId: String,
       etapaId: String,
       deliveryId: BigInt,
-      registro: EtapasProcesalesTri
+      registro: EtapasProcesalesExternalDto
   ) extends EtapasProcesalesCommands
 }

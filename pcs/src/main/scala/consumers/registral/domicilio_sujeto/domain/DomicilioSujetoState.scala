@@ -1,10 +1,11 @@
 package consumers.registral.domicilio_sujeto.domain
 
-import java.time.LocalDateTime
-import consumers.registral.domicilio_sujeto.application.entities.{ DomicilioSujetoMessage, DomicilioSujetoTri}
+import consumers.registral.domicilio_sujeto.application.entities.{DomicilioSujetoExternalDto, DomicilioSujetoMessage}
 import cqrs.base_actor.typed.AbstractStateWithCQRS
 
+import java.time.LocalDateTime
+
 case class DomicilioSujetoState(
-    registro: Option[DomicilioSujetoTri] = None,
+    registro: Option[DomicilioSujetoExternalDto] = None,
     fechaUltMod: LocalDateTime = LocalDateTime.MIN
 ) extends AbstractStateWithCQRS[DomicilioSujetoMessage, DomicilioSujetoEvents, DomicilioSujetoState]
