@@ -13,8 +13,10 @@ import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 import io.circe.syntax.EncoderOps
+import org.slf4j.LoggerFactory
 
 class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProducer: MessageProducer) {
+  private val log = LoggerFactory.getLogger(this.getClass)
   def handle(
             command: JuicioObnUpdateFromDto
             )(state: JuicioObnState)(replyTo: ActorRef[Success]): ReplyEffect[JuicioObnUpdatedFromDto, JuicioObnState] = {
@@ -28,9 +30,8 @@ class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
       command.registro
     )
 
-    println("CUMBIA -> COMMAN -> " + e.deliveryId + " id " + e)
     if(isIdempotent(command, state.lastDeliveryIdByEvent)){
-      println(s"[ ${command.aggregateRoot}] -juicio_obn- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + state.lastDeliveryIdByEvent)
+      log.debug(s"[ ${command.aggregateRoot}] -juicio_obn- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + state.lastDeliveryIdByEvent)
 
       // Informs that operation has been ignored */
       //todo check if this is desirable, why? signal the sender??

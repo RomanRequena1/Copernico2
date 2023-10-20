@@ -19,7 +19,6 @@ case class SubastaStateAPI(actor: SubastaActor, monitoring: Monitoring)(implicit
       withObjeto { objetoId =>
         withTipoObjeto { tipoObjeto =>
           withSubasta { subastaId =>
-            println("CUMBIA " + subastaId + " - " + sujetoId + " - " + objetoId + " - " + tipoObjeto)
             queryState(actor,
                        GetStateSubasta(
                          sujetoId,

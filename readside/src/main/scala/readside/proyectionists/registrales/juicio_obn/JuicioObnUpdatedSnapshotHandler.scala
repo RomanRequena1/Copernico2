@@ -28,8 +28,9 @@ class JuicioObnUpdatedSnapshotHandler(
 
   import consumers.registral.juicio_obn.infrastructure.json._
 
-  override def processInput(input: String): Either[Throwable, JuicioObnUpdatedFromDto] =
+  override def processInput(input: String): Either[Throwable, JuicioObnUpdatedFromDto] = {
     decode[JuicioObnUpdatedFromDto](input)
+  }
 
   override def processMessage(registro: JuicioObnUpdatedFromDto): Future[Response.SuccessProcessing] = {
 

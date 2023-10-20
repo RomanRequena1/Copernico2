@@ -21,7 +21,6 @@ case class DeclaracionJuradaTransaction(actor: DeclaracionJuradaActor, monitorin
   def topicError = "DGR-COP-DECJURADAS_error"
 
   def processInput(input: String): Either[Throwable, DeclaracionJurada] = {
-    println("CUMBIA DECLARACION JURADA " + decode[DeclaracionJurada](input))
     decode[DeclaracionJurada](input)
   }
 

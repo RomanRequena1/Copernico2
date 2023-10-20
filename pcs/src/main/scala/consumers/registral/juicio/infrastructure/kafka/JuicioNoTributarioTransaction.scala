@@ -10,25 +10,21 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import io.circe.parser._
 import monitoring.Monitoring
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.Future
 case class JuicioNoTributarioTransaction(actor: JuicioActor, monitoring: Monitoring)(
+
   implicit
   actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[JuicioAnt](monitoring) {
 
+  private val log = LoggerFactory.getLogger(this.getClass)
   def topic = "DGR-COP-JUICIOS-ANT"
   def topicRetry = "DGR-COP-JUICIOS-ANT_retry"
   def topicError = "DGR-COP-JUICIOS-ANT_error"
 
   def processInput(input: String): Either[Throwable, JuicioAnt] = {
-    try{
-      println(decode[JuicioAnt](input))
-      decode[JuicioAnt](input)
-    }catch{
-      case e: Exception => println("ERROR CATCH PROCESS INPUT CONSUMER A N T " + e)
-    }
-    println(("FUERA DEL TRYCATCH CONSUMER A N T")+decode[JuicioAnt](input))
     decode[JuicioAnt](input)
   }
 

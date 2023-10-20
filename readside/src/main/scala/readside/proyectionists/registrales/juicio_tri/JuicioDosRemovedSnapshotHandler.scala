@@ -15,7 +15,7 @@ class JuicioDosRemovedSnapshotHandler(
                                      implicit r: MonitoringAndCassandraWrite
                                    ) extends ActorTransaction[JuicioDosRemovedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
-
+  private val log = LoggerFactory.getLogger(this.getClass)
   override def topic: String = "JuicioDosRemovedSnapshot"
 
   override def topicRetry: String = "JuicioDosRemovedSnapshot_retry"
@@ -29,7 +29,6 @@ class JuicioDosRemovedSnapshotHandler(
 
   override def processMessage(registro: JuicioDosRemovedFromDto): Future[Response.SuccessProcessing] = {
     val cassandra = new CassandraWriteProduction()
-    println("VBAJAAAA" )
     for {
       done <- cassandra
         .cql(
@@ -39,9 +38,9 @@ class JuicioDosRemovedSnapshotHandler(
             s""" '${registro.juicioId}' """
         )
         .andThen {
-          case Failure(exception) => println("Dont persist juicio_tri baja" + exception )
+          case Failure(exception) => log.error("Dont persist juicio_tri baja" + exception )
           case Success(_) => {
-            println("Persiste juicio_tri baja ")
+            log.debug("Persiste juicio_tri baja ")
           }
         }
     } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)

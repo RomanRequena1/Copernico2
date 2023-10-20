@@ -37,9 +37,9 @@ class JuicioDosUpdatedSnapshotHandler(
     for {
       done <- r.cassandraWrite.writeState(projection)
         .andThen {
-          case Failure(exception) => println("Dont persist juicio_tri" + exception)
+          case Failure(exception) => log.error("Dont persist juicio_tri" + exception)
           case Success(value) => {
-            println("Persist juicio_tri" + value)
+            log.debug("Persist juicio_tri" + value)
           }
         }
     } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)

@@ -21,7 +21,6 @@ case class DomicilioObjetoNoTributarioTransaction(actor: DomicilioObjetoActor, m
   def topicError = "DGR-COP-DOMICILIO-OBJ-ANT_error"
 
   def processInput(input: String): Either[Throwable, DomicilioObjetoAnt] = {
-    println("PROCESS INPUT DOMICILIO OBJETO CONSUMER ::::::::::::::::::"+decode[DomicilioObjetoAnt](input))
     decode[DomicilioObjetoAnt](input)
   }
 

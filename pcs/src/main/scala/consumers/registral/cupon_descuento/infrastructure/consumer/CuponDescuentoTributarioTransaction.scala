@@ -24,7 +24,6 @@ case class CuponDescuentoTributarioTransaction(actor: CuponDescuentoActor, monit
   def topicError = "DGR-COP-CUPON-DESCUENTO-TRI_error"
 
   def processInput(input: String): Either[Throwable, CuponDescuentoTri] = {
-    println("CUMBIA -> " + decode[CuponDescuentoTri](input))
     decode[CuponDescuentoTri](input)
   }
 

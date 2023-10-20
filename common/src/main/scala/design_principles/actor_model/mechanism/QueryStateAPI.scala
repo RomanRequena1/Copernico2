@@ -72,7 +72,6 @@ abstract class QueryStateAPI(monitoring: Monitoring) extends Controller(monitori
 //          }
 
           case result =>
-            println("CUMBIA QUERY" + result)
             HttpResponse(
               OK,
               entity = QueryStateAPI.standarization(json = result.asJson.toString())

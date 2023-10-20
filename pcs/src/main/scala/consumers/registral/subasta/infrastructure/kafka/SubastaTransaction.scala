@@ -22,8 +22,7 @@ case class SubastaTransaction(actor: SubastaActor, monitoring: Monitoring)(
   def topicError = "DGR-COP-SUBASTAS_error"
 
   def processInput(input: String): Either[Throwable, SubastaExternalDto] =
-    {println("CUMBIA ERRORR SUBASTAS" + decode[SubastaExternalDto](input))
-    decode[SubastaExternalDto](input)}
+    decode[SubastaExternalDto](input)
 
   override def processMessage(registro: SubastaExternalDto): Future[Response.SuccessProcessing] = {
     val command = SubastaCommands.SubastaUpdateFromDto(

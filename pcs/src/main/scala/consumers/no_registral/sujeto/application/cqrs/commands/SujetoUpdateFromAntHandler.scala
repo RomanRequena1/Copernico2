@@ -19,7 +19,6 @@ class SujetoUpdateFromAntHandler(actor: SujetoActor) extends SyncCommandHandler[
       println(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
-      println("SUJETO UPDATE ANT HANDLER ::::" + command)
       actor.persistEvent(event,Set("Sujeto")) { () =>
         actor.state += event
         actor.persistSnapshot() { _ =>

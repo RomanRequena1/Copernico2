@@ -28,37 +28,17 @@ class ObjetoSnapshotPersistedHandler(
   override def topicError: String = "ObjetoSnapshotPersistedReadside_error"
 
   override def processInput(input: String): Either[Throwable, ObjetoSnapshotPersisted] = {
-    println("PROCESS INPUT READSIDE OBJETO :::::::::::::: "+decode[ObjetoSnapshotPersisted](input))
-    import consumers.no_registral.objeto.infrastructure.json._
-
     decode[ObjetoSnapshotPersisted](input)
   }
 
   override def processMessage(registro: ObjetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
     //recordLag(calculateLag(registro.deliveryId.toString))
-    println("CUMBIA input -> " + registro)
-
-    try{
-      val projection = ObjetoSnapshotPersistedProjection(registro)
-      if (registro.operacion.equals("U")) {
-        for {
-          done <- r.cassandraWrite.writeState(projection).andThen {
-            case Failure(exception) => println("Dont persist objeto" + exception)
-            case Success(value) => println("Persist objeto" + value)
-            //connOracleReadsideToCass(registro.deliveryId.toString(),"objeto", registro.registro.get.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
-          }
-        } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
-      }
-
-    }catch {
-      case e: Exception => println("ERROR: "+e)
-    }
     val projection = ObjetoSnapshotPersistedProjection(registro)
     if (registro.operacion.equals("U")) {
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
-          case Failure(exception) => println("Dont persist objeto" + exception )
-          case Success(value) => println("Persist objeto" + value )
+          case Failure(exception) => log.error("Dont persist objeto" + exception )
+          case Success(value) => log.debug("Persist objeto" + value )
             //connOracleReadsideToCass(registro.deliveryId.toString(),"objeto", registro.registro.get.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
         }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)

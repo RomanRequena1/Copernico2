@@ -27,7 +27,6 @@ class SujetoSnapshotPersistedHandler(
   import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 
   override def processInput(input: String): Either[Throwable, SujetoSnapshotPersisted] = {
-    println("READSIDE SUJETO ::::::::::::::: "+decode[SujetoSnapshotPersisted](input))
     decode[SujetoSnapshotPersisted](input)
   }
 

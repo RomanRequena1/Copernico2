@@ -15,10 +15,9 @@ case class ObjetoSnapshotPersistedProjection(
 
   val bobDetailsResult: Option[Map[String, List[DetallesObjeto]]] =
     decode[Map[String, List[DetallesObjeto]]](registro.get.SOJ_OTROS_ATRIBUTOS.asJson.toString()).toOption
-  println("CUMBIA bobDetailsResult -> " + bobDetailsResult)
+ // println("CUMBIA bobDetailsResult -> " + bobDetailsResult)
 
   val mao: Map[String, String] = Map("BOB_DETALLES" -> bobDetailsResult.get("SOJ_DETALLES").asJson.noSpaces)
-  println("CUMBIA -> mao" + mao)
   val fromRegistro: Option[List[(String, Option[Object])]] = registro match {
     case Some(r) => Some(List(
       "soj_identificador_2" -> r.SOJ_IDENTIFICADOR_2,

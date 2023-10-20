@@ -18,6 +18,7 @@ class JuicioObnDeletedSnapshotHandler(
                                             ) extends ActorTransaction[JuicioObnDeletedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
 
+  private val log = LoggerFactory.getLogger(this.getClass)
   override def topic: String = "JuicioObnDeletedFronDto"
 
   override def topicRetry: String = "JuicioObnDeletedFronDto_retry"
@@ -46,9 +47,9 @@ class JuicioObnDeletedSnapshotHandler(
               s""" and bjd_obn_id = '${registro.obligacionId}' """
           )
           .andThen {
-            case Failure(exception) => println("Dont persist juicio_obn -1" + exception )
+            case Failure(exception) => log.error("Dont persist juicio_obn -1" + exception )
             case Success(_) => {
-              println("Persiste juicio_obn -1 ")
+              log.debug("Persiste juicio_obn -1 ")
             }
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)

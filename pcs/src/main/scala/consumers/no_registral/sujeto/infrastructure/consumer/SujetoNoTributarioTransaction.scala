@@ -24,21 +24,10 @@ case class SujetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
   def topicError = "DGR-COP-SUJETO-ANT_error"
 
   def processInput(input: String): Either[Throwable, SujetoAnt] = {
-    println("CONSUMER ANT ::::::::::::::::::::" + decode[SujetoAnt](input))
     decode[SujetoAnt](input)
   }
 
   def processMessage(registro: SujetoAnt): Future[Response.SuccessProcessing] = {
-    try{
-      val command = SujetoCommands.SujetoUpdateFromAnt(
-        sujetoId = registro.SUJ_IDENTIFICADOR,
-        deliveryId = registro.EV_ID,
-        registro = registro
-      )
-      actorRef.ask[Response.SuccessProcessing](command)
-    }catch{
-      case e: Exception => println("ERROR PROCESS MESSAGE :::: "+e)
-    }
     val command = SujetoCommands.SujetoUpdateFromAnt(
       sujetoId = registro.SUJ_IDENTIFICADOR,
       deliveryId = registro.EV_ID,
