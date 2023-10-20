@@ -1,9 +1,10 @@
 package consumers.registral.parametrica_recargo.domain
 
-import java.time.LocalDateTime
-import consumers.registral.parametrica_recargo.application.entities.{ ParametricaRecargoMessage, ParametricaRecargoTri}
+import consumers.registral.parametrica_recargo.application.entities.{ParametricaRecargoExternalDto, ParametricaRecargoMessage}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
+
+import java.time.LocalDateTime
 
 sealed trait ParametricaRecargoEvents extends Event with ParametricaRecargoMessage with CbroSerialization{
 
@@ -26,6 +27,6 @@ object ParametricaRecargoEvents {
       bprPeriodo: String,
       bprConcepto: String,
       bprImpuesto: String,
-      registro: ParametricaRecargoTri
+      registro: ParametricaRecargoExternalDto
   ) extends ParametricaRecargoEvents
 }

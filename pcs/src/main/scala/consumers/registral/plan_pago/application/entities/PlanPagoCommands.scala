@@ -9,7 +9,7 @@ object PlanPagoCommands {
                                    planPagoId: String,
                                    deliveryId: BigInt,
                                    sujetoId: String,
-                                   registro: PlanPagoTri)
+                                   registro: PlanPagoExternalDto)
       extends PlanPagoCommands
 
 }

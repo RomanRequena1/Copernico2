@@ -6,7 +6,7 @@ import api.actor_transaction.ActorTransaction
 import consumers.registral.parametrica_recargo.domain.ParametricaRecargoState
 import consumers.registral.parametrica_recargo.infrastructure.dependency_injection.ParametricaRecargoActor
 import consumers.registral.parametrica_recargo.infrastructure.http.ParametricaRecargoStateAPI
-import consumers.registral.parametrica_recargo.infrastructure.kafka.ParametricaRecargoTributarioTransaction
+import consumers.registral.parametrica_recargo.infrastructure.kafka.{ParametricaRecargoNoTributarioTransaction, ParametricaRecargoTributarioTransaction}
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 class ParametricaRecargoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements)
@@ -14,7 +14,7 @@ class ParametricaRecargoMicroservice(implicit m: KafkaConsumerMicroserviceRequir
   implicit val actor: ParametricaRecargoActor = ParametricaRecargoActor(ParametricaRecargoState())
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
-      //ParametricaRecargoNoTributarioTransaction(actor, monitoring),
+      ParametricaRecargoNoTributarioTransaction(actor, monitoring),
       ParametricaRecargoTributarioTransaction(actor, monitoring)
     )
 

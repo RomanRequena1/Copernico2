@@ -1,21 +1,20 @@
 package readside.proyectionists.registrales.plan_pago.projections
-import consumers.registral.plan_pago.application.entities.{DetallePlanPago, PlanPagoTri}
+import consumers.registral.plan_pago.application.entities.PlanPagoExternalDto
 import consumers.registral.plan_pago.domain.PlanPagoEvents
 import io.circe.parser._
 import io.circe.syntax.EncoderOps
-import consumers.registral.plan_pago.infrastructure.json.json._
 case class PlanPagoUpdatedFromDtoProjection(
     event: PlanPagoEvents.PlanPagoUpdatedFromDto
 ) extends PlanPagoProjection {
-  val registro: PlanPagoTri = event.registro
+  val registro: PlanPagoExternalDto = event.registro
 
-
+/*
   val bobDetailsResult: Option[Map[String, List[DetallePlanPago]]] =
     decode[Map[String, List[DetallePlanPago]]](registro.BPL_OTROS_ATRIBUTOS.asJson.toString()).toOption
   println("CUMBIA bobDetailsResult -> " + bobDetailsResult)
 
   val mao: Map[String, String] = Map("BPL_DETALLES" -> bobDetailsResult.get("BPL_DETALLES").asJson.noSpaces)
-  println("CUMBIA -> mao" + mao)
+  println("CUMBIA -> mao" + mao)*/
 
 
   def bindings: List[(String, Serializable)] = List(

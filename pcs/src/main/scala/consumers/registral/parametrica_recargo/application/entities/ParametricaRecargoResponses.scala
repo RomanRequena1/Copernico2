@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 sealed trait ParametricaRecargoResponses extends CbroSerialization
 object ParametricaRecargoResponses {
 
-  case class GetParametricaRecargoResponse(registro: Option[ParametricaRecargoTri] = None,
+  case class GetParametricaRecargoResponse(registro: Option[ParametricaRecargoExternalDto] = None,
                                            fechaUltMod: LocalDateTime)
       extends design_principles.actor_model.Response with CbroSerialization
 }

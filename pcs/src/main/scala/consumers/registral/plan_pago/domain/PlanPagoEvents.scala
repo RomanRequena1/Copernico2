@@ -1,6 +1,6 @@
 package consumers.registral.plan_pago.domain
 
-import consumers.registral.plan_pago.application.entities.{ PlanPagoMessage, PlanPagoTri}
+import consumers.registral.plan_pago.application.entities.{PlanPagoExternalDto, PlanPagoMessage}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
@@ -13,6 +13,6 @@ object PlanPagoEvents {
       objetoId: String,
       tipoObjeto: String,
       planPagoId: String,
-      registro: PlanPagoTri
+      registro: PlanPagoExternalDto
   ) extends PlanPagoEvents
 }

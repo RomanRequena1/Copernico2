@@ -6,7 +6,7 @@ sealed trait ParametricaRecargoCommands extends ParametricaRecargoMessage with d
 object ParametricaRecargoCommands {
   case class ParametricaRecargoUpdateFromDto(parametricaRecargoId: String,
                                              deliveryId: BigInt,
-                                             registro: ParametricaRecargoTri)
+                                             registro: ParametricaRecargoExternalDto)
       extends ParametricaRecargoCommands
 
 }

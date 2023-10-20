@@ -1,16 +1,12 @@
 package consumers.registral.parametrica_recargo.infrastructure.json
 
 import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoCommands.ParametricaRecargoUpdateFromDto
-import consumers.registral.parametrica_recargo.application.entities.{ParametricaRecargoAnt, ParametricaRecargoTri}
+import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoExternalDto
+import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoExternalDto.{ParametricaRecargoAnt, ParametricaRecargoTri}
 import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoResponses.GetParametricaRecargoResponse
 import consumers.registral.parametrica_recargo.domain.ParametricaRecargoEvents.ParametricaRecargoUpdatedFromDto
-import play.api.libs.json.Json
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}
-import io.leonard.TraitFormat
-import io.leonard.TraitFormat.traitFormat
-import play.api.libs.json.Json
-
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.util.Try
@@ -23,6 +19,9 @@ object json {
 
   implicit val ParametricaRecargoAntDecoder: Decoder[ParametricaRecargoAnt] = deriveDecoder
   implicit val ParametricaRecargoAntEncoder: Encoder[ParametricaRecargoAnt] = deriveEncoder
+
+  implicit val ParametricaParametricaRecargoExternalDtoDecoder: Decoder[ParametricaRecargoExternalDto] = deriveDecoder
+  implicit val ParametricaRecargoExternalDtoEncoder: Encoder[ParametricaRecargoExternalDto] = deriveEncoder
   //EVENT
   implicit val ParametricaRecargoUpdatedFromDtoDecoder: Decoder[ParametricaRecargoUpdatedFromDto] = deriveDecoder
   implicit val ParametricaRecargoUpdatedFromDtoEncoder: Encoder[ParametricaRecargoUpdatedFromDto] = deriveEncoder

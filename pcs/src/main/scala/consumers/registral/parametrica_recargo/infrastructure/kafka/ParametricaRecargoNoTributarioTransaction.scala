@@ -3,27 +3,27 @@ package consumers.registral.parametrica_recargo.infrastructure.kafka
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoCommands
-import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoExternalDto.ParametricaRecargoTri
+import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoExternalDto.ParametricaRecargoAnt
 import consumers.registral.parametrica_recargo.infrastructure.dependency_injection.ParametricaRecargoActor
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
-import io.circe.parser.decode
 import monitoring.Monitoring
 import consumers.registral.parametrica_recargo.infrastructure.json.json._
+import io.circe.parser.decode
 import scala.concurrent.Future
 
-case class ParametricaRecargoTributarioTransaction(actor: ParametricaRecargoActor, monitoring: Monitoring)(
-    implicit
-    actorTransactionRequirements: ActorTransactionRequirements
-) extends ActorTransaction[ParametricaRecargoTri](monitoring) {
-  def topic = "DGR-COP-PARAMRECARGO-TRI"
-  def topicRetry = "DGR-COP-PARAMRECARGO-TRI_retry"
-  def topicError = "DGR-COP-PARAMRECARGO-TRI_error"
+case class ParametricaRecargoNoTributarioTransaction(actor: ParametricaRecargoActor, monitoring: Monitoring)(
+  implicit
+  actorTransactionRequirements: ActorTransactionRequirements
+) extends ActorTransaction[ParametricaRecargoAnt](monitoring) {
+  def topic = "DGR-COP-PARAMRECARGO-ANT"
+  def topicRetry = "DGR-COP-PARAMRECARGO-ANT_retry"
+  def topicError = "DGR-COP-PARAMRECARGO-ANT_error"
 
-  def processInput(input: String): Either[Throwable, ParametricaRecargoTri] =
-    decode[ParametricaRecargoTri](input)
+  def processInput(input: String): Either[Throwable, ParametricaRecargoAnt] =
+    decode[ParametricaRecargoAnt](input)
 
-  override def processMessage(registro: ParametricaRecargoTri): Future[Response.SuccessProcessing] = {
+  override def processMessage(registro: ParametricaRecargoAnt): Future[Response.SuccessProcessing] = {
     val command = ParametricaRecargoCommands.ParametricaRecargoUpdateFromDto(
       parametricaRecargoId = registro.BPR_INDICE,
       deliveryId = BigInt(registro.EV_ID),

@@ -27,17 +27,12 @@ class PlanPagoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
       .persist[
         PlanPagoUpdatedFromDto,
         PlanPagoState
-      ](
-        event
-      )
+      ](event)
       .thenRun(state =>
-        messageProducer.produce(Seq(
-                                  KafkaKeyValue(command.aggregateRoot,
-
-                                                  event.asJson.toString()
-                                                )
-                                ),
-                                "PlanPagoUpdatedFromDto")(_ => ())
+        messageProducer.produce
+        (Seq(KafkaKeyValue(command.aggregateRoot,
+          event.asJson.toString())),
+          "PlanPagoUpdatedFromDto")(_ => ())
       )
       .thenReply(replyTo) { state =>
         Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
