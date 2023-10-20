@@ -7,9 +7,9 @@ import consumers.registral.juicio_obn.application.entities.{DetallesJuicioTri, J
 import consumers.registral.juicio_obn.infrastructure.dependency_injection.JuicioObnActor
 import design_principles.actor_model.Response
 import monitoring.Monitoring
-import serialization.maybeDecode
-import consumers.registral.juicio_obn.infrastructure.json._
+import consumers.registral.juicio_obn.infrastructure.json.json._
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
+import io.circe.parser._
 
 import scala.concurrent.Future
 
@@ -24,7 +24,7 @@ case class JuicioObnTributarioTransaction(actor: JuicioObnActor, monitoring: Mon
   override def topicError: String = "DGR-COP-JUICIOS-OBLIGACIONES-TRI_error"
 
   override def processInput(input: String): Either[Throwable, JuicioObnTri] = {
-    maybeDecode[JuicioObnTri](input)
+    decode[JuicioObnTri](input)
   }
 
 
@@ -78,9 +78,9 @@ case class JuicioObnTributarioTransaction(actor: JuicioObnActor, monitoring: Mon
   private def extractOtrosAtributos(obn: JuicioObnTri) = {
     val detalles = for {
       otrosAtributos <- obn.BJD_OTROS_ATRIBUTOS
-      bobDetalles <- (otrosAtributos \ "BJD_DETALLES").toOption
-      detalles = serialization.decodeF[Seq[DetallesJuicioTri]](bobDetalles.toString)
-    } yield (detalles)
+      detalles = decode[Seq[DetallesJuicioTri]](otrosAtributos.toString)
+
+    } yield (detalles.getOrElse(Seq()))
     detalles
   }
 

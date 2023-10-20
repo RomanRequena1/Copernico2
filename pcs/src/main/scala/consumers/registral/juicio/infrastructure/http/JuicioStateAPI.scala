@@ -6,7 +6,7 @@ import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.juicio.application.entities.JuicioQueries.GetStateJuicio
 import consumers.registral.juicio.infrastructure.dependency_injection.JuicioActor
-import consumers.registral.juicio.infrastructure.json._
+import consumers.registral.juicio.infrastructure.json.GetJuicioResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
 
@@ -20,7 +20,7 @@ case class JuicioStateAPI(actor: JuicioActor, monitoring: Monitoring)(implicit s
         withTipoObjeto { tipoObjeto =>
           withJuicio { juicioId =>
             queryState(actor, GetStateJuicio(sujetoId, objetoId, tipoObjeto, juicioId))(
-              GetJuicioResponseF,
+              GetJuicioResponseEncoder,
               state => state.fechaUltMod == LocalDateTime.MIN
             )
           }

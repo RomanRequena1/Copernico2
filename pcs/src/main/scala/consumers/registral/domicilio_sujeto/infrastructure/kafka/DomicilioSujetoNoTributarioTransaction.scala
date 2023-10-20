@@ -8,22 +8,21 @@ import consumers.registral.domicilio_sujeto.infrastructure.dependency_injection.
 import consumers.registral.domicilio_sujeto.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
+import io.circe.parser._
 import monitoring.Monitoring
-import serialization.maybeDecode
 
 import scala.concurrent.Future
-import scala.util.Try
 
 case class DomicilioSujetoNoTributarioTransaction(actor: DomicilioSujetoActor, monitoring: Monitoring)(
-    implicit
-    actorTransactionRequirements: ActorTransactionRequirements
+  implicit
+  actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[DomicilioSujetoAnt](monitoring) {
   def topic = "DGR-COP-DOMICILIO-SUJ-ANT"
   def topicRetry = "DGR-COP-DOMICILIO-SUJ-ANT_retry"
   def topicError = "DGR-COP-DOMICILIO-SUJ-ANT_error"
 
   def processInput(input: String): Either[Throwable, DomicilioSujetoAnt] =
-    maybeDecode[DomicilioSujetoAnt](input)
+    decode[DomicilioSujetoAnt](input)
 
   override def processMessage(registro: DomicilioSujetoAnt): Future[Response.SuccessProcessing] = {
     val command = DomicilioSujetoCommands.DomicilioSujetoUpdateFromDto(
@@ -35,5 +34,4 @@ case class DomicilioSujetoNoTributarioTransaction(actor: DomicilioSujetoActor, m
 
     actor.ask(command)
   }
-
 }

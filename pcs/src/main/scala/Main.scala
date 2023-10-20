@@ -19,7 +19,7 @@ object Main extends App {
     implicit val localImplicit: KafkaConsumerMicroserviceRequirements = microserviceProvisioning
     Seq(
       new consumers.no_registral.sujeto.infrastructure.main.SujetoMicroservice,
-      new consumers.no_registral.cotitularidad.infrastructure.main.CotitularidadMicroservice,
+      //new consumers.no_registral.cotitularidad.infrastructure.main.CotitularidadMicroservice,
       new consumers.no_registral.objeto.infrastructure.main.ObjetoMicroservice,
       new consumers.no_registral.obligacion.infrastructure.main.ObligacionMicroservice,
       new consumers.registral.actividad_sujeto.infrastructure.main.ActividadSujetoMicroservice,

@@ -1,11 +1,10 @@
 package consumers.registral.actividad_sujeto.domain
 
 import java.time.LocalDateTime
-
-import consumers.registral.actividad_sujeto.application.entities.{ActividadSujetoExternalDto, ActividadSujetoMessage}
+import consumers.registral.actividad_sujeto.application.entities.{ActividadSujeto, ActividadSujetoMessage}
 import cqrs.base_actor.typed.AbstractStateWithCQRS
 
 case class ActividadSujetoState(
-    registro: Option[ActividadSujetoExternalDto] = None,
+    registro: Option[ActividadSujeto] = None,
     fechaUltMod: LocalDateTime = LocalDateTime.MIN
 ) extends AbstractStateWithCQRS[ActividadSujetoMessage, ActividadSujetoEvents, ActividadSujetoState]

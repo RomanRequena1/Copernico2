@@ -1,15 +1,25 @@
 package readside.proyectionists.no_registrales.obligacion.projectionists
-
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.DetallesObligacion
 import consumers.no_registral.obligacion.domain.ObligacionEvents
-
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
+import io.circe.parser._
+import io.circe.syntax.EncoderOps
 final case class ObligacionSnapshotProjection(
     event: ObligacionEvents.ObligacionPersistedSnapshot
 ) extends ObligacionProjection {
 
   val registro: Option[ObligacionExternalDto] = event.registro
 
-  val fromRegistro: Option[List[(String, Option[Serializable])]] = registro map { registro =>
+  val bobDetailsResult: Option[Map[String, List[DetallesObligacion]]] =
+    decode[Map[String, List[DetallesObligacion]]](registro.get.BOB_OTROS_ATRIBUTOS.asJson.toString()).toOption
+  //println("CUMBIA bobDetailsResult -> " + bobDetailsResult)
+
+  val mao: Map[String, String] = Map("BOB_DETALLES" -> bobDetailsResult.get("BOB_DETALLES").asJson.noSpaces)
+  //println("CUMBIA -> mao" + mao)
+
+
+  val fromRegistro = registro map { registro =>
     List(
       "bob_adherido_debito" -> registro.BOB_ADHERIDO_DEBITO,
       "bob_canal_origen" -> registro.BOB_CANAL_ORIGEN,
@@ -25,7 +35,7 @@ final case class ObligacionSnapshotProjection(
       "bob_interes_punit" -> registro.BOB_INTERES_PUNIT,
       "bob_interes_resar" -> registro.BOB_INTERES_RESAR,
       "bob_jui_id" -> registro.BOB_JUI_ID,
-      "bob_otros_atributos" -> registro.BOB_OTROS_ATRIBUTOS,
+      "bob_otros_atributos" -> Some(mao),
       "bob_periodo" -> registro.BOB_PERIODO,
       "bob_pln_id" -> registro.BOB_PLN_ID,
       "bob_prorroga" -> registro.BOB_PRORROGA,

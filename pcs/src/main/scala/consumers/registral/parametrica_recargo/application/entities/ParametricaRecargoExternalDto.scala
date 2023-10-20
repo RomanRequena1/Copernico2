@@ -1,5 +1,7 @@
 package consumers.registral.parametrica_recargo.application.entities
 
+import serialization.CbroSerialization
+
 import java.time.LocalDateTime
 
 sealed trait ParametricaRecargoExternalDto extends ddd.ExternalDto {
@@ -38,7 +40,7 @@ object ParametricaRecargoExternalDto {
                                    BPR_IMPUESTO: String,
                                    BPR_CONCEPTO: String,
                                    BPR_PERIODO: String)
-      extends ParametricaRecargoExternalDto
+    extends ParametricaRecargoExternalDto with CbroSerialization
 
   case class ParametricaRecargoAnt(EV_ID: String,
                                    BPR_INDICE: String,
@@ -50,6 +52,6 @@ object ParametricaRecargoExternalDto {
                                    BPR_IMPUESTO: String,
                                    BPR_CONCEPTO: String,
                                    BPR_PERIODO: String)
-      extends ParametricaRecargoExternalDto
+    extends ParametricaRecargoExternalDto with CbroSerialization
 
 }

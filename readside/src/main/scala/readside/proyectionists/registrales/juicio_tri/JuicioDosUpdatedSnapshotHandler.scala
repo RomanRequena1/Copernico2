@@ -7,11 +7,11 @@ import consumers.registral.juicio_tri.domain.JuicioDosEvents.JuicioDosUpdatedFro
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
 import readside.proyectionists.registrales.juicio_tri.projections.JuicioDosUpdatedFromDtoProjection
-import consumers.registral.juicio_tri.infrastructure.json._
+import consumers.registral.juicio_tri.infrastructure.json.json._
 import org.slf4j.LoggerFactory
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-
+import io.circe.parser._
 class JuicioDosUpdatedSnapshotHandler(
                                        implicit
                                        r: MonitoringAndCassandraWrite
@@ -27,8 +27,7 @@ class JuicioDosUpdatedSnapshotHandler(
 
 
   override def processInput(input: String): Either[Throwable, JuicioDosUpdatedFromDto] = {
-    serialization
-      .maybeDecode[JuicioDosUpdatedFromDto](input)
+    decode[JuicioDosUpdatedFromDto](input)
   }
 
   val cassandra = new CassandraWriteProduction()
@@ -38,9 +37,9 @@ class JuicioDosUpdatedSnapshotHandler(
     for {
       done <- r.cassandraWrite.writeState(projection)
         .andThen {
-          case Failure(exception) => println("Dont persist juicio_tri" + exception)
+          case Failure(exception) => log.error("Dont persist juicio_tri" + exception)
           case Success(value) => {
-            println("Persist juicio_tri" + value)
+            log.debug("Persist juicio_tri" + value)
           }
         }
     } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)

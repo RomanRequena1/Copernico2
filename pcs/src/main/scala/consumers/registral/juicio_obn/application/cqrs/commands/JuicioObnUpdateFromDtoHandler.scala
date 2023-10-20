@@ -3,7 +3,7 @@ package consumers.registral.juicio_obn.application.cqrs.commands
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
-import consumers.registral.juicio_obn.infrastructure.json._
+import consumers.registral.juicio_obn.infrastructure.json.json._
 import consumers.registral.juicio_obn.application.entities.JuicioObnCommands.JuicioObnUpdateFromDto
 import consumers.registral.juicio_obn.domain.JuicioObnEvents.JuicioObnUpdatedFromDto
 import consumers.registral.juicio_obn.domain.JuicioObnState
@@ -12,9 +12,11 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
+import io.circe.syntax.EncoderOps
 import org.slf4j.LoggerFactory
 
 class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProducer: MessageProducer) {
+  private val log = LoggerFactory.getLogger(this.getClass)
   def handle(
             command: JuicioObnUpdateFromDto
             )(state: JuicioObnState)(replyTo: ActorRef[Success]): ReplyEffect[JuicioObnUpdatedFromDto, JuicioObnState] = {
@@ -27,9 +29,9 @@ class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
       command.obligacionId,
       command.registro
     )
-    //println("CUMBIA -> COMMAN -> " + e.deliveryId + " id " + e)
+
     if(isIdempotent(command, state.lastDeliveryIdByEvent)){
-      println(s"[ ${command.aggregateRoot}] -juicio_obn- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + state.lastDeliveryIdByEvent)
+      log.debug(s"[ ${command.aggregateRoot}] -juicio_obn- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + state.lastDeliveryIdByEvent)
 
       // Informs that operation has been ignored */
       //todo check if this is desirable, why? signal the sender??
@@ -59,7 +61,7 @@ class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
             Seq(
               KafkaKeyValue(
                 command.aggregateRoot,
-                serialization.encode(
+
                   JuicioObnUpdatedFromDto(
                     command.deliveryId,
                     command.juicioObnId,
@@ -67,9 +69,8 @@ class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
                     command.tipoObjeto,
                     command.obligacionId,
                     command.registro
-                  )
-                )
-              )
+                  ).asJson.toString()
+                              )
             ),
             "JuicioObnUpdatedFronDto"
           )(_ => ())

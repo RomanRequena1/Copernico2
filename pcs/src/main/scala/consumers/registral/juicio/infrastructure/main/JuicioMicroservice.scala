@@ -6,18 +6,15 @@ import api.actor_transaction.ActorTransaction
 import consumers.registral.juicio.domain.JuicioState
 import consumers.registral.juicio.infrastructure.dependency_injection.JuicioActor
 import consumers.registral.juicio.infrastructure.http.JuicioStateAPI
-import consumers.registral.juicio.infrastructure.kafka.JuicioTributarioTransaction
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
+import consumers.registral.juicio.infrastructure.kafka.{JuicioNoTributarioTransaction, JuicioTributarioTransaction}
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 class JuicioMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
   implicit val actor: JuicioActor = JuicioActor(JuicioState())
 
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
-      //JuicioNoTributarioTransaction(actor, monitoring),
+      JuicioNoTributarioTransaction(actor, monitoring),
       JuicioTributarioTransaction(actor, monitoring)
     )
 

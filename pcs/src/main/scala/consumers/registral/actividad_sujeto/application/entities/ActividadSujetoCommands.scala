@@ -1,9 +1,10 @@
 package consumers.registral.actividad_sujeto.application.entities
 
-import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoExternalDto.ActividadSujeto
+import consumers.registral.actividad_sujeto.application.entities.ActividadSujeto
 import design_principles.actor_model.Command
+import serialization.CbroSerialization
 
-trait ActividadSujetoCommands extends Command with ActividadSujetoMessage
+trait ActividadSujetoCommands extends Command with ActividadSujetoMessage with CbroSerialization
 
 object ActividadSujetoCommands {
 
@@ -13,5 +14,4 @@ object ActividadSujetoCommands {
       deliveryId: BigInt,
       registro: ActividadSujeto
   ) extends ActividadSujetoCommands
-
 }

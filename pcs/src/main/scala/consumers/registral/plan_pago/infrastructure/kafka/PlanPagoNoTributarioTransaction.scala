@@ -5,25 +5,24 @@ import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.plan_pago.application.entities.PlanPagoCommands
 import consumers.registral.plan_pago.application.entities.PlanPagoExternalDto.PlanPagoAnt
 import consumers.registral.plan_pago.infrastructure.dependency_injection.PlanPagoActor
-import consumers.registral.plan_pago.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
+import consumers.registral.plan_pago.infrastructure.json.json._
 import monitoring.Monitoring
-import serialization.maybeDecode
-
+import io.circe.parser.decode
 import scala.concurrent.Future
-import scala.util.Try
 
 case class PlanPagoNoTributarioTransaction(actor: PlanPagoActor, monitoring: Monitoring)(
-    implicit
-    actorTransactionRequirements: ActorTransactionRequirements
+  implicit
+  actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[PlanPagoAnt](monitoring) {
+
   def topic = "DGR-COP-PLANES-ANT"
   def topicRetry = "DGR-COP-PLANES-ANT_retry"
   def topicError = "DGR-COP-PLANES-ANT_error"
 
   def processInput(input: String): Either[Throwable, PlanPagoAnt] =
-    maybeDecode[PlanPagoAnt](input)
+    decode[PlanPagoAnt](input)
 
   override def processMessage(registro: PlanPagoAnt): Future[Response.SuccessProcessing] = {
     val command = PlanPagoCommands.PlanPagoUpdateFromDto(
@@ -34,8 +33,6 @@ case class PlanPagoNoTributarioTransaction(actor: PlanPagoActor, monitoring: Mon
       deliveryId = BigInt(registro.EV_ID),
       registro = registro
     )
-
     actor.ask(command)
   }
-
 }

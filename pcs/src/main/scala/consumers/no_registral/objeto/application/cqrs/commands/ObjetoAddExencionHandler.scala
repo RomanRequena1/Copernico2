@@ -10,7 +10,8 @@ import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import consumers.no_registral.objeto.infrastructure.json._
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
+import io.circe.syntax.EncoderOps
 class ObjetoAddExencionHandler(actor: ObjetoActor)(implicit messageProducer: MessageProducer)
     extends SyncCommandHandler[ObjetoCommands.ObjetoAddExencion] {
   override def handle(
@@ -48,9 +49,9 @@ class ObjetoAddExencionHandler(actor: ObjetoActor)(implicit messageProducer: Mes
           Seq(
             KafkaKeyValue(
               command.aggregateRoot,
-              serialization.encode(
-                event
-              )
+
+                event.asJson.toString()
+
             )
           ),
           "ObjetoAddedExencion"

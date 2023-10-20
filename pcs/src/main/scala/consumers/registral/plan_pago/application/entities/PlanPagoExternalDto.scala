@@ -1,10 +1,10 @@
 package consumers.registral.plan_pago.application.entities
 
 import java.time.LocalDateTime
-
 import play.api.libs.json.JsObject
+import serialization.CbroSerialization
 
-sealed trait PlanPagoExternalDto extends ddd.ExternalDto {
+sealed trait PlanPagoExternalDto extends ddd.ExternalDto with CbroSerialization {
   def EV_ID: String
 
   def BPL_SUJ_IDENTIFICADOR: String
@@ -33,7 +33,7 @@ sealed trait PlanPagoExternalDto extends ddd.ExternalDto {
 
   def BPL_TIPO: Option[String]
 
-  def BPL_OTROS_ATRIBUTOS: JsObject
+  //def BPL_OTROS_ATRIBUTOS: Option[JsObject]
 
 }
 
@@ -52,9 +52,9 @@ object PlanPagoExternalDto {
                          BPL_IMPORTE_ANTICIPO: Option[BigDecimal],
                          BPL_IMPORTE_FINANCIADO: Option[BigDecimal],
                          BPL_NRO_REFERENCIA: Option[String],
-                         BPL_TIPO: Option[String],
-                         BPL_OTROS_ATRIBUTOS: JsObject)
-      extends PlanPagoExternalDto
+                         BPL_TIPO: Option[String])
+                         //BPL_OTROS_ATRIBUTOS: Option[JsObject])
+    extends PlanPagoExternalDto with CbroSerialization
 
   case class PlanPagoAnt(EV_ID: String,
                          BPL_SUJ_IDENTIFICADOR: String,
@@ -69,8 +69,9 @@ object PlanPagoExternalDto {
                          BPL_IMPORTE_ANTICIPO: Option[BigDecimal],
                          BPL_IMPORTE_FINANCIADO: Option[BigDecimal],
                          BPL_NRO_REFERENCIA: Option[String],
-                         BPL_TIPO: Option[String],
-                         BPL_OTROS_ATRIBUTOS: JsObject)
-      extends PlanPagoExternalDto
+                         BPL_TIPO: Option[String])
+                         //BPL_OTROS_ATRIBUTOS: Option[JsObject]) CAMBIAR, MODERNIZAR CUANDO ESTEN LOS DETALLES
+
+    extends PlanPagoExternalDto with CbroSerialization
 
 }

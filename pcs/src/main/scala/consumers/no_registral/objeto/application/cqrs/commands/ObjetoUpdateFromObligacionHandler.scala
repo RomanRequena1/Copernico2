@@ -17,7 +17,6 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
       command: ObjetoCommands.ObjetoUpdateFromObligacion
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    val log = LoggerFactory.getLogger(this.getClass)
     val event = ObjetoUpdatedFromObligacion(
       actor.state.lastDeliveryIdByEvents,
       command.sujetoId,

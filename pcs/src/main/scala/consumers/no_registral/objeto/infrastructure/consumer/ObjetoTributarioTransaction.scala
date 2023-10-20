@@ -1,19 +1,16 @@
 package consumers.no_registral.objeto.infrastructure.consumer
 
-import scala.concurrent.{ExecutionContext, Future}
-import akka.Done
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{ObjetosAnt, ObjetosTri, ObjetosTriOtrosAtributos}
-import consumers.no_registral.objeto.infrastructure.json._
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import design_principles.actor_model.Response
+import io.circe.parser.decode
 import monitoring.Monitoring
-import play.api.libs.json.Reads
-import serialization.{decodeF, maybeDecode}
 
-import scala.util.Try
+import scala.concurrent.Future
 
 case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
@@ -25,23 +22,17 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
   def topicError = "DGR-COP-OBJETOS-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObjetosTri] =
-    maybeDecode[ObjetosTri](input)
+    decode[ObjetosTri](input)
+
 
   def processMessage(registro: ObjetosTri): Future[Response.SuccessProcessing] = {
     //connOracleKafkaToWriteside(registro.EV_ID.toString(), "objeto", registro.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
-    implicit val a: Reads[Seq[ObjetosTri]] = Reads.seq(ObjetosTriF.reads)
-    implicit val b: Reads[Seq[ObjetosTriOtrosAtributos]] = Reads.seq(ObjetosTriOtrosAtributosF.reads)
 
-    val detalle: Option[ObjetosTriOtrosAtributos] = for {
-      otrosAtributos <- registro.SOJ_OTROS_ATRIBUTOS
-      sojDetalles <- (otrosAtributos \ "SOJ_DETALLES").toOption
-      detalles <- serialization.decodeF[Seq[ObjetosTriOtrosAtributos]](sojDetalles.toString).headOption
-    } yield detalles
 
-    val isResponsable = detalle map { d =>
-      d.RESPONSABLE_OTROS_ATRIBUTOS contains "S"
+    val isResponsable = registro.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES map {
+      n => n.RESPONSABLE_OTROS_ATRIBUTOS contains "S"
     }
-    val sujetoResponsable = detalle flatMap { d =>
+    val sujetoResponsable = registro.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES map { d =>
       d.RESPONSABLE_OTROS_ATRIBUTOS.getOrElse("N") match {
         case "S" => Some(registro.SOJ_SUJ_IDENTIFICADOR)
         case "N" => None
@@ -58,8 +49,8 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
           tipoObjeto = registro.SOJ_TIPO_OBJETO,
           deliveryId = registro.EV_ID,
           registro = registro,
-          isResponsable = isResponsable,
-          sujetoResponsable = sujetoResponsable
+          isResponsable = Some(isResponsable.head),
+          sujetoResponsable = sujetoResponsable.head
         )
       else
         ObjetoCommands.ObjetoUpdateFromTri(
@@ -68,8 +59,8 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
           tipoObjeto = registro.SOJ_TIPO_OBJETO,
           deliveryId = registro.EV_ID,
           registro = registro,
-          isResponsable = isResponsable,
-          sujetoResponsable = sujetoResponsable,
+          isResponsable = Some(isResponsable.head),
+          sujetoResponsable = sujetoResponsable.head,
           isAdheridoDebito = isAdheridoDebito
         )
 

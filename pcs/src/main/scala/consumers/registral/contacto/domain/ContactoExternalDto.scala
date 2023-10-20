@@ -1,3 +1,5 @@
 package consumers.registral.contacto.domain
 
-case class ContactoExternalDto(CNC_ID: String) extends ddd.ExternalDto
+import serialization.CbroSerialization
+
+case class ContactoExternalDto(CNC_ID: String) extends ddd.ExternalDto with CbroSerialization

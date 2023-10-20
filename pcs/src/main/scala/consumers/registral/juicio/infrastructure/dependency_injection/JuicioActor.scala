@@ -10,7 +10,10 @@ import consumers.registral.juicio.domain.JuicioEvents.JuicioUpdatedFromDto
 import consumers.registral.juicio.domain.events.JuicioUpdatedFromDtoHandler
 import consumers.registral.juicio.domain.{JuicioEvents, JuicioState}
 import cqrs.base_actor.typed.BasePersistentShardedTypedActorWithCQRS
+import design_principles.actor_model.Response
 import kafka.MessageProducer
+
+import scala.concurrent.Future
 
 case class JuicioActor(state: JuicioState = JuicioState())(
     implicit
@@ -21,8 +24,9 @@ case class JuicioActor(state: JuicioState = JuicioState())(
       JuicioEvents,
       JuicioState
     ](state) {
+ // def ask(command: JuicioUpdateFromDto): _root_.scala.concurrent.Future[_root_.design_principles.actor_model.Response.SuccessProcessing] = ???
 
   commandBus.subscribe[JuicioUpdateFromDto](new JuicioUpdateFromDtoHandler().handle)
-  queryBus.subscribe[GetStateJuicio](new GetStateJuicioHandler().handle)
+  queryBus.subscribe[GetStateJuicio](new GetStateJuicioHandler(this).handle)
   eventBus.subscribe[JuicioUpdatedFromDto](new JuicioUpdatedFromDtoHandler().handle)
 }

@@ -1,11 +1,13 @@
 package consumers.registral.etapas_procesales.application.entities
 
+import serialization.CbroSerialization
+
 import java.time.LocalDateTime
 
-sealed trait EtapasProcesalesResponses
+sealed trait EtapasProcesalesResponses extends CbroSerialization
 object EtapasProcesalesResponses {
 
   case class GetEtapasProcesalesResponse(registro: Option[EtapasProcesalesExternalDto] = None,
                                          fechaUltMod: LocalDateTime)
-      extends design_principles.actor_model.Response
+      extends design_principles.actor_model.Response with CbroSerialization
 }

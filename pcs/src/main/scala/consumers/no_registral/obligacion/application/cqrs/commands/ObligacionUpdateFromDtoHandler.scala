@@ -24,7 +24,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       command.detallesObligacion,
       command.isAdheridoDebito
     )
-
     // check whether we are in initialization mode or not
     val initialization: String = {
       Try(System.getenv("INITIALIZATION")).getOrElse(null)
@@ -39,7 +38,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       //todo check if this is desirable, why? signal the sender??
 
       // In this case the sender is "EL OBJETO"
-      //println("CUMBIA path sender" + sender.path)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 
       Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

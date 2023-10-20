@@ -8,7 +8,8 @@ import consumers.registral.juicio.domain.JuicioEvents.JuicioUpdatedFromDto
 import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import readside.proyectionists.registrales.juicio.projections.JuicioUpdatedFromDtoProjection
-
+import consumers.registral.juicio.infrastructure.json._
+import io.circe.parser._
 class JuicioUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite
@@ -20,9 +21,9 @@ class JuicioUpdatedFromDtoHandler(
 
   import consumers.registral.juicio.infrastructure.json._
 
-  override def processInput(input: String): Either[Throwable, JuicioUpdatedFromDto] =
-    serialization
-      .maybeDecode[JuicioUpdatedFromDto](input)
+  override def processInput(input: String): Either[Throwable, JuicioUpdatedFromDto] = {
+    decode[JuicioUpdatedFromDto](input)
+  }
 
   val cassandra = new CassandraWriteProduction()
 

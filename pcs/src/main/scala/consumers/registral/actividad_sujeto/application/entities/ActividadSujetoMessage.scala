@@ -3,6 +3,7 @@ package consumers.registral.actividad_sujeto.application.entities
 import consumers.no_registral.sujeto.application.entity.SujetoMessage
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoMessage.ActividadSujetoMessageRoots
 import design_principles.actor_model.ShardedMessage
+import serialization.CbroSerialization
 
 trait ActividadSujetoMessage extends ShardedMessage with SujetoMessage {
   def actividadSujetoId: String

@@ -4,6 +4,7 @@ import scala.reflect.ClassTag
 import akka.actor.Status.Success
 import akka.actor.typed.{ActorRef, ActorSystem}
 import akka.persistence.typed.scaladsl.Effect
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.typesafe.config.Config
 import cqrs.typed.command.SyncEffectCommandBus
 import cqrs.typed.event.SyncEffectEventBus
@@ -20,7 +21,7 @@ abstract class BasePersistentShardedTypedActorWithCQRS[
     extends BasePersistentShardedTypedActor[MessageWithAutomaticReplyTo[ActorMessages, ActorMessages#ReturnType],
                                             ActorEvents,
                                             State](s) {
-
+  @JsonIgnore
   val logger: Logger = LoggerFactory.getLogger(getClass)
   val commandBus = new SyncEffectCommandBus[ActorEvents, State](logger)
   val queryBus = new SyncEffectQueryBus[ActorEvents, State](logger)

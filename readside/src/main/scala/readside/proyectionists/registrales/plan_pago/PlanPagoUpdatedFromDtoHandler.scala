@@ -10,7 +10,8 @@ import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import monitoring.Monitoring
 import readside.proyectionists.registrales.plan_pago.projections.PlanPagoUpdatedFromDtoProjection
-
+import consumers.registral.plan_pago.infrastructure.json.json._
+import io.circe.parser._
 class PlanPagoUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite
@@ -23,8 +24,7 @@ class PlanPagoUpdatedFromDtoHandler(
   import consumers.registral.plan_pago.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, PlanPagoUpdatedFromDto] =
-    serialization
-      .maybeDecode[PlanPagoUpdatedFromDto](input)
+    decode[PlanPagoUpdatedFromDto](input)
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: PlanPagoUpdatedFromDto): Future[Response.SuccessProcessing] = {

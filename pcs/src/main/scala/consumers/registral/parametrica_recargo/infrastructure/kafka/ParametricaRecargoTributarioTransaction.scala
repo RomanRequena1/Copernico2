@@ -5,14 +5,12 @@ import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoCommands
 import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoExternalDto.ParametricaRecargoTri
 import consumers.registral.parametrica_recargo.infrastructure.dependency_injection.ParametricaRecargoActor
-import consumers.registral.parametrica_recargo.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
+import io.circe.parser.decode
 import monitoring.Monitoring
-import serialization.maybeDecode
-
+import consumers.registral.parametrica_recargo.infrastructure.json.json._
 import scala.concurrent.Future
-import scala.util.Try
 
 case class ParametricaRecargoTributarioTransaction(actor: ParametricaRecargoActor, monitoring: Monitoring)(
     implicit
@@ -23,7 +21,7 @@ case class ParametricaRecargoTributarioTransaction(actor: ParametricaRecargoActo
   def topicError = "DGR-COP-PARAMRECARGO-TRI_error"
 
   def processInput(input: String): Either[Throwable, ParametricaRecargoTri] =
-    maybeDecode[ParametricaRecargoTri](input)
+    decode[ParametricaRecargoTri](input)
 
   override def processMessage(registro: ParametricaRecargoTri): Future[Response.SuccessProcessing] = {
     val command = ParametricaRecargoCommands.ParametricaRecargoUpdateFromDto(

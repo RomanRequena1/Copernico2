@@ -13,7 +13,8 @@ import readside.proyectionists.registrales.declaracion_jurada.projections.{
   DeclaracionJuradaProjection,
   DeclaracionJuradaUpdatedFromDtoProjection
 }
-
+import consumers.registral.declaracion_jurada.infrastructure.json._
+import io.circe.parser._
 class DeclaracionJuradaUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite
@@ -23,11 +24,10 @@ class DeclaracionJuradaUpdatedFromDtoHandler(
   override def topicRetry: String = "DeclaracionJuradaUpdatedFromDto_retry"
   override def topicError: String = "DeclaracionJuradaUpdatedFromDto_error"
 
-  import consumers.registral.declaracion_jurada.infrastructure.json._
+  import consumers.registral.declaracion_jurada.infrastructure.json.json._
 
   override def processInput(input: String): Either[Throwable, DeclaracionJuradaUpdatedFromDto] =
-    serialization
-      .maybeDecode[DeclaracionJuradaUpdatedFromDto](input)
+    decode[DeclaracionJuradaUpdatedFromDto](input)
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: DeclaracionJuradaUpdatedFromDto): Future[Response.SuccessProcessing] = {

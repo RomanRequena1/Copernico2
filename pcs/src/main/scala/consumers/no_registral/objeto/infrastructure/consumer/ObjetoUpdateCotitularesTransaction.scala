@@ -5,11 +5,10 @@ import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateCotitulares
-import consumers.no_registral.objeto.infrastructure.json._
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import design_principles.actor_model.Response
 import monitoring.Monitoring
-import serialization.maybeDecode
-
+import io.circe.parser.decode
 case class ObjetoUpdateCotitularesTransaction(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
@@ -20,7 +19,7 @@ case class ObjetoUpdateCotitularesTransaction(actorRef: ActorRef, monitoring: Mo
   def topicError = "ObjetoUpdatedCotitulares_error"
 
   def processInput(input: String): Either[Throwable, ObjetoUpdateCotitulares] =
-    maybeDecode[ObjetoUpdateCotitulares](input)
+    decode[ObjetoUpdateCotitulares](input)
 
   def processMessage(cmd: ObjetoUpdateCotitulares): Future[Response.SuccessProcessing] = {
     actorRef.ask[Response.SuccessProcessing](cmd)

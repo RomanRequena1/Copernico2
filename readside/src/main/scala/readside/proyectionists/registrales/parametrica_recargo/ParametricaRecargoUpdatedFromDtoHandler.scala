@@ -10,7 +10,8 @@ import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import monitoring.Monitoring
 import readside.proyectionists.registrales.parametrica_recargo.projections.ParametricaRecargoUpdatedFromDtoProjection
-
+import io.circe.parser._
+import consumers.registral.parametrica_recargo.infrastructure.json.json._
 class ParametricaRecargoUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite
@@ -23,8 +24,7 @@ class ParametricaRecargoUpdatedFromDtoHandler(
   import consumers.registral.parametrica_recargo.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, ParametricaRecargoUpdatedFromDto] =
-    serialization
-      .maybeDecode[ParametricaRecargoUpdatedFromDto](input)
+    decode[ParametricaRecargoUpdatedFromDto](input)
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: ParametricaRecargoUpdatedFromDto): Future[Response.SuccessProcessing] = {

@@ -1,9 +1,9 @@
 {
-  "EV_ID" : "1",
-  "BDO_SUJ_IDENTIFICADOR": "1",
+  "EV_ID" : "3",
+  "BDO_SUJ_IDENTIFICADOR": "4",
   "BDO_SOJ_TIPO_OBJETO": "I",
-  "BDO_SOJ_IDENTIFICADOR": "2",
-  "BDO_DOM_ID": "1",
+  "BDO_SOJ_IDENTIFICADOR": "4",
+  "BDO_DOM_ID": "4",
   "BDO_BARRIO": null,
   "BDO_CALLE": "MUÑIZ",
   "BDO_CODIGO_POSTAL": "4200",

@@ -3,13 +3,14 @@ package akka.http
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives.{complete, _}
 import akka.http.scaladsl.server._
+import com.fasterxml.jackson.annotation.JsonIgnore
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import monitoring.{Counter, Histogram, Monitoring}
 import org.slf4j.LoggerFactory
 import play.api.libs.json.{JsArray, JsObject, JsString}
 
 abstract class Controller(monitoring: Monitoring) extends PlayJsonSupport {
-
+  @JsonIgnore
   val log = LoggerFactory.getLogger(this.getClass)
 
   def route: Route

@@ -10,7 +10,7 @@ import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import monitoring.Monitoring
 import readside.proyectionists.registrales.exencion.projections.ObjetoAddedExencionProjection
-
+import io.circe.parser._
 class ObjetoAddedExencionHandler(
     implicit
     r: MonitoringAndCassandraWrite
@@ -20,11 +20,10 @@ class ObjetoAddedExencionHandler(
   override def topicRetry: String = "ObjetoAddedExencion_retry"
   override def topicError: String = "ObjetoAddedExencion_error"
 
-  import consumers.no_registral.objeto.infrastructure.json._
+  import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 
   override def processInput(input: String): Either[Throwable, ObjetoAddedExencion] =
-    serialization
-      .maybeDecode[ObjetoAddedExencion](input)
+    decode[ObjetoAddedExencion](input)
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: ObjetoAddedExencion): Future[Response.SuccessProcessing] = {

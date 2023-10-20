@@ -5,10 +5,10 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Route
 import consumers.registral.cupon_descuento.application.entities.CuponDescuentoQueries.GetStateCuponDescuento
 import consumers.registral.cupon_descuento.infrastructure.dependency_injection.CuponDescuentoActor
-import consumers.registral.cupon_descuento.infrastructure.http.CuponDescuentoStateAPI._
+import consumers.registral.cupon_descuento.infrastructure.http.CuponDescuentoStateAPI.{withCuponDescuento, withObjeto, withSujeto, withTipoObjeto}
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
-import consumers.registral.cupon_descuento.infrastructure.json._
+import consumers.registral.cupon_descuento.infrastructure.json.json.GetCuponDescuentoResponseEncoder
 
 import java.time.LocalDateTime
 
@@ -21,7 +21,7 @@ case class CuponDescuentoStateAPI(actor: CuponDescuentoActor, monitoring: Monito
         withTipoObjeto { tipoObjeto =>
           withCuponDescuento { obligacionId =>
             queryState(actor, GetStateCuponDescuento(sujetoId, objetoId, tipoObjeto, obligacionId))(
-              GetCuponDescuentoResponseF,
+              GetCuponDescuentoResponseEncoder,
               state => state.fechaUltMod == LocalDateTime.MIN
             )
           }
@@ -37,6 +37,6 @@ object CuponDescuentoStateAPI {
   def withSujeto: (String => Route) => Route = nestedRoute("sujeto") _
   def withObjeto: (String => Route) => Route = nestedRoute("objeto") _
   def withTipoObjeto: (String => Route) => Route = nestedRoute("tipo") _
-  def withCuponDescuento = path("obligacion" / Segment)
+  def withCuponDescuento = path("cupon_descuento" / Segment)
 }
 

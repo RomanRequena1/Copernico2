@@ -6,8 +6,9 @@ import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
 import consumers.registral.componente_i.application.entities.ComponenteICommands.ComponenteIUpdateFromDto
 import consumers.registral.componente_i.domain.ComponenteIEvents.ComponenteIUpdatedFromDto
 import consumers.registral.componente_i.domain.ComponenteIState
-import consumers.registral.componente_i.infrastructure.json._
+import consumers.registral.componente_i.infrastructure.json.json._
 import design_principles.actor_model.Response
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 
@@ -33,7 +34,6 @@ class ComponenteIUpdateFromDtoHandler(implicit messageProducer: MessageProducer)
           Seq(
             KafkaKeyValue(
               command.aggregateRoot,
-              serialization.encode(
                 ComponenteIUpdatedFromDto(
                   command.deliveryId,
                   command.sujetoId,
@@ -42,10 +42,9 @@ class ComponenteIUpdateFromDtoHandler(implicit messageProducer: MessageProducer)
                   command.obligacionId,
                   command.registro,
                   command.detallesComponenteI
-                )
+                ).asJson.toString()
               )
 
-            )
           ),
           "ComponenteIPersistedSnapshot"
         )(_ => ())

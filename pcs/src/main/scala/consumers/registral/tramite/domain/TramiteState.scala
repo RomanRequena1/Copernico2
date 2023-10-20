@@ -2,7 +2,7 @@ package consumers.registral.tramite.domain
 
 import java.time.LocalDateTime
 
-import consumers.registral.tramite.application.entities.TramiteExternalDto.Tramite
+import consumers.registral.tramite.application.entities.Tramite
 import consumers.registral.tramite.application.entities.TramiteMessage
 import cqrs.base_actor.typed.AbstractStateWithCQRS
 

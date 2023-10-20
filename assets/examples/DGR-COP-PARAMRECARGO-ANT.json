@@ -1,7 +1,7 @@
 {
-  "EV_ID" : "9",
-  "BPR_INDICE": "1",
-  "BPR_TIPO_INDICE": "I",
+  "EV_ID" : "10",
+  "BPR_INDICE": "7",
+  "BPR_TIPO_INDICE": "7",
   "BPR_DESCRIPCION": "DESCRIPCION",
   "BPR_FECHA_DESDE": "1998-01-24 00:00:00.0",
   "BPR_FECHA_HASTA": null,

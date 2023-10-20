@@ -7,10 +7,7 @@ import consumers.registral.actividad_sujeto.domain.ActividadSujetoState
 import consumers.registral.actividad_sujeto.infrastructure.dependency_injection.ActividadSujetoActor
 import consumers.registral.actividad_sujeto.infrastructure.http.ActividadSujetoStateAPI
 import consumers.registral.actividad_sujeto.infrastructure.kafka.ActividadSujetoTransaction
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 class ActividadSujetoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
   implicit val actor: ActividadSujetoActor = ActividadSujetoActor(ActividadSujetoState())

@@ -1,10 +1,9 @@
 package consumers.registral.juicio.application.entities
 
-import akka.Done
-import akka.actor.typed.ActorRef
 import consumers.registral.juicio.application.entities.JuicioExternalDto.DetallesJuicio
+import serialization.CbroSerialization
 
-sealed trait JuicioCommands extends design_principles.actor_model.Command with JuicioMessage
+sealed trait JuicioCommands extends design_principles.actor_model.Command with JuicioMessage with CbroSerialization
 object JuicioCommands {
   case class JuicioUpdateFromDto(sujetoId: String,
                                  objetoId: String,

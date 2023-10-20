@@ -1,37 +1,46 @@
 package consumers.registral.domicilio_sujeto.infrastructure
 
-import ai.x.play.json.Jsonx
+import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoCommands.DomicilioSujetoUpdateFromDto
+import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoExternalDto
+import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoExternalDto.{DomicilioSujetoAnt, DomicilioSujetoTri}
 import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoResponses.GetDomicilioSujetoResponse
-import consumers.registral.domicilio_sujeto.domain.{DomicilioSujetoEvents, DomicilioSujetoState}
-import io.leonard.TraitFormat
-import io.leonard.TraitFormat.traitFormat
-import play.api.libs.json.Json
-import serialization.EventSerializer
+import consumers.registral.domicilio_sujeto.domain.DomicilioSujetoEvents.DomicilioSujetoUpdatedFromDto
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
+import io.circe.{Decoder, Encoder}
+
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import scala.util.Try
 
 package object json {
-  implicit val localdatetimeF = serialization.advanced.LocalDateTimeSerializer.dateFormat
 
-  implicit val DomicilioSujetoTriF =
-    Jsonx.formatCaseClass[
-      consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoExternalDto.DomicilioSujetoTri
-    ]
-  implicit val DomicilioSujetoAntF =
-    Jsonx.formatCaseClass[
-      consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoExternalDto.DomicilioSujetoAnt
-    ]
+  //COMMANDS
+  implicit val DomicilioSujetoRemoveDecoder: Decoder[DomicilioSujetoUpdateFromDto] = deriveDecoder
+  implicit val DomicilioSujetoRemoveEncoder: Encoder[DomicilioSujetoUpdateFromDto] = deriveEncoder
 
-  implicit val domicilioSujetoDto
-      : TraitFormat[consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoExternalDto] =
-    (traitFormat[consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoExternalDto]
-    << DomicilioSujetoTriF << DomicilioSujetoAntF)
+  //EXTERNALDTO
+  implicit val DomicilioSujetoTriDecoder: Decoder[DomicilioSujetoTri] = deriveDecoder
+  implicit val DomicilioSujetoTriEncoder: Encoder[DomicilioSujetoTri] = deriveEncoder
 
-  implicit val DomicilioSujetoStateF =
-    Jsonx.formatCaseClass[DomicilioSujetoState]
+  implicit val DomicilioSujetoAntDecoder: Decoder[DomicilioSujetoAnt] = deriveDecoder
+  implicit val DomicilioSujetoAntEncoder: Encoder[DomicilioSujetoAnt] = deriveEncoder
 
-  implicit val GetDomicilioSujetoResponseF = Json.format[GetDomicilioSujetoResponse]
+  implicit val DomicilioObjetoExternalDtoDecoder: Decoder[DomicilioSujetoExternalDto] = deriveDecoder
+  implicit val DomicilioObjetoExternalDtoEncoder: Encoder[DomicilioSujetoExternalDto] = deriveEncoder
+  implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
+    Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
+  }
+  implicit val localDateTimeEncoder: Encoder[LocalDateTime] = Encoder.encodeString.contramap { dateTime =>
+    dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
+  }
 
-  // DomicilioSujeto
-  implicit val DomiciliSujetoUpdatedF = Jsonx.formatCaseClass[DomicilioSujetoEvents.DomicilioSujetoUpdatedFromDto]
-  class DomicilioSujetoUpdatedFromDtoFS extends EventSerializer[DomicilioSujetoEvents.DomicilioSujetoUpdatedFromDto]
+
+  //RESPONSES
+  implicit val GetDomicilioSujetoResponseDecoder: Decoder[GetDomicilioSujetoResponse] = deriveDecoder
+  implicit val getDomicilioSujetoResponseEncoder: Encoder[GetDomicilioSujetoResponse] = deriveEncoder
+
+  //EVENTS
+  implicit val DomicilioSujetoUpdatedFromDtoDecoder: Decoder[DomicilioSujetoUpdatedFromDto] = deriveDecoder
+  implicit val DomicilioSujetoUpdatedFromDtoEncoder: Encoder[DomicilioSujetoUpdatedFromDto] = deriveEncoder
 
 }

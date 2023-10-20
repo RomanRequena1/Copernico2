@@ -1,10 +1,10 @@
 package consumers.registral.juicio.domain
 
-import java.time.LocalDateTime
-
 import consumers.registral.juicio.application.entities.JuicioExternalDto.DetallesJuicio
 import consumers.registral.juicio.application.entities.{JuicioExternalDto, JuicioMessage}
 import cqrs.base_actor.typed.AbstractStateWithCQRS
+
+import java.time.LocalDateTime
 
 case class JuicioState(
     registro: Option[JuicioExternalDto] = None,

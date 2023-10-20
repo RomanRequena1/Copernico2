@@ -7,18 +7,18 @@ import consumers.registral.juicio_obn.domain.JuicioObnEvents.JuicioObnDeletedFro
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
 import org.slf4j.LoggerFactory
-
+import io.circe.parser._
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-
+import consumers.registral.juicio_obn.infrastructure.json.json._
 class JuicioObnDeletedSnapshotHandler(
                                               implicit
                                               r: MonitoringAndCassandraWrite
 
                                             ) extends ActorTransaction[JuicioObnDeletedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
-  private val log = LoggerFactory.getLogger(this.getClass)
 
+  private val log = LoggerFactory.getLogger(this.getClass)
   override def topic: String = "JuicioObnDeletedFronDto"
 
   override def topicRetry: String = "JuicioObnDeletedFronDto_retry"
@@ -28,8 +28,7 @@ class JuicioObnDeletedSnapshotHandler(
   import consumers.registral.juicio_obn.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, JuicioObnDeletedFromDto] =
-    serialization
-      .maybeDecode[JuicioObnDeletedFromDto](input)
+    decode[JuicioObnDeletedFromDto](input)
 
   override def processMessage(registro: JuicioObnDeletedFromDto): Future[Response.SuccessProcessing] = {
 
@@ -48,9 +47,9 @@ class JuicioObnDeletedSnapshotHandler(
               s""" and bjd_obn_id = '${registro.obligacionId}' """
           )
           .andThen {
-            case Failure(exception) => println("Dont persist juicio_obn -1" + exception )
+            case Failure(exception) => log.error("Dont persist juicio_obn -1" + exception )
             case Success(_) => {
-              println("Persiste juicio_obn -1 ")
+              log.debug("Persiste juicio_obn -1 ")
             }
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)

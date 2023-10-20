@@ -10,7 +10,8 @@ import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import monitoring.Monitoring
 import readside.proyectionists.registrales.subasta.projections.SubastaUpdatedFromDtoProjection
-
+import io.circe.parser._
+import consumers.registral.subasta.infrastructure.json._
 class SubastaUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite
@@ -20,11 +21,10 @@ class SubastaUpdatedFromDtoHandler(
   override def topicError: String = "SubastaUpdatedFromDto_error"
   override def topicRetry: String = "SubastaUpdatedFromDto_retry"
 
-  import consumers.registral.subasta.infrastructure.json._
+  import consumers.registral.subasta.infrastructure.json.json._
 
   override def processInput(input: String): Either[Throwable, SubastaUpdatedFromDto] =
-    serialization
-      .maybeDecode[SubastaUpdatedFromDto](input)
+    decode[SubastaUpdatedFromDto](input)
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: SubastaUpdatedFromDto): Future[Response.SuccessProcessing] = {

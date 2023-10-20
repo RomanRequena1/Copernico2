@@ -6,17 +6,14 @@ import api.actor_transaction.ActorTransaction
 import consumers.registral.domicilio_objeto.domain.DomicilioObjetoState
 import consumers.registral.domicilio_objeto.infrastructure.dependency_injection.DomicilioObjetoActor
 import consumers.registral.domicilio_objeto.infrastructure.http.DomicilioObjetoStateAPI
-import consumers.registral.domicilio_objeto.infrastructure.kafka.DomicilioObjetoTributarioTransaction
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
+import consumers.registral.domicilio_objeto.infrastructure.kafka.{DomicilioObjetoNoTributarioTransaction, DomicilioObjetoTributarioTransaction}
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 class DomicilioObjetoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
   implicit val actor: DomicilioObjetoActor = DomicilioObjetoActor(DomicilioObjetoState())
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
-      //DomicilioObjetoNoTributarioTransaction(actor, monitoring),
+      DomicilioObjetoNoTributarioTransaction(actor, monitoring),
       DomicilioObjetoTributarioTransaction(actor, monitoring)
     )
 

@@ -1,23 +1,24 @@
 package consumers.no_registral.sujeto.application.entity
 
-import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.{SujetoAnt, SujetoTri}
 import ddd.Deliverable
 import design_principles.actor_model.Command
+import serialization.CbroSerialization
 
-sealed trait SujetoCommands extends Command with SujetoMessage with Deliverable
+sealed trait SujetoCommands extends Command with SujetoMessage with Deliverable with CbroSerialization
 
 object SujetoCommands {
+
 
   case class SujetoUpdateFromTri(
       deliveryId: BigInt,
       sujetoId: String,
-      registro: SujetoTri
+      registro: SujetoExternalDto
   ) extends SujetoCommands
 
   case class SujetoUpdateFromAnt(
       deliveryId: BigInt,
       sujetoId: String,
-      registro: SujetoAnt
+      registro: SujetoExternalDto
   ) extends SujetoCommands
 
   case class SujetoUpdateFromObjeto(

@@ -17,7 +17,8 @@ import consumers.no_registral.sujeto.domain.{SujetoEvents, SujetoState}
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor.SujetoActorRefMap
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
-
+import io.circe.syntax.EncoderOps
+import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[SujetoEvents, SujetoState](requirements.monitoring) {
 
@@ -67,9 +68,9 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
   import consumers.no_registral.sujeto.infrastructure.json._
   def persistSnapshot()(handler: Seq[KafkaKeyValue] => Unit): Unit = {
     val sujetoId = SujetoMessageRoots.extractor(persistenceId).sujetoId
-    val event = SujetoSnapshotPersisted(state.registro.map(_.EV_ID).getOrElse(state.lastInternalDeliveryId), sujetoId, state.registro, state.saldo)
+    val event = SujetoSnapshotPersisted(state.registro.map(_.EV_ID).getOrElse(state.lastInternalDeliveryId), sujetoId, state.registro, state.saldo).asJson.toString()
     requirements.messageProducer.produce(
-      data = Seq(KafkaKeyValue(persistenceId, serialization.encode(event))),
+      data = Seq(KafkaKeyValue(persistenceId, event)),
       topic = "SujetoSnapshotPersisted"
     )(handler)
   }

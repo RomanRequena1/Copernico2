@@ -5,14 +5,13 @@ import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoCommands
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoExternalDto.DomicilioObjetoTri
 import consumers.registral.domicilio_objeto.infrastructure.dependency_injection.DomicilioObjetoActor
-import consumers.registral.domicilio_objeto.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
+import io.circe.parser._
 import monitoring.Monitoring
-import serialization.maybeDecode
+import consumers.registral.domicilio_objeto.infrastructure.json._
 
 import scala.concurrent.Future
-import scala.util.Try
 
 case class DomicilioObjetoTributarioTransaction(actor: DomicilioObjetoActor, monitoring: Monitoring)(
     implicit
@@ -23,7 +22,7 @@ case class DomicilioObjetoTributarioTransaction(actor: DomicilioObjetoActor, mon
   def topicError = "DGR-COP-DOMICILIO-OBJ-TRI_error"
 
   def processInput(input: String): Either[Throwable, DomicilioObjetoTri] =
-    maybeDecode[DomicilioObjetoTri](input)
+    decode[DomicilioObjetoTri](input)
 
   override def processMessage(registro: DomicilioObjetoTri): Future[Response.SuccessProcessing] = {
     val command = DomicilioObjetoCommands.DomicilioObjetoUpdateFromDto(

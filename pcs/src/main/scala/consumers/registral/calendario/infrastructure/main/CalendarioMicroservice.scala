@@ -7,10 +7,7 @@ import consumers.registral.calendario.domain.CalendarioState
 import consumers.registral.calendario.infrastructure.dependency_injection.CalendarioActor
 import consumers.registral.calendario.infrastructure.http.CalendarioStateAPI
 import consumers.registral.calendario.infrastructure.kafka.CalendarioTransaction
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 class CalendarioMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
   implicit val actor: CalendarioActor = CalendarioActor(CalendarioState())

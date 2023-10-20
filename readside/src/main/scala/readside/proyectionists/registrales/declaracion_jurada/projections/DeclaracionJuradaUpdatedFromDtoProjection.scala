@@ -1,12 +1,12 @@
 package readside.proyectionists.registrales.declaracion_jurada.projections
 
-import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaExternalDto
+import consumers.registral.declaracion_jurada.application.entities.{DeclaracionJurada}
 import consumers.registral.declaracion_jurada.domain.DeclaracionJuradaEvents
 
 case class DeclaracionJuradaUpdatedFromDtoProjection(
     event: DeclaracionJuradaEvents.DeclaracionJuradaUpdatedFromDto
 ) extends DeclaracionJuradaProjection {
-  val registro: DeclaracionJuradaExternalDto = event.registro
+  val registro: DeclaracionJurada = event.registro
   def bindings: List[(String, Serializable)] = List(
     "bdj_cuota" -> registro.BDJ_CUOTA,
     "bdj_estado" -> registro.BDJ_ESTADO,

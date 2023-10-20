@@ -6,7 +6,7 @@ import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.calendario.application.entities.CalendarioQueries.GetStateCalendario
 import consumers.registral.calendario.infrastructure.dependency_injection.CalendarioActor
-import consumers.registral.calendario.infrastructure.json._
+import consumers.registral.calendario.infrastructure.json.json.GetCalendarioResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
 
@@ -18,7 +18,7 @@ case class CalendarioStateAPI(actor: CalendarioActor, monitoring: Monitoring)(
   def getState: Route =
     withCalendario { calendarioId =>
       queryState(actor, GetStateCalendario(calendarioId))(
-        GetCalendarioResponseF,
+        GetCalendarioResponseEncoder,
         state => state.fechaUltMod == LocalDateTime.MIN
       )
     }

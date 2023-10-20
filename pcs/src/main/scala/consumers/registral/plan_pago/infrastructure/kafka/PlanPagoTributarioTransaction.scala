@@ -5,14 +5,12 @@ import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.plan_pago.application.entities.PlanPagoCommands
 import consumers.registral.plan_pago.application.entities.PlanPagoExternalDto.PlanPagoTri
 import consumers.registral.plan_pago.infrastructure.dependency_injection.PlanPagoActor
-import consumers.registral.plan_pago.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
+import io.circe.parser.decode
 import monitoring.Monitoring
-import serialization.maybeDecode
-
+import consumers.registral.plan_pago.infrastructure.json.json._
 import scala.concurrent.Future
-import scala.util.Try
 
 case class PlanPagoTributarioTransaction(actor: PlanPagoActor, monitoring: Monitoring)(
     implicit
@@ -23,7 +21,7 @@ case class PlanPagoTributarioTransaction(actor: PlanPagoActor, monitoring: Monit
   def topicError = "DGR-COP-PLANES-TRI_error"
 
   def processInput(input: String): Either[Throwable, PlanPagoTri] =
-    maybeDecode[PlanPagoTri](input)
+    decode[PlanPagoTri](input)
 
   override def processMessage(registro: PlanPagoTri): Future[Response.SuccessProcessing] = {
     val command = PlanPagoCommands.PlanPagoUpdateFromDto(
@@ -34,7 +32,6 @@ case class PlanPagoTributarioTransaction(actor: PlanPagoActor, monitoring: Monit
       deliveryId = BigInt(registro.EV_ID),
       registro = registro
     )
-
     actor.ask(command)
   }
 }

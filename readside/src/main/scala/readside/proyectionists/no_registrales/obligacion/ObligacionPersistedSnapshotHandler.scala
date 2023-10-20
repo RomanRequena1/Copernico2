@@ -1,16 +1,19 @@
 package readside.proyectionists.no_registrales.obligacion
 
 import akka.actor.{ActorRef, ActorSelection}
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
+import io.circe.parser.decode
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
+import com.fasterxml.jackson.annotation.JsonIgnore
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
 import timescaledb.TimescaledbReadsideToCass.connOracleReadsideToCass
-
+import io.circe.syntax.EncoderOps
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
@@ -21,6 +24,7 @@ class ObligacionPersistedSnapshotHandler(
 
                                         ) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
 
+  @JsonIgnore
   private val log = LoggerFactory.getLogger(this.getClass)
 
   override def topic: String = "ObligacionPersistedSnapshot"
@@ -32,24 +36,12 @@ class ObligacionPersistedSnapshotHandler(
   import consumers.no_registral.obligacion.infrastructure.json._
   val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   override def processInput(input: String): Either[Throwable, ObligacionPersistedSnapshot] =
-    serialization
-      .maybeDecode[ObligacionPersistedSnapshot](input)
+    decode[ObligacionPersistedSnapshot](input)
 
   override def processMessage(registro: ObligacionPersistedSnapshot): Future[Response.SuccessProcessing] = {
-    //log.error("llego event")
     recordLag(calculateLag(registro.deliveryId.toString))
     if (registro.operacion.equals("U")) {
       val projection = ObligacionSnapshotProjection(registro)
-
-      /*r.cassandraWrite.writeState(projection).onComplete {
-        case Failure(exception) => log.error(exception)
-
-        case Success(value) =>
-
-          connOracleReadsideToCass(registro.sujetoId,registro.tipoObjeto,registro.objetoId,registro.obligacionId)
-          SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
-
-      }*/
 
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
@@ -57,11 +49,7 @@ class ObligacionPersistedSnapshotHandler(
           case Success(value) => {
             //log.error("ERROR - 1 " + registro.deliveryId)
             log.debug("Persist obligacion" + value)
-            //println("CUMBIA actor " + a)
-            //a ! InsertFromReadside(registro.deliveryId.toString(), a)
-            //println("CUMBIA InsertFromReadside")
-            //Future(connOracleReadsideToCass(registro.deliveryId.toString()))
-            //Future(connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI"))
+
             if (enable.equals("true")) {
               Future(connOracleReadsideToCass(registro.deliveryId.toString())).onComplete {
                 case Failure(exception) => log.error("ERROR Future(connOracleReadsideToCass(obligacion.EV_ID.toString())) -> " + exception)
@@ -72,12 +60,7 @@ class ObligacionPersistedSnapshotHandler(
         }
 
 
-        /*recover { ex: Throwable =>
-        connOracleReadsideToCass(registro.sujetoId,registro.tipoObjeto,registro.objetoId,registro.obligacionId)
-        log.error(ex.getMessage)
-        log.error("readside oracle")
-        ex
-      }*/
+
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
     } else {
       val cassandra = new CassandraWriteProduction()

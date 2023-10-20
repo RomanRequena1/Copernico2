@@ -1,9 +1,9 @@
 package consumers.registral.cupon_descuento.application.entities
 
-import consumers.registral.cupon_descuento.application.entities.CuponDescuentoExternalDto.DetallesCuponDescuento
 import design_principles.actor_model.Command
+import serialization.CbroSerialization
 
-sealed trait CuponDescuentoCommands extends Command with CuponDescuentoMessage
+sealed trait CuponDescuentoCommands extends Command with CuponDescuentoMessage with CbroSerialization
 
 
 object CuponDescuentoCommands {
@@ -13,7 +13,7 @@ object CuponDescuentoCommands {
                                       objetoId: String,
                                       tipoObjeto: String,
                                       obligacionId: String,
-                                      registro: CuponDescuentoExternalDto,
+                                      registro: CuponDescuentoTri,
                                       detallesCuponDescuento: Seq[DetallesCuponDescuento]
                                     ) extends CuponDescuentoCommands
 
@@ -23,7 +23,7 @@ object CuponDescuentoCommands {
                                objetoId: String,
                                tipoObjeto: String,
                                obligacionId: String,
-                               registro: CuponDescuentoExternalDto,
+                               registro: CuponDescuentoTri,
                                detallesCuponDescuento: Seq[DetallesCuponDescuento]
                              ) extends CuponDescuentoCommands
 }

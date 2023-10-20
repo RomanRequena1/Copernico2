@@ -1,9 +1,11 @@
 package consumers.no_registral.objeto.domain
 
-import java.time.LocalDateTime
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
 import ddd.{AbstractState, eventCounterMax}
+import serialization.CbroSerialization
+
+import java.time.LocalDateTime
 
 case class ObjetoState(
     saldo: BigDecimal = 0,
@@ -22,7 +24,7 @@ case class ObjetoState(
     isAdheridoDebito: Boolean = false,
     eventCounter:Int = 0,
     cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false)
-) extends AbstractState[ObjetoEvents] {
+) extends AbstractState[ObjetoEvents] with CbroSerialization{
 
   override def +(event: ObjetoEvents): ObjetoState = {
     eventCounter match {
@@ -68,11 +70,11 @@ case class ObjetoState(
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
           isBaja = false
         )
-      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
-        copy(
-          registro = Some(evt.registro),
-          sujetos = sujetos + evt.sujetoId
-        )
+//      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
+//        copy(
+//          registro = Some(evt.registro),
+//          sujetos = sujetos + evt.sujetoId
+//        )
       case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
         val obligacionesSaldo_ = obligacionesSaldo + (evt.obligacionId -> evt.saldoObligacion)
         copy(

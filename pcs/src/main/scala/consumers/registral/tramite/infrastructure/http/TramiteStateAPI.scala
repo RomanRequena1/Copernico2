@@ -6,7 +6,7 @@ import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.tramite.application.entities.TramiteQueries.GetStateTramite
 import consumers.registral.tramite.infrastructure.dependency_injection.TramiteActor
-import consumers.registral.tramite.infrastructure.json._
+import consumers.registral.tramite.infrastructure.json.GetTramiteResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
 
@@ -18,7 +18,7 @@ case class TramiteStateAPI(actor: TramiteActor, monitoring: Monitoring)(implicit
     withSujeto { sujetoId =>
       withTramite { tramiteId =>
         queryState(actor, GetStateTramite(sujetoId, tramiteId))(
-          GetTramiteResponseF,
+          GetTramiteResponseEncoder,
           state => state.fechaUltMod == LocalDateTime.MIN
         )
 

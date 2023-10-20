@@ -6,7 +6,7 @@ import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoQueries.GetStateDomicilioObjeto
 import consumers.registral.domicilio_objeto.infrastructure.dependency_injection.DomicilioObjetoActor
-import consumers.registral.domicilio_objeto.infrastructure.json._
+import consumers.registral.domicilio_objeto.infrastructure.json.GetDomicilioObjetoResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
 
@@ -21,7 +21,7 @@ case class DomicilioObjetoStateAPI(actor: DomicilioObjetoActor, monitoring: Moni
         withTipoObjeto { tipoObjeto =>
           withDomicilioObjeto { domicilioId =>
             queryState(actor, GetStateDomicilioObjeto(sujetoId, objetoId, tipoObjeto, domicilioId))(
-              GetDomicilioObjetoResponseF,
+              GetDomicilioObjetoResponseEncoder,
               state => state.fechaUltMod == LocalDateTime.MIN
             )
           }

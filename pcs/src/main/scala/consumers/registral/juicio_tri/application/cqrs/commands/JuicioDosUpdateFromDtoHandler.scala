@@ -6,11 +6,12 @@ import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
 import consumers.registral.juicio_tri.application.entities.JuicioDosCommands.JuicioDosUpdateFromDto
 import consumers.registral.juicio_tri.domain.JuicioDosEvents.JuicioDosUpdatedFromDto
 import consumers.registral.juicio_tri.domain.JuicioDosState
-import consumers.registral.juicio_tri.infrastructure.json._
+import consumers.registral.juicio_tri.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
+import io.circe.syntax.EncoderOps
 
 class JuicioDosUpdateFromDtoHandler(implicit messageProducer: MessageProducer){
   def handle(command: JuicioDosUpdateFromDto)(state: JuicioDosState)(replyTo: ActorRef[Success]): ReplyEffect[JuicioDosUpdatedFromDto, JuicioDosState] = {
@@ -36,13 +37,13 @@ class JuicioDosUpdateFromDtoHandler(implicit messageProducer: MessageProducer){
             Seq(
               KafkaKeyValue(
                 command.aggregateRoot,
-                serialization.encode(
+
                   JuicioDosUpdatedFromDto(
                     command.juicioId,
                     command.deliveryId,
                     command.registro
-                  )
-                )
+
+                ).asJson.toString()
               )
             ),
             "JuicioDosPersistedSnapshot"

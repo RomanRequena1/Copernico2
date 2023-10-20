@@ -1,7 +1,5 @@
 package readside.proyectionists.registrales.parametrica_recargo.projections
 
-import java.time.chrono.ChronoLocalDateTime
-
 import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoExternalDto
 import consumers.registral.parametrica_recargo.domain.ParametricaRecargoEvents
 

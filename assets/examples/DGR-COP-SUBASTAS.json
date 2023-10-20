@@ -1,11 +1,11 @@
 {
-  "EV_ID" : "1",
-  "BSB_SUJ_IDENTIFICADOR_SUB" : "1",
-  "BSB_SOJ_IDENTIFICADOR" : "1",
+  "EV_ID" : "4",
+  "BSB_SUJ_IDENTIFICADOR_SUB" : "2",
+  "BSB_SOJ_IDENTIFICADOR" : "2",
   "BSB_SOJ_TIPO_OBJETO" : "I",
-  "BSB_SUB_ID" : "1",
-  "BSB_SUJ_IDENTIFICADOR_ADQ" : "1",
-  "BSB_AUTO" : "CESPAL c/Suc.de Suarez Luis y ot.",
+  "BSB_SUB_ID" : "2",
+  "BSB_SUJ_IDENTIFICADOR_ADQ" : "2",
+  "BSB_AUTO" : "CESPAL c45255454245llllllllllllllllllllllppppppppppppppppl",
   "BSB_FECHA_FIN" : null,
   "BSB_FECHA_INICIO" : "2001-08-08 00:00:00.0",
   "BSB_TIPO" : null

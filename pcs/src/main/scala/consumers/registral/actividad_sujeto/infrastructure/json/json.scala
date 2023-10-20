@@ -1,32 +1,37 @@
-package consumers.registral.actividad_sujeto.infrastructure
+package consumers.registral.actividad_sujeto.infrastructure.json
 
-import ai.x.play.json.Jsonx
+import consumers.registral.actividad_sujeto.application.entities.{ActividadSujeto, DetallesActividadSujeto}
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoCommands.ActividadSujetoUpdateFromDto
-import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoExternalDto
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoResponses.GetActividadSujetoResponse
-import consumers.registral.actividad_sujeto.domain.{ActividadSujetoEvents, ActividadSujetoState}
-import io.leonard.TraitFormat
-import io.leonard.TraitFormat.traitFormat
-import play.api.libs.json.Json
-import serialization.EventSerializer
+import consumers.registral.actividad_sujeto.domain.ActividadSujetoEvents.ActividadSujetoUpdatedFromDto
+import io.circe.{Decoder, Encoder}
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 
-package object json {
-  implicit val localdatetimeF = serialization.advanced.LocalDateTimeSerializer.dateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import scala.util.Try
 
-  implicit val ActividadesSujetoF =
-    Jsonx.formatCaseClass[
-      consumers.registral.actividad_sujeto.application.entities.ActividadSujetoExternalDto.ActividadSujeto
-    ]
 
-  implicit val ActividadSujetoUpdateFromDtoF = Json.format[ActividadSujetoUpdateFromDto]
-  implicit val actividadSujetoDto: TraitFormat[ActividadSujetoExternalDto] =
-    (traitFormat[ActividadSujetoExternalDto]
-    << ActividadesSujetoF)
-  implicit val ActividadSujetoStateF =
-    Jsonx.formatCaseClass[ActividadSujetoState]
-  implicit val ActividadSujetoUpdatedF = Jsonx.formatCaseClass[ActividadSujetoEvents.ActividadSujetoUpdatedFromDto]
-  class ActividadSujetoUpdatedFromDtoFS extends EventSerializer[ActividadSujetoEvents.ActividadSujetoUpdatedFromDto]
+object json {
+  implicit val ActividadSujetoUpdateFromDtoDecoder: Decoder[ActividadSujetoUpdateFromDto] = deriveDecoder
+  implicit val ActividadSujetoUpdateFromDtoEncoder: Encoder[ActividadSujetoUpdateFromDto] = deriveEncoder
 
-  implicit val GetActividadSujetoResponseF = Json.format[GetActividadSujetoResponse]
+  implicit val ActividadSujetoDecoder: Decoder[ActividadSujeto] = deriveDecoder
+  implicit val ActividadSujetoEncoder: Encoder[ActividadSujeto] = deriveEncoder
 
+  implicit val DetallesActividadSujetoDecoder: Decoder[DetallesActividadSujeto] = deriveDecoder
+  implicit val DetallesActividadSujetoEncoder: Encoder[DetallesActividadSujeto] = deriveEncoder
+
+
+  implicit val GetActividadSujetoResponseDecoder: Decoder[GetActividadSujetoResponse] = deriveDecoder
+  implicit val GetActividadSujetoResponseEncoder: Encoder[GetActividadSujetoResponse] = deriveEncoder
+
+  implicit val ActividadSujetoUpdatedFromDtoDecoder: Decoder[ActividadSujetoUpdatedFromDto] = deriveDecoder
+  implicit val ActividadSujetoUpdatedFromDtoEncoder: Encoder[ActividadSujetoUpdatedFromDto] = deriveEncoder
+  implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
+    Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
+  }
+  implicit val localDateTimeEncoder: Encoder[LocalDateTime] = Encoder.encodeString.contramap { dateTime =>
+    dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
+  }
 }

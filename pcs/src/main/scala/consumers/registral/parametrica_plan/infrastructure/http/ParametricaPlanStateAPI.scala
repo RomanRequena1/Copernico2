@@ -2,11 +2,11 @@ package consumers.registral.parametrica_plan.infrastructure.http
 
 import java.time.LocalDateTime
 
-import akka.http.scaladsl.server.Directives.{path, _}
+import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{Directive, Route}
 import consumers.registral.parametrica_plan.application.entities.ParametricaPlanQueries.GetStateParametricaPlan
 import consumers.registral.parametrica_plan.infrastructure.dependency_injection.ParametricaPlanActor
-import consumers.registral.parametrica_plan.infrastructure.json._
+import consumers.registral.parametrica_plan.infrastructure.json.ParametricaPlanImplicits.GetParametricaPlanResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
 
@@ -19,7 +19,7 @@ case class ParametricaPlanStateAPI(actor: ParametricaPlanActor, monitoring: Moni
   def getState: Route =
     withParametricaPlan { parametricaPlanId =>
       queryState(actor, GetStateParametricaPlan(parametricaPlanId))(
-        GetParametricaPlanResponseF,
+        GetParametricaPlanResponseEncoder,
         state => state.fechaUltMod == LocalDateTime.MIN
       )
     }

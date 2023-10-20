@@ -6,6 +6,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import akka.stream.{Materializer, SystemMaterializer}
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -17,6 +18,7 @@ class AkkaHttpClient(
 ) {
   implicit private val m: Materializer = SystemMaterializer(system).materializer
   private val connectionPoolSettings: ConnectionPoolSettings = ConnectionPoolSettings(system)
+  @JsonIgnore
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   def get(uri: String): Future[HttpResponse] = call(HttpMethods.GET)(uri)

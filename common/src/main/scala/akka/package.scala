@@ -2,6 +2,7 @@ import akka.actor.ActorRef
 import akka.pattern.{ask => AkkaAsk}
 import akka.stream.{ActorAttributes, Supervision}
 import akka.util.Timeout
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.Future
@@ -30,6 +31,7 @@ package object akka {
         Supervision.Resume
     }
   )
+  @JsonIgnore
   val log = LoggerFactory.getLogger(this.getClass)
 
 }

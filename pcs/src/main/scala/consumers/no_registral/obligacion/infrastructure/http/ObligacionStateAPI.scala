@@ -14,11 +14,12 @@ import consumers.no_registral.obligacion.application.entities.ObligacionQueries.
   GetStateObligacion
 }
 import consumers.no_registral.obligacion.application.entities.ObligacionResponses.GetObligacionResponse
-import consumers.no_registral.obligacion.infrastructure.json._
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import design_principles.actor_model.mechanism.QueryStateAPI
 import design_principles.actor_model.mechanism.QueryStateAPI.QueryStateApiRequirements
 import monitoring.Monitoring
-
+import io.circe.syntax.EncoderOps
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext
 
 case class ObligacionStateAPI(actor: ActorRef, monitoring: Monitoring)(
@@ -76,7 +77,7 @@ case class ObligacionStateAPI(actor: ActorRef, monitoring: Monitoring)(
                     HttpResponse(
                       OK,
                       entity = Utils.standarization(
-                        serialization.encode(result)(GetObligacionResponseF)
+                        result.asJson.toString()
                       )
                     )
                 }
@@ -114,7 +115,7 @@ case class ObligacionStateAPI(actor: ActorRef, monitoring: Monitoring)(
                     HttpResponse(
                       OK,
                       entity = Utils.standarization(
-                        serialization.encode(result)(GetObligacionResponseF)
+                        result.asJson.toString()
                       )
                     )
                 }

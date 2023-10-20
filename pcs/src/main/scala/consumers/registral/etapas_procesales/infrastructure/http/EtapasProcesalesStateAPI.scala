@@ -7,7 +7,7 @@ import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.{Directive, Route}
 import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesQueries.GetStateEtapasProcesales
 import consumers.registral.etapas_procesales.infrastructure.dependency_injection.EtapasProcesalesActor
-import consumers.registral.etapas_procesales.infrastructure.json._
+import consumers.registral.etapas_procesales.infrastructure.json.GetEtapasProcesalesResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
 
@@ -20,7 +20,7 @@ case class EtapasProcesalesStateAPI(actor: EtapasProcesalesActor, monitoring: Mo
     withJuicio { juicioId =>
       withEtapa { etapaId =>
         queryState(actor, GetStateEtapasProcesales(juicioId, etapaId))(
-          GetEtapasProcesalesResponseF,
+          GetEtapasProcesalesResponseEncoder,
           state => state.fechaUltMod == LocalDateTime.MIN
         )
       }

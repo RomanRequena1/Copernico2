@@ -7,7 +7,7 @@ import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaQueries.GetStateDeclaracionJurada
 import consumers.registral.declaracion_jurada.infrastructure.dependency_injection.DeclaracionJuradaActor
-import consumers.registral.declaracion_jurada.infrastructure.json._
+import consumers.registral.declaracion_jurada.infrastructure.json.json.GetDeclaracionJuradaResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
 
@@ -23,7 +23,7 @@ case class DeclaracionJuradaStateAPI(actor: DeclaracionJuradaActor, monitoring: 
           declaracionesJuradas { declaracionesJuradaId =>
             val query = GetStateDeclaracionJurada(sujetoId, objetoId, tipoObjeto, declaracionesJuradaId)
             queryState(actor, query)(
-              GetDeclaracionJuradaResponseF,
+              GetDeclaracionJuradaResponseEncoder,
               state => state.fechaUltMod == LocalDateTime.MIN
             )
           }

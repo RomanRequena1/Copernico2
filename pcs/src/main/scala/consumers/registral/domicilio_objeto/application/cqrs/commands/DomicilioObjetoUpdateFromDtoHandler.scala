@@ -9,6 +9,7 @@ import consumers.registral.domicilio_objeto.domain.DomicilioObjetoState
 import consumers.registral.domicilio_objeto.infrastructure.json._
 import design_principles.actor_model.Response
 import kafka.KafkaMessageProducer.KafkaKeyValue
+import io.circe.syntax.EncoderOps
 import kafka.MessageProducer
 
 class DomicilioObjetoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
@@ -33,7 +34,6 @@ class DomicilioObjetoUpdateFromDtoHandler(implicit messageProducer: MessageProdu
           Seq(
             KafkaKeyValue(
               command.aggregateRoot,
-              serialization.encode(
                 DomicilioObjetoUpdatedFromDto(
                   command.deliveryId,
                   command.sujetoId,
@@ -41,8 +41,7 @@ class DomicilioObjetoUpdateFromDtoHandler(implicit messageProducer: MessageProdu
                   command.tipoObjeto,
                   command.domicilioId,
                   command.registro
-                )
-              )
+                ).asJson.toString()
             )
           ),
           "DomicilioObjetoUpdatedFromDto"

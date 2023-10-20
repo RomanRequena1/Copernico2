@@ -10,7 +10,8 @@ import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import monitoring.Monitoring
 import readside.proyectionists.registrales.parametrica_plan.projections.ParametricaPlanUpdatedFromDtoProjection
-
+import io.circe.parser._
+import consumers.registral.parametrica_plan.infrastructure.json.ParametricaPlanImplicits._
 class ParametricaPlanUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite
@@ -23,8 +24,7 @@ class ParametricaPlanUpdatedFromDtoHandler(
   import consumers.registral.parametrica_plan.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, ParametricaPlanUpdatedFromDto] =
-    serialization
-      .maybeDecode[ParametricaPlanUpdatedFromDto](input)
+    decode[ParametricaPlanUpdatedFromDto](input)
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: ParametricaPlanUpdatedFromDto): Future[Response.SuccessProcessing] = {

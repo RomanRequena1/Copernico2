@@ -3,79 +3,64 @@ import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesTri}
-import consumers.no_registral.obligacion.infrastructure.json._
-import design_principles.actor_model.{Command, Response}
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.ObligacionesTri
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
+import design_principles.actor_model.Response
+import io.circe.parser.decode
 import monitoring.Monitoring
-import org.slf4j.LoggerFactory
-import play.api.libs.json.Reads
-import serialization.maybeDecode
-import timescaledb.TimescaledbKafkaToPcs.connOracleKafkaToWriteside
-import timescaledb.TimescaledbNifiToKafka.connOracleNifi
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success, Try}
 
 case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
-  private val log = LoggerFactory.getLogger(this.getClass)
-  /** Handles the deserialization of detalles de obligaciones tributarias */
-  implicit val b: Reads[Seq[DetallesObligacion]] = Reads.seq(DetallesObligacionF.reads)
-  val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
+
   def topic = "DGR-COP-OBLIGACIONES-TRI"
+
   def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
+
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
+
+
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-    //timescaledactorRef ! Insert(input,"DGR-COP-OBLIGACIONES-TRI",timescaledactorRef)
-    //Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI"))
-    if (enable.equals("true")) {
-      Future(connOracleNifi(input,"DGR-COP-OBLIGACIONES-TRI")).onComplete {
-        case Failure(exception) => log.error("ERROR Future(connOracleNifi(obligacion.EV_ID.toString())) -> " + exception)
-        case Success(value) => log.debug("Exito ")
-      }
-    }
-    maybeDecode[ObligacionesTri](input)
+    decode[ObligacionesTri](input)
   }
 
-
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
-    //log.debug("KW oracle")
-
-    //timescaledactorRef ! Insert2(obligacion.EV_ID.toString(), timescaledactorRef)
-    if (enable.equals("true")) {
-      Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString())).onComplete {
-        case Failure(exception) => log.error("ERROR Future(connOracleKafkaToWriteside(obligacion.EV_ID.toString())) -> " + exception )
-        case Success(value) => log.debug("Exito ")
-      }
+    val isNotDeuda: List[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES map {
+      d => d.RULE_NUMBER.contains("-1")
     }
 
+    val isCancelada: Seq[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map {
+      d => d.RULE_NUMBER.contains("-2")
+    }
 
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
-    val command: Command = obligacion match {
-      //this pattern match isn't  commutative
-      case obn: ObligacionesTri if isCancelada(obn) =>
-        ObligacionRemove(
-          deliveryId = obn.EV_ID,
-          sujetoId = obn.BOB_SUJ_IDENTIFICADOR,
-          objetoId = obn.BOB_SOJ_IDENTIFICADOR,
-          tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
-          obligacionId = obn.BOB_OBN_ID,
+
+    val command: ObligacionCommands =
+      if (isCancelada.head) {
+        ObligacionCommands.ObligacionRemove(
+          deliveryId = obligacion.EV_ID,
+          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+          obligacionId = obligacion.BOB_OBN_ID,
           registro = obligacion,
-          cuota = obn.BOB_CUOTA
-        )
-      case obn: ObligacionesTri if isNotDeuda(obn) =>
-        ObligacionRemove(
-          deliveryId = obn.EV_ID,
-          sujetoId = obn.BOB_SUJ_IDENTIFICADOR,
-          objetoId = obn.BOB_SOJ_IDENTIFICADOR,
-          tipoObjeto = obn.BOB_SOJ_TIPO_OBJETO,
-          obligacionId = obn.BOB_OBN_ID,
+          cuota = obligacion.BOB_CUOTA)
+      }
+      else if (isNotDeuda.head) {
+        ObligacionCommands.ObligacionRemove(
+          deliveryId = obligacion.EV_ID,
+          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+          obligacionId = obligacion.BOB_OBN_ID,
           registro = obligacion,
-          cuota = None
-        )
-      case obn: ObligacionesTri =>
+          cuota = None)
+      }
+      else {
         ObligacionUpdateFromDto(
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
           objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
@@ -83,68 +68,9 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
           obligacionId = obligacion.BOB_OBN_ID,
           deliveryId = obligacion.EV_ID,
           registro = obligacion,
-          //todo: fix
-          detallesObligacion = extractOtrosAtributos(obligacion).getOrElse(Seq.empty),
-          isAdheridoDebito = isAdheridoDebito
-        )
-    }
-
-    //return a response  to the actorRef given, this case is an ActorRef of SujetoActor
+          detallesObligacion = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES,
+          isAdheridoDebito = isAdheridoDebito)
+      }
     actorRef.ask[Response.SuccessProcessing](command)
   }
-
-
-  private def isNotDeuda(obligacion: ObligacionesTri): Boolean = {
-
-    val otrosAtributos = extractOtrosAtributos(obligacion).getOrElse(default = Nil)
-
-    val result: Boolean = (if (otrosAtributos.nonEmpty) {
-
-                             val ruleNumber = extractRuleNumber(otrosAtributos)
-
-                             if (ruleNumber.contains("-1")) {
-                               true
-                             } else {
-                               false
-                             }
-                           } else {
-                             false
-                           })
-
-    result
-  }
-
-  private def isCancelada(obligacion: ObligacionesTri): Boolean = {
-
-    val otrosAtributos = extractOtrosAtributos(obligacion).getOrElse(default = Nil)
-
-    val result: Boolean = (if (otrosAtributos.nonEmpty) {
-
-      val ruleNumber = extractRuleNumber(otrosAtributos)
-
-      if (ruleNumber.contains("-2")) {
-        true
-      } else {
-        false
-      }
-    } else {
-      false
-    })
-
-    result
-  }
-
-  private def extractOtrosAtributos(obn: ObligacionesTri) = {
-    val detalles = for {
-      otrosAtributos <- obn.BOB_OTROS_ATRIBUTOS
-      bobDetalles <- (otrosAtributos \ "BOB_DETALLES").toOption
-      detalles = serialization.decodeF[Seq[DetallesObligacion]](bobDetalles.toString)
-    } yield (detalles)
-    detalles
-  }
-
-  private def extractRuleNumber(otrosAtributos: Seq[DetallesObligacion]) = {
-    otrosAtributos.headOption.flatMap(_.RULE_NUMBER)
-  }
-
 }

@@ -1,10 +1,10 @@
 package consumers.no_registral.sujeto.domain
 
-import java.time.LocalDateTime
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
 import ddd.{AbstractState, eventCounterMax}
+import serialization.CbroSerialization
 
-import scala.util.Try
+import java.time.LocalDateTime
 
 final case class SujetoState(
     saldo: BigDecimal = 0,
@@ -16,7 +16,7 @@ final case class SujetoState(
     lastDeliveryIdByEvents:  BigInt = 0,
     eventCounter:Int = 0,
     lastInternalDeliveryId:BigInt = 0
-) extends AbstractState[SujetoEvents] {
+) extends AbstractState[SujetoEvents] with CbroSerialization{
   def +(event: SujetoEvents): SujetoState = {
     eventCounter match {
       case n if (n > (eventCounterMax)) => changeState(event).copy(

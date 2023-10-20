@@ -2,17 +2,15 @@ package consumers.registral.declaracion_jurada.infrastructure.kafka
 
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaCommands
-import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaExternalDto.DeclaracionJurada
+import consumers.registral.declaracion_jurada.application.entities.{DeclaracionJurada, DeclaracionJuradaCommands}
 import consumers.registral.declaracion_jurada.infrastructure.dependency_injection.DeclaracionJuradaActor
-import consumers.registral.declaracion_jurada.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
+import io.circe.parser._
+import consumers.registral.declaracion_jurada.infrastructure.json.json._
 import monitoring.Monitoring
-import serialization.maybeDecode
 
 import scala.concurrent.Future
-import scala.util.Try
 
 case class DeclaracionJuradaTransaction(actor: DeclaracionJuradaActor, monitoring: Monitoring)(
     implicit
@@ -22,8 +20,9 @@ case class DeclaracionJuradaTransaction(actor: DeclaracionJuradaActor, monitorin
   def topicRetry = "DGR-COP-DECJURADAS_retry"
   def topicError = "DGR-COP-DECJURADAS_error"
 
-  def processInput(input: String): Either[Throwable, DeclaracionJurada] =
-    maybeDecode[DeclaracionJurada](input)
+  def processInput(input: String): Either[Throwable, DeclaracionJurada] = {
+    decode[DeclaracionJurada](input)
+  }
 
   override def processMessage(registro: DeclaracionJurada): Future[Response.SuccessProcessing] = {
     val command = DeclaracionJuradaCommands.DeclaracionJuradaUpdateFromDto(

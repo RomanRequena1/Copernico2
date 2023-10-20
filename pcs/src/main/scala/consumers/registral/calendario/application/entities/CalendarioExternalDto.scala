@@ -1,8 +1,8 @@
 package consumers.registral.calendario.application.entities
 
 import java.time.LocalDateTime
-
 import ddd.ExternalDto
+import serialization.CbroSerialization
 
 case class CalendarioExternalDto(
     EV_ID: String,
@@ -10,4 +10,4 @@ case class CalendarioExternalDto(
     BCL_FECHA: LocalDateTime,
     BCL_DESCRIPCION: Option[String],
     BCL_TIPO: Option[String]
-) extends ExternalDto
+) extends CbroSerialization

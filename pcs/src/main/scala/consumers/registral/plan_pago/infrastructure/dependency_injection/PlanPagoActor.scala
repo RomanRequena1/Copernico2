@@ -10,7 +10,10 @@ import consumers.registral.plan_pago.domain.PlanPagoEvents.PlanPagoUpdatedFromDt
 import consumers.registral.plan_pago.domain.events.PlanPagoUpdatedFromDtoHandler
 import consumers.registral.plan_pago.domain.{PlanPagoEvents, PlanPagoState}
 import cqrs.base_actor.typed.BasePersistentShardedTypedActorWithCQRS
+import design_principles.actor_model.Response
 import kafka.MessageProducer
+
+import scala.concurrent.Future
 
 case class PlanPagoActor(state: PlanPagoState = PlanPagoState())(
     implicit
@@ -21,6 +24,7 @@ case class PlanPagoActor(state: PlanPagoState = PlanPagoState())(
       PlanPagoEvents,
       PlanPagoState
     ](state) {
+
   commandBus.subscribe[PlanPagoUpdateFromDto](new PlanPagoUpdateFromDtoHandler().handle)
   queryBus.subscribe[GetStatePlanPago](new GetStatePlanPagoHandler().handle)
   eventBus.subscribe[PlanPagoUpdatedFromDto](new PlanPagoUpdatedFromDtoHandler().handle)

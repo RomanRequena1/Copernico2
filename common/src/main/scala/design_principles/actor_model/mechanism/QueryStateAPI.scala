@@ -9,8 +9,10 @@ import akka.http.scaladsl.server.{Directive, Route}
 import cqrs.base_actor.typed.{AbstractStateWithCQRS, BasePersistentShardedTypedActorWithCQRS}
 import design_principles.actor_model.mechanism.TypedAsk.{AkkaClassicTypedAsk, AkkaTypedTypedAsk}
 import design_principles.actor_model.{Query, Response}
+import io.circe.Encoder
 import monitoring.Monitoring
 import play.api.libs.json.{Format, Json}
+import io.circe.syntax.EncoderOps
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 import scala.reflect.ClassTag
@@ -22,10 +24,11 @@ abstract class QueryStateAPI(monitoring: Monitoring) extends Controller(monitori
   def PATCH(route: Route): Route = (patch & urlPrefix) { route }
 
   def queryState[GetStateResponse <: Response: ClassTag](actorRef: ActorRef, query: Query)(
-      format: Format[GetStateResponse],
+      format: Encoder[GetStateResponse],
       isEmpty: GetStateResponse => Boolean
   )(implicit system: ActorSystem, executionContext: ExecutionContext): Route = {
     requests.increment()
+    implicit val GetResponseEncoder: Encoder[GetStateResponse] = format
     handleErrors(exceptionHandler) {
       complete {
         val futureResponse: Future[HttpResponse] = actorRef
@@ -36,7 +39,7 @@ abstract class QueryStateAPI(monitoring: Monitoring) extends Controller(monitori
             case result: GetStateResponse =>
               HttpResponse(
                 OK,
-                entity = QueryStateAPI.standarization(Json.prettyPrint(format.writes(result)))
+                entity = QueryStateAPI.standarization(result.asJson.toString())
               )
           }
           .recover { case e: Exception => HttpResponse(InternalServerError, entity = e.getMessage) }
@@ -52,22 +55,26 @@ abstract class QueryStateAPI(monitoring: Monitoring) extends Controller(monitori
                  Actor <: BasePersistentShardedTypedActorWithCQRS[ActorMessages, ActorEvents, ActorState],
                  QueryMessage <: ActorMessages](
       actor: BasePersistentShardedTypedActorWithCQRS[ActorMessages, ActorEvents, ActorState],
-      query: QueryMessage with Query
+      query: QueryMessage
   )(
-      format: Format[QueryMessage#ReturnType],
+      format: Encoder[QueryMessage#ReturnType],
       isEmpty: QueryMessage#ReturnType => Boolean
   )(implicit system: akka.actor.typed.ActorSystem[_]): Route = {
     implicit val ec: ExecutionContextExecutor = system.classicSystem.dispatcher
+    implicit val GetResponseEncoder: Encoder[QueryMessage#ReturnType] = format
     complete {
       actor
         .ask(query)
         .map {
-          case result if isEmpty(result) => HttpResponse(NotFound)
+//          case result if isEmpty(result) => {
+//            println("CUMBIA ERROR QUERY" + result)
+//            HttpResponse(NotFound)
+//          }
 
           case result =>
             HttpResponse(
               OK,
-              entity = QueryStateAPI.standarization(Json.prettyPrint(format.writes(result)))
+              entity = QueryStateAPI.standarization(json = result.asJson.toString())
             )
         }
         .recover { case e: Exception => HttpResponse(InternalServerError, entity = e.getMessage) }

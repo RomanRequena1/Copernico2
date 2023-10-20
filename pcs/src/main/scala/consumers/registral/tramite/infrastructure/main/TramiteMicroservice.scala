@@ -7,10 +7,7 @@ import consumers.registral.tramite.domain.TramiteState
 import consumers.registral.tramite.infrastructure.dependency_injection.TramiteActor
 import consumers.registral.tramite.infrastructure.http.TramiteStateAPI
 import consumers.registral.tramite.infrastructure.kafka.TramiteTransaction
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 class TramiteMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
   implicit val actor: TramiteActor = TramiteActor(TramiteState())
   override def actorTransactions: Set[ActorTransaction[_]] =

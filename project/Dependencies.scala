@@ -107,6 +107,15 @@ object Dependencies {
         "com.github.dnvriend" %% "akka-persistence-inmemory" % "2.5.15.2" ::
         "org.postgresql" % "postgresql" % "42.6.0" ::
         "com.zaxxer" % "HikariCP" % "3.4.5" ::
+        "org.camunda.bpm.extension.dmn.scala" % "dmn-engine" % "1.8.0" ::
+        //"com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion % "protobuf" ::
+        "io.circe" %% "circe-core" % "0.14.3"::
+        "io.circe" %% "circe-generic" % "0.14.3" ::
+        "io.circe" %% "circe-parser" % "0.14.3"::
+        "io.circe" %% "circe-generic-extras" % "0.14.3" ::
+        //"io.circe" %% "circe-optics" % "0.14.3" ::
+        //"io.circe" %% "circe-java8" % "0.14.3" ::
+        "com.typesafe.akka" %% "akka-serialization-jackson" % akkaVersion ::
       Nil
   }
 

@@ -10,6 +10,7 @@ import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import monitoring.Monitoring
 import readside.proyectionists.registrales.domicilio_objeto.projections.DomicilioObjetoUpdatedFromDtoProjection
+import io.circe.parser._
 
 class DomicilioObjetoUpdatedFromDtoHandler(
     implicit
@@ -23,8 +24,7 @@ class DomicilioObjetoUpdatedFromDtoHandler(
   import consumers.registral.domicilio_objeto.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, DomicilioObjetoUpdatedFromDto] =
-    serialization
-      .maybeDecode[DomicilioObjetoUpdatedFromDto](input)
+    decode[DomicilioObjetoUpdatedFromDto](input)
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: DomicilioObjetoUpdatedFromDto): Future[Response.SuccessProcessing] = {

@@ -6,7 +6,7 @@ import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.plan_pago.application.entities.PlanPagoQueries.GetStatePlanPago
 import consumers.registral.plan_pago.infrastructure.dependency_injection.PlanPagoActor
-import consumers.registral.plan_pago.infrastructure.json._
+import consumers.registral.plan_pago.infrastructure.json.json.PlanPagoResponsesEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
 
@@ -21,7 +21,7 @@ case class PlanPagoStateAPI(actor: PlanPagoActor, monitoring: Monitoring)(implic
         withTipoObjeto { tipoObjeto =>
           withPlanPago { planPagoId =>
             queryState(actor, GetStatePlanPago(sujetoId, objetoId, tipoObjeto, planPagoId))(
-              GetPlanPagoResponseF,
+              PlanPagoResponsesEncoder,
               state => state.fechaUltMod == LocalDateTime.MIN
             )
           }

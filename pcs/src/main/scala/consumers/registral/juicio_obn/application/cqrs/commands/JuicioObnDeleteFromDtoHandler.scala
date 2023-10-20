@@ -10,9 +10,10 @@ import kafka.MessageProducer
 import akka.actor.Status.Success
 import consumers.registral.juicio_obn.infrastructure.dependency_injection.JuicioObnActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
-import consumers.registral.juicio_obn.infrastructure.json._
+import consumers.registral.juicio_obn.infrastructure.json.json._
 import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
 import org.slf4j.LoggerFactory
+import io.circe.syntax.EncoderOps
 
 class JuicioObnDeleteFromDtoHandler(actor: JuicioObnActor)(implicit messageProducer: MessageProducer) {
   def handle(
@@ -51,7 +52,7 @@ class JuicioObnDeleteFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
             Seq(
               KafkaKeyValue(
                 command.aggregateRoot,
-                serialization.encode(
+
                   JuicioObnDeletedFromDto(
                     command.deliveryId,
                     command.juicioObnId,
@@ -59,8 +60,8 @@ class JuicioObnDeleteFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
                     command.tipoObjeto,
                     command.obligacionId,
                     command.registro
-                  )
-                )
+
+                ).asJson.toString()
               )
             ),
             "JuicioObnDeletedFronDto"

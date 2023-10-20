@@ -9,13 +9,13 @@ import design_principles.actor_model.Response.SuccessProcessing
 import org.slf4j.LoggerFactory
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-
+import io.circe.parser._
+import consumers.registral.juicio_tri.infrastructure.json.json._
 class JuicioDosRemovedSnapshotHandler(
                                      implicit r: MonitoringAndCassandraWrite
                                    ) extends ActorTransaction[JuicioDosRemovedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
   private val log = LoggerFactory.getLogger(this.getClass)
-
   override def topic: String = "JuicioDosRemovedSnapshot"
 
   override def topicRetry: String = "JuicioDosRemovedSnapshot_retry"
@@ -25,12 +25,10 @@ class JuicioDosRemovedSnapshotHandler(
   import consumers.registral.juicio_tri.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, JuicioDosRemovedFromDto] =
-    serialization
-      .maybeDecode[JuicioDosRemovedFromDto](input)
+    decode[JuicioDosRemovedFromDto](input)
 
   override def processMessage(registro: JuicioDosRemovedFromDto): Future[Response.SuccessProcessing] = {
     val cassandra = new CassandraWriteProduction()
-    println("VBAJAAAA" )
     for {
       done <- cassandra
         .cql(
@@ -40,9 +38,9 @@ class JuicioDosRemovedSnapshotHandler(
             s""" '${registro.juicioId}' """
         )
         .andThen {
-          case Failure(exception) => println("Dont persist juicio_tri baja" + exception )
+          case Failure(exception) => log.error("Dont persist juicio_tri baja" + exception )
           case Success(_) => {
-            println("Persiste juicio_tri baja ")
+            log.debug("Persiste juicio_tri baja ")
           }
         }
     } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)

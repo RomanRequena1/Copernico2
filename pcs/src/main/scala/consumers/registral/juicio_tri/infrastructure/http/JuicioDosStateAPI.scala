@@ -5,7 +5,7 @@ import akka.http.scaladsl.server.Route
 import consumers.registral.juicio_tri.application.entities.JuicioDosQueries.GetStateJuicioDos
 import consumers.registral.juicio_tri.infrastructure.dependency_injection.JuicioDosActor
 import design_principles.actor_model.mechanism.QueryStateAPI
-import consumers.registral.juicio_tri.infrastructure.json._
+import consumers.registral.juicio_tri.infrastructure.json.json.GetJuicioDosResponseEncoder
 import monitoring.Monitoring
 import java.time.LocalDateTime
 
@@ -17,7 +17,7 @@ case class JuicioDosStateAPI (actor: JuicioDosActor, monitoring: Monitoring)(imp
   def getState: Route =
           withJuicioDos {juicioId =>
             queryState(actor, GetStateJuicioDos(juicioId))(
-              GetJuicioDosResponseF,
+              GetJuicioDosResponseEncoder,
               state => state.fechaUltMod == LocalDateTime.MIN
             )
           }

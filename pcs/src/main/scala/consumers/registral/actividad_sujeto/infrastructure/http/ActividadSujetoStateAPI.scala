@@ -7,7 +7,7 @@ import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.{Directive, Route}
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoQueries.GetStateActividadSujeto
 import consumers.registral.actividad_sujeto.infrastructure.dependency_injection.ActividadSujetoActor
-import consumers.registral.actividad_sujeto.infrastructure.json._
+import consumers.registral.actividad_sujeto.infrastructure.json.json.GetActividadSujetoResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
 
@@ -19,7 +19,7 @@ case class ActividadSujetoStateAPI(actor: ActividadSujetoActor, monitoring: Moni
       withActividadSujeto { actividadId =>
         val query = GetStateActividadSujeto(sujetoId, actividadId)
         queryState(actor, query)(
-          GetActividadSujetoResponseF,
+          GetActividadSujetoResponseEncoder,
           state => state.fechaUltMod == LocalDateTime.MIN
         )
 

@@ -1,4 +1,4 @@
-package consumers.registral.juicio.application.cqrs.commands
+package consumers.registral.cupon_descuento.application.cqrs.commands
 
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
@@ -7,8 +7,9 @@ import consumers.registral.cupon_descuento.application.entities.CuponDescuentoCo
 import consumers.registral.cupon_descuento.domain.CuponDescuentoEvents.CuponDescuentoUpdatedFromDto
 import consumers.registral.cupon_descuento.domain.CuponDescuentoState
 import consumers.registral.cupon_descuento.domain.events.CuponDescuentoUpdatedFromDtoHandler
-import consumers.registral.cupon_descuento.infrastructure.json._
+import consumers.registral.cupon_descuento.infrastructure.json.json._
 import design_principles.actor_model.Response
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 
@@ -34,17 +35,15 @@ class CuponDescuentoUpdateFromDtoHandler(implicit messageProducer: MessageProduc
           Seq(
             KafkaKeyValue(
               command.aggregateRoot,
-              serialization.encode(
-                CuponDescuentoUpdatedFromDto(
-                  command.deliveryId,
-                  command.sujetoId,
-                  command.objetoId,
-                  command.tipoObjeto,
-                  command.obligacionId,
-                  command.registro,
-                  command.detallesCuponDescuento
-                )
-              )
+              CuponDescuentoUpdatedFromDto(
+                command.deliveryId,
+                command.sujetoId,
+                command.objetoId,
+                command.tipoObjeto,
+                command.obligacionId,
+                command.registro,
+                command.detallesCuponDescuento
+              ).asJson.toString()
             )
           ),
           "CuponDescuentoPersistedSnapshot"

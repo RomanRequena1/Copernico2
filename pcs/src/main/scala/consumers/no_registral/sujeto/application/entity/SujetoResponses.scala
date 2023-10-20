@@ -1,8 +1,8 @@
 package consumers.no_registral.sujeto.application.entity
 
 import java.time.LocalDateTime
-
 import design_principles.actor_model.Response
+import serialization.CbroSerialization
 
 sealed trait SujetoResponses
 
@@ -13,6 +13,6 @@ object SujetoResponses {
       objetos: Set[String] = Set.empty, // implement Json extension for tuples here: objetos: Set[(String, String)] = Set.empty,
       fechaUltMod: LocalDateTime = LocalDateTime.MIN,
       registro: Option[SujetoExternalDto] = None
-  ) extends Response
+  ) extends Response with CbroSerialization
 
 }

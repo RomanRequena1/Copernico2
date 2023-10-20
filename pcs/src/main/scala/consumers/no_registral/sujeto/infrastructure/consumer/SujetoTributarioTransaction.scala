@@ -1,17 +1,17 @@
 package consumers.no_registral.sujeto.infrastructure.consumer
 
-import scala.concurrent.Future
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.{SujetoAnt, SujetoTri}
 import consumers.no_registral.sujeto.application.entity.{SujetoCommands, SujetoExternalDto}
-import consumers.no_registral.sujeto.infrastructure.json._
+import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.SujetoTri
+import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 import design_principles.actor_model.Response
+import io.circe.parser.decode
 import monitoring.Monitoring
-import serialization.maybeDecode
 
-import scala.util.Try
+import scala.concurrent.Future
+
 
 case class SujetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
@@ -23,12 +23,12 @@ case class SujetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
   def topicError = "DGR-COP-SUJETO-TRI_error"
 
   def processInput(input: String): Either[Throwable, SujetoTri] =
-    maybeDecode[SujetoTri](input)
+    decode[SujetoTri](input)
 
   def processMessage(registro: SujetoTri): Future[Response.SuccessProcessing] = {
     //connOracleKafkaToWriteside(registro.EV_ID.toString(), "sujeto", registro.SUJ_CANAL_ORIGEN.getOrElse("TAX"))
     val command = registro match {
-      case _: SujetoExternalDto.SujetoTri =>
+      case _: SujetoTri =>
         SujetoCommands.SujetoUpdateFromTri(
           sujetoId = registro.SUJ_IDENTIFICADOR,
           deliveryId = registro.EV_ID,

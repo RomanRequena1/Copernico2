@@ -13,7 +13,8 @@ import readside.proyectionists.registrales.actividad_sujeto.projections.{
   ActividadSujetoProjection,
   ActividadSujetoUpdatedFromDtoProjection
 }
-
+import consumers.registral.actividad_sujeto.infrastructure.json._
+import io.circe.parser._
 class ActividadSujetoUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite
@@ -23,11 +24,10 @@ class ActividadSujetoUpdatedFromDtoHandler(
   override def topicRetry: String = "ActividadSujetoUpdatedFromDto_retry"
   override def topicError: String = "ActividadSujetoUpdatedFromDto_error"
 
-  import consumers.registral.actividad_sujeto.infrastructure.json._
+  import consumers.registral.actividad_sujeto.infrastructure.json.json._
 
   override def processInput(input: String): Either[Throwable, ActividadSujetoUpdatedFromDto] =
-    serialization
-      .maybeDecode[ActividadSujetoUpdatedFromDto](input)
+    decode[ActividadSujetoUpdatedFromDto](input)
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: ActividadSujetoUpdatedFromDto): Future[Response.SuccessProcessing] = {

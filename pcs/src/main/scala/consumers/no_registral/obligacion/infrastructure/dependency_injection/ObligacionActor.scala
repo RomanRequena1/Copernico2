@@ -13,7 +13,9 @@ import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionSta
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import timescaledb.TimescaledbPcsToKafka.connOracleWriteSideToKafka
-
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
+import io.circe._
+import io.circe.syntax.EncoderOps
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
@@ -82,14 +84,13 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
       saldo = state.saldo,
-      operacion = ObligacionEvents.operaciones.get("Upsert").get
-    )
-    import serialization.encode
+      operacion = ObligacionEvents.operaciones("Upsert")
+    ).asJson.toString()
     requirements.messageProducer.produce(
       data = Seq(
         KafkaKeyValue(
           persistenceId,
-          encode(event)
+          event
         )
       ),
       topic = kafkaTopic
@@ -104,7 +105,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
           //Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
         //}
         if (enable.equals("true")) {
-          Future(connOracleWriteSideToKafka(event.deliveryId.toString())).onComplete {
+          Future(connOracleWriteSideToKafka(lastDeliveryId.toString())).onComplete {
             case Failure(exception) => log.error("ERROR Future(connOracleWriteSideToKafka(obligacion.EV_ID.toString())) -> " + exception)
             case Success(value) => log.debug("Exito ")
           }
@@ -115,7 +116,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
   def deleteSnapshot()(handler: () => Unit): Unit = {
     val ids = ObligacionMessageRoots.extractor(persistenceId)
-
+    import io.circe.syntax.EncoderOps
     val kafkaTopic = "ObligacionPersistedSnapshot"
 
     val event = ObligacionPersistedSnapshot(
@@ -128,14 +129,13 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
       saldo = state.saldo,
-      operacion = ObligacionEvents.operaciones.get("Delete").get
-    )
-    import serialization.encode
+      operacion = ObligacionEvents.operaciones("Delete")
+    ).asJson.toString()
     requirements.messageProducer.produce(
       data = Seq(
         KafkaKeyValue(
           persistenceId,
-          encode(event)
+          event
         )
       ),
       topic = kafkaTopic
@@ -147,7 +147,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         //if (enable.equals("true")) {
           //Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
         if (enable.equals("true")) {
-          Future(connOracleWriteSideToKafka(event.deliveryId.toString())).onComplete {
+          Future(connOracleWriteSideToKafka(lastDeliveryId.toString())).onComplete {
             case Failure(exception) => log.error("ERROR Future(connOracleWriteSideToKafka(obligacion.EV_ID.toString())) -> " + exception)
             case Success(value) => log.debug("Exito ")
           }

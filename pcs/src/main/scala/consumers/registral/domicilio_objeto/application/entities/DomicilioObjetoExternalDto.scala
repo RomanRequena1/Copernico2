@@ -1,6 +1,9 @@
 package consumers.registral.domicilio_objeto.application.entities
 
-sealed trait DomicilioObjetoExternalDto extends ddd.ExternalDto {
+import serialization.CbroSerialization
+
+
+sealed trait DomicilioObjetoExternalDto extends ddd.ExternalDto with CbroSerialization {
   def EV_ID: String
   def BDO_SUJ_IDENTIFICADOR: String
   def BDO_SOJ_TIPO_OBJETO: String
@@ -43,7 +46,7 @@ object DomicilioObjetoExternalDto {
                                 BDO_TIPO: Option[String],
                                 BDO_TORRE: Option[String],
                                 BDO_OBSERVACIONES: Option[String])
-      extends DomicilioObjetoExternalDto
+    extends DomicilioObjetoExternalDto with CbroSerialization
 
   case class DomicilioObjetoAnt(EV_ID: String,
                                 BDO_SUJ_IDENTIFICADOR: String,
@@ -65,6 +68,6 @@ object DomicilioObjetoExternalDto {
                                 BDO_TIPO: Option[String],
                                 BDO_TORRE: Option[String],
                                 BDO_OBSERVACIONES: Option[String])
-      extends DomicilioObjetoExternalDto
+    extends DomicilioObjetoExternalDto with CbroSerialization
 
 }

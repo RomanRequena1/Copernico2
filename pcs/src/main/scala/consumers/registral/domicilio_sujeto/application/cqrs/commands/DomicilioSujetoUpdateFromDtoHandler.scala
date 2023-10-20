@@ -6,11 +6,11 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoCommands.DomicilioSujetoUpdateFromDto
 import consumers.registral.domicilio_sujeto.domain.DomicilioSujetoEvents.DomicilioSujetoUpdatedFromDto
 import consumers.registral.domicilio_sujeto.domain.DomicilioSujetoState
-import consumers.registral.domicilio_sujeto.infrastructure.json.DomiciliSujetoUpdatedF
-import consumers.registral.juicio_tri.domain.JuicioDosState
 import design_principles.actor_model.Response
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
+import consumers.registral.domicilio_sujeto.infrastructure.json._
 
 class DomicilioSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
@@ -31,16 +31,13 @@ class DomicilioSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProdu
         messageProducer.produce(
           Seq(
             KafkaKeyValue(command.aggregateRoot,
-                          serialization.encode(
-                            DomicilioSujetoUpdatedFromDto(
-                              command.deliveryId,
-                              command.sujetoId,
-                              command.domicilioId,
-                              command.registro
-                            )
-                          ))
-          ),
-          "DomicilioSujetoUpdatedFromDto"
+                DomicilioSujetoUpdatedFromDto(
+                  command.deliveryId,
+                  command.sujetoId,
+                  command.domicilioId,
+                  command.registro
+                ).asJson.toString()
+              )), "DomicilioSujetoUpdatedFromDto"
         )(_ => ())
       )
       .thenReply(replyTo) { state =>

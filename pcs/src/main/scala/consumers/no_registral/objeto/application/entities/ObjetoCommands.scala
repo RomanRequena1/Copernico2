@@ -1,9 +1,10 @@
 package consumers.no_registral.objeto.application.entities
 
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{Exencion, ObjetosAnt, ObjetosTri}
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
 import design_principles.actor_model.Command
+import serialization.CbroSerialization
 
-sealed trait ObjetoCommands extends Command with ObjetoMessage
+sealed trait ObjetoCommands extends Command with ObjetoMessage with CbroSerialization
 
 object ObjetoCommands {
 
@@ -34,7 +35,7 @@ object ObjetoCommands {
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      registro: ObjetosTri,
+      registro: ObjetoExternalDto,
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String],
       isAdheridoDebito: Option[Boolean],
@@ -45,7 +46,7 @@ object ObjetoCommands {
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      registro: ObjetosAnt
+      registro: ObjetoExternalDto
   ) extends ObjetoCommands
 
   case class ObjetoUpdateFromObligacion(
