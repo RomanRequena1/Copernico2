@@ -12,9 +12,8 @@ import java.time.format.DateTimeFormatter
 import scala.util.Try
 
 object json {
+
   //DTO
-
-
   implicit val PlanPagoExternalDtoDecoder: Decoder[PlanPagoExternalDto] = deriveDecoder
   implicit val PlanPagoExternalDtoEncoder: Encoder[PlanPagoExternalDto] = deriveEncoder
 

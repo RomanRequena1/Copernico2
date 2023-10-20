@@ -33,7 +33,7 @@ sealed trait PlanPagoExternalDto extends ddd.ExternalDto with CbroSerialization 
 
   def BPL_TIPO: Option[String]
 
-  def BPL_OTROS_ATRIBUTOS: Option[JsObject]
+  //def BPL_OTROS_ATRIBUTOS: Option[JsObject]
 
 }
 
@@ -52,8 +52,8 @@ object PlanPagoExternalDto {
                          BPL_IMPORTE_ANTICIPO: Option[BigDecimal],
                          BPL_IMPORTE_FINANCIADO: Option[BigDecimal],
                          BPL_NRO_REFERENCIA: Option[String],
-                         BPL_TIPO: Option[String],
-                         BPL_OTROS_ATRIBUTOS: Option[JsObject])
+                         BPL_TIPO: Option[String])
+                         //BPL_OTROS_ATRIBUTOS: Option[JsObject])
     extends PlanPagoExternalDto with CbroSerialization
 
   case class PlanPagoAnt(EV_ID: String,
@@ -69,8 +69,8 @@ object PlanPagoExternalDto {
                          BPL_IMPORTE_ANTICIPO: Option[BigDecimal],
                          BPL_IMPORTE_FINANCIADO: Option[BigDecimal],
                          BPL_NRO_REFERENCIA: Option[String],
-                         BPL_TIPO: Option[String],
-                         BPL_OTROS_ATRIBUTOS: Option[JsObject])
+                         BPL_TIPO: Option[String])
+                         //BPL_OTROS_ATRIBUTOS: Option[JsObject]) CAMBIAR, MODERNIZAR CUANDO ESTEN LOS DETALLES
 
     extends PlanPagoExternalDto with CbroSerialization
 

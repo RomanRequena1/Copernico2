@@ -27,6 +27,6 @@ case class PlanPagoUpdatedFromDtoProjection(
     "bpl_importe_financiado" -> registro.BPL_IMPORTE_ANTICIPO,
     "bpl_nro_referencia" -> registro.BPL_NRO_REFERENCIA,
     "bpl_tipo" -> registro.BPL_TIPO,
-    "bpl_otros_atributos" -> registro.BPL_OTROS_ATRIBUTOS
+    //"bpl_otros_atributos" -> registro.BPL_OTROS_ATRIBUTOS
   )
 }
