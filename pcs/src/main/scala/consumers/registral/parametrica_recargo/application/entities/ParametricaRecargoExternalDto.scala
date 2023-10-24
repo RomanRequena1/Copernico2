@@ -1,9 +1,18 @@
 package consumers.registral.parametrica_recargo.application.entities
 
+import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
+import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.{SujetoAnt, SujetoTri}
 import serialization.CbroSerialization
 
 import java.time.LocalDateTime
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+  Array(
+    new JsonSubTypes.Type(value = classOf[SujetoTri], name = "parametricaRecargoTri"),
+    new JsonSubTypes.Type(value = classOf[SujetoAnt], name = "parametricaRecargoAnt"),
+  )
+)
 sealed trait ParametricaRecargoExternalDto extends ddd.ExternalDto {
 
   def EV_ID: String

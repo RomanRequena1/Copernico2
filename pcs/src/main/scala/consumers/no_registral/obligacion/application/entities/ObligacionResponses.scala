@@ -1,6 +1,5 @@
 package consumers.no_registral.obligacion.application.entities
 
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesAnt, ObligacionesTri}
 
 import java.time.LocalDateTime
 import design_principles.actor_model.Response

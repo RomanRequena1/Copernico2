@@ -1,8 +1,16 @@
 package consumers.registral.domicilio_objeto.application.entities
 
+import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
+import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoExternalDto.{DomicilioObjetoAnt, DomicilioObjetoTri}
 import serialization.CbroSerialization
 
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+  Array(
+    new JsonSubTypes.Type(value = classOf[DomicilioObjetoTri], name = "domicilioObjetoTri"),
+    new JsonSubTypes.Type(value = classOf[DomicilioObjetoAnt], name = "domicilioObjetoAnt"),
+  )
+)
 sealed trait DomicilioObjetoExternalDto extends ddd.ExternalDto with CbroSerialization {
   def EV_ID: String
   def BDO_SUJ_IDENTIFICADOR: String

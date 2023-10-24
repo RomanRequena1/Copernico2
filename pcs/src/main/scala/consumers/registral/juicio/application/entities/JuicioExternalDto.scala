@@ -1,9 +1,18 @@
 package consumers.registral.juicio.application.entities
 
+import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
+import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.{SujetoAnt, SujetoTri}
 import consumers.registral.juicio.application.entities.JuicioExternalDto.ListDetallesJuicio
 import serialization.CbroSerialization
 
 import java.time.LocalDateTime
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+  Array(
+    new JsonSubTypes.Type(value = classOf[SujetoTri], name = "juicioTri"),
+    new JsonSubTypes.Type(value = classOf[SujetoAnt], name = "juicioAnt"),
+  )
+)
 sealed trait JuicioExternalDto extends ddd.ExternalDto {
   def EV_ID: String
   def BJU_SUJ_IDENTIFICADOR: String

@@ -3,9 +3,8 @@ package consumers.no_registral.obligacion.infrastructure.consumer
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.no_registral.obligacion.application.entities.ObligacionCommands
+import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionesTri}
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.ObligacionesTri
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import design_principles.actor_model.Response
 import io.circe.parser.decode

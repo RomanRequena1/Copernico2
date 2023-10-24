@@ -1,12 +1,12 @@
 package consumers.registral.tramite.domain
 
 import java.time.LocalDateTime
-
 import consumers.registral.tramite.application.entities.Tramite
 import consumers.registral.tramite.application.entities.TramiteMessage
 import cqrs.base_actor.typed.AbstractStateWithCQRS
+import serialization.CbroSerialization
 
 case class TramiteState(
     registro: Option[Tramite] = None,
     fechaUltMod: LocalDateTime = LocalDateTime.MIN
-) extends AbstractStateWithCQRS[TramiteMessage, TramiteEvents, TramiteState]
+) extends AbstractStateWithCQRS[TramiteMessage, TramiteEvents, TramiteState] with CbroSerialization

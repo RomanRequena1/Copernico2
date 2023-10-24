@@ -172,7 +172,7 @@ object Dependencies {
 
 
   object Utils extends Module {
-    private lazy val logbackVersion = "1.2.3"
+    private lazy val logbackVersion = "1.4.11"
     private lazy val kryoVersion = "2.0.1"
 
     private lazy val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
