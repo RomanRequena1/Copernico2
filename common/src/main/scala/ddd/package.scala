@@ -6,6 +6,7 @@ import com.datastax.oss.driver.api.core.cql.BoundStatement
 import com.fasterxml.jackson.annotation.JsonIgnore
 import design_principles.actor_model.Event
 import org.slf4j.{Logger, LoggerFactory}
+import serialization.CbroSerialization
 
 import scala.util.Try
 
@@ -25,7 +26,7 @@ package object ddd {
     val log: Logger = LoggerFactory.getLogger(this.getClass)
   }
 
-  trait ExternalDto
+  trait ExternalDto extends CbroSerialization
 
   trait ReadSideProjection[E <: Event] {
     def event: E

@@ -1,8 +1,7 @@
 package consumers.no_registral.obligacion.domain
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.DetallesObligacion
-import consumers.no_registral.obligacion.application.entities.{ObligacionExternalDto, ObligacionMessage}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionExternalDto, ObligacionMessage}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 

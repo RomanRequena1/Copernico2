@@ -1,8 +1,8 @@
 package consumers.no_registral.obligacion.domain
 
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{DetallesObligacion, ObligacionesTri}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionExternalDto}
 import ddd._
+import serialization.CbroSerialization
 
 import java.time.LocalDateTime
 
@@ -18,7 +18,7 @@ case class ObligacionState(
                             isAdheridoDebito: Boolean = false,
                             eventCounter:Int = 0,
                             idExterno: Option[String] = None
-) extends AbstractState[ObligacionEvents] {
+) extends AbstractState[ObligacionEvents] with CbroSerialization{
 
   //val eventCounterMax = Try(System.getenv("EVENT_COUNTER_MAX")).getOrElse(9)
 

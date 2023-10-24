@@ -1,6 +1,5 @@
 package readside.proyectionists.no_registrales.obligacion.projectionists
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.DetallesObligacion
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionExternalDto}
 import consumers.no_registral.obligacion.domain.ObligacionEvents
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import io.circe.parser._

@@ -1,13 +1,19 @@
 package consumers.no_registral.obligacion.application.entities
 
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.ListDetallesObligaciones
+import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
 
 import java.time.LocalDateTime
 import ddd.ExternalDto
 import play.api.libs.json.JsObject
 import serialization.CbroSerialization
 
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+  Array(
+    new JsonSubTypes.Type(value = classOf[ObligacionesTri], name = "obligacionesTri"),
+    new JsonSubTypes.Type(value = classOf[ObligacionesAnt], name = "obligacionesAnt"),
+  )
+)
 sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization{
   def RULE_NUMBER: Option[String]
 
@@ -76,10 +82,11 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization{
   def SOJ_ID_EXTERNO: Option[String]
 
   def BOB_OGA_ID: Option[String]
+  def LUCAS: Option[String]
 
 }
 
-  object ObligacionExternalDto {
+
     case class ObligacionesTri(
                                 BOB_SALDO: BigDecimal,
                                 BOB_SUJ_IDENTIFICADOR: String,
@@ -114,7 +121,8 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization{
                                 BOB_OGA_ID: Option[String],
                                 EV_ID: BigInt,
                                 RULE_NUMBER: Option[String],
-                                SOJ_ID_EXTERNO: Option[String]
+                                SOJ_ID_EXTERNO: Option[String],
+                                LUCAS: Option[String]
                               ) extends ObligacionExternalDto with CbroSerialization
 
     case class ObligacionesAnt(
@@ -151,7 +159,8 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization{
                                 BOB_OGA_ID: Option[String],
                                 EV_ID: BigInt,
                                 RULE_NUMBER: Option[String],
-                                SOJ_ID_EXTERNO: Option[String]
+                                SOJ_ID_EXTERNO: Option[String],
+                                LUCAS: Option[String]
                               ) extends ObligacionExternalDto with CbroSerialization
 
     case class ListDetallesObligaciones(BOB_DETALLES: List[DetallesObligacion])  extends CbroSerialization
@@ -166,4 +175,3 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization{
                                  ) extends  CbroSerialization
 
 
-}
