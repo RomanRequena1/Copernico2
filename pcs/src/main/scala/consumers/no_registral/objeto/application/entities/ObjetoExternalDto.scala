@@ -1,11 +1,19 @@
 package consumers.no_registral.objeto.application.entities
 
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
+import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{ListDetallesObjeto, ObjetosAnt, ObjetosTri}
 import ddd.ExternalDto
 import serialization.CbroSerialization
+
 import java.time.LocalDateTime
 
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+  Array(
+    new JsonSubTypes.Type(value = classOf[ObjetosTri], name = "objetosTri"),
+    new JsonSubTypes.Type(value = classOf[ObjetosAnt], name = "objetosAnt"),
+  )
+)
 sealed trait ObjetoExternalDto extends ExternalDto with CbroSerialization{
   def RULE_NUMBER: Option[String]
 
@@ -68,7 +76,7 @@ object ObjetoExternalDto{
                          SOJ_CANAL_ORIGEN: Option[String],
                          SOJ_SUBTIPO: Option[String],
                          SOJ_IDENTIFICADOR_2: Option[String],
-                         SOJ_TITULARIDAD: Option[String]
+                         SOJ_TITULARIDAD: Option[String],
                        ) extends ObjetoExternalDto with CbroSerialization
 
   case class ObjetosTri(
@@ -91,7 +99,7 @@ object ObjetoExternalDto{
                          SOJ_SUBTIPO: Option[String],
                          SOJ_IDENTIFICADOR_2: Option[String],
                          SOJ_TITULARIDAD: Option[String]
-                       ) extends ObjetoExternalDto with CbroSerialization
+  ) extends ObjetoExternalDto with CbroSerialization
 
   case class ListDetallesObjeto(SOJ_DETALLES: List[DetallesObjeto]) extends CbroSerialization
 

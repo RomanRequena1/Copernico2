@@ -1,9 +1,19 @@
 package consumers.registral.plan_pago.application.entities
 
+import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
+import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.{SujetoAnt, SujetoTri}
+
 import java.time.LocalDateTime
 import play.api.libs.json.JsObject
 import serialization.CbroSerialization
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+  Array(
+    new JsonSubTypes.Type(value = classOf[SujetoTri], name = "planPagoTri"),
+    new JsonSubTypes.Type(value = classOf[SujetoAnt], name = "planPagoAnt"),
+  )
+)
 sealed trait PlanPagoExternalDto extends ddd.ExternalDto with CbroSerialization {
   def EV_ID: String
 

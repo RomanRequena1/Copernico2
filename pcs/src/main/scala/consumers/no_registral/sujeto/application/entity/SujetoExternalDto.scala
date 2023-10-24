@@ -1,11 +1,19 @@
 package consumers.no_registral.sujeto.application.entity
 
+import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
+import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.{SujetoAnt, SujetoTri}
 import ddd.ExternalDto
 import serialization.CbroSerialization
 
 
 
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+  Array(
+    new JsonSubTypes.Type(value = classOf[SujetoTri], name = "sujetoTri"),
+    new JsonSubTypes.Type(value = classOf[SujetoAnt], name = "sujetoAnt"),
+  )
+)
 sealed trait SujetoExternalDto extends ExternalDto with CbroSerialization{
   def SUJ_IDENTIFICADOR: String
   def SUJ_CAT_SUJ_ID: Option[BigInt]

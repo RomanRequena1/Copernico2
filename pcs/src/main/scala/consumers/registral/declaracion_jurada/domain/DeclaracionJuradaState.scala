@@ -1,10 +1,11 @@
 package consumers.registral.declaracion_jurada.domain
 
 import java.time.LocalDateTime
-import consumers.registral.declaracion_jurada.application.entities.{DeclaracionJurada,  DeclaracionJuradaMessage}
+import consumers.registral.declaracion_jurada.application.entities.{DeclaracionJurada, DeclaracionJuradaMessage}
 import cqrs.base_actor.typed.AbstractStateWithCQRS
+import serialization.CbroSerialization
 
 case class DeclaracionJuradaState(
     registro: Option[DeclaracionJurada] = None,
     fechaUltMod: LocalDateTime = LocalDateTime.MIN
-) extends AbstractStateWithCQRS[DeclaracionJuradaMessage, DeclaracionJuradaEvents, DeclaracionJuradaState]
+) extends AbstractStateWithCQRS[DeclaracionJuradaMessage, DeclaracionJuradaEvents, DeclaracionJuradaState] with CbroSerialization

@@ -1,10 +1,19 @@
 package consumers.registral.parametrica_plan.application.entities
 
+import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
+import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.{SujetoAnt, SujetoTri}
 import serialization.CbroSerialization
 
 import java.time.LocalDateTime
 
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+  Array(
+    new JsonSubTypes.Type(value = classOf[SujetoTri], name = "parametricaPlanTri"),
+    new JsonSubTypes.Type(value = classOf[SujetoAnt], name = "parametricaPlanAnt"),
+  )
+)
 sealed trait ParametricaPlanExternalDto extends ddd.ExternalDto with CbroSerialization {
 
   def EV_ID: String

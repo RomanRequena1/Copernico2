@@ -82,7 +82,6 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization{
   def SOJ_ID_EXTERNO: Option[String]
 
   def BOB_OGA_ID: Option[String]
-  def LUCAS: Option[String]
 
 }
 
@@ -121,8 +120,7 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization{
                                 BOB_OGA_ID: Option[String],
                                 EV_ID: BigInt,
                                 RULE_NUMBER: Option[String],
-                                SOJ_ID_EXTERNO: Option[String],
-                                LUCAS: Option[String]
+                                SOJ_ID_EXTERNO: Option[String]
                               ) extends ObligacionExternalDto with CbroSerialization
 
     case class ObligacionesAnt(
@@ -159,9 +157,8 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization{
                                 BOB_OGA_ID: Option[String],
                                 EV_ID: BigInt,
                                 RULE_NUMBER: Option[String],
-                                SOJ_ID_EXTERNO: Option[String],
-                                LUCAS: Option[String]
-                              ) extends ObligacionExternalDto with CbroSerialization
+                                SOJ_ID_EXTERNO: Option[String]
+                                ) extends ObligacionExternalDto with CbroSerialization
 
     case class ListDetallesObligaciones(BOB_DETALLES: List[DetallesObligacion])  extends CbroSerialization
 
