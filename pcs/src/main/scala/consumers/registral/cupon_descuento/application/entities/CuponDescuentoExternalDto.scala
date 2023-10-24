@@ -16,6 +16,7 @@ import java.time.LocalDateTime
                               BOB_OBN_ID: String,
                               BOB_CANAL_ORIGEN: Option[String],
                               BOB_OTROS_ATRIBUTOS: Option[ListDetalleCuponDescuenta],
+                              TEST: Option[String]
 
                             ) extends CbroSerialization
 

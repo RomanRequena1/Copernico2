@@ -26,7 +26,8 @@ case class JuicioObnTri(
     BJD_SOJ_ID_EXTERNO: Option[String],
     BJD_BOB_JUI_ID: Option[String],
     BJD_BOB_SUJ_IDENTIFICADOR: Option[String],
-    BJD_OTROS_ATRIBUTOS: Option[ListDetallesJuicioTri]
+    BJD_OTROS_ATRIBUTOS: Option[ListDetallesJuicioTri],
+    TEST: Option[String]
                          )
 
 case class DetallesJuicioTri(

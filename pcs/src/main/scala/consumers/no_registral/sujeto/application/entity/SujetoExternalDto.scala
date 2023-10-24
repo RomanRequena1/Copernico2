@@ -29,6 +29,8 @@ sealed trait SujetoExternalDto extends ExternalDto with CbroSerialization{
   def SUJ_TIPO: Option[String]
   def SUJ_CANAL_ORIGEN: Option[String]
   def EV_ID: BigInt
+
+  def TEST: Option[String]
 }
 
 object SujetoExternalDto {
@@ -46,7 +48,8 @@ object SujetoExternalDto {
                         SUJ_SITUACION_FISCAL: Option[String],
                         SUJ_TELEFONO: Option[String],
                         SUJ_TIPO: Option[String],
-                        SUJ_CANAL_ORIGEN: Option[String]
+                        SUJ_CANAL_ORIGEN: Option[String],
+                        TEST: Option[String]
                       ) extends SujetoExternalDto with CbroSerialization
 
   case class SujetoTri(
@@ -63,7 +66,8 @@ object SujetoExternalDto {
                         SUJ_SITUACION_FISCAL: Option[String],
                         SUJ_TELEFONO: Option[String],
                         SUJ_TIPO: Option[String],
-                        SUJ_CANAL_ORIGEN: Option[String]
+                        SUJ_CANAL_ORIGEN: Option[String],
+                        TEST: Option[String]
                       ) extends SujetoExternalDto with CbroSerialization
 
 }

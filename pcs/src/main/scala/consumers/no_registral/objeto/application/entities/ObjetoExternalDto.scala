@@ -53,6 +53,8 @@ sealed trait ObjetoExternalDto extends ExternalDto with CbroSerialization{
 
   def SOJ_TITULARIDAD: Option[String]
 
+  def TEST: Option[String]
+
 }
 
 
@@ -77,6 +79,7 @@ object ObjetoExternalDto{
                          SOJ_SUBTIPO: Option[String],
                          SOJ_IDENTIFICADOR_2: Option[String],
                          SOJ_TITULARIDAD: Option[String],
+                         TEST: Option[String]
                        ) extends ObjetoExternalDto with CbroSerialization
 
   case class ObjetosTri(
@@ -98,7 +101,8 @@ object ObjetoExternalDto{
                          SOJ_CANAL_ORIGEN: Option[String],
                          SOJ_SUBTIPO: Option[String],
                          SOJ_IDENTIFICADOR_2: Option[String],
-                         SOJ_TITULARIDAD: Option[String]
+                         SOJ_TITULARIDAD: Option[String],
+                         TEST: Option[String]
   ) extends ObjetoExternalDto with CbroSerialization
 
   case class ListDetallesObjeto(SOJ_DETALLES: List[DetallesObjeto]) extends CbroSerialization
