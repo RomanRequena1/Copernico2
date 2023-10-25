@@ -13,7 +13,7 @@ package object akka {
   type PersistenceId = String
 
   implicit class AlternativeAskSintax(actorRef: ActorRef) {
-    implicit val timeout: Timeout = 50 seconds
+    implicit val timeout: Timeout = 120 seconds
     def ask[Output: ClassTag](message: Any): Future[Output] = (actorRef ? message).mapTo[Output]
   }
 
