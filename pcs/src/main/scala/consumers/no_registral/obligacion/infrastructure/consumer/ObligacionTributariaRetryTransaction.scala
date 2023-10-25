@@ -1,0 +1,80 @@
+package consumers.no_registral.obligacion.infrastructure.consumer
+
+import akka.actor.ActorRef
+import api.actor_transaction.ActorTransaction
+import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
+import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionesTri}
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
+import design_principles.actor_model.Response
+import io.circe.parser.decode
+import monitoring.Monitoring
+import org.slf4j.LoggerFactory
+
+import scala.concurrent.Future
+
+case class ObligacionTributariaRetryTransaction(actorRef : ActorRef, monitoring: Monitoring)(
+    implicit
+    actorTransactionRequirements: ActorTransactionRequirements
+) extends ActorTransaction[ObligacionesTri](monitoring) {
+  private val log = LoggerFactory.getLogger(this.getClass)
+
+
+  def topic = "DGR-COP-OBLIGACIONES-TRI_R"
+
+  def topicRetry = "DGR-COP-OBLIGACIONES-TRI_R_retry"
+
+  def topicError = "DGR-COP-OBLIGACIONES-TRI_R_error"
+
+
+  def processInput(input: String): Either[Throwable, ObligacionesTri] = {
+    decode[ObligacionesTri](input)
+  }
+
+  def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
+
+    val isNotDeuda: List[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES map {
+      d => d.RULE_NUMBER.contains("-1")
+    }
+
+    val isCancelada: Seq[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map {
+      d => d.RULE_NUMBER.contains("-2")
+    }
+
+    val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
+
+    val command: ObligacionCommands =
+      if (isCancelada.head) {
+        ObligacionCommands.ObligacionRemove(
+          deliveryId = obligacion.EV_ID,
+          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+          obligacionId = obligacion.BOB_OBN_ID,
+          registro = obligacion,
+          cuota = obligacion.BOB_CUOTA)
+      }
+      else if (isNotDeuda.head) {
+        ObligacionCommands.ObligacionRemove(
+          deliveryId = obligacion.EV_ID,
+          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+          obligacionId = obligacion.BOB_OBN_ID,
+          registro = obligacion,
+          cuota = None)
+      }
+      else {
+        ObligacionUpdateFromDto(
+          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+          obligacionId = obligacion.BOB_OBN_ID,
+          deliveryId = obligacion.EV_ID,
+          registro = obligacion,
+          detallesObligacion = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES,
+          isAdheridoDebito = isAdheridoDebito)
+      }
+    actorRef.ask[Response.SuccessProcessing](command)
+  }
+}
