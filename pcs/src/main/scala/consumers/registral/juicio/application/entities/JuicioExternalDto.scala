@@ -36,6 +36,8 @@ sealed trait JuicioExternalDto extends ddd.ExternalDto {
   def BJU_TIPO: Option[String]
   def BJU_TOTAL: Option[BigDecimal]
   def BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio]
+
+  def TEST: Option[String]
 }
 
 object JuicioExternalDto {
@@ -62,7 +64,8 @@ object JuicioExternalDto {
                         BJU_PROCURADOR: Option[String],
                         BJU_TIPO: Option[String],
                         BJU_TOTAL: Option[BigDecimal],
-                        BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio]
+                        BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio],
+                        TEST: Option[String]
                       ) extends JuicioExternalDto with CbroSerialization
 
   case class JuicioTri(
@@ -87,7 +90,8 @@ object JuicioExternalDto {
                         BJU_PROCURADOR: Option[String],
                         BJU_TIPO: Option[String],
                         BJU_TOTAL: Option[BigDecimal],
-                        BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio]
+                        BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio],
+                        TEST: Option[String]
                       ) extends JuicioExternalDto with CbroSerialization
 
   case class DetallesJuicio(
