@@ -26,6 +26,7 @@ class JuicioDosUpdatedSnapshotHandler(
   override def topicError: String = "JuicioDosPersistedSnapshot_error"
 
 
+
   override def processInput(input: String): Either[Throwable, JuicioDosUpdatedFromDto] = {
     decode[JuicioDosUpdatedFromDto](input)
   }

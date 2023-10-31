@@ -1,11 +1,7 @@
 package consumers.registral.componente_i.application.entities
 
 
-import ddd.ExternalDto
-import play.api.libs.json.JsObject
 import serialization.CbroSerialization
-
-import java.time.LocalDateTime
 
   case class ComponenteITri(
                               EV_ID: BigInt,

@@ -29,12 +29,6 @@ case class CuponDescuentoTributarioTransaction(actor: CuponDescuentoActor, monit
 
   override def processMessage(registro: CuponDescuentoTri): Future[Response.SuccessProcessing] = {
 
-    val detalles = for {
-      otrosAtributos <- registro.BOB_OTROS_ATRIBUTOS
-      detalles = decode[Seq[DetallesCuponDescuento]](otrosAtributos.toString)
-
-    } yield (detalles.getOrElse(Seq()))
-
     val command: CuponDescuentoCommands.CuponDescuentoUpdateFromDto =
       CuponDescuentoCommands.CuponDescuentoUpdateFromDto(
         deliveryId = BigInt(registro.EV_ID.bigInteger),
@@ -43,10 +37,9 @@ case class CuponDescuentoTributarioTransaction(actor: CuponDescuentoActor, monit
         tipoObjeto = registro.BOB_SOJ_TIPO_OBJETO,
         obligacionId = registro.BOB_OBN_ID,
         registro = registro,
-        detalles.getOrElse(Seq.empty)
+        detallesCuponDescuento = registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.get
       )
 
     actor.ask(command)
   }
-
 }

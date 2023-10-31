@@ -1,13 +1,23 @@
 package readside.proyectionists.registrales.juicio_obn.projections
 
-
-import consumers.registral.juicio_obn.application.entities.JuicioObnTri
+import consumers.registral.juicio_obn.application.entities.{DetallesJuicioTri, JuicioObnTri}
 import consumers.registral.juicio_obn.domain.JuicioObnEvents
+import consumers.registral.juicio_obn.infrastructure.json.json._
+import io.circe.syntax.EncoderOps
+import io.circe.parser._
+
 
 case class JuicioObnUpdatedFromDtoProjection(
     event: JuicioObnEvents.JuicioObnUpdatedFromDto
 ) extends JuicioObnProjection {
   val registro: JuicioObnTri = event.registro
+
+
+  val bobDetailsResult: Option[Map[String, List[DetallesJuicioTri]]] = {
+    decode[Map[String, List[DetallesJuicioTri]]](registro.BJD_OTROS_ATRIBUTOS.asJson.toString()).toOption
+  }
+  val mao: Map[String, String] = Map("BJU_DETALLES" -> bobDetailsResult.get("BJU_DETALLES").asJson.noSpaces)
+
 
   def bindings: List[(String, Serializable)] = List(
     "bjd_bob_periodo" -> registro.BJD_BOB_PERIODO,

@@ -2,7 +2,7 @@ package consumers.registral.componente_i.infrastructure.consumer
 
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.registral.componente_i.application.entities.{ComponenteICommands, ComponenteITri, DetallesComponenteI}
+import consumers.registral.componente_i.application.entities.{ComponenteICommands, ComponenteITri}
 import consumers.registral.componente_i.infrastructure.dependency_injection.ComponenteIActor
 import consumers.registral.componente_i.infrastructure.json.json._
 import design_principles.actor_model.Response
@@ -28,12 +28,6 @@ case class ComponenteITributarioTransaction(actor: ComponenteIActor, monitoring:
 
   override def processMessage(registro: ComponenteITri): Future[Response.SuccessProcessing] = {
 
-    val detalles = for {
-      otrosAtributos <- registro.BOB_OTROS_ATRIBUTOS
-      detalles = decode[Seq[DetallesComponenteI]](otrosAtributos.toString)
-
-    } yield (detalles.getOrElse(Seq()))
-
     val command: ComponenteICommands.ComponenteIUpdateFromDto =
       ComponenteICommands.ComponenteIUpdateFromDto(
         deliveryId = BigInt(registro.EV_ID.bigInteger),
@@ -42,7 +36,7 @@ case class ComponenteITributarioTransaction(actor: ComponenteIActor, monitoring:
         tipoObjeto = registro.BOB_SOJ_TIPO_OBJETO,
         obligacionId = registro.BOB_OBN_ID,
         registro = registro,
-        detalles.getOrElse(Seq.empty)
+        detallesComponenteI = registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES
       )
 
     actor.ask(command)
