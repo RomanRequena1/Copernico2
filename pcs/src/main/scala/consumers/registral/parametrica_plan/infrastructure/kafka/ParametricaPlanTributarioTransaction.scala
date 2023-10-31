@@ -31,8 +31,6 @@ case class ParametricaPlanTributarioTransaction(actor: ParametricaPlanActor, mon
       deliveryId = BigInt(registro.EV_ID),
       registro = registro
     )
-
     actor.ask(command)
   }
-
 }

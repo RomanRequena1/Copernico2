@@ -27,13 +27,6 @@ case class JuicioTributarioTransaction(actor: JuicioActor, monitoring: Monitorin
 
   override def processMessage(registro: JuicioTri): Future[Response.SuccessProcessing] = {
 
-
-    val detalles = for {
-      otrosAtributos <- registro.BJU_OTROS_ATRIBUTOS
-      detalles = decode[Seq[DetallesJuicio]](otrosAtributos.toString)
-
-    } yield (detalles.getOrElse(Seq()))
-
     val command: JuicioCommands.JuicioUpdateFromDto =
       JuicioCommands.JuicioUpdateFromDto(
         sujetoId = registro.BJU_SUJ_IDENTIFICADOR,
@@ -42,7 +35,7 @@ case class JuicioTributarioTransaction(actor: JuicioActor, monitoring: Monitorin
         juicioId = registro.BJU_JUI_ID,
         deliveryId = BigInt(registro.EV_ID),
         registro = registro,
-        detalles.getOrElse(Seq.empty)
+        detallesJuicio = registro.BJU_OTROS_ATRIBUTOS.get.BJU_DETALLES.get
       )
 
     actor.ask(command)

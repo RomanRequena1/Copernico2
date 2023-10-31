@@ -3,7 +3,7 @@ package consumers.registral.juicio_obn.infrastructure.kafka
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.juicio_obn.application.entities.JuicioObnCommands.{JuicioObnDeleteFromDto, JuicioObnUpdateFromDto}
-import consumers.registral.juicio_obn.application.entities.{DetallesJuicioTri, JuicioObnTri}
+import consumers.registral.juicio_obn.application.entities.{DetallesJuicioTri, JuicioObnCommands, JuicioObnTri}
 import consumers.registral.juicio_obn.infrastructure.dependency_injection.JuicioObnActor
 import design_principles.actor_model.Response
 import monitoring.Monitoring
@@ -28,63 +28,32 @@ case class JuicioObnTributarioTransaction(actor: JuicioObnActor, monitoring: Mon
   }
 
 
-
   override def processMessage(juicioObn: JuicioObnTri): Future[Response.SuccessProcessing] = {
 
-    val command = juicioObn match {
-      case obn: JuicioObnTri if isNotDeuda(obn) =>
-        JuicioObnDeleteFromDto(
-        deliveryId = juicioObn.EV_ID,
-        juicioObnId = juicioObn.BJU_IDENTIFICADOR,
-        objetoId = juicioObn.BJD_SOJ_IDENTIFICADOR,
-        tipoObjeto = juicioObn.BJD_SOJ_TIPO_OBJETO,
-        obligacionId = juicioObn.BJD_OBN_ID,
-        registro = juicioObn
-      )
-      case _ =>
-        JuicioObnUpdateFromDto(
-        deliveryId = juicioObn.EV_ID,
-        juicioObnId = juicioObn.BJU_IDENTIFICADOR,
-        objetoId = juicioObn.BJD_SOJ_IDENTIFICADOR,
-        tipoObjeto = juicioObn.BJD_SOJ_TIPO_OBJETO,
-        obligacionId = juicioObn.BJD_OBN_ID,
-        registro = juicioObn
-      )
+    val isNotDeuda: List[Boolean] = juicioObn.BJD_OTROS_ATRIBUTOS.get.BJD_DETALLES map {
+      d => d.RULE_NUMBER.contains("-1")
     }
+
+    val command: JuicioObnCommands =
+      if (isNotDeuda.head) {
+        JuicioObnCommands.JuicioObnDeleteFromDto(
+          deliveryId = juicioObn.EV_ID,
+          juicioObnId = juicioObn.BJU_IDENTIFICADOR,
+          objetoId = juicioObn.BJD_SOJ_IDENTIFICADOR,
+          tipoObjeto = juicioObn.BJD_SOJ_TIPO_OBJETO,
+          obligacionId = juicioObn.BJD_OBN_ID,
+          registro = juicioObn)
+      }
+      else {
+        JuicioObnUpdateFromDto(
+          deliveryId = juicioObn.EV_ID,
+          juicioObnId = juicioObn.BJU_IDENTIFICADOR,
+          objetoId = juicioObn.BJD_SOJ_IDENTIFICADOR,
+          tipoObjeto = juicioObn.BJD_SOJ_TIPO_OBJETO,
+          obligacionId = juicioObn.BJD_OBN_ID,
+          registro = juicioObn)
+      }
     actor.ask(command)
   }
 
-  private def isNotDeuda(juicioobn: JuicioObnTri): Boolean = {
-
-    val otrosAtributos = extractOtrosAtributos(juicioobn).getOrElse(default = Nil)
-
-    val result: Boolean = (if (otrosAtributos.nonEmpty) {
-
-      val ruleNumber = extractRuleNumber(otrosAtributos)
-
-      if (ruleNumber.contains("-1")) {
-        true
-      } else {
-        false
-      }
-    } else {
-      false
-    })
-
-    result
-  }
-
-
-  private def extractOtrosAtributos(obn: JuicioObnTri) = {
-    val detalles = for {
-      otrosAtributos <- obn.BJD_OTROS_ATRIBUTOS
-      detalles = decode[Seq[DetallesJuicioTri]](otrosAtributos.toString)
-
-    } yield (detalles.getOrElse(Seq()))
-    detalles
-  }
-
-  private def extractRuleNumber(otrosAtributos: Seq[DetallesJuicioTri]) = {
-    otrosAtributos.headOption.flatMap(_.RULE_NUMBER)
-  }
 }
