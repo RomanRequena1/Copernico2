@@ -14,7 +14,7 @@ final case class ComponenteISnapshotProjection(
   val bobDetailsResult: Option[Map[String, List[DetallesComponenteI]]] = {
     decode[Map[String, List[DetallesComponenteI]]](registro.get.BOB_OTROS_ATRIBUTOS.asJson.toString()).toOption
   }
-  val mao: Map[String, String] = Map("BJU_DETALLES" -> bobDetailsResult.get("BJU_DETALLES").asJson.noSpaces)
+  val mao: Map[String, String] = Map("BOB_DETALLES" -> bobDetailsResult.get("BOB_DETALLES").asJson.noSpaces)
 
   val fromRegistro: Option[List[(String, Option[Object])]] = registro map { registro =>
     List(

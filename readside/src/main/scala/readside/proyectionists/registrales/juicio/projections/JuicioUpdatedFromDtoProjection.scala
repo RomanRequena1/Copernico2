@@ -29,7 +29,7 @@ case class JuicioUpdatedFromDtoProjection(
     "bju_inicio_demanda" -> registro.BJU_INICIO_DEMANDA,
     "bju_interes_punit" -> registro.BJU_INTERES_PUNIT,
     "bju_interes_resar" -> registro.BJU_INTERES_RESAR,
-    "bju_otros_atributos" -> registro.BJU_OTROS_ATRIBUTOS,
+    "bju_otros_atributos" -> Some(mao),
     "bju_pcr_id" -> registro.BJU_PCR_ID,
     "bju_porcentaje_iva" -> registro.BJU_PORCENTAJE_IVA,
     "bju_procurador" -> registro.BJU_PROCURADOR,

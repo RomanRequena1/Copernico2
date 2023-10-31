@@ -16,7 +16,7 @@ case class JuicioObnUpdatedFromDtoProjection(
   val bobDetailsResult: Option[Map[String, List[DetallesJuicioTri]]] = {
     decode[Map[String, List[DetallesJuicioTri]]](registro.BJD_OTROS_ATRIBUTOS.asJson.toString()).toOption
   }
-  val mao: Map[String, String] = Map("BJU_DETALLES" -> bobDetailsResult.get("BJU_DETALLES").asJson.noSpaces)
+  val mao: Map[String, String] = Map("BJD_DETALLES" -> bobDetailsResult.get("BJD_DETALLES").asJson.noSpaces)
 
 
   def bindings: List[(String, Serializable)] = List(
@@ -35,6 +35,6 @@ case class JuicioObnUpdatedFromDtoProjection(
     "bjd_soj_id_externo" -> registro.BJD_SOJ_ID_EXTERNO,
     "bjd_bob_jui_id" -> registro.BJD_BOB_JUI_ID,
     "bjd_bob_suj_identificador" -> registro.BJD_BOB_SUJ_IDENTIFICADOR,
-    "bjd_otros_atributos" -> registro.BJD_OTROS_ATRIBUTOS,
+    "bjd_otros_atributos" -> Some(mao),
   )
 }
