@@ -5,8 +5,8 @@ import consumers.registral.juicio_tri.application.cqrs.commands.{JuicioDosRemove
 import consumers.registral.juicio_tri.application.cqrs.queries.GetStateJuicioDosHandler
 import consumers.registral.juicio_tri.application.entities.JuicioDosQueries.GetStateJuicioDos
 import consumers.registral.juicio_tri.application.entities.{JuicioDosCommands, JuicioDosMessage}
-import consumers.registral.juicio_tri.domain.JuicioDosEvents.JuicioDosUpdatedFromDto
-import consumers.registral.juicio_tri.domain.events.JuicioDosUpdatedFromDtoHandler
+import consumers.registral.juicio_tri.domain.JuicioDosEvents.{JuicioDosRemovedFromDto, JuicioDosUpdatedFromDto}
+import consumers.registral.juicio_tri.domain.events.{JuicioDosRemovedFromDtoHandler, JuicioDosUpdatedFromDtoHandler}
 import consumers.registral.juicio_tri.domain.{JuicioDosEvents, JuicioDosState}
 import cqrs.base_actor.typed.BasePersistentShardedTypedActorWithCQRS
 import kafka.MessageProducer
@@ -24,5 +24,6 @@ case class JuicioDosActor(state: JuicioDosState = JuicioDosState())(
   commandBus.subscribe[JuicioDosCommands.JuicioDosUpdateFromDto](new JuicioDosUpdateFromDtoHandler().handle)
   queryBus.subscribe[GetStateJuicioDos](new GetStateJuicioDosHandler(this).handle)
   eventBus.subscribe[JuicioDosUpdatedFromDto](new JuicioDosUpdatedFromDtoHandler().handle)
+  eventBus.subscribe[JuicioDosRemovedFromDto](new JuicioDosRemovedFromDtoHandler().handle)
 }
 

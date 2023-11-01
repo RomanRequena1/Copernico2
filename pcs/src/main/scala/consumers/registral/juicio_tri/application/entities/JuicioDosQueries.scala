@@ -7,7 +7,8 @@ sealed trait JuicioDosQueries extends Query with JuicioDosMessage
   object JuicioDosQueries {
     case class GetStateJuicioDos(
                                juicioId: String
-                             ) extends JuicioDosQueries {
+                             ) extends JuicioDosQueries
+                             with Query {
       override type ReturnType = GetJuicioDosResponse
     }
 

@@ -1,15 +1,12 @@
 package consumers.registral.juicio_obn.infrastructure.json
 
-import ai.x.play.json.Jsonx
-import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionRemove
 import consumers.registral.juicio_obn.application.entities.JuicioObnCommands.{JuicioObnDeleteFromDto, JuicioObnUpdateFromDto}
-import consumers.registral.juicio_obn.application.entities.{DetallesJuicioTri, JuicioObnTri, ListDetallesJuicioTri}
 import consumers.registral.juicio_obn.application.entities.JuicioObnResponses.GetJuicioObnResponses
+import consumers.registral.juicio_obn.application.entities.{DetallesJuicioTri, JuicioObnTri, ListDetallesJuicioTri}
 import consumers.registral.juicio_obn.domain.JuicioObnEvents.{JuicioObnDeletedFromDto, JuicioObnUpdatedFromDto}
-import io.circe.{Decoder, Encoder, Json}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax.EncoderOps
-
+import io.circe.{Decoder, Encoder, Json}
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.util.Try
