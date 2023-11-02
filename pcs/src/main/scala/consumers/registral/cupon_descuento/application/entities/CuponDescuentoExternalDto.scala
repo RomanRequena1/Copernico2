@@ -1,7 +1,5 @@
 package consumers.registral.cupon_descuento.application.entities
 
-import ddd.ExternalDto
-import play.api.libs.json.JsObject
 import serialization.CbroSerialization
 
 import java.time.LocalDateTime
@@ -16,7 +14,6 @@ import java.time.LocalDateTime
                               BOB_OBN_ID: String,
                               BOB_CANAL_ORIGEN: Option[String],
                               BOB_OTROS_ATRIBUTOS: Option[ListDetalleCuponDescuenta],
-                              TEST: Option[String]
 
                             ) extends CbroSerialization
 

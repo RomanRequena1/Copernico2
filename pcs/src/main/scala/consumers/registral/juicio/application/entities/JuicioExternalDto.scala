@@ -14,29 +14,48 @@ import java.time.LocalDateTime
 )
 sealed trait JuicioExternalDto extends ddd.ExternalDto {
   def EV_ID: String
-  def BJU_SUJ_IDENTIFICADOR: String
-  def BJU_SOJ_TIPO_OBJETO: String
-  def BJU_SOJ_IDENTIFICADOR: String
-  def BJU_JUI_ID: String
-  def BJU_NRO_EXTERNO:Option[String]
-  def BJU_CAPITAL: Option[BigDecimal]
-  def BJU_ESTADO: Option[String]
-  def BJU_FISCALIZADA: Option[String]
-  def BJU_GASTOS: Option[BigDecimal]
-  def BJU_GASTOS_MART: Option[BigDecimal]
-  def BJU_HONORARIOS: Option[BigDecimal]
-  def BJU_HONORARIOS_MART: Option[BigDecimal]
-  def BJU_INICIO_DEMANDA: Option[LocalDateTime]
-  def BJU_INTERES_PUNIT: Option[BigDecimal]
-  def BJU_INTERES_RESAR: Option[BigDecimal]
-  def BJU_PCR_ID: Option[BigInt]
-  def BJU_PORCENTAJE_IVA: Option[BigDecimal]
-  def BJU_PROCURADOR: Option[String]
-  def BJU_TIPO: Option[String]
-  def BJU_TOTAL: Option[BigDecimal]
-  def BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio]
 
-  def TEST: Option[String]
+  def BJU_SUJ_IDENTIFICADOR: String
+
+  def BJU_SOJ_TIPO_OBJETO: String
+
+  def BJU_SOJ_IDENTIFICADOR: String
+
+  def BJU_JUI_ID: String
+
+  def BJU_NRO_EXTERNO:Option[String]
+
+  def BJU_CAPITAL: Option[BigDecimal]
+
+  def BJU_ESTADO: Option[String]
+
+  def BJU_FISCALIZADA: Option[String]
+
+  def BJU_GASTOS: Option[BigDecimal]
+
+  def BJU_GASTOS_MART: Option[BigDecimal]
+
+  def BJU_HONORARIOS: Option[BigDecimal]
+
+  def BJU_HONORARIOS_MART: Option[BigDecimal]
+
+  def BJU_INICIO_DEMANDA: Option[LocalDateTime]
+
+  def BJU_INTERES_PUNIT: Option[BigDecimal]
+
+  def BJU_INTERES_RESAR: Option[BigDecimal]
+
+  def BJU_PCR_ID: Option[BigInt]
+
+  def BJU_PORCENTAJE_IVA: Option[BigDecimal]
+
+  def BJU_PROCURADOR: Option[String]
+
+  def BJU_TIPO: Option[String]
+
+  def BJU_TOTAL: Option[BigDecimal]
+
+  def BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio]
 }
 
 object JuicioExternalDto {
@@ -63,8 +82,7 @@ object JuicioExternalDto {
                         BJU_PROCURADOR: Option[String],
                         BJU_TIPO: Option[String],
                         BJU_TOTAL: Option[BigDecimal],
-                        BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio],
-                        TEST: Option[String]
+                        BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio]
                       ) extends JuicioExternalDto with CbroSerialization
 
   case class JuicioTri(
@@ -89,8 +107,7 @@ object JuicioExternalDto {
                         BJU_PROCURADOR: Option[String],
                         BJU_TIPO: Option[String],
                         BJU_TOTAL: Option[BigDecimal],
-                        BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio],
-                        TEST: Option[String]
+                        BJU_OTROS_ATRIBUTOS: Option[ListDetallesJuicio]
                       ) extends JuicioExternalDto with CbroSerialization
 
   case class DetallesJuicio(

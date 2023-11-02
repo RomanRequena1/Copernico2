@@ -5,8 +5,6 @@ import serialization.CbroSerialization
 import java.time.LocalDateTime
 
 
-
-
   case class JuicioDosTri(
                         EV_ID: String,
                         BJU_IDENTIFICADOR: String,
@@ -24,7 +22,6 @@ import java.time.LocalDateTime
                         BJU_SOJ_TIPO_OBJETO: Option[String],
                         BJU_SOJ_IDENTIFICADOR: Option[String],
                         BJU_IPO_ID: Option[String],
-                        BJU_CANAL_ORIGEN: Option[String],
-                        TEST: Option[String]
+                        BJU_CANAL_ORIGEN: Option[String]
                       ) extends CbroSerialization
 
