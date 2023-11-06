@@ -3,11 +3,12 @@ package design_principles.actor_model.mechanism.stream_supervision
 import akka.actor.{Actor, ActorLogging, ActorRef, ActorSystem, Props}
 import akka.entity.ShardedEntity.NoRequirements
 import akka.entity.SingletonEntity
+import serialization.CbroSerialization
 
 import scala.collection.mutable
 import scala.concurrent.duration.DurationInt
 
-object StartStopSingleton extends SingletonEntity[NoRequirements] {
+object StartStopSingleton extends SingletonEntity[NoRequirements] with CbroSerialization{
   case class SubscribeMe(topic: String, actorRef: ActorRef)
   case class Start()
   case class Stop()
@@ -20,7 +21,7 @@ object StartStopSingleton extends SingletonEntity[NoRequirements] {
   def start(implicit actorSystem: ActorSystem): ActorRef = startWithRequirements(NoRequirements())
 }
 
-class StartStopSingleton() extends Actor with ActorLogging {
+class StartStopSingleton() extends Actor with ActorLogging with CbroSerialization {
 
   import StartStopSingleton._
 
