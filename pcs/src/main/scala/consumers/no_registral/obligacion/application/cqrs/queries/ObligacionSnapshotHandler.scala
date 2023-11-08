@@ -20,7 +20,6 @@ class ObligacionSnapshotHandler(actor: ObligacionActor)
       actor.state.saldo,
       actor.state.fechaUltMod,
       actor.state.registro,
-      actor.state.detallesObligacion,
       actor.state.exenta,
       actor.state.porcentajeExencion.getOrElse(0),
       actor.state.juicioId

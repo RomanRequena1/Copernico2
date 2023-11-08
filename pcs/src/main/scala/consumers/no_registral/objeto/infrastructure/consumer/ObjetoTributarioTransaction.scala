@@ -26,15 +26,12 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
 
 
   def processMessage(registro: ObjetosTri): Future[Response.SuccessProcessing] = {
-    //connOracleKafkaToWriteside(registro.EV_ID.toString(), "objeto", registro.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
     val isResponsable: Option[ListDetallesObjeto] => List[Boolean] = {
       case Some(d) => d.SOJ_DETALLES map {
         d => d.RESPONSABLE_OTROS_ATRIBUTOS contains "S"
       }
       case None => List(false)
     }
-
-
     val sujetoResponsable: List[Option[String]] = registro.SOJ_OTROS_ATRIBUTOS match {
         case Some(r) => {
           r.SOJ_DETALLES map { d =>
@@ -46,7 +43,6 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
         }
         case None => List(Some("N"))
       }
-
     val isAdheridoDebito = Some(registro.SOJ_ADHERIDO_DEBITO.contains("S"))
 
     val command: ObjetoCommands =
