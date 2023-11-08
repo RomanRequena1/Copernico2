@@ -13,13 +13,21 @@ case class ObjetoSnapshotPersistedProjection(
 
   val registro: Option[ObjetoExternalDto] = event.registro
 
-  val bobDetailsResult: Option[Map[String, List[DetallesObjeto]]] =
-    decode[Map[String, List[DetallesObjeto]]](registro.get.SOJ_OTROS_ATRIBUTOS.asJson.toString()).toOption
- // println("CUMBIA bobDetailsResult -> " + bobDetailsResult)
 
-  val mao: Map[String, String] = Map("BOB_DETALLES" -> bobDetailsResult.get("SOJ_DETALLES").asJson.noSpaces)
   val fromRegistro: Option[List[(String, Option[Object])]] = registro match {
-    case Some(r) => Some(List(
+    case Some(r) =>
+      val bobDetailsResult: Option[Map[String, List[DetallesObjeto]]] = {
+        decode[Map[String, List[DetallesObjeto]]](registro.get.SOJ_OTROS_ATRIBUTOS.asJson.toString()).toOption
+      }
+      // println("CUMBIA bobDetailsResult -> " + bobDetailsResult)
+
+      //val mao: Map[String, String] = Map("BOB_DETALLES" -> bobDetailsResult.get("SOJ_DETALLES").asJson.noSpaces)
+      val test = bobDetailsResult match {
+        case Some(value) => Map("BOB_DETALLES" -> value.get("SOJ_DETALLES").asJson.noSpaces)
+        case None => None
+      }
+      println("TESST: "+test)
+      Some(List(
       "soj_identificador_2" -> r.SOJ_IDENTIFICADOR_2,
       "soj_subtipo" -> r.SOJ_SUBTIPO,
       "soj_canal_origen" -> r.SOJ_CANAL_ORIGEN,
@@ -29,7 +37,7 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_fecha_fin" -> r.SOJ_FECHA_FIN,
       "soj_fecha_inicio" -> r.SOJ_FECHA_INICIO,
       "soj_id_externo" -> r.SOJ_ID_EXTERNO,
-      "soj_otros_atributos" -> Some(mao),
+      "soj_otros_atributos" -> Some(test),
       "soj_base_imponible" -> r.SOJ_BASE_IMPONIBLE,
       "soj_adherido_debito" -> r.SOJ_ADHERIDO_DEBITO,
       "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[",",","]")),
