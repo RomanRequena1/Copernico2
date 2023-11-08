@@ -33,7 +33,6 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
       }
       case None => List(false)
     }
-    println(":::::::::::::::::::::::" + isResponsable(registro.SOJ_OTROS_ATRIBUTOS))
 
 
     val sujetoResponsable: List[Option[String]] = registro.SOJ_OTROS_ATRIBUTOS match {

@@ -31,7 +31,6 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
   }
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
-    log.error("PASOOO? ::::::::::")
 //    val isNotDeuda: List[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES map {
 //      d => d.RULE_NUMBER.contains("-1")
 //    }
@@ -52,7 +51,11 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
       case None => List(false)
     }
 
-    def listaVacia(lista: List[ListDetallesObligaciones]): Boolean = lista.isEmpty
+    val lista: Seq[DetallesObligacion] = obligacion.BOB_OTROS_ATRIBUTOS match {
+      case Some(r) => r.BOB_DETALLES
+      case None => null
+      }
+
 //    val haveList: Option[ObligacionesTri] => List[ListDetallesObligaciones] match {
 //    }
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
@@ -86,7 +89,7 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
           obligacionId = obligacion.BOB_OBN_ID,
           deliveryId = obligacion.EV_ID,
           registro = obligacion,
-          detallesObligacion = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES,
+          detallesObligacion = lista,
           isAdheridoDebito = isAdheridoDebito)
       }
     actorRef.ask[Response.SuccessProcessing](command)
