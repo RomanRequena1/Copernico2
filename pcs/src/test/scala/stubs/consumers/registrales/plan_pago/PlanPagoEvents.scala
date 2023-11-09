@@ -1,6 +1,6 @@
 package stubs.consumers.registrales.plan_pago
 
-import consumers.registral.plan_pago.domain.PlanPagoEvents.PlanPagoUpdatedFromDto
+import consumers.registral.plan_pago_detalles.domain.PlanPagoEvents.PlanPagoUpdatedFromDto
 import stubs.consumers.registrales.plan_pago.PlanPagoExternalDto.{planPagoAntStub, planPagoTriStub}
 import stubs.consumers.registrales.subasta.SubastaExternalDtoStub.subastaStub
 

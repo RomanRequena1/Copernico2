@@ -1,7 +1,7 @@
 package stubs.consumers.registrales.plan_pago
 
-import consumers.registral.plan_pago.application.entities.PlanPagoExternalDto.{PlanPagoAnt, PlanPagoTri}
-import consumers.registral.plan_pago.infrastructure.json._
+import consumers.registral.plan_pago_detalles.application.entities.PlanPagoExternalDto.{PlanPagoAnt, PlanPagoTri}
+import consumers.registral.plan_pago_detalles.infrastructure.json._
 import stubs.loadExample
 
 object PlanPagoExternalDto {

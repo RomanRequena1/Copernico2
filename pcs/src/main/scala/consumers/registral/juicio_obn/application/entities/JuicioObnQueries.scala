@@ -8,7 +8,10 @@ sealed trait JuicioObnQueries extends Query with JuicioObnMessage
 
 object JuicioObnQueries {
 
-  case class GetStateJuicioObn(juicioObnId: String, objetoId: String, tipoObjeto: String, obligacionId: String)
+  case class GetStateJuicioObn(juicioObnId: String,
+                               objetoId: String,
+                               tipoObjeto: String,
+                               obligacionId: String)
     extends JuicioObnQueries
       with Query {
     override type ReturnType = GetJuicioObnResponses

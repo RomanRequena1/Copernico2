@@ -1,0 +1,41 @@
+package consumers.registral.plan_pago_detalles.application.cqrs.commands
+import io.circe.syntax.EncoderOps
+
+import akka.actor.Status.Success
+import akka.actor.typed.ActorRef
+import akka.persistence.typed.scaladsl.Effect
+import consumers.registral.plan_pago_detalles.application.entities.PlanPagoCommands.PlanPagoUpdateFromDto
+import consumers.registral.plan_pago_detalles.domain.PlanPagoEvents.PlanPagoUpdatedFromDto
+import consumers.registral.plan_pago_detalles.domain.PlanPagoState
+import consumers.registral.plan_pago_detalles.infrastructure.json.json._
+import design_principles.actor_model.Response
+import kafka.KafkaMessageProducer.KafkaKeyValue
+import kafka.MessageProducer
+
+class PlanPagoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
+
+  def handle(command: PlanPagoUpdateFromDto)(state: PlanPagoState)(replyTo: ActorRef[Success]) = {
+    val event = PlanPagoUpdatedFromDto(
+      command.deliveryId,
+      command.planPagoId,
+      command.tipoObjeto,
+      command.objetoId,
+      command.obligacionId,
+      command.registro
+    )
+    Effect
+      .persist[
+        PlanPagoUpdatedFromDto,
+        PlanPagoState
+      ](event)
+      .thenRun(state =>
+        messageProducer.produce
+        (Seq(KafkaKeyValue(command.aggregateRoot,
+          event.asJson.toString())),
+          "PlanPagoUpdatedFromDto")(_ => ())
+      )
+      .thenReply(replyTo) { state =>
+        Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
+      }
+  }
+}
