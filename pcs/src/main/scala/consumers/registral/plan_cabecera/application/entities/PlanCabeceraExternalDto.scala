@@ -24,13 +24,13 @@ sealed trait PlanCabeceraExternalDto extends ddd.ExternalDto with CbroSerializat
 
   def BPL_CANTIDAD_CUOTAS: Option[Integer]
 
-  def BPL_IMPORTE_A_FINANCIAR: Option[Integer]
+  def BPL_IMPORTE_A_FINANCIAR: Option[BigDecimal]
 
-  def BPL_IMPORTE_ANTICIPO: Option[Integer]
+  def BPL_IMPORTE_ANTICIPO: Option[BigDecimal]
 
-  def BPL_IMPORTE_FINANCIADO: Option[Integer]
+  def BPL_IMPORTE_FINANCIADO: Option[BigDecimal]
 
-  def BPL_IMPORTE_CUOTA: Option[Integer]
+  def BPL_IMPORTE_CUOTA: Option[BigDecimal]
 
   def BPL_ESTADO: Option[String]
 
@@ -42,7 +42,7 @@ sealed trait PlanCabeceraExternalDto extends ddd.ExternalDto with CbroSerializat
 
   def BPL_MODELO_DESCRIPCION: Option[String]
 
-  def BPL_MODELO_DECRETO: Option[Float]
+  def BPL_MODELO_DECRETO: Option[BigDecimal]
 
   def BPL_DECRETO_DESCRIPCION: Option[String]
 
@@ -68,16 +68,16 @@ object PlanCabeceraExternalDto {
                              BPL_IDENTIFICADOR_EXTERNO: Option[String],
                              BPL_NRO_REFERENCIA: Option[String],
                              BPL_CANTIDAD_CUOTAS: Option[Integer],
-                             BPL_IMPORTE_A_FINANCIAR: Option[Integer],
-                             BPL_IMPORTE_ANTICIPO: Option[Integer],
-                             BPL_IMPORTE_FINANCIADO: Option[Integer],
-                             BPL_IMPORTE_CUOTA: Option[Integer],
+                             BPL_IMPORTE_A_FINANCIAR: Option[BigDecimal],
+                             BPL_IMPORTE_ANTICIPO: Option[BigDecimal],
+                             BPL_IMPORTE_FINANCIADO: Option[BigDecimal],
+                             BPL_IMPORTE_CUOTA: Option[BigDecimal],
                              BPL_ESTADO: Option[String],
                              BPL_FECHA_ACT_DEUDA: Option[LocalDateTime],
                              BPL_FECHA_EMISION: Option[LocalDateTime],
                              BPL_MODELO_CODIGO: Option[String],
                              BPL_MODELO_DESCRIPCION: Option[String],
-                             BPL_MODELO_DECRETO: Option[Float],
+                             BPL_MODELO_DECRETO: Option[BigDecimal],
                              BPL_DECRETO_DESCRIPCION: Option[String],
                              BPL_TIPO_PLAN: Option[String],
                              BPL_CANAL_ORIGEN: Option[String],
@@ -92,16 +92,16 @@ object PlanCabeceraExternalDto {
                              BPL_IDENTIFICADOR_EXTERNO: Option[String],
                              BPL_NRO_REFERENCIA: Option[String],
                              BPL_CANTIDAD_CUOTAS: Option[Integer],
-                             BPL_IMPORTE_A_FINANCIAR: Option[Integer],
-                             BPL_IMPORTE_ANTICIPO: Option[Integer],
-                             BPL_IMPORTE_FINANCIADO: Option[Integer],
-                             BPL_IMPORTE_CUOTA: Option[Integer],
+                             BPL_IMPORTE_A_FINANCIAR: Option[BigDecimal],
+                             BPL_IMPORTE_ANTICIPO: Option[BigDecimal],
+                             BPL_IMPORTE_FINANCIADO: Option[BigDecimal],
+                             BPL_IMPORTE_CUOTA: Option[BigDecimal],
                              BPL_ESTADO: Option[String],
                              BPL_FECHA_ACT_DEUDA: Option[LocalDateTime],
                              BPL_FECHA_EMISION: Option[LocalDateTime],
                              BPL_MODELO_CODIGO: Option[String],
                              BPL_MODELO_DESCRIPCION: Option[String],
-                             BPL_MODELO_DECRETO: Option[Float],
+                             BPL_MODELO_DECRETO: Option[BigDecimal],
                              BPL_DECRETO_DESCRIPCION: Option[String],
                              BPL_TIPO_PLAN: Option[String],
                              BPL_CANAL_ORIGEN: Option[String],

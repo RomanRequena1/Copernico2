@@ -9,6 +9,6 @@ trait PlanPagoProjection extends UpdateReadSideProjection[PlanPagoEvents] {
     "bpl_identificador" -> event.planPagoId,
     "bpd_soj_tipo_objeto" -> event.tipoObjeto,
     "bpd_soj_identificador" -> event.objetoId,
-    "bpd_obn_id" -> event.objetoId
+    "bpd_obn_id" -> event.obligacionId
   )
 }

@@ -4,7 +4,7 @@ import consumers.registral.plan_cabecera.application.entities.PlanCabeceraComman
 import consumers.registral.plan_cabecera.application.entities.PlanCabeceraExternalDto
 import consumers.registral.plan_cabecera.application.entities.PlanCabeceraExternalDto.{PlanCabeceraAnt, PlanCabeceraTri}
 import consumers.registral.plan_cabecera.application.entities.PlanCabeceraResponses.GetPlanCabeceraResponse
-import consumers.registral.plan_cabecera.domain.PlanCabeceraEvents.PlanCabeceraUpdatedFromDto
+import consumers.registral.plan_cabecera.domain.PlanCabeceraEvents.{PlanCabeceraRemovedFromDto, PlanCabeceraUpdatedFromDto}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}
 
@@ -17,8 +17,8 @@ object json {
   implicit val PlanCabeceraExternalDtoDecoder: Decoder[PlanCabeceraExternalDto] = deriveDecoder
   implicit val PlanCabeceraExternalDtoEncoder: Encoder[PlanCabeceraExternalDto] = deriveEncoder
 
-  //implicit val PlanCabeceraRemoveDecoder: Decoder[PlanCabeceraRemovedFromDto] = deriveDecoder
-  //implicit val PlanCabeceraRemoveEncoder: Encoder[PlanCabeceraRemovedFromDto] = deriveEncoder
+  implicit val PlanCabeceraRemoveDecoder: Decoder[PlanCabeceraRemovedFromDto] = deriveDecoder
+  implicit val PlanCabeceraRemoveEncoder: Encoder[PlanCabeceraRemovedFromDto] = deriveEncoder
 
   implicit val PlanCabeceraTriDecoder: Decoder[PlanCabeceraTri] = deriveDecoder
   implicit val PlanCabeceraTriEncoder: Encoder[PlanCabeceraTri] = deriveEncoder

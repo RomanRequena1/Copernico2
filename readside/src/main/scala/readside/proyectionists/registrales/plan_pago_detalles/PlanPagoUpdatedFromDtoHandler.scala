@@ -3,12 +3,10 @@ import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 
 import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.plan_pago_detalles.domain.PlanPagoEvents.PlanPagoUpdatedFromDto
 import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
-import monitoring.Monitoring
 import readside.proyectionists.registrales.plan_pago_detalles.projections.PlanPagoUpdatedFromDtoProjection
 import consumers.registral.plan_pago_detalles.infrastructure.json.json._
 import io.circe.parser._
@@ -20,8 +18,6 @@ class PlanPagoUpdatedFromDtoHandler(
   override def topic: String = "PlanPagoObnUpdatedFromDto"
   override def topicRetry: String = "PlanPagoObnUpdatedFromDto_retry"
   override def topicError: String = "PlanPagoObnUpdatedFromDto_error"
-
-  import consumers.registral.plan_pago_detalles.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, PlanPagoUpdatedFromDto] = {
     decode[PlanPagoUpdatedFromDto](input)

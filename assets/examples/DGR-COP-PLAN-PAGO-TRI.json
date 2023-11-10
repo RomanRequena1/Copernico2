@@ -1,5 +1,5 @@
 {
-    "EV_ID" : "93",
+    "EV_ID" : "97",
     "BPL_IDENTIFICADOR" : "20-49402555-2",
     "BPD_SOJ_TIPO_OBJETO" : "E",
     "BPD_SOJ_IDENTIFICADOR" : "43213232",
@@ -10,7 +10,7 @@
     "BPD_BOB_CONCEPTO": "1",
     "BPD_CANAL_ORIGEN": "1",
     "BPD_ESTADO" : "PCONF",
-    "RULE_NUMBER": "1",
+    "RULE_NUMBER": "-1",
     "BPD_IMPORTE_A_FINANCIAR" : "0",
     "BPD_BOB_VENCIMIENTO" : "1993-01-24 00:00:00.0",
     "BPD_BOB_PRORROGA" : "1999-01-24 00:00:00.0",

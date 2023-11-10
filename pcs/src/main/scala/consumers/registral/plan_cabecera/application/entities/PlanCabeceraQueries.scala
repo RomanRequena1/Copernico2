@@ -5,7 +5,8 @@ import design_principles.actor_model.Query
 
 sealed trait PlanCabeceraQueries extends Query with PlanCabeceraMessage
 object PlanCabeceraQueries{
-  case class GetStatePlanCabecera(planCabeceraId: String)
+  case class GetStatePlanCabecera(
+                                   planCabeceraId: String)
     extends PlanCabeceraQueries{
     override type ReturnType = GetPlanCabeceraResponse
   }

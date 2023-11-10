@@ -30,5 +30,4 @@ case class PlanPagoActor(state: PlanPagoState = PlanPagoState())(
   queryBus.subscribe[GetStatePlanPago](new GetStatePlanPagoHandler().handle)
   eventBus.subscribe[PlanPagoUpdatedFromDto](new PlanPagoUpdatedFromDtoHandler().handle)
   eventBus.subscribe[PlanPagoRemovedFromDto](new PlanPagoRemovedFromDtoHandler().handle)
-
 }

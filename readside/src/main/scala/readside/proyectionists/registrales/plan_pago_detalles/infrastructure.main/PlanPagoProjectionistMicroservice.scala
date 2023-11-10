@@ -3,11 +3,8 @@ package readside.proyectionists.registrales.plan_pago_detalles.infrastructure.ma
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
-import readside.proyectionists.registrales.plan_pago_detalles.PlanPagoUpdatedFromDtoHandler
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
+import readside.proyectionists.registrales.plan_pago_detalles.{PlanPagoRemovedFromDtoHandler, PlanPagoUpdatedFromDtoHandler}
 
 class PlanPagoProjectionistMicroservice(
     implicit m: KafkaConsumerMicroserviceRequirements
@@ -15,7 +12,8 @@ class PlanPagoProjectionistMicroservice(
 
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
-      new PlanPagoUpdatedFromDtoHandler
+      new PlanPagoUpdatedFromDtoHandler,
+      new PlanPagoRemovedFromDtoHandler
     )
 
   override def route: Route =
