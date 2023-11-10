@@ -1,11 +1,9 @@
 package consumers.registral.plan_pago_detalles.infrastructure.http
 
-import akka.http.scaladsl.model.HttpMethods.GET
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import consumers.registral.plan_pago_detalles.application.entities.PlanPagoQueries.GetStatePlanPago
 import consumers.registral.plan_pago_detalles.infrastructure.dependency_injection.PlanPagoActor
-import consumers.registral.plan_pago_detalles.infrastructure.http.PlanPagoStateAPI.withTipoObjeto
 import consumers.registral.plan_pago_detalles.infrastructure.json.json.PlanPagoResponsesEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
