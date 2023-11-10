@@ -17,14 +17,15 @@ class PlanPagoUpdatedFromDtoHandler(
     r: MonitoringAndCassandraWrite
 ) extends ActorTransaction[PlanPagoUpdatedFromDto](r.monitoring)(r.actorTransactionRequirements) {
 
-  override def topic: String = "PlanPagoUpdatedFromDto"
-  override def topicRetry: String = "PlanPagoUpdatedFromDto_retry"
-  override def topicError: String = "PlanPagoUpdatedFromDto_error"
+  override def topic: String = "PlanPagoObnUpdatedFromDto"
+  override def topicRetry: String = "PlanPagoObnUpdatedFromDto_retry"
+  override def topicError: String = "PlanPagoObnUpdatedFromDto_error"
 
   import consumers.registral.plan_pago_detalles.infrastructure.json._
 
-  override def processInput(input: String): Either[Throwable, PlanPagoUpdatedFromDto] =
+  override def processInput(input: String): Either[Throwable, PlanPagoUpdatedFromDto] = {
     decode[PlanPagoUpdatedFromDto](input)
+  }
 
   val cassandra = new CassandraWriteProduction()
   override def processMessage(registro: PlanPagoUpdatedFromDto): Future[Response.SuccessProcessing] = {

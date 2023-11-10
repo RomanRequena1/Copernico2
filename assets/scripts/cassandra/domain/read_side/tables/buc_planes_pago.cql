@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS read_side.buc_plan_pago_detalles  (
     bpd_bob_impuesto text,
     bpd_bob_concepto text,
     bpd_canal_origen text,
-    bpd_estado text,
     rule_number text,
+    bpd_estado text,
     bpd_bob_importe_a_financiar float,
     bpd_bob_vencimiento date,
     bpd_bob_prorroga date,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS read_side.buc_plan_pago_detalles  (
     bpd_bob_oga_id text,
     bpd_bju_identificador text,
     PRIMARY KEY (bpl_identificador, bpd_soj_tipo_objeto, bpd_soj_identificador, bpd_obn_id)
-) WITH CLUSTERING ORDER BY (bpl_soj_tipo_objeto ASC, bpl_soj_identificador ASC, bpl_pln_id ASC)
+) WITH CLUSTERING ORDER BY (bpd_soj_tipo_objeto ASC,bpd_soj_identificador ASC,bpd_obn_id ASC)
     AND bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
     AND comment = ''

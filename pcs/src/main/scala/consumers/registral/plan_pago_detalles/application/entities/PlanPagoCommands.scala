@@ -12,4 +12,13 @@ object PlanPagoCommands {
                                    registro: PlanPagoExternalDto)
       extends PlanPagoCommands
 
+  case class PlanPagoRemoveFromDto(
+                             deliveryId: BigInt,
+                             planPagoId: String,
+                             tipoObjeto: String,
+                             objetoId: String,
+                             obligacionId: String,
+                             registro: PlanPagoExternalDto)
+      extends PlanPagoCommands
+
 }

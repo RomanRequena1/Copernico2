@@ -17,9 +17,9 @@ case class PlanPagoNoTributarioTransaction(actor: PlanPagoActor, monitoring: Mon
   actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[PlanPagoAnt](monitoring) {
 
-  def topic = "DGR-COP-PLANES-ANT"
-  def topicRetry = "DGR-COP-PLANES-ANT_retry"
-  def topicError = "DGR-COP-PLANES-ANT_error"
+  def topic = "DGR-COP-PLANES-ANT-OBN"
+  def topicRetry = "DGR-COP-PLANES-ANT-OBN_retry"
+  def topicError = "DGR-COP-PLANES-ANT-OBN_error"
 
   def processInput(input: String): Either[Throwable, PlanPagoAnt] =
     decode[PlanPagoAnt](input)

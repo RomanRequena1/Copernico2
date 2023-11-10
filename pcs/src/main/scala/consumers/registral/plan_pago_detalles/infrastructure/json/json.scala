@@ -4,9 +4,10 @@ import consumers.registral.plan_pago_detalles.application.entities.PlanPagoComma
 import consumers.registral.plan_pago_detalles.application.entities.PlanPagoExternalDto
 import consumers.registral.plan_pago_detalles.application.entities.PlanPagoExternalDto.{PlanPagoAnt, PlanPagoTri}
 import consumers.registral.plan_pago_detalles.application.entities.PlanPagoResponses.GetPlanPagoResponse
-import consumers.registral.plan_pago_detalles.domain.PlanPagoEvents.PlanPagoUpdatedFromDto
+import consumers.registral.plan_pago_detalles.domain.PlanPagoEvents.{PlanPagoRemovedFromDto, PlanPagoUpdatedFromDto}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}
+
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.util.Try
@@ -16,6 +17,9 @@ object json {
   //DTO
   implicit val PlanPagoExternalDtoDecoder: Decoder[PlanPagoExternalDto] = deriveDecoder
   implicit val PlanPagoExternalDtoEncoder: Encoder[PlanPagoExternalDto] = deriveEncoder
+
+  implicit val PlanPagoRemoveDecoder: Decoder[PlanPagoRemovedFromDto] = deriveDecoder
+  implicit val PlanPagoRemoveEncoder: Encoder[PlanPagoRemovedFromDto] = deriveEncoder
 
   implicit val PlanPagoTriDecoder: Decoder[PlanPagoTri] = deriveDecoder
   implicit val PlanPagoTriEncoder: Encoder[PlanPagoTri] = deriveEncoder

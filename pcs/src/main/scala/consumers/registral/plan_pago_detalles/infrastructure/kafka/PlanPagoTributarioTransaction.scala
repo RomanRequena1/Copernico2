@@ -16,22 +16,37 @@ case class PlanPagoTributarioTransaction(actor: PlanPagoActor, monitoring: Monit
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[PlanPagoTri](monitoring) {
-  def topic = "DGR-COP-PLANES-TRI"
-  def topicRetry = "DGR-COP-PLANES-TRI_retry"
-  def topicError = "DGR-COP-PLANES-TRI_error"
+  def topic = "DGR-COP-PLANES-TRI-OBN"
+  def topicRetry = "DGR-COP-PLANES-TRI-OBN_retry"
+  def topicError = "DGR-COP-PLANES-TRI-OBN_error"
 
-  def processInput(input: String): Either[Throwable, PlanPagoTri] =
+  def processInput(input: String): Either[Throwable, PlanPagoTri] = {
     decode[PlanPagoTri](input)
+  }
 
   override def processMessage(registro: PlanPagoTri): Future[Response.SuccessProcessing] = {
-    val command = PlanPagoCommands.PlanPagoUpdateFromDto(
-      deliveryId = registro.EV_ID,
-      planPagoId = registro.BPL_IDENTIFICADOR,
-      tipoObjeto = registro.BPD_SOJ_TIPO_OBJETO,
-      objetoId = registro.BPD_SOJ_IDENTIFICADOR,
-      obligacionId = registro.BPD_OBN_ID,
-      registro = registro
-    )
+
+    val command: PlanPagoCommands =
+    if(registro.RULE_NUMBER.contains("-1")){
+      PlanPagoCommands.PlanPagoRemoveFromDto(
+        deliveryId = registro.EV_ID,
+        planPagoId = registro.BPL_IDENTIFICADOR,
+        tipoObjeto = registro.BPD_SOJ_TIPO_OBJETO,
+        objetoId = registro.BPD_SOJ_IDENTIFICADOR,
+        obligacionId = registro.BPD_OBN_ID,
+        registro = registro
+      )
+    }
+    else {
+       PlanPagoCommands.PlanPagoUpdateFromDto(
+        deliveryId = registro.EV_ID,
+        planPagoId = registro.BPL_IDENTIFICADOR,
+        tipoObjeto = registro.BPD_SOJ_TIPO_OBJETO,
+        objetoId = registro.BPD_SOJ_IDENTIFICADOR,
+        obligacionId = registro.BPD_OBN_ID,
+        registro = registro
+      )
+    }
     actor.ask(command)
   }
 }
