@@ -2,11 +2,11 @@ package consumers_spec.registrales
 
 import akka.Done
 import config.MockConfig
-import consumers.registral.plan_pago.application.entities.PlanPagoExternalDto.PlanPagoTri
-import consumers.registral.plan_pago.application.entities.PlanPagoQueries.GetStatePlanPago
-import consumers.registral.plan_pago.application.entities.PlanPagoResponses.GetPlanPagoResponse
-import consumers.registral.plan_pago.domain.PlanPagoState
-import consumers.registral.plan_pago.infrastructure.dependency_injection.PlanPagoActor
+import consumers.registral.plan_pago_detalles.application.entities.PlanPagoExternalDto.PlanPagoTri
+import consumers.registral.plan_pago_detalles.application.entities.PlanPagoQueries.GetStatePlanPago
+import consumers.registral.plan_pago_detalles.application.entities.PlanPagoResponses.GetPlanPagoResponse
+import consumers.registral.plan_pago_detalles.domain.PlanPagoState
+import consumers.registral.plan_pago_detalles.infrastructure.dependency_injection.PlanPagoActor
 import consumers_spec.Metrics
 import design_principles.actor_model.{Response, TypedActorSpec}
 

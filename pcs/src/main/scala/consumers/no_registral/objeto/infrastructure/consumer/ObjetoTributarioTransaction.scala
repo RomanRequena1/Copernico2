@@ -4,7 +4,7 @@ import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{ListDetallesObjeto, ObjetosTri}
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import design_principles.actor_model.Response
 import io.circe.parser.decode
@@ -26,19 +26,23 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
 
 
   def processMessage(registro: ObjetosTri): Future[Response.SuccessProcessing] = {
-    //connOracleKafkaToWriteside(registro.EV_ID.toString(), "objeto", registro.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
-
-
-    val isResponsable = registro.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES map {
-      n => n.RESPONSABLE_OTROS_ATRIBUTOS contains "S"
-    }
-    val sujetoResponsable = registro.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES map { d =>
-      d.RESPONSABLE_OTROS_ATRIBUTOS.getOrElse("N") match {
-        case "S" => Some(registro.SOJ_SUJ_IDENTIFICADOR)
-        case "N" => None
+    val isResponsable: Option[ListDetallesObjeto] => List[Boolean] = {
+      case Some(d) => d.SOJ_DETALLES map {
+        d => d.RESPONSABLE_OTROS_ATRIBUTOS contains "S"
       }
+      case None => List(false)
     }
-
+    val sujetoResponsable: List[Option[String]] = registro.SOJ_OTROS_ATRIBUTOS match {
+        case Some(r) => {
+          r.SOJ_DETALLES map { d =>
+            d.RESPONSABLE_OTROS_ATRIBUTOS.getOrElse("N") match {
+              case "S" => Some(registro.SOJ_SUJ_IDENTIFICADOR)
+              case "N" => None
+            }
+          }
+        }
+        case None => List(Some("N"))
+      }
     val isAdheridoDebito = Some(registro.SOJ_ADHERIDO_DEBITO.contains("S"))
 
     val command: ObjetoCommands =
@@ -49,7 +53,7 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
           tipoObjeto = registro.SOJ_TIPO_OBJETO,
           deliveryId = registro.EV_ID,
           registro = registro,
-          isResponsable = Some(isResponsable.head),
+          isResponsable = Some(isResponsable(registro.SOJ_OTROS_ATRIBUTOS).head),
           sujetoResponsable = sujetoResponsable.head
         )
       else
@@ -59,7 +63,7 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
           tipoObjeto = registro.SOJ_TIPO_OBJETO,
           deliveryId = registro.EV_ID,
           registro = registro,
-          isResponsable = Some(isResponsable.head),
+          isResponsable = Some(isResponsable(registro.SOJ_OTROS_ATRIBUTOS).head),
           sujetoResponsable = sujetoResponsable.head,
           isAdheridoDebito = isAdheridoDebito
         )

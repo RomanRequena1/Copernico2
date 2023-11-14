@@ -12,11 +12,11 @@ final case class ObligacionSnapshotProjection(
 
   val bobDetailsResult: Option[Map[String, List[DetallesObligacion]]] =
     decode[Map[String, List[DetallesObligacion]]](registro.get.BOB_OTROS_ATRIBUTOS.asJson.toString()).toOption
-  //println("CUMBIA bobDetailsResult -> " + bobDetailsResult)
 
-  val mao: Map[String, String] = Map("BOB_DETALLES" -> bobDetailsResult.get("BOB_DETALLES").asJson.noSpaces)
-  //println("CUMBIA -> mao" + mao)
-
+  val mao = bobDetailsResult match {
+    case Some(value) => Map("BOB_DETALLES" -> value.get("BOB_DETALLES").asJson.noSpaces)
+    case None => None
+  }
 
   val fromRegistro = registro map { registro =>
     List(

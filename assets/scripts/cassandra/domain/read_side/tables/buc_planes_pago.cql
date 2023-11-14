@@ -1,21 +1,23 @@
-
-CREATE TABLE IF NOT EXISTS read_side.buc_planes_pago (
-    bpl_suj_identificador text,
-    bpl_soj_tipo_objeto text,
-    bpl_soj_identificador text,
-    bpl_pln_id int,
-    bpl_cantidad_cuotas int,
-    bpl_estado text,
-    bpl_fecha_act_deuda date,
-    bpl_fecha_emision date,
-    bpl_importe_a_financiar float,
-    bpl_importe_anticipo float,
-    bpl_importe_financiado float,
-    bpl_nro_referencia text,
-    bpl_tipo text,
-    bpl_otros_atributos map<text,text>,
-    PRIMARY KEY (bpl_suj_identificador, bpl_soj_tipo_objeto, bpl_soj_identificador, bpl_pln_id)
-) WITH CLUSTERING ORDER BY (bpl_soj_tipo_objeto ASC, bpl_soj_identificador ASC, bpl_pln_id ASC)
+CREATE TABLE IF NOT EXISTS read_side.buc_plan_pago_detalles  (
+    bpl_identificador text,
+    bpd_soj_tipo_objeto text,
+    bpd_soj_identificador text,
+    bpd_obn_id text,
+    bpd_bob_periodo date,
+    bpd_bob_cuota text,
+    bpd_bob_impuesto text,
+    bpd_bob_concepto text,
+    bpd_canal_origen text,
+    rule_number text,
+    bpd_estado text,
+    bpd_bob_importe_a_financiar float,
+    bpd_bob_vencimiento date,
+    bpd_bob_prorroga date,
+    bpd_bob_tipo text,
+    bpd_bob_oga_id text,
+    bpd_bju_identificador text,
+    PRIMARY KEY (bpl_identificador, bpd_soj_tipo_objeto, bpd_soj_identificador, bpd_obn_id)
+) WITH CLUSTERING ORDER BY (bpd_soj_tipo_objeto ASC,bpd_soj_identificador ASC,bpd_obn_id ASC)
     AND bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
     AND comment = ''

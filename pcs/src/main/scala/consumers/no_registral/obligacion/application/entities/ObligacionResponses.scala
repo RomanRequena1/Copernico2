@@ -12,7 +12,6 @@ object ObligacionResponses {
       saldo: BigDecimal = 0,
       fechaUltMod: LocalDateTime = LocalDateTime.MIN,
       registro: Option[ObligacionExternalDto] = None,
-      detallesObligacion: Seq[DetallesObligacion] = Seq.empty,
       exenta: Boolean = false,
       porcentajeExencion: BigDecimal = 0,
       juicioId: Option[BigInt] = None

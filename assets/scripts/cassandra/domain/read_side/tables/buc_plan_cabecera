@@ -1,0 +1,37 @@
+CREATE TABLE IF NOT EXISTS read_side.buc_plan_cabecera  (
+    bpl_identificador text,
+    bpl_identificador_externo text,
+    bpl_nro_referencia text,
+    bpl_cantidad_cuotas int,
+    bpl_importe_a_financiar float,
+    bpl_importe_anticipo float,
+    bpl_importe_financiado float,
+    bpl_importe_cuota float,
+    bpl_estado text,
+    bpl_fecha_act_deuda date,
+    bpl_fecha_emision date,
+    bpl_modelo_codigo text,
+    bpl_modelo_descripcion text,
+    bpl_modelo_decreto float,
+    bpl_decreto_descripcion text,
+    bpl_tipo_plan text,
+    bpl_canal_origen text,
+    bpl_suj_identificador text,
+    bpl_soj_tipo_objeto text,
+    bpl_soj_identificador text,
+    bpl_cuit_origen text,
+    PRIMARY KEY (bpl_identificador)
+) WITH bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'sstable_compression': 'LZ4Compressor', 'chunk_length_in_kb': '64'}
+    AND crc_check_chance = 1.0
+    AND dclocal_read_repair_chance = 0.1
+    AND default_time_to_live = 0
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair_chance = 0.0
+    AND speculative_retry = '99PERCENTILE';

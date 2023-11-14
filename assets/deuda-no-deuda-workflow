@@ -155,7 +155,7 @@ curl 0.0.0.0:8081/state/sujeto/20083594781
 ###------------------------------------------------------------------------------------------------------------------------------------###
 
 ### get objeto state
-curl 0.0.0.0:8081/state/sujeto/27-07346917-7/objeto/110100324423/tipo/I
+curl 0.0.0.0:8081/state/sujeto/20-06411831-7/objeto/210246428/tipo/E
 ###------------------------------------------------------------------------------------------------------------------------------------###
 
 ### get juicio viejo state
@@ -173,7 +173,7 @@ curl 0.0.0.0:8081/state/sujeto/27-31221137-3/objeto/AE008WO/tipo/A/componente_i/
 ###------------------------------------------------------------------------------------------------------------------------------------###
 
 ### get obligacion state
-curl 0.0.0.0:8081/state/sujeto/27-10525681-2/objeto/JUICIO:60003454512022/tipo/M/obligacion/20220000000032846685
+curl 0.0.0.0:8081/state/sujeto/20-21392869-44/objeto/ABC123/tipo/M/obligacion/20230000000085868546
 
 ###------------------------------------------------------------------------------------------------------------------------------------###
 
@@ -200,8 +200,8 @@ docker exec -it zookeeper /bin/kafka-console-consumer --bootstrap-server kafka:2
 
 #Publish 3 messages to Kafka
 kafkacat -P -b 0.0.0.0:9092 -t "DGR-COP-SUJETO-TRI" assets/examples/test/DGR-COP-SUJETO-TRI.json
-kafkacat -P -b 0.0.0.0:9092 -t "DGR-COP-OBLIGACIONES-TRI" assets/examples/DGR-COP-OBLIGACIONES-TRI.json
-kafkacat -P -b 0.0.0.0:9092 -t "DGR-COP-OBJETOS-TRI" assets/examples/DGR-COP-OBJETOS-TRI.json
+kafkacat -P -b 0.0.0.0:9092 -t "DGR-COP-OBLIGACIONES-TRI" assets/examples/test/DGR-COP-OBLIGACIONES-TRI-ONGOING.json
+kafkacat -P -b 0.0.0.0:9092 -t "DGR-COP-OBJETOS-TRI" assets/examples/test/DGR-COP-OBJETOS-TRI-ONGOING.json
 
 ---------------------------------------------------------------------------------------------------------------------------------------###
 

@@ -1,6 +1,6 @@
 package stubs.consumers.registrales.plan_pago
 
-import consumers.registral.plan_pago.application.entities.PlanPagoCommands.PlanPagoUpdateFromDto
+import consumers.registral.plan_pago_detalles.application.entities.PlanPagoCommands.PlanPagoUpdateFromDto
 import stubs.consumers.registrales.plan_pago.PlanPagoExternalDto.{planPagoAntStub, planPagoTriStub}
 import utils.generators.Model.deliveryId
 
