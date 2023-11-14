@@ -36,6 +36,7 @@ object Main extends App {
       new consumers.registral.parametrica_plan.infrastructure.main.ParametricaPlanMicroservice,
       new consumers.registral.parametrica_recargo.infrastructure.main.ParametricaRecargoMicroservice,
       new consumers.registral.plan_pago_detalles.infrastructure.main.PlanPagoMicroservice,
+      new consumers.registral.plan_cabecera.infrastructure.main.PlanPagoMicroservice,
       new consumers.registral.subasta.infrastructure.main.SubastaMicroservice,
       new consumers.registral.tramite.infrastructure.main.TramiteMicroservice,
       new JuicioObnMicroservice

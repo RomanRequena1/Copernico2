@@ -38,11 +38,25 @@ class PlanCabeceraRemovedFromDtoHandler (
             s""" '${registro.planCabeceraId}' """
         )
         .andThen {
+          case Failure(exception) => log.error("Dont persist plan_cabecera -1" + exception)
+          case Success(_) => {
+            log.debug("Persiste plan_cabecera -1 ")
+          }
+        }
+      done <- cassandra
+        .cql(
+          s"""
+    DELETE FROM read_side.buc_plan_pago_detalles """ +
+            """ WHERE bpl_identificador = """ +
+            s""" '${registro.planCabeceraId}' """
+        )
+        .andThen {
           case Failure(exception) => log.error("Dont persist plan_pago -1" + exception)
           case Success(_) => {
             log.debug("Persiste plan_pago -1 ")
           }
         }
-    } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
+
+    }yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
   }
 }
