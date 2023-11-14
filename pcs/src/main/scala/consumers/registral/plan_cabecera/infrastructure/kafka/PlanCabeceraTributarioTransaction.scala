@@ -10,12 +10,15 @@ import monitoring.Monitoring
 import io.circe.parser.decode
 import consumers.registral.plan_cabecera.infrastructure.json.json._
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
+import org.slf4j.LoggerFactory
+
 import scala.concurrent.Future
 
 case class PlanCabeceraTributarioTransaction(actor: PlanCabeceraActor, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements
   ) extends ActorTransaction[PlanCabeceraTri](monitoring) {
+  private val log = LoggerFactory.getLogger(this.getClass)
     def topic = "DGR-COP-PLAN-CABECERA-TRI"
 
     def topicRetry = "DGR-COP-PLAN-CABECERA-TRI_retry"
@@ -23,6 +26,7 @@ case class PlanCabeceraTributarioTransaction(actor: PlanCabeceraActor, monitorin
     def topicError = "DGR-COP-PLAN-CABECERA-TRI_error"
 
     def processInput(input: String): Either[Throwable, PlanCabeceraTri] = {
+      log.error("LOGGGGGGGGG"+decode[PlanCabeceraTri](input))
       decode[PlanCabeceraTri](input)
     }
 
@@ -37,6 +41,7 @@ case class PlanCabeceraTributarioTransaction(actor: PlanCabeceraActor, monitorin
           )
         }
         else {
+          log.error("DSAJSADSDAJSADAJSDAS"+registro)
           PlanCabeceraCommands.PlanCabeceraUpdateFromDto(
             deliveryId = registro.EV_ID,
             planCabeceraId = registro.BPL_IDENTIFICADOR,

@@ -1,4 +1,3 @@
-
 CREATE TABLE IF NOT EXISTS read_side.buc_plan_pago_detalles  (
     bpl_identificador text,
     bpd_soj_tipo_objeto text,

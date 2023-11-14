@@ -39,6 +39,7 @@ object Main extends App {
       new readside.proyectionists.registrales.parametrica_plan.infrastructure.main.ParametricaPlanProjectionistMicroservice,
       new readside.proyectionists.registrales.parametrica_recargo.infrastructure.main.ParametricaRecargoProjectionistMicroservice,
       new readside.proyectionists.registrales.plan_pago_detalles.infrastructure.main.PlanPagoProjectionistMicroservice,
+      new readside.proyectionists.registrales.plan_cabecera.infrastructure.main.PlanCabeceraProjectionistMicroservice,
       new readside.proyectionists.registrales.subasta.infrastructure.main.SubastaProjectionistMicroservice,
       new readside.proyectionists.registrales.tramite.infrastructure.main.TramiteProjectionistMicroservice,
       new JuicioObnProjectionstMicroservice

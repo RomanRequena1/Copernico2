@@ -53,4 +53,5 @@ curl -X POST http://0.0.0.0:8084/kafka/start/ComponenteIPersistedSnapshot
 
 curl -X POST http://0.0.0.0:8084/kafka/start/JuicioObnDeletedFronDto
 curl -X POST http://0.0.0.0:8084/kafka/start/JuicioObnUpdatedFronDto
+curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-PLAN-CABECERA-TRI
 #curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-EXENCIONES

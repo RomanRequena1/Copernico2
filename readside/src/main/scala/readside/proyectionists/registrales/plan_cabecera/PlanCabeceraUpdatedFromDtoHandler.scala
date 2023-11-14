@@ -9,6 +9,7 @@ import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
 import consumers.registral.plan_cabecera.infrastructure.json.json._
 import io.circe.parser._
+import readside.proyectionists.registrales.plan_cabecera.projections.PlanCabeceraUpdatedFromDtoProjection
 class PlanCabeceraUpdatedFromDtoHandler(
                                          implicit
                                          r: MonitoringAndCassandraWrite

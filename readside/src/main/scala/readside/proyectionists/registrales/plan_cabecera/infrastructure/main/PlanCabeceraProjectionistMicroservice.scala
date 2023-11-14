@@ -2,9 +2,8 @@ package readside.proyectionists.registrales.plan_cabecera.infrastructure.main
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
-import consumers.registral.plan_cabecera.domain.PlanCabeceraEvents.PlanCabeceraRemovedFromDto
-import consumers.registral.plan_cabecera.domain.events.{PlanCabeceraRemovedFromDtoHandler, PlanCabeceraUpdatedFromDtoHandler}
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
+import readside.proyectionists.registrales.plan_cabecera.{PlanCabeceraRemovedFromDtoHandler, PlanCabeceraUpdatedFromDtoHandler}
 class PlanCabeceraProjectionistMicroservice (
                                               implicit m: KafkaConsumerMicroserviceRequirements
                                             ) extends KafkaConsumerMicroservice {
