@@ -2,6 +2,7 @@ package consumers.no_registral.obligacion.infrastructure.consumer
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
+import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
 import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionCommands, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
@@ -45,6 +46,7 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
       case Some(r) => r.BOB_DETALLES
       case None => null
       }
+
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
 
     val command: ObligacionCommands =
@@ -80,5 +82,36 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
           isAdheridoDebito = isAdheridoDebito)
       }
     actorRef.ask[Response.SuccessProcessing](command)
+  }
+
+  private def isTreintaPorciento(obn: ObligacionesTri) = {
+
+    val treinta: Option[Object] = if (obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.
+      map(m => m.BAND_30.get.equals(false)).head) None else Some(DMNTreintaPorciento.dmn(obn))
+    treinta match {
+      case None =>
+        println("CUMBIA NONE -> ")
+        obn
+      case v if v.get.isInstanceOf[Product] => {
+        println("Error DMN " + v.get)
+        obn
+      }
+      case f if f.get.equals(0) => { //case 0
+        val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
+        val newDetails = decode[ListDetallesObligaciones](s"""{"BOB_DETALLES" : '${detalles}'}""").toOption.get
+        val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
+        println(detalles)
+        println(newO)
+        newO
+      }
+      case _ => {
+        val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
+        val newDetails = decode[ListDetallesObligaciones](s"""{"BOB_DETALLES" : '${detalles}'}""").toOption.get
+        val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
+        println(newDetails)
+        println(newO)
+        newO
+      }
+    }
   }
 }
