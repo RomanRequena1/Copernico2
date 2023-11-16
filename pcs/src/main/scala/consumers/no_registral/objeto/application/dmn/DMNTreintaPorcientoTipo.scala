@@ -1,6 +1,7 @@
 package consumers.no_registral.objeto.application.dmn
 
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{ListDetallesObjeto, ObjetosTri}
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
 import org.camunda.dmn.DmnEngine
 
 import java.io.FileInputStream
@@ -8,7 +9,7 @@ import scala.util.Try
 
 object DMNTreintaPorcientoTipo {
 
-  def dmn(obj: ObjetosTri) = {
+  def dmn(obj: ObjetoExternalDto) = {
 
     val dmnStream = Try(new FileInputStream("/opt/docker/bin/clasificacion_objeto.dmn"))
     val engine = new DmnEngine()
@@ -28,17 +29,6 @@ object DMNTreintaPorcientoTipo {
         "soj_titularidad" -> obj.SOJ_TITULARIDAD.getOrElse("None"),
         "soj_semaforo" -> semaforo_color,
         "soj_marca" -> semaforo_marca)))
-
-    chequeoDmn match {
-      case Left(value) =>
-        println("value " + value)
-        false
-      case Right(value) =>
-        println("value.value " + value.value)
-        if (value.value.equals(2)) true else false
-    }
-
-
-
+    chequeoDmn
   }
 }

@@ -125,4 +125,19 @@ object ObjetoEvents {
       cuota:Option[String]
   ) extends ObjetoEvents
 
+  case class ObjetoUpdatedFromObnTreintaProciento(
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      objetoId2: Option[String],
+      tipoObjeto: String,
+      obligacionId: String,
+      saldoObligacion: BigDecimal,
+      obligacionExenta: Boolean,
+      porcentajeExencion: Option[BigDecimal],
+      idExterno: Option[String],
+      cuota: Option[String]
+  ) extends ObjetoEvents
+
+
 }

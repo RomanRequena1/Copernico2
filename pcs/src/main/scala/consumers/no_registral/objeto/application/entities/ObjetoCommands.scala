@@ -112,4 +112,19 @@ object ObjetoCommands {
       sujetoResponsable: Option[String]
   ) extends ObjetoCommands
 
+  case class ObjetoUpdateFromObnTreintaPorciento(
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      objetoId2: Option[String],
+      tipoObjeto: String,
+      obligacionId: String,
+      saldoObligacion: BigDecimal,
+      obligacionExenta: Boolean,
+      porcentajeExencion: Option[BigDecimal],
+      idExterno: Option[String],
+      cuota: Option[String]
+  ) extends ObjetoCommands
+
+
 }

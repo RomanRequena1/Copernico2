@@ -8,7 +8,7 @@ import consumers.no_registral.obligacion.application.cqrs.queries.{ObligacionGet
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionRemove
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage.ObligacionMessageRoots
 import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionQueries}
-import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
+import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionPersistedSnapshot, ObligacionUpdatedFromDto}
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
@@ -16,6 +16,7 @@ import timescaledb.TimescaledbPcsToKafka.connOracleWriteSideToKafka
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import io.circe._
 import io.circe.syntax.EncoderOps
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
@@ -53,6 +54,28 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       state.exenta,
       state.porcentajeExencion,
       state.idExterno
+    )
+  }
+
+  def informParentTreintaProciento(evt: ObligacionUpdatedFromDto): Unit = {
+    context.parent ! ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento(
+      evt.deliveryId,
+      evt.sujetoId,
+      evt.objetoId,
+      evt match {
+        case c: ObligacionUpdatedFromDto => c.registro.BOB_SOJ_IDENTIFICADOR_2 match {
+          case Some(value) => Some(value)
+          case None => None
+        }
+        case _ => None
+      },
+      evt.tipoObjeto,
+      evt.obligacionId,
+      state.saldo,
+      state.exenta,
+      state.porcentajeExencion,
+      state.idExterno,
+      evt.cuota
     )
   }
 

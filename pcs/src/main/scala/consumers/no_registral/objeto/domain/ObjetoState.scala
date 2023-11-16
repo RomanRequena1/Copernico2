@@ -23,7 +23,10 @@ case class ObjetoState(
     isBaja: Boolean = false,
     isAdheridoDebito: Boolean = false,
     eventCounter:Int = 0,
-    cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false)
+    cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
+    band30: Boolean = false,
+    bandTipo: String = "",
+    obnVencidas: List[Boolean] = List(true, true, true, true, true, true, true, true, true, true, true, true, true)
 ) extends AbstractState[ObjetoEvents] with CbroSerialization{
 
   override def +(event: ObjetoEvents): ObjetoState = {
@@ -84,6 +87,13 @@ case class ObjetoState(
           sujetos = sujetos + evt.sujetoId,
           isBaja = false
         )
+      case evt: ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento =>
+        val indice = evt.cuota.get.toInt
+        val newObnVencidas = obnVencidas.updated(indice, false)
+        copy(
+          obnVencidas = newObnVencidas
+        )
+
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
         copy(
           saldo = evt.saldo,

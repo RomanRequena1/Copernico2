@@ -1,6 +1,7 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
 import akka.persistence.SnapshotSelectionCriteria
+import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.domain.ObjetoEvents
@@ -31,6 +32,8 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
       println(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
+      val resultDMN = DMNTreintaPorcientoTipo.dmn(command.registro)
+
       // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular
       actor.persistEvent(event) { () =>
         actor.state += event
@@ -38,13 +41,23 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
         if (actor.state.eventCounter == eventCounterMax) {
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
-        actor.persistSnapshot(event, actor.state) { () =>
-          /*if (!actor.state.isResponsable) {
-            actor.removeObligaciones()
-          }*/
-          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 
-        }
+        resultDMN
+          .fold(e => {
+            println("ERROR DMN OBJETO: "+e)
+              },
+                {
+                  case d if d.value.equals("2") =>
+                    val newState = actor.state.copy(bandTipo = "TIPO2")
+                    actor.persistSnapshot(event, newState) { () =>
+                      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+                    }
+                  case _ =>
+                    val newState = actor.state.copy(bandTipo = "TIPO1")
+                    actor.persistSnapshot(event, newState) { () =>
+                      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+                    }
+                })
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

@@ -77,26 +77,17 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
           tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
           obligacionId = obligacion.BOB_OBN_ID,
           deliveryId = obligacion.EV_ID,
-          registro = obligacion,
+          registro = isTreintaPorciento(obligacion),
           detallesObligacion = detallesObligacion,
-          isAdheridoDebito = isAdheridoDebito)
+          isAdheridoDebito = isAdheridoDebito,
+          cuota = obligacion.BOB_CUOTA)
       }
     actorRef.ask[Response.SuccessProcessing](command)
   }
 
   private def isTreintaPorciento(obn: ObligacionesTri) = {
-
-    val treinta: Option[Object] = if (obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.
-      map(m => m.BAND_30.get.equals(false)).head) None else Some(DMNTreintaPorciento.dmn(obn))
-    treinta match {
-      case None =>
-        println("CUMBIA NONE -> ")
-        obn
-      case v if v.get.isInstanceOf[Product] => {
-        println("Error DMN " + v.get)
-        obn
-      }
-      case f if f.get.equals(0) => { //case 0
+    DMNTreintaPorciento.dmn(obn) match {
+      case f if f.equals(0) => { //case 0
         val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
         val newDetails = decode[ListDetallesObligaciones](s"""{"BOB_DETALLES" : '${detalles}'}""").toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))

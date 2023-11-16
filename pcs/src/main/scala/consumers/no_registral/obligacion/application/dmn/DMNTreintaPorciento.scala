@@ -1,17 +1,20 @@
 package consumers.no_registral.obligacion.application.dmn
 
-import consumers.no_registral.obligacion.application.entities.ObligacionesTri
+import consumers.no_registral.obligacion.application.entities.{ObligacionExternalDto, ObligacionesTri}
 import org.camunda.dmn.DmnEngine
+import org.slf4j.LoggerFactory
 import scalaz.concurrent.Task.Try
 
 import java.io.FileInputStream
 
 object DMNTreintaPorciento {
 
+  private val log = LoggerFactory.getLogger(this.getClass)
 
-  def dmn(actor: ObligacionesTri) = {
+  def dmn(actor: ObligacionExternalDto): Any = {
 
-    val dmnStream = Try(new FileInputStream("/opt/docker/bin/archivo.dmn"))
+
+    val dmnStream = Try(new FileInputStream("/opt/docker/bin/decision_30_descuento.dmn"))
     val engine = new DmnEngine()
 
     val ven = actor.BOB_VENCIMIENTO.get.toString.replace(" ", "T")
@@ -28,8 +31,7 @@ object DMNTreintaPorciento {
 
     val chequeoDmn: Either[Product, DmnEngine.EvalResult] = engine.parse(dmnStream.getOrElse(null))
       .flatMap(dmn => engine.eval(dmn, "Decision_descuento", Utils.mapsToDMN(actor, isVencida, diffDaysOblligaciones, diffYearsOblligaciones, diffDaysOblligacionesVen2)))
-
-    chequeoDmn.fold(e => e, value => value)
+    chequeoDmn.fold(e => log.error("ERROR DMN OBLIGACION::" + e), value => value)
   }
 }
 

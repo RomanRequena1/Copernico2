@@ -18,7 +18,6 @@ object ObjetoImplicits {
   // COMMANDS
   implicit val ObjetoUpdateCotitularesDecoder: Decoder[ObjetoUpdateCotitulares] = deriveDecoder
   implicit val ObjetoUpdateCotitularesEncoder: Encoder[ObjetoUpdateCotitulares] = deriveEncoder
-
   implicit val ObjetoSnapshotDecoder: Decoder[ObjetoSnapshot] = deriveDecoder
   implicit val ObjetoSnapshotEncoder: Encoder[ObjetoSnapshot] = deriveEncoder
 
@@ -45,6 +44,9 @@ object ObjetoImplicits {
 
   implicit val SetBajaObjetoDecoder: Decoder[SetBajaObjeto] = deriveDecoder
   implicit val SetBajaObjetoEncoder: Encoder[SetBajaObjeto] = deriveEncoder
+
+  implicit val ObjetoUpdateFromObnTreintaPorcientoDecoder: Decoder[ObjetoUpdateFromObnTreintaPorciento] = deriveDecoder
+  implicit val ObjetoUpdateFromObnTreintaPorcientoEncoder: Encoder[ObjetoUpdateFromObnTreintaPorciento] = deriveEncoder
 
   // EXTERNALDTO
 
@@ -120,5 +122,8 @@ object ObjetoImplicits {
 
   implicit val ObjetoRemovedObligacionDecoder: Decoder[ObjetoRemovedObligacion] = deriveDecoder
   implicit val ObjetoRemovedObligacionEncoder: Encoder[ObjetoRemovedObligacion] = deriveEncoder
+
+  implicit val ObjetoUpdatedFromObnTreintaProcientoDecoder: Decoder[ObjetoUpdatedFromObnTreintaProciento] = deriveDecoder
+  implicit val ObjetoUpdatedFromObnTreintaProcientoEncoder: Encoder[ObjetoUpdatedFromObnTreintaProciento] = deriveEncoder
 
 }

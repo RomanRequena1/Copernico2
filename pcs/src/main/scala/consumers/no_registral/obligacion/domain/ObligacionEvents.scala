@@ -37,7 +37,8 @@ object ObligacionEvents {
       obligacionId: String,
       registro: ObligacionExternalDto,
       detallesObligacion: Seq[DetallesObligacion],
-      isAdheridoDebito: Option[Boolean]
+      isAdheridoDebito: Option[Boolean],
+      cuota: Option[String]
   ) extends ObligacionEvents
 
 

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="clasificacion_objeto" name="clasificacion_objeto" namespace="http://camunda.org/schema/1.0/dmn" exporter="dmn-js (https://demo.bpmn.io/dmn)" exporterVersion="14.1.1">
+  <decision id="Decision_Clasificacion_Objeto" name="clasificacion_objeto">
+    <decisionTable id="decisionTable_134xpbn" hitPolicy="FIRST">
+      <input id="input1" label="soj_tipo_objeto">
+        <inputExpression id="inputExpression1" typeRef="string">
+          <text>soj_tipo_objeto</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0nq14e3" label="soj_adherido_debito">
+        <inputExpression id="LiteralExpression_1l4y151" typeRef="string">
+          <text>soj_adherido_debito</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1s4kd2l" label="soj_estado">
+        <inputExpression id="LiteralExpression_1vub93z" typeRef="string">
+          <text>soj_estado</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1uc4qu3" label="soj_titularidad">
+        <inputExpression id="LiteralExpression_14u6a5o" typeRef="string">
+          <text>soj_titularidad</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1ek6of2" label="soj_semaforo">
+        <inputExpression id="LiteralExpression_1rpa8lz" typeRef="string">
+          <text>soj_semaforo</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1sessv9" label="soj_tipo_exclusion">
+        <inputExpression id="LiteralExpression_0n4s8ju" typeRef="string">
+          <text>soj_tipo_exclusion</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="clasificacion_objeto" name="clasificacion_objeto" typeRef="string" />
+      <rule id="DecisionRule_1exvhza">
+        <description>Se descartan los objetos transferidos para el análisis del 30% de descuento
+No Aplica</description>
+        <inputEntry id="UnaryTests_1n38tkx">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1u37coh">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1bf0ch4">
+          <text>"TRANSF", "BAJA"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ydthe1">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1a02k7q">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1srska4">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0yitn5c">
+          <text>-1</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1x3rnqr">
+        <description>Exclusion: Condonacion por Objeto</description>
+        <inputEntry id="UnaryTests_1m32tua">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0pcwdf6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1g87axh">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0x0e67w">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_091tts6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ny9eiu">
+          <text>"C"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1a2vahe">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1v8bpcb">
+        <description>Universo de condonacion a nivel objeto (individualmente)
+Semaforos A o R</description>
+        <inputEntry id="UnaryTests_0nugbhk">
+          <text>"I"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0jnsna0">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0w0ia8q">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ebaj12">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_040gwvi">
+          <text>"A","R"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1tibi34">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_099fchj">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1yo7k7w">
+        <description>Universo de condonacion a nivel objeto (individualmente)
+Titular registral con un solo poseedor.
+Dos o mas titulares registrales con un solo poseedor.
+Dos o mas titulares registrales con dos o mas poseedores 
+Condonar o no el Objeto</description>
+        <inputEntry id="UnaryTests_1w991d3">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_08brx6u">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1kxxt0o">
+          <text>"ESTADO2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_10lhwhw">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1syhqce">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06h0ndd">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_08x73dl">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_04dqtrl">
+        <description>Universo de condonacion a nivel objeto (individualmente)
+Titular registral con dos o mas poseedores.
+Dos o más titulares registrales sin poseedor
+Condonar o no el Objeto</description>
+        <inputEntry id="UnaryTests_1mut0s0">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0v63afx">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0qovv6h">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0squbob">
+          <text>"CONDOMINO-P", "CONDOMINO", "CONDOMINIO-P", "CONDOMINIO"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1e1u1mz">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1mkc1r4">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1316x0r">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0wu5p07">
+        <description>Universo de condonacion a nivel sujeto (grupalmente)
+Universo de objetos NO Débito, NO Poseedores, NO Cotitulares y no afectados por Semaforización.</description>
+        <inputEntry id="UnaryTests_1vkeius">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1xeq2q3">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1s4ci6x">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_010521l">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1m5wesy">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0m9cydw">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1di5hja">
+          <text>2</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_14d1v1e">
+      <dmndi:DMNShape id="DMNShape_12vaeca" dmnElementRef="Decision_Clasificacion_Objeto">
+        <dc:Bounds height="80" width="180" x="170" y="150" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

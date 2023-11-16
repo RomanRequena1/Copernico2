@@ -3,12 +3,14 @@ package consumers.no_registral.obligacion.infrastructure.consumer
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionesTri}
+import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionCommands, ObligacionesTri}
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import design_principles.actor_model.Response
 import io.circe.parser.decode
 import monitoring.Monitoring
+import org.camunda.dmn.DmnEngine
 import org.slf4j.LoggerFactory
 import timescaledb.TimescaledbNifiToKafka.connOracleNifi
 
@@ -79,11 +81,33 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
           tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
           obligacionId = obligacion.BOB_OBN_ID,
           deliveryId = obligacion.EV_ID,
-          registro = obligacion,
+          registro = isTreintaPorciento(obligacion),
           detallesObligacion = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES,
-          isAdheridoDebito = isAdheridoDebito
+          isAdheridoDebito = isAdheridoDebito,
+          cuota = obligacion.BOB_CUOTA
         )
     actorRef.ask[Response.SuccessProcessing](command)
 
+  }
+
+  private def isTreintaPorciento(obn: ObligacionesTri) = {
+    DMNTreintaPorciento.dmn(obn) match {
+      case f if f.equals(0) => { //case 0
+        val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
+        val newDetails = decode[ListDetallesObligaciones](s"""{"BOB_DETALLES" : '${detalles}'}""").toOption.get
+        val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
+        println(detalles)
+        println(newO)
+        newO
+      }
+      case _ => {
+        val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
+        val newDetails = decode[ListDetallesObligaciones](s"""{"BOB_DETALLES" : '${detalles}'}""").toOption.get
+        val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
+        println(newDetails)
+        println(newO)
+        newO
+      }
+    }
   }
 }

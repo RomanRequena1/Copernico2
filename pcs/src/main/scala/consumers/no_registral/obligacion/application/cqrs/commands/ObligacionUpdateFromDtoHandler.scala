@@ -22,7 +22,8 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       command.obligacionId,
       command.registro,
       command.detallesObligacion,
-      command.isAdheridoDebito
+      command.isAdheridoDebito,
+      command.cuota
     )
     // check whether we are in initialization mode or not
     val initialization: String = {
@@ -47,6 +48,16 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         if (!(initialization == "true" && command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {
           actor.informParent(command)
         }
+        if (event.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.BAND_30.get.equals(false)) {
+          println("Leggo a handler true")
+          actor.informParent(command)
+        }
+
+        else {
+          println("Leggo a handler false")
+          actor.informParentTreintaProciento(event)
+        }
+
         if (actor.state.eventCounter == eventCounterMax) {
           actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
