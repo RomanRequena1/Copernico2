@@ -23,11 +23,12 @@ object DMNTreintaPorcientoTipo {
       case None => None
     }
     val chequeoDmn: Either[Product, DmnEngine.EvalResult] = engine.parse(dmnStream.getOrElse(null))
-      .flatMap(dmn => engine.eval(dmn, "decision_0bpgmr3", Map("soj_tipo_objeto" -> obj.SOJ_TIPO_OBJETO,
+      .flatMap(dmn => engine.eval(dmn, "Decision_Clasificacion_Objeto", Map("soj_tipo_objeto" -> obj.SOJ_TIPO_OBJETO,
         "soj_adherido_debito" -> obj.SOJ_ADHERIDO_DEBITO.getOrElse("None"),
         "soj_estado" -> obj.SOJ_ESTADO.getOrElse("None"),
         "soj_titularidad" -> obj.SOJ_TITULARIDAD.getOrElse("None"),
         "soj_semaforo" -> semaforo_color,
+        "soj_tipo_exclusion" -> "",
         "soj_marca" -> semaforo_marca)))
     chequeoDmn
   }

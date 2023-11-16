@@ -31,7 +31,7 @@ object DMNTreintaPorciento {
 
     val chequeoDmn: Either[Product, DmnEngine.EvalResult] = engine.parse(dmnStream.getOrElse(null))
       .flatMap(dmn => engine.eval(dmn, "Decision_descuento", Utils.mapsToDMN(actor, isVencida, diffDaysOblligaciones, diffYearsOblligaciones, diffDaysOblligacionesVen2)))
-    chequeoDmn.fold(e => log.error("ERROR DMN OBLIGACION::" + e), value => value)
+    chequeoDmn.fold(e => log.error("ERROR DMN OBLIGACION::" + e), value => value.value)
   }
 }
 

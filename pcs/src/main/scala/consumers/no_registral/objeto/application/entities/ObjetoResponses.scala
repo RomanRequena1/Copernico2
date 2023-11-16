@@ -17,7 +17,8 @@ object ObjetoResponses {
                                 sujetoResponsable: Option[String] = None,
                                 fechaUltMod: LocalDateTime = LocalDateTime.MIN,
                                 registro: Option[ObjetoExternalDto] = None,
-                                exenciones: Set[Exencion]
+                                exenciones: Set[Exencion],
+                                bandTipo: String
                               ) extends ObjetoResponses with CbroSerialization
 
 

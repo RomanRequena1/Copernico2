@@ -38,6 +38,7 @@ object ObjetoEvents {
       registro: Option[ObjetoExternalDto],
       obligacionesSaldo: Map[String, BigDecimal] = Map.empty,
       cuotas:List[Boolean],
+      bandTipo: String,
       operacion: String,
       idExterno: Option[String]
   ) extends ObjetoEvents

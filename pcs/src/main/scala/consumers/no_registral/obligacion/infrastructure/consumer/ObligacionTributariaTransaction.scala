@@ -8,6 +8,7 @@ import consumers.no_registral.obligacion.application.entities.{DetallesObligacio
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import design_principles.actor_model.Response
 import io.circe.parser.decode
+import io.circe.syntax.EncoderOps
 import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 
@@ -86,18 +87,18 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
   }
 
   private def isTreintaPorciento(obn: ObligacionesTri) = {
-    DMNTreintaPorciento.dmn(obn) match {
-      case f if f.equals(0) => { //case 0
+    Some(DMNTreintaPorciento.dmn(obn)) match {
+      case f if f.get.equals(0) => { //case 0
         val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
-        val newDetails = decode[ListDetallesObligaciones](s"""{"BOB_DETALLES" : '${detalles}'}""").toOption.get
+        val newDetails = decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
         println(detalles)
         println(newO)
         newO
       }
       case _ => {
-        val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
-        val newDetails = decode[ListDetallesObligaciones](s"""{"BOB_DETALLES" : '${detalles}'}""").toOption.get
+        val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(false), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
+        val newDetails = decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
         println(newDetails)
         println(newO)

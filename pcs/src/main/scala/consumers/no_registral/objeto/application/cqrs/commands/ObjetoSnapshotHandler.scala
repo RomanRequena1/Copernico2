@@ -27,6 +27,7 @@ class ObjetoSnapshotHandler(actor: ObjetoActor) extends SyncCommandHandler[Objet
       actor.state.registro,
       command.obligacionesSaldo,
       actor.state.cuotas,
+      actor.state.bandTipo,
       operacion = ObligacionEvents.operaciones.get("Upsert").get,
       command.idExterno
     )
