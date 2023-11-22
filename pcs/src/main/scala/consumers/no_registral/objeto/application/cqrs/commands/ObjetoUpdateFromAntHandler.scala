@@ -44,12 +44,12 @@ class ObjetoUpdateFromAntHandler(actor: ObjetoActor) extends SyncCommandHandler[
           },
             {
               case d if d.value.equals("2") =>
-                val newState = actor.state.copy(bandTipo = "TIPO2")
+                val newState = actor.state.copy(clasificacionObjeto = "TIPO2")
                 actor.persistSnapshot(event, newState) { () =>
                   sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
                 }
               case _ =>
-                val newState = actor.state.copy(bandTipo = "TIPO1")
+                val newState = actor.state.copy(clasificacionObjeto = "TIPO1")
                 actor.persistSnapshot(event, newState) { () =>
                   sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
                 }

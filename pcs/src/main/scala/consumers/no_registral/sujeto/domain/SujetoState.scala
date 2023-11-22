@@ -7,16 +7,19 @@ import serialization.CbroSerialization
 import java.time.LocalDateTime
 
 final case class SujetoState(
-    saldo: BigDecimal = 0,
-    saldoObjetos: Map[String, BigDecimal] = Map.empty,
-    saldoObligaciones: Map[String, BigDecimal] = Map.empty,
-    objetos: Set[(String, String)] = Set.empty,
-    fechaUltMod: LocalDateTime = LocalDateTime.MIN,
-    registro: Option[SujetoExternalDto] = None,
-    lastDeliveryIdByEvents:  BigInt = 0,
-    eventCounter:Int = 0,
-    lastInternalDeliveryId:BigInt = 0
-) extends AbstractState[SujetoEvents] with CbroSerialization{
+                              saldo: BigDecimal = 0,
+                              saldoObjetos: Map[String, BigDecimal] = Map.empty,
+                              saldoObligaciones: Map[String, BigDecimal] = Map.empty,
+                              objetos: Set[(String, String)] = Set.empty,
+                              fechaUltMod: LocalDateTime = LocalDateTime.MIN,
+                              registro: Option[SujetoExternalDto] = None,
+                              lastDeliveryIdByEvents:  BigInt = 0,
+                              eventCounter:Int = 0,
+                              cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
+                              deuda30Sujeto: Boolean = false,
+                              objVencidas: Map[String, (Boolean, String)] = Map.empty,
+                              lastInternalDeliveryId:BigInt = 0
+                            ) extends AbstractState[SujetoEvents] with CbroSerialization{
   def +(event: SujetoEvents): SujetoState = {
     eventCounter match {
       case n if (n > (eventCounterMax)) => changeState(event).copy(
@@ -37,7 +40,26 @@ final case class SujetoState(
     )*/
   }
 
+  private def validExitsObjVencidas(objetoId: String, clasificacionObjeto: String) = {
 
+    objVencidas match {
+      case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (true, clasificacionObjeto))
+      case x if x.contains(objetoId) => x updated (objetoId, (true, x(objetoId)._2))
+      case x => x + (objetoId -> (true, clasificacionObjeto))
+    }
+
+    //if (objVencidas.contains(objetoId)) objVencidas else objVencidas + (objetoId -> (true, clasificacionObjeto))
+  }
+
+  private def validExitsObjVencidasTreinta(objetoId: String,clasificacionObjeto: String) = {
+    objVencidas match {
+      case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (false, clasificacionObjeto))
+      case x if x.contains(objetoId) => x updated (objetoId, (false, x(objetoId)._2))
+      case x => x + (objetoId -> (false, clasificacionObjeto))
+    }
+
+    //if (objVencidas.contains(objetoId)) objVencidas updated (objetoId , (false, objVencidas(objetoId)._2 )) else objVencidas + (objetoId -> (false, clasificacionObjeto))
+  }
   private def changeState(event: SujetoEvents): SujetoState =
     event match {
       case SujetoEvents.SujetoUpdatedFromTri(_, _, registro) =>
@@ -48,15 +70,29 @@ final case class SujetoState(
         copy(
           registro = Some(registro)
         )
-      case SujetoEvents.SujetoUpdatedFromObjeto(deliveryId, _, objetoId, tipoObjeto, saldoObjeto, _saldoObligaciones) =>
+      case SujetoEvents.SujetoUpdatedFromObjeto(deliveryId, _, objetoId, tipoObjeto, saldoObjeto, _saldoObligaciones, clasificacionObjeto) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
+
         copy(
           objetos = objetos + ((objetoId, tipoObjeto)),
           saldoObjetos = _saldoObjetos,
           saldo = _saldoObjetos.values.sum,
           saldoObligaciones = saldoObligaciones + (objetoKey -> _saldoObligaciones),
-          lastInternalDeliveryId = deliveryId
+          lastInternalDeliveryId = deliveryId,
+          objVencidas = validExitsObjVencidas(objetoId, clasificacionObjeto)
+        )
+      case SujetoEvents.SujetoUpdatedFromObjetoTreintaPorciento(deliveryId, _, objetoId, tipoObjeto, saldoObjeto, _saldoObligaciones, clasificacionObjeto) =>
+        val objetoKey = s"$objetoId|$tipoObjeto"
+        val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
+
+        copy(
+          objetos = objetos + ((objetoId, tipoObjeto)),
+          saldoObjetos = _saldoObjetos,
+          saldo = _saldoObjetos.values.sum,
+          saldoObligaciones = saldoObligaciones + (objetoKey -> _saldoObligaciones),
+          lastInternalDeliveryId = deliveryId,
+          objVencidas = validExitsObjVencidasTreinta(objetoId, clasificacionObjeto)
         )
       case SujetoEvents.SujetoBajaFromObjetoSet(deliveryId, _, objetoId, tipoObjeto) =>
         val objetoKey = s"$objetoId|$tipoObjeto"

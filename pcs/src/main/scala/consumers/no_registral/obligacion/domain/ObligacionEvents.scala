@@ -41,7 +41,15 @@ object ObligacionEvents {
       cuota: Option[String]
   ) extends ObligacionEvents
 
-
+  case class ObligacionRemovedInfoFromObjeto(
+                                deliveryId: BigInt,
+                                sujetoId: String,
+                                objetoId: String,
+                                tipoObjeto: String,
+                                obligacionId: String,
+                                registro: ObligacionExternalDto,
+                                cuota: Option[String]
+                              ) extends ObligacionEvents
   case class ObligacionRemoved(
       deliveryId: BigInt,
       sujetoId: String,

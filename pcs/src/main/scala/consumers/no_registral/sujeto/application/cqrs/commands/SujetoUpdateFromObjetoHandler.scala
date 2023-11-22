@@ -2,6 +2,7 @@ package consumers.no_registral.sujeto.application.cqrs.commands
 
 import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.sujeto.application.entity.SujetoCommands.SujetoUpdateFromObjeto
+import consumers.no_registral.sujeto.application.helper.SendToObjeto
 import consumers.no_registral.sujeto.domain.SujetoEvents
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -19,7 +20,8 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
       command.objetoId,
       command.tipoObjeto,
       command.saldoObjeto,
-      command.saldoObligaciones
+      command.saldoObligaciones,
+      command.clasificacionObjeto
     )
 //    val initialization: String = {
 //      Try(System.getenv("INITIALIZATION")).getOrElse(null)
@@ -29,13 +31,23 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
 
     actor.persistEvent(event) { () =>
       actor.state += event
+      val map2 = actor.state.objVencidas.filter( obj => obj._2._2.equals("TIPO2"))
+      if (map2.values.forall(_ == (true, "TIPO2"))) {
+        val newState = actor.state.copy(deuda30Sujeto = true)
+        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context)
+        actor.state = newState
+      }
+      else {
+        val newState = actor.state.copy(deuda30Sujeto = false)
+        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context)
+        actor.state = newState
+      }
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
       actor.persistSnapshot(){ _ =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-
       }
     }
 //    }

@@ -8,12 +8,12 @@ import java.time.temporal.ChronoUnit
 
 object Utils {
 
-  def diffDaysObligacion(ven: String) = {
+  def diffDaysObligacion(ven: String): Long = {
 
     val formattedDate = LocalDateTime.parse(ven).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
     val dateNow = java.time.LocalDate.now
     val dateBefore = LocalDate.parse(formattedDate)
-    dateBefore.until(dateNow, ChronoUnit.DAYS)
+    dateBefore.until(dateNow, ChronoUnit.DAYS) //todo hoy - pro o sino ven
   }
 
 

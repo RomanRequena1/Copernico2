@@ -24,6 +24,14 @@ object ObjetoEvents {
       cotitulares: Set[String]
   ) extends ObjetoEvents
 
+  case class ObjetoUpdatedFromSujeto(
+                               deliveryId: BigInt,
+                               sujetoId: String,
+                               objetoId: String,
+                               tipoObjeto: String,
+                               deuda30Sujeto:Boolean,
+                               exclusionSUjeto: String
+                             ) extends ObjetoEvents
   case class ObjetoSnapshotPersisted(
       deliveryId: BigInt,
       sujetoId: String,
@@ -40,7 +48,9 @@ object ObjetoEvents {
       cuotas:List[Boolean],
       bandTipo: String,
       operacion: String,
-      idExterno: Option[String]
+      idExterno: Option[String],
+      deuda30Objeto: Option[Boolean],
+      aplicarDescuento: Option[Boolean]
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromTri(

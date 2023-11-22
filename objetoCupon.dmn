@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1we4mrc" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Web Modeler" exporterVersion="013bfbb" camunda:diagramRelationId="402ebf2a-7fc4-4f37-a06b-8d9ee750c02c" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0">
+  <decision id="Decision_0tsof3f" name="correspondeCupon">
+    <decisionTable id="DecisionTable_18l0opm" hitPolicy="FIRST">
+      <input id="Input_1" label="suj_exclusionSujeto">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>suj_exclusionSujeto</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_079w6ch" label="soj_exclusionObjeto">
+        <inputExpression id="LiteralExpression_0omuntw" typeRef="string">
+          <text>soj_exclusionObjeto</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1if5t48" label="soj_clasificacionObjeto">
+        <inputExpression id="LiteralExpression_18khk4b" typeRef="string">
+          <text>soj_clasificacionObjeto</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_10oocuw" label="suj_deuda30Sujeto">
+        <inputExpression id="LiteralExpression_0b4lc97" typeRef="string">
+          <text>suj_deuda30Sujeto</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1nv1ddv" label="soj_deuda30Objeto">
+        <inputExpression id="LiteralExpression_1b6itz4" typeRef="string">
+          <text>soj_deuda30Objeto</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="aplicarDescuento" name="aplicarDescuento" typeRef="string" />
+      <rule id="DecisionRule_0t7qbcz">
+        <description>Buscar cupones y aplicarlos</description>
+        <inputEntry id="UnaryTests_0sc0vfo">
+          <text>"E"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0iw8v16">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1y0hsx6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1fcth4n">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0sv66p3">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0mbuzu1">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1pmkqha">
+        <description>No buscar ni aplicar cupones</description>
+        <inputEntry id="UnaryTests_1ag6e92">
+          <text>"NE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1u68ydk">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06nnzqi">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1c7wls7">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1fkh0xp">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_01otxcn">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1bvpsw2">
+        <description>Buscar cupones y aplicarlos</description>
+        <inputEntry id="UnaryTests_1tac4f2">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1h3lbiz">
+          <text>"E"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mdrwo3">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0fmujkl">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0czafq2">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0colp0r">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0oqm6tw">
+        <description>No buscar ni aplicar cupones</description>
+        <inputEntry id="UnaryTests_1mxgsyk">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_10yiza8">
+          <text>"NE"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0l6taj5">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0oklbf2">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0abguyu">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1yfc78q">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0w5o0tm">
+        <description>Buscar cupones y aplicarlos</description>
+        <inputEntry id="UnaryTests_1qr83p0">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0h8o5zo">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0dssl39">
+          <text>"1"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ec7a4y">
+          <text>"true"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0htv2lk">
+          <text>"true"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0zbxg5q">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_127ny6h">
+        <description>No buscar ni aplicar cupones</description>
+        <inputEntry id="UnaryTests_0w72f6l">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_15b7g8q">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ev1nos">
+          <text>"1"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0xyrzf8">
+          <text>"true"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1q15tev">
+          <text>"false"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1p740ni">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0djdf25">
+        <description>Buscar cupones y aplicarlos</description>
+        <inputEntry id="UnaryTests_1sz5wsk">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0a0nedh">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1v39vtw">
+          <text>"1"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0qm56r8">
+          <text>"false"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1nod3x4">
+          <text>"true"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0n2e53r">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0jm6q2z">
+        <description>No buscar ni aplicar cupones</description>
+        <inputEntry id="UnaryTests_1lzizp6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02md5h2">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1qv6no5">
+          <text>"1"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1cvzngb">
+          <text>"false"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1e7895k">
+          <text>"false"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0261yp8">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_12kjkw5">
+        <description>Buscar cupones y aplicarlos</description>
+        <inputEntry id="UnaryTests_0h8v65g">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1njfd8o">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0urn8d2">
+          <text>"2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0zkzpx7">
+          <text>"true"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0sl08f2">
+          <text>"true"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_01gyf4o">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1q04o8e">
+        <description>No buscar ni aplicar cupones</description>
+        <inputEntry id="UnaryTests_0ui9ku9">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_19vn6jy">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1amf7wj">
+          <text>"2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1bxjsjd">
+          <text>"true"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ngmx4w">
+          <text>"false"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0r3e7k7">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0uh8nbg">
+        <description>No buscar ni aplicar cupones</description>
+        <inputEntry id="UnaryTests_07hj7zi">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1qzik36">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0sqtv7s">
+          <text>"2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02ihklz">
+          <text>"false"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1f3fmyg">
+          <text>"true"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0b03q0t">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1b30g2a">
+        <description>No buscar ni aplicar cupones</description>
+        <inputEntry id="UnaryTests_1b5vjhf">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0z5864s">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1lgz5cn">
+          <text>"2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1dbtn2m">
+          <text>"false"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_12mvnym">
+          <text>"true"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1i9xwkp">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Decision_0tsof3f">
+        <dc:Bounds height="80" width="180" x="360" y="140" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

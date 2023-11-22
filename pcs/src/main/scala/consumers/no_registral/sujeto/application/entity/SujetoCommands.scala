@@ -15,6 +15,16 @@ object SujetoCommands {
       registro: SujetoExternalDto
   ) extends SujetoCommands
 
+  case class SujetoUpdateFromObjetoTreintaPorciento(
+                                                     deliveryId: BigInt,
+                                                     sujetoId: String,
+                                                     objetoId: String,
+                                                     tipoObjeto: String,
+                                                     saldoObjeto: BigDecimal,
+                                                     saldoObligaciones: BigDecimal,
+                                                     clasificacionObjeto: String
+                                                   ) extends SujetoCommands
+
   case class SujetoUpdateFromAnt(
       deliveryId: BigInt,
       sujetoId: String,
@@ -27,7 +37,8 @@ object SujetoCommands {
       objetoId: String,
       tipoObjeto: String,
       saldoObjeto: BigDecimal,
-      saldoObligaciones: BigDecimal
+      saldoObligaciones: BigDecimal,
+      clasificacionObjeto: String
   ) extends SujetoCommands
 
   case class SujetoSetBajaFromObjeto(

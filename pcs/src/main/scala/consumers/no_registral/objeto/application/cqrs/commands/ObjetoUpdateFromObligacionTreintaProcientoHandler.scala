@@ -16,7 +16,6 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor)
                        command: ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento
                      ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    println("CUMBIA "  + actor.state.lastDeliveryIdByEvents)
     val event = ObjetoUpdatedFromObnTreintaProciento(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
@@ -38,9 +37,8 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor)
 
     actor.persistEvent(event) { () =>
       actor.state += event
-      println("STATE OBJETO UPDATE 30 -> " + actor.state.obnVencidas)
-      if (initialization != "true")
-        actor.informParent(command, actor.state)
+      //if (initialization != "true")
+      //  actor.informParent(command, actor.state)
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
@@ -48,14 +46,16 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor)
 
       if(actor.state.obnVencidas.contains(false)){
 
-        val newState = actor.state.copy(band30 = false)
+        val newState = actor.state.copy(deuda30Objeto = false)
+        actor.informParentTreintaPorciento(command, actor.state)
         actor.persistSnapshot(event, newState) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }
       }
 
       else {
-        val newState = actor.state.copy(band30 = true)
+        val newState = actor.state.copy(deuda30Objeto = true)
+        actor.informParent(command, actor.state)
         actor.persistSnapshot(event, newState) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }

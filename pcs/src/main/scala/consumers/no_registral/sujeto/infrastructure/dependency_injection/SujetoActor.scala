@@ -8,7 +8,7 @@ import consumers.no_registral.objeto.application.entities.ObjetoMessage
 import consumers.no_registral.objeto.application.entities.ObjetoMessage.ObjetoMessageRoots
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage
-import consumers.no_registral.sujeto.application.cqrs.commands.{SujetoSetBajaFromObjetoHandler, SujetoUpdateFromAntHandler, SujetoUpdateFromObjetoHandler, SujetoUpdateFromTriHandler}
+import consumers.no_registral.sujeto.application.cqrs.commands.{SujetoSetBajaFromObjetoHandler, SujetoUpdateFromAntHandler, SujetoUpdateFromObjetoHandler, SujetoUpdateFromObjetoTreintaProcientoHandler, SujetoUpdateFromTriHandler}
 import consumers.no_registral.sujeto.application.cqrs.queries.{GetSnapshotSujetoHandler, GetStateSujetoHandler}
 import consumers.no_registral.sujeto.application.entity.SujetoMessage.SujetoMessageRoots
 import consumers.no_registral.sujeto.application.entity.{SujetoCommands, SujetoQueries}
@@ -41,6 +41,8 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
   }
 
   override def setupHandlers(): Unit = {
+
+    commandBus.subscribe[SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento](new SujetoUpdateFromObjetoTreintaProcientoHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromAnt](new SujetoUpdateFromAntHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromTri](new SujetoUpdateFromTriHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromObjeto](new SujetoUpdateFromObjetoHandler(this).handle)

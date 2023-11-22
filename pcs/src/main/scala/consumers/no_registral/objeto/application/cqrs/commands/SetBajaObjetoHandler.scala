@@ -1,8 +1,8 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
-
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.helper.SendToObligaciones
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -37,6 +37,7 @@ class SetBajaObjetoHandler(actor: ObjetoActor) extends SyncCommandHandler[Objeto
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
         }
+        SendToObligaciones(actor.state, actor.context)
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

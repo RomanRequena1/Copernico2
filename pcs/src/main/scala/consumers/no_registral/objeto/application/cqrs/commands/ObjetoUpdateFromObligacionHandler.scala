@@ -40,11 +40,27 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
     actor.persistEvent(event) { () =>
 
       actor.state += event
-      if (initialization != "true")
-        actor.informParent(command, actor.state)
+      //if (initialization != "true")
+      //  actor.informParent(command, actor.state)
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+      }
+      if (actor.state.obnVencidas.contains(false)) {
+
+        val newState = actor.state.copy(deuda30Objeto = false)
+        actor.informParentTreintaPorciento(command, actor.state)
+        actor.persistSnapshot(event, newState) { () =>
+          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+        }
+      }
+
+      else {
+        val newState = actor.state.copy(deuda30Objeto = true)
+        actor.informParent(command, actor.state)
+        actor.persistSnapshot(event, newState) { () =>
+          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+        }
       }
       actor.persistSnapshot(event, actor.state){ () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)

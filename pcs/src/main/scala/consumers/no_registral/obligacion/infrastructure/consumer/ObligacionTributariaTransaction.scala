@@ -87,6 +87,7 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
   }
 
   private def isTreintaPorciento(obn: ObligacionesTri) = {
+    //todo set deuda30Obligacion en state
     Some(DMNTreintaPorciento.dmn(obn)) match {
       case f if f.get.equals(0) => { //case 0
         val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))

@@ -2,6 +2,7 @@ package consumers.no_registral.objeto.domain
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
+import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromSujeto
 import ddd.{AbstractState, eventCounterMax}
 import serialization.CbroSerialization
 
@@ -24,8 +25,10 @@ case class ObjetoState(
     isAdheridoDebito: Boolean = false,
     eventCounter:Int = 0,
     cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
-    band30: Boolean = false,
-    bandTipo: String = "",
+    deuda30Objeto: Boolean = true,
+    clasificacionObjeto: String = "",
+    deuda30Sujeto: Boolean = true,
+    aplicarDescuento: Boolean = true,
     obnVencidas: List[Boolean] = List(true, true, true, true, true, true, true, true, true, true, true, true, true)
 ) extends AbstractState[ObjetoEvents] with CbroSerialization{
 
@@ -61,6 +64,8 @@ case class ObjetoState(
           exenciones = exenciones + exencion,
           isBaja = false
         )
+      case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
+        copy(deuda30Sujeto = evt.deuda30Sujeto)
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
         copy(
           sujetoResponsable = evt.sujetoResponsable match {
@@ -124,20 +129,28 @@ case class ObjetoState(
       case evt: ObjetoEvents.ObjetoRemovedObligacion =>
         val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
         if(evt.cuota.isEmpty || evt.cuota.get.toInt < 0 || evt.cuota.get.toInt > 12) {
+          val indice = evt.cuota.get.toInt
+          val newObnVencidas = obnVencidas.updated(indice, true)
 
           copy(
             saldo = obligacionesSaldo_.values.sum,
             obligaciones = obligaciones - evt.obligacionId,
-            obligacionesSaldo = obligacionesSaldo_
+            obligacionesSaldo = obligacionesSaldo_,
+            obnVencidas = newObnVencidas
           )
         }else {
           val cuotaIndex_ = evt.cuota.get.toInt
           val cuotasPagadas_ = cuotas.updated(cuotaIndex_, true)
+          val indice = evt.cuota.get.toInt
+          val newObnVencidas = obnVencidas.updated(indice, true)
+
           copy(
             saldo = obligacionesSaldo_.values.sum,
             obligaciones = obligaciones - evt.obligacionId,
             obligacionesSaldo = obligacionesSaldo_,
-            cuotas = cuotasPagadas_
+            cuotas = cuotasPagadas_,
+            obnVencidas = newObnVencidas
+
           )
         }
 

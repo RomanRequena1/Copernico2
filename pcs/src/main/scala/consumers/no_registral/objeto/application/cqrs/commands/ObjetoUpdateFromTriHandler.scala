@@ -32,34 +32,33 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
       println(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
-      val resultDMN = DMNTreintaPorcientoTipo.dmn(command.registro)
-
       // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular
       actor.persistEvent(event) { () =>
         actor.state += event
-        actor.informParent(command, actor.state)
+
         if (actor.state.eventCounter == eventCounterMax) {
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
 
-        resultDMN
+        DMNTreintaPorcientoTipo.dmn(command.registro)
           .fold(e => {
             println("ERROR DMN OBJETO: "+e)
               },
                 {
                   case d if d.value.equals("2") =>
-                    println(actor.state.copy(bandTipo = "TIPO2"))
-                    val newState = actor.state.copy(bandTipo = "TIPO2")
+                    val newState = actor.state.copy(clasificacionObjeto = "TIPO2")
                     actor.persistSnapshot(event, newState) { () =>
+                      actor.informParent(command, actor.state)
                       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
                     }
                   case _ =>
-                    println("CASO TODOS:::"+actor.state.copy(bandTipo = "TIPO1"))
-                    val newState = actor.state.copy(bandTipo = "TIPO1")
+                    val newState = actor.state.copy(clasificacionObjeto = "TIPO1")
                     actor.persistSnapshot(event, newState) { () =>
+                      actor.informParent(command, actor.state)
                       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
                     }
                 })
+
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
