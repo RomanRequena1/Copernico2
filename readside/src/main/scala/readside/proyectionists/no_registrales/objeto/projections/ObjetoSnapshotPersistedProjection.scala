@@ -60,4 +60,5 @@ case class ObjetoSnapshotPersistedProjection(
     case Some(optionalAttributes) => optionalAttributes ++ others
     case None => others
   }
+
 }

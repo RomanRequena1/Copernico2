@@ -14,7 +14,7 @@ trait ExclusionesSujetoMessage extends ShardedMessage {
 object ExclusionesSujetoMessage {
 
   case class ExclusionesSujetoMessageRoots(sujetoId: String) {
-    override def toString = s"Sujeto-$sujetoId"
+    override def toString = s"Sujeto-$sujetoId-ExclusionSujeto"
   }
   object ExclusionesSujetoMessageRoots {
 

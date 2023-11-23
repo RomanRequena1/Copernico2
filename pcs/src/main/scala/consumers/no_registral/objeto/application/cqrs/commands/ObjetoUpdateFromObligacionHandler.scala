@@ -40,6 +40,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
     actor.persistEvent(event) { () =>
 
       actor.state += event
+      println("TREINTA 5 " + actor.state)
       //if (initialization != "true")
       //  actor.informParent(command, actor.state)
       if (actor.state.eventCounter == eventCounterMax) {
@@ -47,8 +48,9 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
       if (actor.state.obnVencidas.contains(false)) {
-
+        println("TREINTA 6.0 ")
         val newState = actor.state.copy(deuda30Objeto = false)
+        println("TREINTA 7.0 " + newState)
         actor.informParentTreintaPorciento(command, actor.state)
         actor.persistSnapshot(event, newState) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
@@ -56,7 +58,9 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
       }
 
       else {
+        println("TREINTA 6.1 ")
         val newState = actor.state.copy(deuda30Objeto = true)
+        println("TREINTA 7.1 ")
         actor.informParent(command, actor.state)
         actor.persistSnapshot(event, newState) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)

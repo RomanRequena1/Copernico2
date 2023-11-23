@@ -1,7 +1,5 @@
 package readside.proyectionists.registrales.exclusiones_sujeto.projections
 
-import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesExternalDto
-import consumers.registral.etapas_procesales.domain.EtapasProcesalesEvents
 import consumers.registral.exclusiones_sujeto.application.entities.ExclusionesSujetoExternalDto
 import consumers.registral.exclusiones_sujeto.domain.ExclusionesSujetoEvents
 
@@ -14,7 +12,7 @@ case class ExclusionesSujetoUpdatedFromDtoProjection(
     "bse_accion" -> registro.BSE_ACCION,
     "bse_motivo" -> registro.BSE_MOTIVO,
     "bse_fecha_desde" -> registro.BSE_FECHA_DESDE,
-    "bde_fecha_hasta" -> registro.BSE_FECHA_HASTA,
+    "bse_fecha_hasta" -> registro.BSE_FECHA_HASTA,
     "bse_origen" -> registro.BSE_ORIGEN,
     "bse_tramite_id" -> registro.BSE_TRAMITE_ID,
     "bse_nombre_gestion" -> registro.BSE_NOMBRE_GESTION,

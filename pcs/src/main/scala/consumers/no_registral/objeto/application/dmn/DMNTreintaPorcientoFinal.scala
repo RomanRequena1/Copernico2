@@ -15,7 +15,7 @@ object DMNTreintaPorcientoFinal {
     val engine = new DmnEngine()
     val isExclusionObjeto = if(exclusionObjeto.isEmpty) "" else exclusionObjeto.head
     val chequeoDmn: Either[Product, DmnEngine.EvalResult] = engine.parse(dmnStream.getOrElse(null))
-      .flatMap(dmn => engine.eval(dmn, "Decision_Clasificacion_Objeto", Map(
+      .flatMap(dmn => engine.eval(dmn, "Decision_0tsof3f", Map(
         "suj_exclusionSujeto" -> cmd.exclusionSUjeto,
         "soj_exclusionObjeto" -> isExclusionObjeto,
         "soj_clasificacionObjeto" -> state.clasificacionObjeto,

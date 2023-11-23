@@ -1,7 +1,9 @@
 package consumers.no_registral.sujeto.application.cqrs.commands
 
 import akka.Done
+import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.sujeto.application.entity.SujetoCommands.SujetoSetBajaFromObjeto
+import consumers.no_registral.sujeto.application.helper.SendToObjeto
 import consumers.no_registral.sujeto.domain.SujetoEvents
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -21,6 +23,18 @@ class SujetoSetBajaFromObjetoHandler(actor: SujetoActor) extends SyncCommandHand
 
     actor.persistEvent(event,Set("Sujeto")) { () =>
       actor.state += event
+      val map2 = actor.state.objVencidas.filter(obj => obj._2._2.equals("TIPO2"))
+      if (map2.values.forall(_._1)) { // todo tipo 2 - tipo 1 no afecta el 30 del sujeto - objeto no se ve afectado por el 30 del sujeto
+        val newState = actor.state.copy(deuda30Sujeto = true)
+        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context, event)
+        actor.state = newState
+      }
+      else {
+        val newState = actor.state.copy(deuda30Sujeto = false)
+        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context, event)
+        actor.state = newState
+      }
+
       actor.persistSnapshot()(_ => ())
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

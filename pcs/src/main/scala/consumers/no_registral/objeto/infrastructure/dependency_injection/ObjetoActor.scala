@@ -113,7 +113,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
     val kafkaTopic = "ObjetoSnapshotPersistedReadside"
-    println("")
+    println("Llego")
     val snapshot =
       ObjetoSnapshotPersisted(
         evt.deliveryId,
@@ -253,7 +253,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
   def withCotitulares(sujetos: Set[String]): Boolean =
     sujetos.size > 1*/
   def informParentTreintaPorciento(cmd: ObjetoCommands, state: ObjetoState): Unit = {
-    context.parent ! SujetoCommands.SujetoUpdateFromObjeto(
+    context.parent ! SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
       cmd.deliveryId,
       cmd.sujetoId,
       cmd.objetoId,

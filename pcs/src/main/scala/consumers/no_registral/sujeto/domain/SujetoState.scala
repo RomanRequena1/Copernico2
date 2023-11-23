@@ -45,7 +45,7 @@ final case class SujetoState(
     objVencidas match {
       case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (true, clasificacionObjeto))
       case x if x.contains(objetoId) => x updated (objetoId, (true, x(objetoId)._2))
-      case x => x + (objetoId -> (true, clasificacionObjeto))
+      case x => x + (objetoId -> ((true, clasificacionObjeto)))
     }
 
     //if (objVencidas.contains(objetoId)) objVencidas else objVencidas + (objetoId -> (true, clasificacionObjeto))
@@ -55,7 +55,7 @@ final case class SujetoState(
     objVencidas match {
       case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (false, clasificacionObjeto))
       case x if x.contains(objetoId) => x updated (objetoId, (false, x(objetoId)._2))
-      case x => x + (objetoId -> (false, clasificacionObjeto))
+      case x => x + (objetoId -> ((false, clasificacionObjeto)))
     }
 
     //if (objVencidas.contains(objetoId)) objVencidas updated (objetoId , (false, objVencidas(objetoId)._2 )) else objVencidas + (objetoId -> (false, clasificacionObjeto))

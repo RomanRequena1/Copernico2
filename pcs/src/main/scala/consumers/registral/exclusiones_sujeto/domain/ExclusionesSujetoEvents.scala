@@ -4,16 +4,15 @@ import consumers.registral.exclusiones_sujeto.application.entities.{ExclusionesS
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
-sealed trait ExclusionesSujetoEvents extends Event with ExclusionesSujetoMessage with CbroSerialization{
-  def sujetoId: String
-}
+sealed trait ExclusionesSujetoEvents extends Event with ExclusionesSujetoMessage with CbroSerialization
+
 
 object ExclusionesSujetoEvents {
 
   case class ExclusionesSujetoUpdatedFromDto(
      deliveryId: BigInt,
      sujetoId: String,
-     registro: ExclusionesSujetoExternalDto
-     ) extends ExclusionesSujetoEvents
+     registro: ExclusionesSujetoExternalDto)
+    extends ExclusionesSujetoEvents
 
 }

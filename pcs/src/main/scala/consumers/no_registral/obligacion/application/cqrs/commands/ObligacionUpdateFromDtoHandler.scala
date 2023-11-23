@@ -45,14 +45,17 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event
+        println("TREINTA 2 " + actor.state)
         if (!(initialization == "true" && command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {
           //actor.informParent(command)
         }
         if (event.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.BAND_30.get.equals(true)) {
+          println("TREINTA 3.0 ")
           actor.informParent(command)
         }
 
         else {
+          println("TREINTA 3.1 ")
           actor.informParentTreintaProciento(event)
         }
 

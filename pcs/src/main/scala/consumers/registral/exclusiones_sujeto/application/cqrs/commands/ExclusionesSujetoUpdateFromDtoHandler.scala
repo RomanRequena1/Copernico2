@@ -16,6 +16,7 @@ import kafka.MessageProducer
 class ExclusionesSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 
   def handle(command: ExclusionesSujetoUpdateFromDto)(state: ExclusionesSujetoState)(replyTo: ActorRef[Success]) =
+
     Effect
       .persist[
         ExclusionesSujetoUpdatedFromDto,

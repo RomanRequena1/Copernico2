@@ -30,16 +30,23 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
 //    if (initialization != "true") {
 
     actor.persistEvent(event) { () =>
+
       actor.state += event
+      println("TREINTA 8 " + event.clasificacionObjeto)
+      println("TREINTA 8 " + actor.state)
       val map2 = actor.state.objVencidas.filter( obj => obj._2._2.equals("TIPO2"))
-      if (map2.values.forall(_ == (true, "TIPO2"))) {
+      if (map2.values.forall(_._1)) {
+        println("TREINTA 9.0 " + map2)
         val newState = actor.state.copy(deuda30Sujeto = true)
-        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context)
+        println("TREINTA 10.0 " + newState)
+        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context, event)
         actor.state = newState
       }
       else {
+        println("TREINTA 9.1 ")
         val newState = actor.state.copy(deuda30Sujeto = false)
-        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context)
+        println("TREINTA 10.1 ")
+        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context, event)
         actor.state = newState
       }
       if (actor.state.eventCounter == eventCounterMax) {

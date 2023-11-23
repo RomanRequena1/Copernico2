@@ -38,6 +38,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   }
 
   def informParent(cmd: ObligacionCommands): Unit = {
+    println("TREINTA 4.0 ")
     context.parent ! ObjetoCommands.ObjetoUpdateFromObligacion(
       cmd.deliveryId,
       cmd.sujetoId,
@@ -59,6 +60,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   }
 
   def informParentTreintaProciento(evt: ObligacionUpdatedFromDto): Unit = {
+    println("TREINTA 4.1 ")
     context.parent ! ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento(
       evt.deliveryId,
       evt.sujetoId,

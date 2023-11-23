@@ -12,18 +12,18 @@ import consumers.registral.exclusiones_sujeto.infrastructure.json._
 import scala.concurrent.Future
 
 
-case class ExclusionesSujetoTributarioTransaction (actor: ExclusionesSujetoActor, monitoring: Monitoring)(
+case class ExclusionesSujetoTributarioTransaction(actor: ExclusionesSujetoActor, monitoring: Monitoring)(
 implicit
 actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ExclusionesSujetoTri](monitoring) {
-  def topic = "DGR-COP-ETAPROCESALES-TRI"
-  def topicRetry = "DGR-COP-ETAPROCESALES-TRI_retry"
-  def topicError = "DGR-COP-ETAPROCESALES-TRI_error"
+  def topic = "DGR-COP-EXCLUSIONES-SUJETO-TRI"
+  def topicRetry = "DGR-COP-EXCLUSIONES-SUJETO-TRI_retry"
+  def topicError = "DGR-COP-EXCLUSIONES-SUJETO-TRI_error"
 
   def processInput(input: String): Either[Throwable, ExclusionesSujetoTri] = {
+    println("ROMAN WRITESIDE: " + decode[ExclusionesSujetoTri](input))
     decode[ExclusionesSujetoTri](input)
   }
-
 
 
   override def processMessage(registro: ExclusionesSujetoTri): Future[Response.SuccessProcessing] = {

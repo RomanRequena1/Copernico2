@@ -41,14 +41,14 @@ class SujetoUpdateFromObjetoTreintaProcientoHandler(actor: SujetoActor)
     actor.persistEvent(event) { () =>
       actor.state += event
       val map2 = actor.state.objVencidas.filter( obj => obj._2._2.equals("TIPO2"))
-      if (map2.values.forall(_ == (true, "TIPO2"))) { // todo tipo 2 - tipo 1 no afecta el 30 del sujeto - objeto no se ve afectado por el 30 del sujeto
+      if (map2.values.forall(_._1)) { // todo tipo 2 - tipo 1 no afecta el 30 del sujeto - objeto no se ve afectado por el 30 del sujeto
         val newState = actor.state.copy(deuda30Sujeto = true)
-        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context)
+        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context, event)
         actor.state = newState
       }
       else {
         val newState = actor.state.copy(deuda30Sujeto = false)
-        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context)
+        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context, event)
         actor.state = newState
       }
 

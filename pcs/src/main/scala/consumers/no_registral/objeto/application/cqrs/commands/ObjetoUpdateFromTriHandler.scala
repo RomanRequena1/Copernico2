@@ -40,21 +40,26 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
 
-        DMNTreintaPorcientoTipo.dmn(command.registro)
+        DMNTreintaPorcientoTipo.dmn(actor.state)
           .fold(e => {
             println("ERROR DMN OBJETO: "+e)
               },
-                {
-                  case d if d.value.equals("2") =>
+                value =>
+
+                  value.value match {
+                  case d if d.equals(2) =>
+                    println("HELP 0-> " + d)
                     val newState = actor.state.copy(clasificacionObjeto = "TIPO2")
+                    println("HELP 1-> " + newState)
                     actor.persistSnapshot(event, newState) { () =>
-                      actor.informParent(command, actor.state)
+                      actor.informParent(command, newState)
                       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
                     }
                   case _ =>
                     val newState = actor.state.copy(clasificacionObjeto = "TIPO1")
+                    println("HELP 2 -> " + newState)
                     actor.persistSnapshot(event, newState) { () =>
-                      actor.informParent(command, actor.state)
+                      actor.informParent(command, newState)
                       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
                     }
                 })

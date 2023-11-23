@@ -41,7 +41,8 @@ sealed trait ExclusionesSujetoExternalDto extends ddd.ExternalDto with CbroSeria
 
   case class ExclusionesSujetoTri(EV_ID: BigInt,
                                 BSE_SUJ_IDENTIFICADOR: String,
-                                BSE_ACCION: Option[String], BSE_MOTIVO: Option[String],
+                                BSE_ACCION: Option[String],
+                                BSE_MOTIVO: Option[String],
                                 BSE_FECHA_DESDE: Option[LocalDateTime],
                                 BSE_FECHA_HASTA: Option[LocalDateTime],
                                 BSE_ORIGEN: Option[String],
@@ -54,7 +55,8 @@ sealed trait ExclusionesSujetoExternalDto extends ddd.ExternalDto with CbroSeria
 
   case class ExclusionesSujetoAnt(EV_ID: BigInt,
                                 BSE_SUJ_IDENTIFICADOR: String,
-                                BSE_ACCION: Option[String], BSE_MOTIVO: Option[String],
+                                BSE_ACCION: Option[String],
+                                BSE_MOTIVO: Option[String],
                                 BSE_FECHA_DESDE: Option[LocalDateTime],
                                 BSE_FECHA_HASTA: Option[LocalDateTime],
                                 BSE_ORIGEN: Option[String],
