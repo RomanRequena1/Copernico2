@@ -76,7 +76,8 @@ case class ObjetoState(
           registro = Some(evt.registro),
           sujetos = sujetos + evt.sujetoId,
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
-          isBaja = false
+          isBaja = false,
+          clasificacionObjeto = evt.clasificacionObjeto
         )
 //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
 //        copy(

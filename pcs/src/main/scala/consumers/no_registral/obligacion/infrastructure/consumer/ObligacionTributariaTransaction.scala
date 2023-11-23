@@ -69,7 +69,7 @@ case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Moni
           tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
           obligacionId = obligacion.BOB_OBN_ID,
           registro = obligacion,
-          cuota = None)
+          cuota = obligacion.BOB_CUOTA)
       }
       else {
         ObligacionUpdateFromDto(

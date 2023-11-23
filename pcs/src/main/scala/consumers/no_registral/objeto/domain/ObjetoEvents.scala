@@ -62,6 +62,8 @@ object ObjetoEvents {
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String],
       isAdheridoDebito: Option[Boolean],
+      clasificacionObjeto: String
+
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromAnt(

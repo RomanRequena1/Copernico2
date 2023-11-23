@@ -22,6 +22,7 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
       command.obligacionId,
       command.cuota
     )
+    println("DELETEOBN 2 -> " + event.obligacionId + " - " + event.deliveryId + " - " + event.objetoId + " - " + event.sujetoId + " - " + event.cuota)
     actor.persistEvent(event) { () =>
       actor.state += event
       if(!actor.state.isBaja){

@@ -31,6 +31,7 @@ class SetBajaObjetoHandler(actor: ObjetoActor) extends SyncCommandHandler[Objeto
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event
+        println("BAJATREINTA -> " + actor.state)
         actor.informBajaToParent(command)
         actor.deleteSnapshot(event, actor.state) { () =>
           actor.deleteObjetoObligacionesSnapshot(event, actor.state) { () =>

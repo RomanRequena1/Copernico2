@@ -39,18 +39,12 @@ class SujetoUpdateFromObjetoTreintaProcientoHandler(actor: SujetoActor)
     //    if (initialization != "true") {
 
     actor.persistEvent(event) { () =>
+
       actor.state += event
-      val map2 = actor.state.objVencidas.filter( obj => obj._2._2.equals("TIPO2"))
-      if (map2.values.forall(_._1)) { // todo tipo 2 - tipo 1 no afecta el 30 del sujeto - objeto no se ve afectado por el 30 del sujeto
-        val newState = actor.state.copy(deuda30Sujeto = true)
-        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context, event)
-        actor.state = newState
-      }
-      else {
-        val newState = actor.state.copy(deuda30Sujeto = false)
-        SendToObjeto(actor.state, newState, sender, actor.context.children, actor.context, event)
-        actor.state = newState
-      }
+
+      println("TREINTA 8.1 " + event.clasificacionObjeto)
+      println("TREINTA 8.1 " + actor.state)
+        SendToObjeto(actor.state, sender, actor.context.children, actor.context, event)
 
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))

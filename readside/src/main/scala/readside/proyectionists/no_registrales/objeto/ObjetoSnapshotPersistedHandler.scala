@@ -45,6 +45,7 @@ class ObjetoSnapshotPersistedHandler(
           }
         } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
       } else if (registro.operacion.equals("FD")) {
+        println("ENTRO TREINTA DELETE")
         val cassandra = new CassandraWriteProduction()
         for {
           done <- cassandra
@@ -62,6 +63,7 @@ class ObjetoSnapshotPersistedHandler(
             }
         } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
       } else {
+        println("ENTRO TREINTA DELETE 2")
         val cassandra = new CassandraWriteProduction()
         for {
           done <- cassandra

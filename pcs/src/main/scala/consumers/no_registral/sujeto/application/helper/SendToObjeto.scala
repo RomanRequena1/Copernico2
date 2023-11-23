@@ -6,10 +6,11 @@ import consumers.no_registral.sujeto.domain.SujetoEvents.{SujetoBajaFromObjetoSe
 import consumers.no_registral.sujeto.domain.SujetoState
 
 object SendToObjeto {
-  def apply(currentState: SujetoState, newState: SujetoState, sender: ActorRef,  children: Iterable[ActorRef], actorContext: ActorContext, event: SujetoUpdatedFromObjeto) : Unit = {
+  def apply(currentState: SujetoState, sender: ActorRef,  children: Iterable[ActorRef], actorContext: ActorContext, event: SujetoUpdatedFromObjeto) : Unit = {
 
     val isExclusionSujeto = QueryExclusionSujeto(event.sujetoId)
-      if (newState.deuda30Sujeto.equals(currentState.deuda30Sujeto)) {
+    println("DIFERENCIA -> " + currentState.diffStates)
+      if (currentState.diffStates) {
         println("TREINTA 11 " +currentState)
         sender ! ObjetoUpdateFromSujeto(
           currentState.lastDeliveryIdByEvents,
@@ -19,7 +20,7 @@ object SendToObjeto {
             case None => ""
           },
           sender.path.toString.last.toString,
-          newState.deuda30Sujeto,
+          currentState.deuda30Sujeto,
           if(isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
         )
       } else{
@@ -33,7 +34,7 @@ object SendToObjeto {
               case None => ""
             },
             actor.path.toString.last.toString,
-            newState.deuda30Sujeto,
+            currentState.deuda30Sujeto,
             if(isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
 
           )
@@ -41,11 +42,12 @@ object SendToObjeto {
       }
   }
 
-  def apply(currentState: SujetoState, newState: SujetoState, sender: ActorRef, children: Iterable[ActorRef], actorContext: ActorContext, event: SujetoUpdatedFromObjetoTreintaPorciento): Unit = {
+  def apply(currentState: SujetoState, sender: ActorRef, children: Iterable[ActorRef], actorContext: ActorContext, event: SujetoUpdatedFromObjetoTreintaPorciento): Unit = {
 
     val isExclusionSujeto = QueryExclusionSujeto(event.sujetoId)
-    if (newState.deuda30Sujeto.equals(currentState.deuda30Sujeto)) {
-      println("TREINTA 11 " + currentState)
+    println("DIFERENCIA -> " + currentState.diffStates)
+    if (currentState.diffStates) {
+      println("TREINTA 11.1 " + currentState)
       sender ! ObjetoUpdateFromSujeto(
         currentState.lastDeliveryIdByEvents,
         event.sujetoId,
@@ -54,7 +56,7 @@ object SendToObjeto {
           case None => ""
         },
         sender.path.toString.last.toString,
-        newState.deuda30Sujeto,
+        currentState.deuda30Sujeto,
         if (isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
       )
     } else {
@@ -68,7 +70,7 @@ object SendToObjeto {
             case None => ""
           },
           actor.path.toString.last.toString,
-          newState.deuda30Sujeto,
+          currentState.deuda30Sujeto,
           if (isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
 
         )
@@ -76,11 +78,12 @@ object SendToObjeto {
     }
   }
 
-  def apply(currentState: SujetoState, newState: SujetoState, sender: ActorRef, children: Iterable[ActorRef], actorContext: ActorContext, event: SujetoBajaFromObjetoSet): Unit = {
+  def apply(currentState: SujetoState, sender: ActorRef, children: Iterable[ActorRef], actorContext: ActorContext, event: SujetoBajaFromObjetoSet): Unit = {
 
     val isExclusionSujeto = QueryExclusionSujeto(event.sujetoId)
-    if (newState.deuda30Sujeto.equals(currentState.deuda30Sujeto)) {
-      println("TREINTA 11 " + currentState)
+    println("DIFERENCIA -> " + currentState.diffStates)
+    if (currentState.diffStates) {
+      println("TREINTA 11.2 " + currentState)
       sender ! ObjetoUpdateFromSujeto(
         currentState.lastDeliveryIdByEvents,
         event.sujetoId,
@@ -89,7 +92,7 @@ object SendToObjeto {
           case None => ""
         },
         sender.path.toString.last.toString,
-        newState.deuda30Sujeto,
+        currentState.deuda30Sujeto,
         if (isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
       )
     } else {
@@ -103,7 +106,7 @@ object SendToObjeto {
             case None => ""
           },
           actor.path.toString.last.toString,
-          newState.deuda30Sujeto,
+          currentState.deuda30Sujeto,
           if (isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
 
         )

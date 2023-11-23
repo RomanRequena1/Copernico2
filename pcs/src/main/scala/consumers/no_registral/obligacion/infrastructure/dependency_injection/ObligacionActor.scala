@@ -84,13 +84,14 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
 
   def informRemoveToParent(cmd: ObligacionRemove): Unit = {
+    println("DELETEOBN 1 cuota -> " + cmd.cuota)
     context.parent ! ObjetoCommands.ObjetoRemoveObligacion(
       cmd.deliveryId,
       cmd.sujetoId,
       cmd.objetoId,
       cmd.tipoObjeto,
       cmd.obligacionId,
-      cmd.cuota,
+      cmd.cuota
     )
   }
 

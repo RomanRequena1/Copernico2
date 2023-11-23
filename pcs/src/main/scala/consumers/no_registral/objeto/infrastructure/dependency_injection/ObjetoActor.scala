@@ -277,6 +277,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
   }
 
   def informBajaToParent(cmd: ObjetoCommands): Unit = {
+    println("BAJATREINTA 1-> " + cmd)
     context.parent ! SujetoCommands.SujetoSetBajaFromObjeto(
       cmd.deliveryId,
       cmd.sujetoId,
