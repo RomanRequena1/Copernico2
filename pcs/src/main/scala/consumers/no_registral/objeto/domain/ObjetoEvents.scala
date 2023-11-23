@@ -100,7 +100,8 @@ object ObjetoEvents {
       saldoObligacion: BigDecimal,
       obligacionExenta: Boolean,
       porcentajeExencion: Option[BigDecimal],
-      idExterno: Option[String]
+      idExterno: Option[String],
+      cuota: Option[String]
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromObligacionBajaSet(

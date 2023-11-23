@@ -34,18 +34,21 @@ class ObjetoSnapshotPersistedHandler(
 
   override def processMessage(registro: ObjetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
     println("TREINTA processMessage-> ")
-    try {
-      val projection = ObjetoSnapshotPersistedProjection(registro)
-      if (registro.operacion.equals("U")) {
-        for {
-          done <- r.cassandraWrite.writeState(projection).andThen {
-            case Failure(exception) => log.error("Dont persist objeto" + exception)
-            case Success(value) => log.debug("Persist objeto" + value)
+    //recordLag(calculateLag(registro.deliveryId.toString))
+    val projection = ObjetoSnapshotPersistedProjection(registro)
+    if (registro.operacion.equals("U")) {
+      for {
+        done <- r.cassandraWrite.writeState(projection).andThen {
+          case Failure(exception) => log.error("Dont persist objeto" + exception )
+          case Success(value) => log.debug("Persist objeto" + value )
             //connOracleReadsideToCass(registro.deliveryId.toString(),"objeto", registro.registro.get.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
-          }
-        } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
-      } else if (registro.operacion.equals("FD")) {
-        println("ENTRO TREINTA DELETE")
+        }
+      } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
+    } else if (registro.operacion.equals("FD")) {
+      try {
+        println("TREINTA 1 " + registro.operacion + " - " + registro.sujetoId + " - " + registro.tipoObjeto + " - " + registro.objetoId )
+
+        log.error("TREINTA 1 " + registro.operacion + " - " + registro.sujetoId + " - " + registro.tipoObjeto + " - " + registro.objetoId )
         val cassandra = new CassandraWriteProduction()
         for {
           done <- cassandra
@@ -62,41 +65,12 @@ class ObjetoSnapshotPersistedHandler(
               ex
             }
         } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
-      } else {
-        println("ENTRO TREINTA DELETE 2")
-        val cassandra = new CassandraWriteProduction()
-        for {
-          done <- cassandra
-            .cql(
-              s"""
-            DELETE FROM read_side.buc_obligaciones """ +
-                """ WHERE bob_suj_identificador = """ +
-                s""" '${registro.sujetoId}' """ +
-                s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """ +
-                s""" and bob_soj_identificador = '${registro.objetoId}' """
-            )
-            .recover { ex: Throwable =>
-              println(ex.getMessage)
-              ex
-            }
-        } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
+      }catch {
+        case e: Exception => log.error("ERRRRRO TREINTA -> " + e)
       }
-      } catch {
-      case e: Exception => println("TREINTA ERRORRRRRR -> " + e)
-    }
-    //recordLag(calculateLag(registro.deliveryId.toString))
-    val projection = ObjetoSnapshotPersistedProjection(registro)
-    if (registro.operacion.equals("U")) {
-      for {
-        done <- r.cassandraWrite.writeState(projection).andThen {
-          case Failure(exception) => log.error("Dont persist objeto" + exception )
-          case Success(value) => log.debug("Persist objeto" + value )
-            //connOracleReadsideToCass(registro.deliveryId.toString(),"objeto", registro.registro.get.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
-        }
-      } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
-    } else if (registro.operacion.equals("FD")) {
       val cassandra = new CassandraWriteProduction()
       for {
+
         done <- cassandra
           .cql(
             s"""

@@ -85,19 +85,26 @@ case class ObjetoState(
 //          sujetos = sujetos + evt.sujetoId
 //        )
       case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
+        val indice = evt.cuota.get.toInt
+        val newObnVencidas = obnVencidas.updated(indice, true)
+        val _deuda30objeto = if(obnVencidas.contains(false)) false else true
         val obligacionesSaldo_ = obligacionesSaldo + (evt.obligacionId -> evt.saldoObligacion)
         copy(
           saldo = obligacionesSaldo_.values.sum,
           obligaciones = obligaciones + evt.obligacionId,
           obligacionesSaldo = obligacionesSaldo_,
           sujetos = sujetos + evt.sujetoId,
-          isBaja = false
+          isBaja = false,
+          obnVencidas = newObnVencidas,
+          deuda30Objeto = _deuda30objeto
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento =>
         val indice = evt.cuota.get.toInt
         val newObnVencidas = obnVencidas.updated(indice, false)
+        val _deuda30objeto = if(newObnVencidas.contains(false)) false else true
         copy(
-          obnVencidas = newObnVencidas
+          obnVencidas = newObnVencidas,
+          deuda30Objeto = _deuda30objeto
         )
 
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
