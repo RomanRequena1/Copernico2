@@ -18,7 +18,7 @@ object DMNTreintaPorciento {
     val engine = new DmnEngine()
 
     val ven = actor.BOB_VENCIMIENTO.get.toString.replace(" ", "T")
-    val ven2 = actor.BOB_VENCIMIENTO_2.get.toString.replace(" ", "T")
+    val ven2 = actor.BOB_VENCIMIENTO_2.get.toString.replace(" ", "T") // todo revisar si esta bien cargado (MUC)
 
     val diffDaysOblligaciones = Utils.diffDaysObligacion(ven)
 

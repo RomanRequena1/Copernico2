@@ -21,7 +21,9 @@ class GetSnapshotObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetS
       actor.state.fechaUltMod,
       actor.state.registro,
       actor.state.exenciones,
-      actor.state.bandTipo
+      actor.state.clasificacionObjeto,
+      actor.state.deuda30Objeto,
+      actor.state.aplicarDescuento
     )
 
     actor.saveSnapshot(actor.state)

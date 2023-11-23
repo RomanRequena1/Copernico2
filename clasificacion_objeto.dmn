@@ -27,12 +27,12 @@
           <text>soj_semaforo</text>
         </inputExpression>
       </input>
-      <input id="InputClause_1sessv9" label="soj_tipo_exclusion">
+      <input id="InputClause_1sessv9" label="soj_exclusionObjeto">
         <inputExpression id="LiteralExpression_0n4s8ju" typeRef="string">
-          <text>soj_tipo_exclusion</text>
+          <text>soj_exclusionObjeto</text>
         </inputExpression>
       </input>
-      <output id="output1" label="clasificacion_objeto" name="clasificacion_objeto" typeRef="string" />
+      <output id="output1" label="clasificacionObjeto" name="clasificacionObjeto" typeRef="string" />
       <rule id="DecisionRule_1exvhza">
         <description>Se descartan los objetos transferidos para el análisis del 30% de descuento
 No Aplica</description>
@@ -79,6 +79,30 @@ No Aplica</description>
           <text>"C"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1a2vahe">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0y8ktug">
+        <description>Objeto adherido a debito. Condonacion por objeto</description>
+        <inputEntry id="UnaryTests_07tf51w">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1tbiqd2">
+          <text>"S"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_058sgwu">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1uoxq1d">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1y3gkhm">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16xqh1b">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1oi9wdq">
           <text>1</text>
         </outputEntry>
       </rule>

@@ -13,7 +13,7 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
   override def handle(
                        command: ObjetoCommands.ObjetoRemoveObligacion
                      ): Try[Response.SuccessProcessing] = {
-
+    val sender = actor.context.sender()
     val event = ObjetoRemovedObligacion(
       command.deliveryId,
       command.sujetoId,
@@ -22,12 +22,31 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
       command.obligacionId,
       command.cuota
     )
+    println("DELETEOBN 2 -> " + event.obligacionId + " - " + event.deliveryId + " - " + event.objetoId + " - " + event.sujetoId + " - " + event.cuota)
     actor.persistEvent(event) { () =>
       actor.state += event
       if(!actor.state.isBaja){
-        actor.informParent(command, actor.state)
-        actor.persistSnapshot(event, actor.state)(() => ())
+        //actor.informParent(command, actor.state)
+        //actor.persistSnapshot(event, actor.state)(() => ())
+        if (actor.state.obnVencidas.contains(false)) {
+
+          val newState = actor.state.copy(deuda30Sujeto = false)
+          actor.informParentTreintaPorciento(command, actor.state)
+          actor.persistSnapshot(event, newState) { () =>
+            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+          }
+        }
+
+        else {
+          val newState = actor.state.copy(deuda30Sujeto = true)
+          actor.informParent(command, actor.state)
+          actor.persistSnapshot(event, newState) { () =>
+            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+          }
+        }
       }
+
+
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

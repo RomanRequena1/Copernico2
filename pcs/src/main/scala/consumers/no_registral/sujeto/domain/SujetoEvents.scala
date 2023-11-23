@@ -18,6 +18,15 @@ object SujetoEvents {
       saldo: BigDecimal
   ) extends SujetoEvents
 
+  case class SujetoUpdatedFromObjetoTreintaPorciento(
+                                                      deliveryId: BigInt,
+                                                      sujetoId: String,
+                                                      objetoId: String,
+                                                      tipoObjeto: String,
+                                                      saldoObjeto: BigDecimal,
+                                                      saldoObligaciones: BigDecimal,
+                                                      clasificacionObjeto: String
+                                                    ) extends SujetoEvents
 
   case class SujetoUpdatedFromTri(
       deliveryId: BigInt,
@@ -38,7 +47,8 @@ object SujetoEvents {
       objetoId: String,
       tipoObjeto: String,
       saldoObjeto: BigDecimal,
-      saldoObligaciones: BigDecimal
+      saldoObligaciones: BigDecimal,
+      clasificacionObjeto: String
   ) extends SujetoEvents
 
   case class SujetoBajaFromObjetoSet(

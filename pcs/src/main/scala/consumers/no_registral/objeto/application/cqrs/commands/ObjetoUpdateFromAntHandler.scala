@@ -29,31 +29,31 @@ class ObjetoUpdateFromAntHandler(actor: ObjetoActor) extends SyncCommandHandler[
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 
     } else {
-      val resultDMN = DMNTreintaPorcientoTipo.dmn(command.registro)
+      //val resultDMN = DMNTreintaPorcientoTipo.dmn(command)
 
       // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.informParent(command, actor.state)
-        if (actor.state.eventCounter == eventCounterMax) {
-          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
-        }
-        resultDMN
-          .fold(e => {
-            println("ERROR DMN OBJETO: " + e)
-          },
-            {
-              case d if d.value.equals("2") =>
-                val newState = actor.state.copy(bandTipo = "TIPO2")
-                actor.persistSnapshot(event, newState) { () =>
-                  sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-                }
-              case _ =>
-                val newState = actor.state.copy(bandTipo = "TIPO1")
-                actor.persistSnapshot(event, newState) { () =>
-                  sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-                }
-            })
+//        if (actor.state.eventCounter == eventCounterMax) {
+//          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+//        }
+//        resultDMN
+//          .fold(e => {
+//            println("ERROR DMN OBJETO: " + e)
+//          },
+//            {
+//              case d if d.value.equals("2") =>
+//                val newState = actor.state.copy(clasificacionObjeto = "TIPO2")
+//                actor.persistSnapshot(event, newState) { () =>
+//                  sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+//                }
+//              case _ =>
+//                val newState = actor.state.copy(clasificacionObjeto = "TIPO1")
+//                actor.persistSnapshot(event, newState) { () =>
+//                  sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+//                }
+//            })
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

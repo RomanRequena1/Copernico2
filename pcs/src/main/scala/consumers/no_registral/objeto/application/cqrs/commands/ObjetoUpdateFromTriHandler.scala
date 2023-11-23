@@ -18,6 +18,18 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
+
+    val tipo: String = Some(DMNTreintaPorcientoTipo.dmn(command)) match {
+      case f if f.get.equals(2) => { //case 0
+        "2"
+      }
+      case _ => {
+        "1"
+      }
+    }
+
+
+
     val event = ObjetoEvents.ObjetoUpdatedFromTri(
       command.deliveryId,
       command.sujetoId,
@@ -26,14 +38,13 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
       command.registro,
       command.isResponsable,
       command.sujetoResponsable,
-      command.isAdheridoDebito
+      command.isAdheridoDebito,
+      tipo
     )
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
       println(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
-      val resultDMN = DMNTreintaPorcientoTipo.dmn(command.registro)
-
       // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular
       actor.persistEvent(event) { () =>
         actor.state += event
@@ -41,26 +52,15 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
         if (actor.state.eventCounter == eventCounterMax) {
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
+        actor.persistSnapshot(event, actor.state) { () =>
+          /*if (!actor.state.isResponsable) {
+            actor.removeObligaciones()
+          }*/
+          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 
-        resultDMN
-          .fold(e => {
-            println("ERROR DMN OBJETO: "+e)
-              },
-                {
-                  case d if d.value.equals("2") =>
-                    println(actor.state.copy(bandTipo = "TIPO2"))
-                    val newState = actor.state.copy(bandTipo = "TIPO2")
-                    actor.persistSnapshot(event, newState) { () =>
-                      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-                    }
-                  case _ =>
-                    println("CASO TODOS:::"+actor.state.copy(bandTipo = "TIPO1"))
-                    val newState = actor.state.copy(bandTipo = "TIPO1")
-                    actor.persistSnapshot(event, newState) { () =>
-                      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-                    }
-                })
+        }
       }
+
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

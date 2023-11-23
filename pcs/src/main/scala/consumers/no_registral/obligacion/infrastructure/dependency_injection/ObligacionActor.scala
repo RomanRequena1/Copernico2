@@ -34,9 +34,11 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateFromDto](new ObligacionUpdateFromDtoHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateExencion](new ObligacionUpdateExencionHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionRemove](new ObligacionRemoveHandler(this).handle)
+    commandBus.subscribe[ObligacionCommands.ObligacionRemoveInfoFromObjeto](new ObligacionRemoveFromObjeto(this).handle)
   }
 
   def informParent(cmd: ObligacionCommands): Unit = {
+    println("TREINTA 4.0 ")
     context.parent ! ObjetoCommands.ObjetoUpdateFromObligacion(
       cmd.deliveryId,
       cmd.sujetoId,
@@ -58,6 +60,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   }
 
   def informParentTreintaProciento(evt: ObligacionUpdatedFromDto): Unit = {
+    println("TREINTA 4.1 ")
     context.parent ! ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento(
       evt.deliveryId,
       evt.sujetoId,
@@ -81,13 +84,14 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
 
   def informRemoveToParent(cmd: ObligacionRemove): Unit = {
+    println("DELETEOBN 1 cuota -> " + cmd.cuota)
     context.parent ! ObjetoCommands.ObjetoRemoveObligacion(
       cmd.deliveryId,
       cmd.sujetoId,
       cmd.objetoId,
       cmd.tipoObjeto,
       cmd.obligacionId,
-      cmd.cuota,
+      cmd.cuota
     )
   }
 

@@ -1,0 +1,13 @@
+{
+  "EV_ID" : "20231121100121000000001101164232541",
+  "BOE_SOJ_IDENTIFICADOR" : "110116423251",
+  "BOE_ACCION" : "Excluir Objeto y aplicar cupones",
+  "BOE_MOTIVO" : "Inmuebles Bancor - Jorgelina Maurino",
+  "BOE_FECHA_DESDE" : "2023-01-01 00:00:00.0",
+  "BOE_FECHA_HASTA" : "2024-12-31 00:00:00.0",
+  "BOE_ORIGEN" : "PLANILLA",
+  "BOE_TRAMITE_ID" : null,
+  "BOE_NOMBRE_GESTION" : null,
+  "BOE_NUMERO_GESTION" : null,
+  "BOE_TIPO_EXCLUSION" : "E"
+}

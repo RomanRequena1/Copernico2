@@ -16,7 +16,6 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor)
                        command: ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento
                      ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    println("CUMBIA "  + actor.state.lastDeliveryIdByEvents)
     val event = ObjetoUpdatedFromObnTreintaProciento(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
@@ -38,24 +37,29 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor)
 
     actor.persistEvent(event) { () =>
       actor.state += event
-      println("STATE OBJETO UPDATE 30 -> " + actor.state.obnVencidas)
-      if (initialization != "true")
-        actor.informParent(command, actor.state)
+      println("TREINTA 5.1 " + actor.state)
+      //if (initialization != "true")
+      //  actor.informParent(command, actor.state)
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
 
       if(actor.state.obnVencidas.contains(false)){
-
-        val newState = actor.state.copy(band30 = false)
+        println("TREINTA 6.0.0 ")
+        val newState = actor.state.copy(deuda30Objeto = false)
+        println("TREINTA 7.0.0 " + newState)
+        actor.informParentTreintaPorciento(command, actor.state)
         actor.persistSnapshot(event, newState) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }
       }
 
       else {
-        val newState = actor.state.copy(band30 = true)
+        println("TREINTA 6.1.1 ")
+        val newState = actor.state.copy(deuda30Objeto = true)
+        println("TREINTA 7.1.1 ")
+        actor.informParent(command, actor.state)
         actor.persistSnapshot(event, newState) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }

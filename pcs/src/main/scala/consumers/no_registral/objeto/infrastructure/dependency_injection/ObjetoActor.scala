@@ -30,6 +30,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
   override def setupHandlers(): Unit = {
     commandBus.subscribe[ObjetoCommands.ObjetoSnapshot](new ObjetoSnapshotHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromSujeto](new ObjetoUpdateFromSujetoHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagAdd](new ObjetoTagAddHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagRemove](new ObjetoTagRemoveHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromAnt](new ObjetoUpdateFromAntHandler(this).handle)
@@ -112,7 +113,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
     val kafkaTopic = "ObjetoSnapshotPersistedReadside"
-    println("")
+    println("Llego")
     val snapshot =
       ObjetoSnapshotPersisted(
         evt.deliveryId,
@@ -131,12 +132,14 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
         consolidatedState.cuotas,
-        consolidatedState.bandTipo,
+        consolidatedState.clasificacionObjeto,
         operacion = ObligacionEvents.operaciones.get("Upsert").get,
         idExterno = evt match {
           case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
           case _ => None
-        }
+        },
+        Some(consolidatedState.deuda30Objeto),
+        Some(consolidatedState.aplicarDescuento)
       )
 
     requirements.messageProducer.produce(
@@ -171,12 +174,14 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
         consolidatedState.cuotas,
-        consolidatedState.bandTipo,
+        consolidatedState.clasificacionObjeto,
         operacion = ObligacionEvents.operaciones.get("Delete").get,
         idExterno = evt match {
           case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
           case _ => None
-        }
+        },
+        Some(consolidatedState.deuda30Objeto),
+        Some(consolidatedState.aplicarDescuento)
       )
 
     requirements.messageProducer.produce(
@@ -211,12 +216,14 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
         consolidatedState.cuotas,
-        consolidatedState.bandTipo,
+        consolidatedState.clasificacionObjeto,
         operacion = ObligacionEvents.operaciones.get("FullDelete").get,
         idExterno = evt match {
           case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
           case _ => None
-        }
+        },
+        Some(consolidatedState.deuda30Objeto),
+        Some(consolidatedState.aplicarDescuento)
       )
 
     requirements.messageProducer.produce(
@@ -245,6 +252,17 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
   def withCotitulares(sujetos: Set[String]): Boolean =
     sujetos.size > 1*/
+  def informParentTreintaPorciento(cmd: ObjetoCommands, state: ObjetoState): Unit = {
+    context.parent ! SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
+      cmd.deliveryId,
+      cmd.sujetoId,
+      cmd.objetoId,
+      cmd.tipoObjeto,
+      state.saldo,
+      state.obligacionesSaldo.values.sum,
+      state.clasificacionObjeto
+    )
+  }
 
   def informParent(cmd: ObjetoCommands, state: ObjetoState): Unit = {
     context.parent ! SujetoCommands.SujetoUpdateFromObjeto(
@@ -253,11 +271,13 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
       cmd.objetoId,
       cmd.tipoObjeto,
       state.saldo,
-      state.obligacionesSaldo.values.sum
+      state.obligacionesSaldo.values.sum,
+      state.clasificacionObjeto
     )
   }
 
   def informBajaToParent(cmd: ObjetoCommands): Unit = {
+    println("BAJATREINTA 1-> " + cmd)
     context.parent ! SujetoCommands.SujetoSetBajaFromObjeto(
       cmd.deliveryId,
       cmd.sujetoId,

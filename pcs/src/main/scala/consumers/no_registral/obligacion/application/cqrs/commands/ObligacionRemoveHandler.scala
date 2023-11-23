@@ -37,7 +37,7 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
     } else {
     actor.persistEvent(event) { () =>
       actor.state += event
-
+      println("DELETEOBN 1 -> " + actor.state)
       // Propaga actualizaciones al padre (Objeto)
       actor.informRemoveToParent(command)
       actor.lastDeliveryId = command.deliveryId
