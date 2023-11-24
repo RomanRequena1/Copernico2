@@ -112,7 +112,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
       saldo = state.saldo,
-      operacion = ObligacionEvents.operaciones("Upsert")
+      operacion = ObligacionEvents.operaciones("Upsert"),
+      resultDmn = state.resultDmn
     ).asJson.toString()
     requirements.messageProducer.produce(
       data = Seq(
@@ -157,7 +158,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
       saldo = state.saldo,
-      operacion = ObligacionEvents.operaciones("Delete")
+      operacion = ObligacionEvents.operaciones("Delete"),
+      resultDmn = state.resultDmn
     ).asJson.toString()
     requirements.messageProducer.produce(
       data = Seq(

@@ -50,7 +50,8 @@ object ObjetoEvents {
       operacion: String,
       idExterno: Option[String],
       deuda30Objeto: Option[Boolean],
-      aplicarDescuento: Option[Boolean]
+      aplicarDescuento: Option[Boolean],
+      resultDmn: Int
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromTri(
@@ -62,7 +63,8 @@ object ObjetoEvents {
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String],
       isAdheridoDebito: Option[Boolean],
-      clasificacionObjeto: String
+      clasificacionObjeto: String,
+      resultDmn: Int
 
   ) extends ObjetoEvents
 

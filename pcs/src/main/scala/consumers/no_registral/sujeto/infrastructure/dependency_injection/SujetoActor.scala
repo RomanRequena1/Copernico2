@@ -70,7 +70,11 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
   import consumers.no_registral.sujeto.infrastructure.json._
   def persistSnapshot()(handler: Seq[KafkaKeyValue] => Unit): Unit = {
     val sujetoId = SujetoMessageRoots.extractor(persistenceId).sujetoId
-    val event = SujetoSnapshotPersisted(state.registro.map(_.EV_ID).getOrElse(state.lastInternalDeliveryId), sujetoId, state.registro, state.saldo).asJson.toString()
+    val event = SujetoSnapshotPersisted(state.registro.map(_.EV_ID).getOrElse(state.lastInternalDeliveryId),
+      sujetoId,
+      state.registro,
+      state.saldo,
+      Some(state.deuda30Sujeto)).asJson.toString()
     requirements.messageProducer.produce(
       data = Seq(KafkaKeyValue(persistenceId, event)),
       topic = "SujetoSnapshotPersisted"

@@ -35,6 +35,20 @@ class ObjetoSnapshotPersistedHandler(
   override def processMessage(registro: ObjetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
     println("TREINTA processMessage-> ")
     //recordLag(calculateLag(registro.deliveryId.toString))
+    try{
+      val projection = ObjetoSnapshotPersistedProjection(registro)
+      if (registro.operacion.equals("U")) {
+        for {
+          done <- r.cassandraWrite.writeState(projection).andThen {
+            case Failure(exception) => log.error("Dont persist objeto" + exception)
+            case Success(value) => log.debug("Persist objeto" + value)
+            //connOracleReadsideToCass(registro.deliveryId.toString(),"objeto", registro.registro.get.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
+          }
+        } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
+      }
+    }catch {
+        case e: Exception => println("HOLA 1 "+ e)
+      }
     val projection = ObjetoSnapshotPersistedProjection(registro)
     if (registro.operacion.equals("U")) {
       for {
@@ -50,6 +64,13 @@ class ObjetoSnapshotPersistedHandler(
 
         log.error("TREINTA 1 " + registro.operacion + " - " + registro.sujetoId + " - " + registro.tipoObjeto + " - " + registro.objetoId )
         val cassandra = new CassandraWriteProduction()
+        val query  = s"""
+      DELETE FROM read_side.buc_sujeto_objeto """ +
+          """ WHERE soj_suj_identificador = """ +
+          s""" '${registro.sujetoId}' """ +
+          s""" and soj_tipo_objeto = '${registro.tipoObjeto}' """ +
+          s""" and soj_identificador = '${registro.objetoId}' """
+        println("TREINTA 1 " + query)
         for {
           done <- cassandra
             .cql(

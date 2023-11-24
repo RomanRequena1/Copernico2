@@ -139,7 +139,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
           case _ => None
         },
         Some(consolidatedState.deuda30Objeto),
-        Some(consolidatedState.aplicarDescuento)
+        Some(consolidatedState.aplicarDescuento),
+        consolidatedState.resulDmn
       )
 
     requirements.messageProducer.produce(
@@ -181,7 +182,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
           case _ => None
         },
         Some(consolidatedState.deuda30Objeto),
-        Some(consolidatedState.aplicarDescuento)
+        Some(consolidatedState.aplicarDescuento),
+        consolidatedState.resulDmn
       )
 
     requirements.messageProducer.produce(
@@ -223,7 +225,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
           case _ => None
         },
         Some(consolidatedState.deuda30Objeto),
-        Some(consolidatedState.aplicarDescuento)
+        Some(consolidatedState.aplicarDescuento),
+        consolidatedState.resulDmn
       )
 
     requirements.messageProducer.produce(

@@ -15,7 +15,8 @@ object SujetoEvents {
       deliveryId: BigInt,
       sujetoId: String,
       registro: Option[SujetoExternalDto],
-      saldo: BigDecimal
+      saldo: BigDecimal,
+      deuda30Sujeto: Option[Boolean]
   ) extends SujetoEvents
 
   case class SujetoUpdatedFromObjetoTreintaPorciento(
