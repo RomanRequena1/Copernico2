@@ -25,22 +25,22 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
     println("DELETEOBN 2 -> " + event.obligacionId + " - " + event.deliveryId + " - " + event.objetoId + " - " + event.sujetoId + " - " + event.cuota)
     actor.persistEvent(event) { () =>
       actor.state += event
+      println("DELETEOBN 2.1 " + actor.state)
       if(!actor.state.isBaja){
         //actor.informParent(command, actor.state)
         //actor.persistSnapshot(event, actor.state)(() => ())
-        if (actor.state.obnVencidas.contains(false)) {
+        if (actor.state.deuda30Objeto.equals(false)) {
 
-          val newState = actor.state.copy(deuda30Sujeto = false)
           actor.informParentTreintaPorciento(command, actor.state)
-          actor.persistSnapshot(event, newState) { () =>
+          actor.persistSnapshot(event, actor.state) { () =>
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
         }
 
         else {
-          val newState = actor.state.copy(deuda30Sujeto = true)
+
           actor.informParent(command, actor.state)
-          actor.persistSnapshot(event, newState) { () =>
+          actor.persistSnapshot(event, actor.state) { () =>
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
         }

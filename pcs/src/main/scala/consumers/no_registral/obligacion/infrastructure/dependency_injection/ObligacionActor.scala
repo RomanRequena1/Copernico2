@@ -55,7 +55,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       state.saldo,
       state.exenta,
       state.porcentajeExencion,
-      state.idExterno
+      state.idExterno,
+      state.registro.get.BOB_CUOTA
     )
   }
 

@@ -45,22 +45,20 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor)
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
 
-      if(actor.state.obnVencidas.contains(false)){
-        println("TREINTA 6.0.0 ")
-        val newState = actor.state.copy(deuda30Objeto = false)
-        println("TREINTA 7.0.0 " + newState)
+      if(actor.state.deuda30Objeto.equals(false)){
+
+        println("TREINTA 7.0.0 ")
         actor.informParentTreintaPorciento(command, actor.state)
-        actor.persistSnapshot(event, newState) { () =>
+        actor.persistSnapshot(event, actor.state) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }
       }
 
       else {
-        println("TREINTA 6.1.1 ")
-        val newState = actor.state.copy(deuda30Objeto = true)
+
         println("TREINTA 7.1.1 ")
         actor.informParent(command, actor.state)
-        actor.persistSnapshot(event, newState) { () =>
+        actor.persistSnapshot(event, actor.state) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }
       }

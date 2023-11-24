@@ -139,25 +139,28 @@ case class ObjetoState(
         if(evt.cuota.isEmpty || evt.cuota.get.toInt < 0 || evt.cuota.get.toInt > 12) {
           val indice = evt.cuota.get.toInt
           val newObnVencidas = obnVencidas.updated(indice, true)
-
+          val _deuda30objeto = if (newObnVencidas.contains(false)) false else true
+          println("TREINTA DIF " + _deuda30objeto + " - " + newObnVencidas)
           copy(
             saldo = obligacionesSaldo_.values.sum,
             obligaciones = obligaciones - evt.obligacionId,
             obligacionesSaldo = obligacionesSaldo_,
-            obnVencidas = newObnVencidas
+            obnVencidas = newObnVencidas,
+            deuda30Objeto = _deuda30objeto
           )
         }else {
           val cuotaIndex_ = evt.cuota.get.toInt
           val cuotasPagadas_ = cuotas.updated(cuotaIndex_, true)
           val indice = evt.cuota.get.toInt
           val newObnVencidas = obnVencidas.updated(indice, true)
-
+          val _deuda30objeto = if (newObnVencidas.contains(false)) false else true
           copy(
             saldo = obligacionesSaldo_.values.sum,
             obligaciones = obligaciones - evt.obligacionId,
             obligacionesSaldo = obligacionesSaldo_,
             cuotas = cuotasPagadas_,
-            obnVencidas = newObnVencidas
+            obnVencidas = newObnVencidas,
+            deuda30Objeto = _deuda30objeto
 
           )
         }
