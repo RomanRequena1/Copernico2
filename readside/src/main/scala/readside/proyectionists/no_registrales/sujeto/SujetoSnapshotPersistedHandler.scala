@@ -34,18 +34,7 @@ class SujetoSnapshotPersistedHandler(
 
   override def processMessage(registro: SujetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
     //recordLag(calculateLag(registro.deliveryId.toString))
-    try {
-      val projection = SujetoSnapshotPersistedProjection(registro)
-      for {
-        done <- r.cassandraWrite.writeState(projection).andThen {
-          case Failure(exception) => log.error("Dont persist sujeto " + exception)
-          case Success(value) => log.debug("Persist sujeto " + value)
-          //connOracleReadsideToCass(registro.deliveryId.toString(),"sujeto", registro.registro.get.SUJ_CANAL_ORIGEN.getOrElse("TAX"))
-        }
-      } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
-    }catch {
-      case e: Exception => println("HOLA -> " + e)
-    }
+
     val projection = SujetoSnapshotPersistedProjection(registro)
     for {
       done <- r.cassandraWrite.writeState(projection).andThen {

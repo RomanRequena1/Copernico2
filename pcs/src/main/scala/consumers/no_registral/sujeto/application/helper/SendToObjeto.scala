@@ -9,9 +9,7 @@ object SendToObjeto {
   def apply(currentState: SujetoState, sender: ActorRef,  children: Iterable[ActorRef], actorContext: ActorContext, event: SujetoUpdatedFromObjeto) : Unit = {
 
     val isExclusionSujeto = QueryExclusionSujeto(event.sujetoId)
-    println("DIFERENCIA -> " + currentState.diffStates)
       if (currentState.diffStates) {
-        println("TREINTA 11 " +currentState)
         sender ! ObjetoUpdateFromSujeto(
           currentState.lastDeliveryIdByEvents,
           event.sujetoId,
@@ -45,9 +43,7 @@ object SendToObjeto {
   def apply(currentState: SujetoState, sender: ActorRef, children: Iterable[ActorRef], actorContext: ActorContext, event: SujetoUpdatedFromObjetoTreintaPorciento): Unit = {
 
     val isExclusionSujeto = QueryExclusionSujeto(event.sujetoId)
-    println("DIFERENCIA -> " + currentState.diffStates)
     if (currentState.diffStates) {
-      println("TREINTA 11.1 " + currentState)
       sender ! ObjetoUpdateFromSujeto(
         currentState.lastDeliveryIdByEvents,
         event.sujetoId,
@@ -81,9 +77,7 @@ object SendToObjeto {
   def apply(currentState: SujetoState, sender: ActorRef, children: Iterable[ActorRef], actorContext: ActorContext, event: SujetoBajaFromObjetoSet): Unit = {
 
     val isExclusionSujeto = QueryExclusionSujeto(event.sujetoId)
-    println("DIFERENCIA -> " + currentState.diffStates)
     if (currentState.diffStates) {
-      println("TREINTA 11.2 " + currentState)
       sender ! ObjetoUpdateFromSujeto(
         currentState.lastDeliveryIdByEvents,
         event.sujetoId,

@@ -25,7 +25,6 @@ class ObligacionRemoveFromObjeto(actor: ObligacionActor) extends SyncCommandHand
       )
 
       actor.persistEvent(event) { () =>
-        println("DELETED FROM OBJETO WRITESIDE")
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
       Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

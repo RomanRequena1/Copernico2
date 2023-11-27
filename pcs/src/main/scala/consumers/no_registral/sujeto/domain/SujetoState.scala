@@ -54,7 +54,6 @@ final case class SujetoState(
   private def diffCurrentStateAndNewState(currentObjVnecidad: Map[String, (Boolean, String)], newObjVnecidad: Map[String, (Boolean, String)], deuda30Sujeto: Boolean) = {
 
     val map = newObjVnecidad.filter(obj => obj._2._2.equals("2"))
-    println("TREINTA 9.0.0 " + map)
     if (map.values.forall(_._1)) {
       val newTupla = (true, deuda30Sujeto.equals(true))
       newTupla

@@ -142,7 +142,6 @@ case class ObjetoState(
           val indice = evt.cuota.get.toInt
           val newObnVencidas = obnVencidas.updated(indice, true)
           val _deuda30objeto = if (newObnVencidas.contains(false)) false else true
-          println("TREINTA DIF " + _deuda30objeto + " - " + newObnVencidas)
           copy(
             saldo = obligacionesSaldo_.values.sum,
             obligaciones = obligaciones - evt.obligacionId,

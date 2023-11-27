@@ -37,7 +37,6 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor)
 
     actor.persistEvent(event) { () =>
       actor.state += event
-      println("TREINTA 5.1 " + actor.state)
       //if (initialization != "true")
       //  actor.informParent(command, actor.state)
       if (actor.state.eventCounter == eventCounterMax) {
@@ -47,7 +46,6 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor)
 
       if(actor.state.deuda30Objeto.equals(false)){
 
-        println("TREINTA 7.0.0 ")
         actor.informParentTreintaPorciento(command, actor.state)
         actor.persistSnapshot(event, actor.state) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
@@ -56,7 +54,6 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor)
 
       else {
 
-        println("TREINTA 7.1.1 ")
         actor.informParent(command, actor.state)
         actor.persistSnapshot(event, actor.state) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)

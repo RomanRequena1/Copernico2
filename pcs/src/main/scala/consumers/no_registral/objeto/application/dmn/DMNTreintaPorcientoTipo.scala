@@ -26,13 +26,11 @@ object DMNTreintaPorcientoTipo {
       case None => None
     }
     val semaforo_color = obj.registro.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES.head.SOJ_SEMAFORO_COLOR
-    println("HELP 3.1" + obj.registro + " - " + obj)
-    println("HELP 3 -> semaforo_color " + semaforo_color + " - SOJ_TIPO_OBJETO " + obj.registro.SOJ_TIPO_OBJETO + " - SOJ_ADHERIDO_DEBITO" + obj.registro.SOJ_ADHERIDO_DEBITO.getOrElse("None") + " - SOJ_ESTADO " + obj.registro.SOJ_ESTADO.getOrElse("None") + " - SOJ_TITULARIDAD" + obj.registro.SOJ_TITULARIDAD.getOrElse("None") + " - isExclusionObjeto" + isExclusionObjeto)
 
 
     val chequeoDmn: Either[Product, DmnEngine.EvalResult] = engine.parse(dmnStream.getOrElse(null))
       .flatMap(dmn => engine.eval(dmn, "Decision_Clasificacion_Objeto", Map("soj_tipo_objeto" -> obj.registro.SOJ_TIPO_OBJETO,
-        "soj_adherido_debito" -> obj.registro.SOJ_ADHERIDO_DEBITO.getOrElse("None"),
+        //"soj_adherido_debito" -> obj.registro.SOJ_ADHERIDO_DEBITO.getOrElse("None"),
         "soj_estado" -> obj.registro.SOJ_ESTADO.getOrElse("None"),
         "soj_titularidad" -> obj.registro.SOJ_TITULARIDAD.getOrElse("None"),
         "soj_semaforo" -> semaforo_color.getOrElse("None"),

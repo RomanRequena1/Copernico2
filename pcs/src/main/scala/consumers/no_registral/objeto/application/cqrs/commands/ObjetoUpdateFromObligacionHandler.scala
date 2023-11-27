@@ -41,7 +41,6 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
     actor.persistEvent(event) { () =>
 
       actor.state += event
-      println("TREINTA 5 " + actor.state)
       //if (initialization != "true")
       //  actor.informParent(command, actor.state)
       if (actor.state.eventCounter == eventCounterMax) {
@@ -50,7 +49,6 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
       }
       if (actor.state.deuda30Objeto.equals(false)) {
 
-        println("TREINTA 7.0 " )
         actor.informParentTreintaPorciento(command, actor.state)
         actor.persistSnapshot(event, actor.state) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
@@ -59,7 +57,6 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
 
       else {
 
-        println("TREINTA 7.1 ")
         actor.informParent(command, actor.state)
         actor.persistSnapshot(event, actor.state) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)

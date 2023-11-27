@@ -113,7 +113,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
     val kafkaTopic = "ObjetoSnapshotPersistedReadside"
-    println("Llego")
     val snapshot =
       ObjetoSnapshotPersisted(
         evt.deliveryId,
@@ -280,7 +279,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
   }
 
   def informBajaToParent(cmd: ObjetoCommands): Unit = {
-    println("BAJATREINTA 1-> " + cmd)
     context.parent ! SujetoCommands.SujetoSetBajaFromObjeto(
       cmd.deliveryId,
       cmd.sujetoId,
