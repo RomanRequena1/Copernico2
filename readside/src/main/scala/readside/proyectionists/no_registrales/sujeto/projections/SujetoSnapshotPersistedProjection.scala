@@ -7,7 +7,7 @@ final case class SujetoSnapshotPersistedProjection(
 ) extends SujetoProjection {
 
   val registro: Option[SujetoExternalDto] = event.registro
-  val fromRegistro: Option[List[(String, Option[Object])]] = registro map { registro =>
+  val fromRegistro: Option[List[(String, Option[Any])]] = registro map { registro =>
     List(
       "suj_canal_origen" -> registro.SUJ_CANAL_ORIGEN,
       "suj_cat_suj_id" -> registro.SUJ_CAT_SUJ_ID,
@@ -20,13 +20,15 @@ final case class SujetoSnapshotPersistedProjection(
       "suj_riesgo_fiscal" -> registro.SUJ_RIESGO_FISCAL,
       "suj_situacion_fiscal" -> registro.SUJ_SITUACION_FISCAL,
       "suj_telefono" -> registro.SUJ_TELEFONO,
-      "suj_tipo" -> registro.SUJ_TIPO
+      "suj_tipo" -> registro.SUJ_TIPO,
+      "suj_deuda30Sujeto" -> event.deuda30Sujeto
     )
   }
 
-  val others: List[(String, BigDecimal)] =
+  val others: List[(String, Serializable)] =
     List(
-      "suj_saldo" -> event.saldo
+      "suj_saldo" -> event.saldo,
+      "suj_deuda30Sujeto" -> event.deuda30Sujeto
     )
 
   val bindings: List[(String, Serializable)] = fromRegistro match {

@@ -27,7 +27,6 @@ object DMNTreintaPorciento {
     val diffYearsOblligaciones = Utils.diffYearObligacion(actor.BOB_PERIODO.get)
 
     val isVencida = if (diffDaysOblligaciones > 10) true else false
-    println("isvalid - " + isVencida + " - diff days - " + diffDaysOblligaciones + " - year - " + diffYearsOblligaciones + " - " + Utils.mapsToDMN(actor, isVencida, diffDaysOblligaciones, diffYearsOblligaciones, diffDaysOblligacionesVen2))
 
     val chequeoDmn: Either[Product, DmnEngine.EvalResult] = engine.parse(dmnStream.getOrElse(null))
       .flatMap(dmn => engine.eval(dmn, "Decision_descuento", Utils.mapsToDMN(actor, isVencida, diffDaysOblligaciones, diffYearsOblligaciones, diffDaysOblligacionesVen2)))

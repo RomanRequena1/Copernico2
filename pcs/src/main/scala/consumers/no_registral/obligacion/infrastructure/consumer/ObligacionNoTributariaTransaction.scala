@@ -3,11 +3,13 @@ package consumers.no_registral.obligacion.infrastructure.consumer
  import api.actor_transaction.ActorTransaction
  import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
  import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento
+ import consumers.no_registral.obligacion.application.entities
  import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionCommands, ObligacionesAnt}
  import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
  import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
  import design_principles.actor_model.Response
  import io.circe.parser.decode
+ import io.circe.syntax.EncoderOps
  import monitoring.Monitoring
  import org.camunda.dmn.DmnEngine
 
@@ -32,6 +34,10 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
 
     val isNotDeuda: List[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES map {
       d => d.RULE_NUMBER.contains("-1")
+    }
+    val detallesObligacion: Seq[DetallesObligacion] = obligacion.BOB_OTROS_ATRIBUTOS match {
+      case Some(r) => r.BOB_DETALLES
+      case None => null
     }
 
     val isCancelada: Seq[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map {
@@ -61,40 +67,43 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
           cuota = obligacion.BOB_CUOTA
         )
       } else {
+        val dmn = isTreintaPorciento(obligacion)
         ObligacionUpdateFromDto(
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
           objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
           tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
           obligacionId = obligacion.BOB_OBN_ID,
           deliveryId = obligacion.EV_ID,
-          registro = isTreintaPorciento(obligacion),
-          //todo: fix
-          detallesObligacion = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES,
+          registro = dmn._1,
+          detallesObligacion = detallesObligacion,
           isAdheridoDebito = isAdheridoDebito,
-          cuota = obligacion.BOB_CUOTA
+          cuota = obligacion.BOB_CUOTA,
+          resultDmn = Some(dmn._2.toString)
         )
       }
     actorRef.ask[Response.SuccessProcessing](command)
   }
 
-  private def isTreintaPorciento(obn: ObligacionesAnt) = {
-    DMNTreintaPorciento.dmn(obn) match {
-      case f if f.equals(0) => { //case 0
+  private def isTreintaPorciento(obn: ObligacionesAnt): (ObligacionesAnt, Any) = {
+    //todo set deuda30Obligacion en state
+    Some(DMNTreintaPorciento.dmn(obn)) match {
+      case f if f.get.equals(0) => { //case 0
         val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
-        val newDetails = decode[ListDetallesObligaciones](s"""{"BOB_DETALLES" : '${detalles}'}""").toOption.get
-        val newO: ObligacionesAnt = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
+        val newDetails = decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
+        val newO: entities.ObligacionesAnt = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
         println(detalles)
         println(newO)
-        newO
+        (newO, f.get)
       }
-      case _ => {
-        val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
-        val newDetails = decode[ListDetallesObligaciones](s"""{"BOB_DETALLES" : '${detalles}'}""").toOption.get
+      case n => {
+        val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(false), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
+        val newDetails = decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesAnt = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
         println(newDetails)
         println(newO)
-        newO
+        (newO, n.get)
       }
+
     }
   }
 }

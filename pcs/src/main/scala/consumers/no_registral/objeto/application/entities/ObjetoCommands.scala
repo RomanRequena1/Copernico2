@@ -67,7 +67,8 @@ object ObjetoCommands {
       saldoObligacion: BigDecimal,
       obligacionExenta: Boolean,
       porcentajeExencion: Option[BigDecimal],
-      idExterno: Option[String]
+      idExterno: Option[String],
+      couta: Option[String]
   ) extends ObjetoCommands
 
   case class ObjetoRemoveObligacion(

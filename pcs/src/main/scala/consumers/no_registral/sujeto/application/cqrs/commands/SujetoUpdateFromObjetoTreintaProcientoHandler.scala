@@ -42,8 +42,6 @@ class SujetoUpdateFromObjetoTreintaProcientoHandler(actor: SujetoActor)
 
       actor.state += event
 
-      println("TREINTA 8.1 " + event.clasificacionObjeto)
-      println("TREINTA 8.1 " + actor.state)
         SendToObjeto(actor.state, sender, actor.context.children, actor.context, event)
 
       if (actor.state.eventCounter == eventCounterMax) {

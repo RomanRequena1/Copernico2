@@ -26,26 +26,21 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
       command.exclusionSUjeto
     )
     actor.state += event
-    println("TREINTA 12 " + actor.state)
     val exclusionObjeto = QueryExclusionObjeto(command.objetoId)
     DMNTreintaPorcientoFinal.dmn(actor.state, command, exclusionObjeto)
       .fold(e => {
-        println("ERROR DMN OBJETO: " + e)
+        log.error("ERROR DMN OBJETO: " + e)
       },
         {
           case d if d.value.equals(true) =>
-            println("TREINTA 12.0 " + d.value)
             val newState = actor.state.copy(aplicarDescuento = true)
-            println("TREINTA 13.0 " + d.value)
             actor.persistSnapshot(event, newState) { () =>
               sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
             }
             //.state = newState
           //todo solo persistir en readside
           case _ =>
-            println("TREINTA 12.1 ")
             val newState = actor.state.copy(aplicarDescuento = false)
-            println("TREINTA 13.1 " + newState)
             actor.persistSnapshot(event, newState) { () =>
               sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
             }

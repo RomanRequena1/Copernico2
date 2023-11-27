@@ -31,9 +31,8 @@ class SetBajaObjetoHandler(actor: ObjetoActor) extends SyncCommandHandler[Objeto
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event
-        println("BAJATREINTA -> " + actor.state)
         actor.informBajaToParent(command)
-        actor.deleteSnapshot(event, actor.state) { () =>
+        actor.deleteSnapshot(event, actor.state) { () => //todo revisar si el baja es con estado o con el saldo de todas obligaciones en 0 o ambas?
           actor.deleteObjetoObligacionesSnapshot(event, actor.state) { () =>
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }

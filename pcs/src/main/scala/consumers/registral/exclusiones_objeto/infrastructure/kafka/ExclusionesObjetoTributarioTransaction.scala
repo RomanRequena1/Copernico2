@@ -23,7 +23,6 @@ actorTransactionRequirements: ActorTransactionRequirements
   def topicError = "DGR-COP-EXCLUSIONES-OBJETO-TRI_error"
 
   def processInput(input: String): Either[Throwable, ExclusionesObjetoTri] = {
-    println("ROMAN WRITESIDE: " + decode[ExclusionesObjetoTri](input))
     decode[ExclusionesObjetoTri](input)
 }
 

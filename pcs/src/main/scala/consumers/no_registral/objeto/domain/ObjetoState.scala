@@ -29,6 +29,7 @@ case class ObjetoState(
     clasificacionObjeto: String = "",
     deuda30Sujeto: Boolean = true,
     aplicarDescuento: Boolean = true,
+    resulDmn: Int = 0,
     obnVencidas: List[Boolean] = List(true, true, true, true, true, true, true, true, true, true, true, true, true)
 ) extends AbstractState[ObjetoEvents] with CbroSerialization{
 
@@ -77,7 +78,8 @@ case class ObjetoState(
           sujetos = sujetos + evt.sujetoId,
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
           isBaja = false,
-          clasificacionObjeto = evt.clasificacionObjeto
+          clasificacionObjeto = evt.clasificacionObjeto,
+          resulDmn = evt.resultDmn
         )
 //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
 //        copy(
@@ -85,19 +87,26 @@ case class ObjetoState(
 //          sujetos = sujetos + evt.sujetoId
 //        )
       case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
+        val indice = evt.cuota.get.toInt
+        val newObnVencidas = obnVencidas.updated(indice, true)
+        val _deuda30objeto = if(obnVencidas.contains(false)) false else true
         val obligacionesSaldo_ = obligacionesSaldo + (evt.obligacionId -> evt.saldoObligacion)
         copy(
           saldo = obligacionesSaldo_.values.sum,
           obligaciones = obligaciones + evt.obligacionId,
           obligacionesSaldo = obligacionesSaldo_,
           sujetos = sujetos + evt.sujetoId,
-          isBaja = false
+          isBaja = false,
+          obnVencidas = newObnVencidas,
+          deuda30Objeto = _deuda30objeto
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento =>
         val indice = evt.cuota.get.toInt
         val newObnVencidas = obnVencidas.updated(indice, false)
+        val _deuda30objeto = if(newObnVencidas.contains(false)) false else true
         copy(
-          obnVencidas = newObnVencidas
+          obnVencidas = newObnVencidas,
+          deuda30Objeto = _deuda30objeto
         )
 
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
@@ -132,25 +141,27 @@ case class ObjetoState(
         if(evt.cuota.isEmpty || evt.cuota.get.toInt < 0 || evt.cuota.get.toInt > 12) {
           val indice = evt.cuota.get.toInt
           val newObnVencidas = obnVencidas.updated(indice, true)
-
+          val _deuda30objeto = if (newObnVencidas.contains(false)) false else true
           copy(
             saldo = obligacionesSaldo_.values.sum,
             obligaciones = obligaciones - evt.obligacionId,
             obligacionesSaldo = obligacionesSaldo_,
-            obnVencidas = newObnVencidas
+            obnVencidas = newObnVencidas,
+            deuda30Objeto = _deuda30objeto
           )
         }else {
           val cuotaIndex_ = evt.cuota.get.toInt
           val cuotasPagadas_ = cuotas.updated(cuotaIndex_, true)
           val indice = evt.cuota.get.toInt
           val newObnVencidas = obnVencidas.updated(indice, true)
-
+          val _deuda30objeto = if (newObnVencidas.contains(false)) false else true
           copy(
             saldo = obligacionesSaldo_.values.sum,
             obligaciones = obligaciones - evt.obligacionId,
             obligacionesSaldo = obligacionesSaldo_,
             cuotas = cuotasPagadas_,
-            obnVencidas = newObnVencidas
+            obnVencidas = newObnVencidas,
+            deuda30Objeto = _deuda30objeto
 
           )
         }

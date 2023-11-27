@@ -38,7 +38,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   }
 
   def informParent(cmd: ObligacionCommands): Unit = {
-    println("TREINTA 4.0 ")
     context.parent ! ObjetoCommands.ObjetoUpdateFromObligacion(
       cmd.deliveryId,
       cmd.sujetoId,
@@ -55,12 +54,12 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       state.saldo,
       state.exenta,
       state.porcentajeExencion,
-      state.idExterno
+      state.idExterno,
+      state.registro.get.BOB_CUOTA
     )
   }
 
   def informParentTreintaProciento(evt: ObligacionUpdatedFromDto): Unit = {
-    println("TREINTA 4.1 ")
     context.parent ! ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento(
       evt.deliveryId,
       evt.sujetoId,
@@ -84,7 +83,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
 
   def informRemoveToParent(cmd: ObligacionRemove): Unit = {
-    println("DELETEOBN 1 cuota -> " + cmd.cuota)
     context.parent ! ObjetoCommands.ObjetoRemoveObligacion(
       cmd.deliveryId,
       cmd.sujetoId,
@@ -111,7 +109,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
       saldo = state.saldo,
-      operacion = ObligacionEvents.operaciones("Upsert")
+      operacion = ObligacionEvents.operaciones("Upsert"),
+      resultDmn = state.resultDmn
     ).asJson.toString()
     requirements.messageProducer.produce(
       data = Seq(
@@ -156,7 +155,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
       saldo = state.saldo,
-      operacion = ObligacionEvents.operaciones("Delete")
+      operacion = ObligacionEvents.operaciones("Delete"),
+      resultDmn = state.resultDmn
     ).asJson.toString()
     requirements.messageProducer.produce(
       data = Seq(

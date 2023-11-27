@@ -32,8 +32,6 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
     actor.persistEvent(event) { () =>
 
       actor.state += event
-      println("TREINTA 8 " + event.clasificacionObjeto)
-      println("TREINTA 8 " + actor.state)
         SendToObjeto(actor.state, sender, actor.context.children, actor.context, event)
 
       if (actor.state.eventCounter == eventCounterMax) {

@@ -18,13 +18,15 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
-
-    val tipo: String = Some(DMNTreintaPorcientoTipo.dmn(command)) match {
+    val tipo = Some(DMNTreintaPorcientoTipo.dmn(command)) match {
       case f if f.get.equals(2) => { //case 0
-        "2"
+        ("2",2)
       }
-      case _ => {
-        "1"
+      case f if f.get.equals(-1) => {
+        ("1",-1)
+      }
+      case f if f.get.equals(1) => {
+        ("1",1)
       }
     }
 
@@ -39,10 +41,11 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
       command.isResponsable,
       command.sujetoResponsable,
       command.isAdheridoDebito,
-      tipo
+      tipo._1,
+      tipo._2
     )
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      println(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
+      log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
       // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular

@@ -16,7 +16,8 @@ object ObligacionCommands {
       registro: ObligacionExternalDto,
       detallesObligacion: Seq[DetallesObligacion],
       isAdheridoDebito: Option[Boolean],
-      cuota: Option[String]
+      cuota: Option[String],
+      resultDmn: Option[String]
   ) extends ObligacionCommands
 
 

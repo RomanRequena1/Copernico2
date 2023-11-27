@@ -12,6 +12,7 @@ import io.circe.parser.decode
 import monitoring.Monitoring
 import org.slf4j.LoggerFactory
 import timescaledb.TimescaledbNifiToKafka.connOracleNifi
+import io.circe.syntax.EncoderOps
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
@@ -51,6 +52,10 @@ case class ObligacionTributariaTransactionEmbarcacion(actorRef: ActorRef, monito
     val isNotDeuda = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES map {
       d => d.RULE_NUMBER.contains("-2")
     }
+    val detallesObligacion: Seq[DetallesObligacion] = obligacion.BOB_OTROS_ATRIBUTOS match {
+      case Some(r) => r.BOB_DETALLES
+      case None => null
+    }
 
     val command: ObligacionCommands =
     //this pattern match isn't  commutative
@@ -75,41 +80,43 @@ case class ObligacionTributariaTransactionEmbarcacion(actorRef: ActorRef, monito
           cuota = None
         )
       else {
+        val dmn = isTreintaPorciento(obligacion)
         ObligacionUpdateFromDto(
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
           objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
           tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
           obligacionId = obligacion.BOB_OBN_ID,
           deliveryId = obligacion.EV_ID,
-          registro = isTreintaPorciento(obligacion),
-          //todo: fix
-          detallesObligacion = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES,
+          registro = dmn._1,
+          detallesObligacion = detallesObligacion,
           isAdheridoDebito = isAdheridoDebito,
-          cuota = obligacion.BOB_CUOTA
-        )
+          cuota = obligacion.BOB_CUOTA,
+          resultDmn = Some(dmn._2.toString))
       }
     //return a response  to the actorRef given, this case is an ActorRef of SujetoActor
     actorRef.ask[Response.SuccessProcessing](command)
   }
 
-  private def isTreintaPorciento(obn: ObligacionesTri) = {
-    DMNTreintaPorciento.dmn(obn) match {
-      case f if f.equals(0) => { //case 0
+  private def isTreintaPorciento(obn: ObligacionesTri): (ObligacionesTri, Any) = {
+    //todo set deuda30Obligacion en state
+    Some(DMNTreintaPorciento.dmn(obn)) match {
+      case f if f.get.equals(0) => { //case 0
         val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
-        val newDetails = decode[ListDetallesObligaciones](s"""{"BOB_DETALLES" : '${detalles}'}""").toOption.get
+        val newDetails = decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
         println(detalles)
         println(newO)
-        newO
+        (newO, f.get)
       }
-      case _ => {
-        val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
-        val newDetails = decode[ListDetallesObligaciones](s"""{"BOB_DETALLES" : '${detalles}'}""").toOption.get
+      case n => {
+        val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(BAND_30 = Some(false), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
+        val newDetails = decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
         println(newDetails)
         println(newO)
-        newO
+        (newO, n.get)
       }
+
     }
   }
 }
