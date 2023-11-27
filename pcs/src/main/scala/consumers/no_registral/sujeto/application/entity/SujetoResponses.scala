@@ -12,7 +12,8 @@ object SujetoResponses {
       saldo: BigDecimal = 0,
       objetos: Set[String] = Set.empty, // implement Json extension for tuples here: objetos: Set[(String, String)] = Set.empty,
       fechaUltMod: LocalDateTime = LocalDateTime.MIN,
-      registro: Option[SujetoExternalDto] = None
+      registro: Option[SujetoExternalDto] = None,
+      treinta: Boolean
   ) extends Response with CbroSerialization
 
 }

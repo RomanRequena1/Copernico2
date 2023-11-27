@@ -2,6 +2,7 @@ package consumers.no_registral.objeto.domain
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
+import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromSujeto
 import ddd.{AbstractState, eventCounterMax}
 import serialization.CbroSerialization
 
@@ -23,7 +24,13 @@ case class ObjetoState(
     isBaja: Boolean = false,
     isAdheridoDebito: Boolean = false,
     eventCounter:Int = 0,
-    cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false)
+    cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
+    deuda30Objeto: Boolean = true,
+    clasificacionObjeto: String = "",
+    deuda30Sujeto: Boolean = true,
+    aplicarDescuento: Boolean = true,
+    resulDmn: Int = 0,
+    obnVencidas: List[Boolean] = List(true, true, true, true, true, true, true, true, true, true, true, true, true)
 ) extends AbstractState[ObjetoEvents] with CbroSerialization{
 
   override def +(event: ObjetoEvents): ObjetoState = {
@@ -58,6 +65,8 @@ case class ObjetoState(
           exenciones = exenciones + exencion,
           isBaja = false
         )
+      case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
+        copy(deuda30Sujeto = evt.deuda30Sujeto)
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
         copy(
           sujetoResponsable = evt.sujetoResponsable match {
@@ -68,7 +77,9 @@ case class ObjetoState(
           registro = Some(evt.registro),
           sujetos = sujetos + evt.sujetoId,
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
-          isBaja = false
+          isBaja = false,
+          clasificacionObjeto = evt.clasificacionObjeto,
+          resulDmn = evt.resultDmn
         )
 //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
 //        copy(
@@ -76,14 +87,28 @@ case class ObjetoState(
 //          sujetos = sujetos + evt.sujetoId
 //        )
       case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
+        val indice = evt.cuota.get.toInt
+        val newObnVencidas = obnVencidas.updated(indice, true)
+        val _deuda30objeto = if(obnVencidas.contains(false)) false else true
         val obligacionesSaldo_ = obligacionesSaldo + (evt.obligacionId -> evt.saldoObligacion)
         copy(
           saldo = obligacionesSaldo_.values.sum,
           obligaciones = obligaciones + evt.obligacionId,
           obligacionesSaldo = obligacionesSaldo_,
           sujetos = sujetos + evt.sujetoId,
-          isBaja = false
+          isBaja = false,
+          obnVencidas = newObnVencidas,
+          deuda30Objeto = _deuda30objeto
         )
+      case evt: ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento =>
+        val indice = evt.cuota.get.toInt
+        val newObnVencidas = obnVencidas.updated(indice, false)
+        val _deuda30objeto = if(newObnVencidas.contains(false)) false else true
+        copy(
+          obnVencidas = newObnVencidas,
+          deuda30Objeto = _deuda30objeto
+        )
+
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
         copy(
           saldo = evt.saldo,
@@ -114,20 +139,30 @@ case class ObjetoState(
       case evt: ObjetoEvents.ObjetoRemovedObligacion =>
         val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
         if(evt.cuota.isEmpty || evt.cuota.get.toInt < 0 || evt.cuota.get.toInt > 12) {
-
-          copy(
-            saldo = obligacionesSaldo_.values.sum,
-            obligaciones = obligaciones - evt.obligacionId,
-            obligacionesSaldo = obligacionesSaldo_
-          )
-        }else {
-          val cuotaIndex_ = evt.cuota.get.toInt
-          val cuotasPagadas_ = cuotas.updated(cuotaIndex_, true)
+          val indice = evt.cuota.get.toInt
+          val newObnVencidas = obnVencidas.updated(indice, true)
+          val _deuda30objeto = if (newObnVencidas.contains(false)) false else true
           copy(
             saldo = obligacionesSaldo_.values.sum,
             obligaciones = obligaciones - evt.obligacionId,
             obligacionesSaldo = obligacionesSaldo_,
-            cuotas = cuotasPagadas_
+            obnVencidas = newObnVencidas,
+            deuda30Objeto = _deuda30objeto
+          )
+        }else {
+          val cuotaIndex_ = evt.cuota.get.toInt
+          val cuotasPagadas_ = cuotas.updated(cuotaIndex_, true)
+          val indice = evt.cuota.get.toInt
+          val newObnVencidas = obnVencidas.updated(indice, true)
+          val _deuda30objeto = if (newObnVencidas.contains(false)) false else true
+          copy(
+            saldo = obligacionesSaldo_.values.sum,
+            obligaciones = obligaciones - evt.obligacionId,
+            obligacionesSaldo = obligacionesSaldo_,
+            cuotas = cuotasPagadas_,
+            obnVencidas = newObnVencidas,
+            deuda30Objeto = _deuda30objeto
+
           )
         }
 

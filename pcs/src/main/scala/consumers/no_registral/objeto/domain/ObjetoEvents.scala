@@ -24,6 +24,14 @@ object ObjetoEvents {
       cotitulares: Set[String]
   ) extends ObjetoEvents
 
+  case class ObjetoUpdatedFromSujeto(
+                               deliveryId: BigInt,
+                               sujetoId: String,
+                               objetoId: String,
+                               tipoObjeto: String,
+                               deuda30Sujeto:Boolean,
+                               exclusionSUjeto: String
+                             ) extends ObjetoEvents
   case class ObjetoSnapshotPersisted(
       deliveryId: BigInt,
       sujetoId: String,
@@ -38,8 +46,12 @@ object ObjetoEvents {
       registro: Option[ObjetoExternalDto],
       obligacionesSaldo: Map[String, BigDecimal] = Map.empty,
       cuotas:List[Boolean],
+      bandTipo: String,
       operacion: String,
-      idExterno: Option[String]
+      idExterno: Option[String],
+      deuda30Objeto: Option[Boolean],
+      aplicarDescuento: Option[Boolean],
+      resultDmn: Int
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromTri(
@@ -51,6 +63,9 @@ object ObjetoEvents {
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String],
       isAdheridoDebito: Option[Boolean],
+      clasificacionObjeto: String,
+      resultDmn: Int
+
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromAnt(
@@ -87,7 +102,8 @@ object ObjetoEvents {
       saldoObligacion: BigDecimal,
       obligacionExenta: Boolean,
       porcentajeExencion: Option[BigDecimal],
-      idExterno: Option[String]
+      idExterno: Option[String],
+      cuota: Option[String]
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromObligacionBajaSet(
@@ -124,5 +140,20 @@ object ObjetoEvents {
       obligacionId: String,
       cuota:Option[String]
   ) extends ObjetoEvents
+
+  case class ObjetoUpdatedFromObnTreintaProciento(
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      objetoId2: Option[String],
+      tipoObjeto: String,
+      obligacionId: String,
+      saldoObligacion: BigDecimal,
+      obligacionExenta: Boolean,
+      porcentajeExencion: Option[BigDecimal],
+      idExterno: Option[String],
+      cuota: Option[String]
+  ) extends ObjetoEvents
+
 
 }

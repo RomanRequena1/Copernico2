@@ -21,6 +21,9 @@ curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-OBJETOS-TRI
 curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-OBLIGACIONES-ANT
 curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-OBLIGACIONES-TRI
 
+curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-EXCLUSIONES-OBJETO-TRI
+curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-EXCLUSIONES-SUJETO-TRI
+
 #curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-PARAMPLAN-ANT
 #curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-PARAMPLAN-TRI
 
@@ -55,3 +58,6 @@ curl -X POST http://0.0.0.0:8084/kafka/start/JuicioObnDeletedFronDto
 curl -X POST http://0.0.0.0:8084/kafka/start/JuicioObnUpdatedFronDto
 curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-PLAN-CABECERA-TRI
 #curl -X POST http://0.0.0.0:8081/kafka/start/DGR-COP-EXENCIONES
+
+curl -X POST http://0.0.0.0:8081/kafka/start/ExclusionesObjetoUpdatedFromDto
+curl -X POST http://0.0.0.0:8081/kafka/start/ExclusionesSujetoUpdatedFromDto

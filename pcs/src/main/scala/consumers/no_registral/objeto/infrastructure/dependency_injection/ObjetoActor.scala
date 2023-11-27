@@ -30,6 +30,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
   override def setupHandlers(): Unit = {
     commandBus.subscribe[ObjetoCommands.ObjetoSnapshot](new ObjetoSnapshotHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromSujeto](new ObjetoUpdateFromSujetoHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagAdd](new ObjetoTagAddHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagRemove](new ObjetoTagRemoveHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromAnt](new ObjetoUpdateFromAntHandler(this).handle)
@@ -39,6 +40,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateCotitulares](new ObjetoUpdateCotitularesHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoAddExencion](new ObjetoAddExencionHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoRemoveObligacion](new ObjetoRemoveObligacionHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento](new ObjetoUpdateFromObligacionTreintaProcientoHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetStateObjeto](new GetStateObjetoHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetStateExencion](new GetStateExencionHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetSnapshotObjeto](new GetSnapshotObjetoHandler(this).handle)
@@ -111,7 +113,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
     val kafkaTopic = "ObjetoSnapshotPersistedReadside"
-    println("")
     val snapshot =
       ObjetoSnapshotPersisted(
         evt.deliveryId,
@@ -130,11 +131,15 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
         consolidatedState.cuotas,
+        consolidatedState.clasificacionObjeto,
         operacion = ObligacionEvents.operaciones.get("Upsert").get,
         idExterno = evt match {
           case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
           case _ => None
-        }
+        },
+        Some(consolidatedState.deuda30Objeto),
+        Some(consolidatedState.aplicarDescuento),
+        consolidatedState.resulDmn
       )
 
     requirements.messageProducer.produce(
@@ -169,11 +174,15 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
         consolidatedState.cuotas,
+        consolidatedState.clasificacionObjeto,
         operacion = ObligacionEvents.operaciones.get("Delete").get,
         idExterno = evt match {
           case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
           case _ => None
-        }
+        },
+        Some(consolidatedState.deuda30Objeto),
+        Some(consolidatedState.aplicarDescuento),
+        consolidatedState.resulDmn
       )
 
     requirements.messageProducer.produce(
@@ -208,11 +217,15 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.registro,
         consolidatedState.obligacionesSaldo,
         consolidatedState.cuotas,
+        consolidatedState.clasificacionObjeto,
         operacion = ObligacionEvents.operaciones.get("FullDelete").get,
         idExterno = evt match {
           case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
           case _ => None
-        }
+        },
+        Some(consolidatedState.deuda30Objeto),
+        Some(consolidatedState.aplicarDescuento),
+        consolidatedState.resulDmn
       )
 
     requirements.messageProducer.produce(
@@ -241,6 +254,17 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
 
   def withCotitulares(sujetos: Set[String]): Boolean =
     sujetos.size > 1*/
+  def informParentTreintaPorciento(cmd: ObjetoCommands, state: ObjetoState): Unit = {
+    context.parent ! SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
+      cmd.deliveryId,
+      cmd.sujetoId,
+      cmd.objetoId,
+      cmd.tipoObjeto,
+      state.saldo,
+      state.obligacionesSaldo.values.sum,
+      state.clasificacionObjeto
+    )
+  }
 
   def informParent(cmd: ObjetoCommands, state: ObjetoState): Unit = {
     context.parent ! SujetoCommands.SujetoUpdateFromObjeto(
@@ -249,7 +273,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
       cmd.objetoId,
       cmd.tipoObjeto,
       state.saldo,
-      state.obligacionesSaldo.values.sum
+      state.obligacionesSaldo.values.sum,
+      state.clasificacionObjeto
     )
   }
 

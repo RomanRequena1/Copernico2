@@ -12,7 +12,8 @@ CREATE TABLE read_side.buc_sujeto (
     suj_situacion_fiscal text,
     suj_telefono text,
     suj_tipo text,
-    suj_canal_origen text
+    suj_canal_origen text,
+    suj_deuda30Sujeto boolean
 ) WITH bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
     AND comment = ''

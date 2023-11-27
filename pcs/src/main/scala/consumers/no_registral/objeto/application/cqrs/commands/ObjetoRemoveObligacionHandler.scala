@@ -13,7 +13,7 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
   override def handle(
                        command: ObjetoCommands.ObjetoRemoveObligacion
                      ): Try[Response.SuccessProcessing] = {
-
+    val sender = actor.context.sender()
     val event = ObjetoRemovedObligacion(
       command.deliveryId,
       command.sujetoId,
@@ -25,9 +25,26 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
     actor.persistEvent(event) { () =>
       actor.state += event
       if(!actor.state.isBaja){
-        actor.informParent(command, actor.state)
-        actor.persistSnapshot(event, actor.state)(() => ())
+        //actor.informParent(command, actor.state)
+        //actor.persistSnapshot(event, actor.state)(() => ())
+        if (actor.state.deuda30Objeto.equals(false)) {
+
+          actor.informParentTreintaPorciento(command, actor.state)
+          actor.persistSnapshot(event, actor.state) { () =>
+            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+          }
+        }
+
+        else {
+
+          actor.informParent(command, actor.state)
+          actor.persistSnapshot(event, actor.state) { () =>
+            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+          }
+        }
       }
+
+
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

@@ -25,7 +25,8 @@ object ObligacionEvents {
                                           exenta: Boolean,
                                           porcentajeExencion: BigDecimal,
                                           saldo: BigDecimal,
-                                          operacion: String
+                                          operacion: String,
+                                          resultDmn: Option[String]
   ) extends ObligacionEvents
 
 
@@ -37,10 +38,20 @@ object ObligacionEvents {
       obligacionId: String,
       registro: ObligacionExternalDto,
       detallesObligacion: Seq[DetallesObligacion],
-      isAdheridoDebito: Option[Boolean]
+      isAdheridoDebito: Option[Boolean],
+      cuota: Option[String],
+      resultDmn: Option[String]
   ) extends ObligacionEvents
 
-
+  case class ObligacionRemovedInfoFromObjeto(
+                                deliveryId: BigInt,
+                                sujetoId: String,
+                                objetoId: String,
+                                tipoObjeto: String,
+                                obligacionId: String,
+                                registro: ObligacionExternalDto,
+                                cuota: Option[String]
+                              ) extends ObligacionEvents
   case class ObligacionRemoved(
       deliveryId: BigInt,
       sujetoId: String,

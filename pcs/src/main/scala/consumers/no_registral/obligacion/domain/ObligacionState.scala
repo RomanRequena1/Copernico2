@@ -17,7 +17,8 @@ case class ObligacionState(
                             juicioId: Option[BigInt] = None,
                             isAdheridoDebito: Boolean = false,
                             eventCounter:Int = 0,
-                            idExterno: Option[String] = None
+                            idExterno: Option[String] = None,
+                            resultDmn: Option[String] = None
 ) extends AbstractState[ObligacionEvents] with CbroSerialization{
 
   //val eventCounterMax = Try(System.getenv("EVENT_COUNTER_MAX")).getOrElse(9)
@@ -49,7 +50,8 @@ case class ObligacionState(
           juicioId = e.registro.BOB_JUI_ID,
           lastDeliveryIdByEvents =  e.deliveryId,
           isAdheridoDebito = e.isAdheridoDebito.getOrElse(false),
-          idExterno = e.registro.SOJ_ID_EXTERNO
+          idExterno = e.registro.SOJ_ID_EXTERNO,
+          resultDmn = e.resultDmn
         )
       case _ => this
     }

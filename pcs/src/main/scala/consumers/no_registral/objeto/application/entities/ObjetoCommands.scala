@@ -16,6 +16,14 @@ object ObjetoCommands {
       cotitulares: Set[String]
   ) extends ObjetoCommands
 
+  case class ObjetoUpdateFromSujeto(
+                               deliveryId: BigInt,
+                               sujetoId: String,
+                               objetoId: String,
+                               tipoObjeto: String,
+                               deuda30Sujeto: Boolean,
+                               exclusionSUjeto: String
+                             ) extends ObjetoCommands
   case class ObjetoSnapshot(
       deliveryId: BigInt,
       sujetoId: String,
@@ -59,7 +67,8 @@ object ObjetoCommands {
       saldoObligacion: BigDecimal,
       obligacionExenta: Boolean,
       porcentajeExencion: Option[BigDecimal],
-      idExterno: Option[String]
+      idExterno: Option[String],
+      couta: Option[String]
   ) extends ObjetoCommands
 
   case class ObjetoRemoveObligacion(
@@ -111,5 +120,20 @@ object ObjetoCommands {
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String]
   ) extends ObjetoCommands
+
+  case class ObjetoUpdateFromObnTreintaPorciento(
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      objetoId2: Option[String],
+      tipoObjeto: String,
+      obligacionId: String,
+      saldoObligacion: BigDecimal,
+      obligacionExenta: Boolean,
+      porcentajeExencion: Option[BigDecimal],
+      idExterno: Option[String],
+      cuota: Option[String]
+  ) extends ObjetoCommands
+
 
 }

@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="decision_30_descuento" name="decision_30_descuento" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
+  <decision id="Decision_descuento" name="decision_30_descuento">
+    <decisionTable id="DecisionTable_19dum3t" hitPolicy="FIRST">
+      <input id="InputClause_0die5ek" label="bob_tipo">
+        <inputExpression id="LiteralExpression_149ttw1" typeRef="string">
+          <text>bob_tipo</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1o2kj2w" label="bob_impuesto">
+        <inputExpression id="LiteralExpression_0vxug7k" typeRef="string">
+          <text>bob_impuesto</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1rnwgsr" label="bob_concepto">
+        <inputExpression id="LiteralExpression_1w0xoen" typeRef="string">
+          <text>bob_concepto</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1ch3anb" label="bob_estado">
+        <inputExpression id="LiteralExpression_1wlevx5" typeRef="string">
+          <text>bob_estado</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0uuineo" label="bob_capital">
+        <inputExpression id="LiteralExpression_138l024" typeRef="double">
+          <text>bob_capital</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_190iar5" label="is_vencida">
+        <inputExpression id="LiteralExpression_0elc8if" typeRef="boolean">
+          <text>is_vencida</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0ypk95k" label="dias_obligacion">
+        <inputExpression id="LiteralExpression_02055qy" typeRef="integer">
+          <text>dias_obligacion</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0v3qqrj" label="years_obligacion">
+        <inputExpression id="LiteralExpression_1fokahk" typeRef="integer">
+          <text>years_obligacion</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1o0zdm9" label="bob_adherido_debito">
+        <inputExpression id="LiteralExpression_05f2mvy" typeRef="string">
+          <text>bob_adherido_debito</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1prtp7w" label="dias_vencimiento2" biodi:width="192" camunda:inputVariable="-">
+        <inputExpression id="LiteralExpression_10eklet" typeRef="integer">
+          <text>dias_vencimiento2</text>
+        </inputExpression>
+      </input>
+      <output id="OutputClause_1if0ej5" label="30_descuento" name="decision_30_descuento" typeRef="integer" />
+      <rule id="DecisionRule_0l5440l">
+        <description>Liquidaciones Multiobjeto Judiciales y de Concursos y Quiebras (incluyendo gastos)</description>
+        <inputEntry id="UnaryTests_1fbob7z">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0u010qk">
+          <text>"51"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0qh9yh2">
+          <text>not("760","761","888","889","912","921","925","926","939","941","942","943","944","945","946","947","948","949","950","951","952","953","954","955","956","960","963","969","976","977","978","989")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1i9ou19">
+          <text>"JUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0beuinw">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0m70a99">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_03g5udp">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0y1ya5d">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1i64zmz">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_09mmh8t">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_186juwh">
+          <text>-17</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1hx7ux2">
+        <description>Regla general obligaciones en estado judicial, son deuda.</description>
+        <inputEntry id="UnaryTests_0cbpnno">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0y77mid">
+          <text>not("4","904","905","300","8")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0f2ntc3">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1v30bf2">
+          <text>"JUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1oe48kw">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0k2i328">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0v6vud4">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0h714de">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0yoa4ln">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0wu9kn2">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0h4qze5">
+          <text>-1</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0zo0tnd">
+        <description>Regla general obligaciones en estado prejudicial adeudadas no prescriptas. IIBB</description>
+        <inputEntry id="UnaryTests_0qv36h1">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0txqp5f">
+          <text>"2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ld0wjq">
+          <text>not("913","914","915","930")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0oj1dse">
+          <text>"PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0yz5twt">
+          <text>&gt;50</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0t3arh2">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1n6c92k">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_09akju1">
+          <text>&lt;7</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ym34dm">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_00frvdn">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0cpxqzo">
+          <text>-2</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_065h66t">
+        <description>Regla general obligaciones en estado prejudicial adeudadas no prescriptas. Inmuebles Automotor</description>
+        <inputEntry id="UnaryTests_1l4dycv">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0vkm9wu">
+          <text>"5","58","600"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06pnt9q">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0h518tb">
+          <text>"PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0qd4acu">
+          <text>&gt;50</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_05ddhmn">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_15hphir">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0yl3e1g">
+          <text>&lt;6</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0av5fqq">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1jm6quq">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0y9rp30">
+          <text>-3</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0p5lg33">
+        <description>Regla general obligaciones en estado prejudicial adeudadas no prescriptas. Sellos, Agentes de Reteneción y Recaudación</description>
+        <inputEntry id="UnaryTests_099l0nv">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1b45fj7">
+          <text>"902","903"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0twmuuw">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_04h612f">
+          <text>"PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1eoa530">
+          <text>&gt;50</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0i78exr">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0bihhqf">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_09hbq8o">
+          <text>&lt;11</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0fmkcon">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ovnkl9">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0r21xui">
+          <text>-4</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ojfaig">
+        <description>Bandera para IIBB - MUC toma fechavencimiento2</description>
+        <inputEntry id="UnaryTests_1gnmkwt">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_129sdoo">
+          <text>"2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ggwilv">
+          <text>"840","841","842","843","844","845","846","847","848","849","850"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0xku6ey">
+          <text>not("JUDICIAL","PREJUDICIAL")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1qelgg8">
+          <text>&gt;50</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06botax">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_12shl1f">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0t5ycio">
+          <text>&lt;6</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0yevgzw">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1l8by62">
+          <text>&gt;0</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1999hqg">
+          <text>-5</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0s9qrhd">
+        <description>Plazo de gracia. Aplica para los IIBB que no sean MUC.</description>
+        <inputEntry id="UnaryTests_06g0ehg">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0dq38wd">
+          <text>"2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1mx501e">
+          <text>not("046","047","048","480","482","483","840","841","842","843","844","845","846","847","848","849","850","913","914","915","930")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0fimnym">
+          <text>not("JUDICIAL","PREJUDICIAL")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0uk6oji">
+          <text>&gt;50</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02e5169">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1tp1gby">
+          <text>&gt;10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ab0sm3">
+          <text>&lt;7</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0lyht74">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_14vmtrk">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0mhgviz">
+          <text>-6</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1dlg7ob">
+        <description>Plazo de gracia. Aplica obligaciones en estado administrativo adeudadas no prescriptas. Sellos, Agentes de Reteneción y Recaudación</description>
+        <inputEntry id="UnaryTests_08of9el">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1j8qpir">
+          <text>"902","903"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ue0tv2">
+          <text>not("046","047","048","480","482","483")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1qm1tdb">
+          <text>not("JUDICIAL","PREJUDICIAL")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06wiq0x">
+          <text>&gt;50</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_01ts4zv">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1vjxpym">
+          <text>&gt;10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0pjy66u">
+          <text>&lt;11</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1y9iyut">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0bdrw1y">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1mhjs1g">
+          <text>-7</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0g8ogsa">
+        <description>Regla general obligaciones en estado administrativo adeudadas no prescriptas. Inmuebles Automotor</description>
+        <inputEntry id="UnaryTests_1y9yl9z">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1j3s7z2">
+          <text>"5","58","600"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mp35po">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1yyex03">
+          <text>not("JUDICIAL","PREJUDICIAL")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1np941n">
+          <text>&gt;50</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_10bkvb0">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1bmpzrw">
+          <text>&gt;10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_05gi0wu">
+          <text>&lt;6</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_07zhowq">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11ax916">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0vhu1m9">
+          <text>-8</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1iwwt09">
+        <description>Falta de presentación de la declaración jurada anual (CM05) de Contribuyentes del Régimen de Convenio Multilateral del Impuesto sobre los Ingresos Brutos</description>
+        <inputEntry id="UnaryTests_10zwgsw">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1sh82mb">
+          <text>"2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1j1kxb0">
+          <text>"901","910"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1hdnul4">
+          <text>not("JUDICIAL","PREJUDICIAL")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1p2hndv">
+          <text>&lt;=0</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1fjtogz">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0yiw803">
+          <text>&gt;10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0b8ke3g">
+          <text>&lt;7</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0tvc1sy">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11jeslz">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1fa3tuc">
+          <text>-9</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1j9b1sx">
+        <description>Falta de presentación de declaraciones juradas de Agentes de Retención y Percepción del Impuesto sobre los Ingresos Brutos</description>
+        <inputEntry id="UnaryTests_1m31418">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06wmv68">
+          <text>"902"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0rpolr7">
+          <text>"820","821","830","831","880","881","890","891","892", "893", "894", "895"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_173h30c">
+          <text>not("JUDICIAL","PREJUDICIAL")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_00taddn">
+          <text>&lt;=0</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1oj4kir">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1gw9sz0">
+          <text>&gt;10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1clp3w3">
+          <text>&lt;11</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1yel5aa">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0vtoum4">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1b6332k">
+          <text>-10</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_05u23cf">
+        <description>Falta de presentación de declaraciones juradas de Contribuyentes del Régimen Local y Convenio Multilateral del Impuesto sobre los Ingresos Brutos</description>
+        <inputEntry id="UnaryTests_03263f1">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0uo0e5r">
+          <text>"902"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1f6s2d9">
+          <text>"901","910"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1kq93fs">
+          <text>not("JUDICIAL","PREJUDICIAL")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_15fvb8l">
+          <text>&lt;=0</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_000pj3u">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0l3dqch">
+          <text>&gt;10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1a2v869">
+          <text>&lt;7</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0fqcpgy">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0u0fjms">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0pati3z">
+          <text>-11</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0j9ue3k">
+        <description>Falta de presentación de declaraciones juradas de Agentes de Recaudación del Impuesto sobre los Ingresos Brutos</description>
+        <inputEntry id="UnaryTests_0bs6f75">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1n2r44z">
+          <text>"903"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11nwod2">
+          <text>"936","937","938","883","884","885"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0kq6uz2">
+          <text>not("JUDICIAL","PREJUDICIAL")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1w6h9dg">
+          <text>&lt;=0</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_09w38bj">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1rl974s">
+          <text>&gt;10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0kjutny">
+          <text>&lt;11</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ybe3g4">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_05qfy83">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1kstoez">
+          <text>-12</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1jkgrdy">
+        <description>Multas adeudadas en gestion administrativa</description>
+        <inputEntry id="UnaryTests_0gfht3w">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ftv0hp">
+          <text>"2","902","903"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0z258q6">
+          <text>"046","048"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0vialuc">
+          <text>not("JUDICIAL","PREJUDICIAL")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0nuodo1">
+          <text>&lt;=0</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_04ye00k">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1hdn0cw">
+          <text>&gt;10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02du4cy">
+          <text>&lt;6</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1yf8951">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_10ho3hx">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1z0mhxy">
+          <text>-13</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1lwnfdz">
+        <description>DDJJ   Cuatrimestrales de:
+Agentes de Información - AI (general, construccion, telca)
+Agentes de Información Autos - AITAI,  AICIB, AICCM 
+Agentes de Información Varios - AIFAG, AISEG, , AIFIN
+no presentadas
+DDJJ Mensuales de Agentes de Información Autos - AITAI, AICIB,  AICCM, no presentadas</description>
+        <inputEntry id="UnaryTests_0l2c839">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1w98am5">
+          <text>"904"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_069jvgv">
+          <text>"904","917","919","931","932","933","934","935","940","993","994","995","996"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0bg221c">
+          <text>not("JUDICIAL","PREJUDICIAL")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0s66w78">
+          <text>&lt;=0</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_08lb79b">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_19q1194">
+          <text>&gt;10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1gryb7d">
+          <text>&lt;11</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_187fapk">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0hu97mc">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_09f6hy9">
+          <text>-14</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1sijxwq">
+        <description>Multas adeudadas en estado administrativo</description>
+        <inputEntry id="UnaryTests_1hucohu">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1gf8dry">
+          <text>"2","902","903"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0hvc1fh">
+          <text>"046","047","048"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0g9jvh8">
+          <text>not("JUDICIAL","PREJUDICIAL")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0gi9gv4">
+          <text>&gt;50</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1v3jguu">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ds7vrr">
+          <text>&gt;10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0wurch6">
+          <text>&lt;6</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1dextbf">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18j6ch4">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_11x8ch6">
+          <text>-15</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1f3ur4p">
+        <description>Cuotas de planes de pagos a vencer (Planes NO DEBITO) del Impuesto sobre los Ingresos Brutos, Sellos y cuotas de planes de pagos para Multas de Agentes de Retención, Percepción, Recaudación y Tasa Vial Provincial.
+Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
+        <inputEntry id="UnaryTests_0jylsdh">
+          <text>"tributaria"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ozofwn">
+          <text>"2","4","902","903","904","905","58","600","51","300"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0aa10a2">
+          <text>"480","482","483"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mb389p">
+          <text>not("JUDICIAL","PREJUDICIAL")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0b3fo5r">
+          <text>&gt;50</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0us2z5w">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_008gs21">
+          <text>&gt;10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0jhmpta">
+          <text>&lt;11</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1k20nnu">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18ka0rn">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0nd9ngq">
+          <text>-16</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1l94ocv">
+        <description>No deuda, aplico 30% de descuento</description>
+        <inputEntry id="UnaryTests_1teyh3x">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0hzgnir">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0k9mtij">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1f9s02o">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ufgeye">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1hc5css">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17hry9w">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1tynalb">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0utz5rr">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0a0aw4b">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_042rkq5">
+          <text>0</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_0i21c0s">
+      <dmndi:DMNShape id="DMNShape_1tf5606" dmnElementRef="Decision_descuento">
+        <dc:Bounds height="80" width="180" x="490" y="230" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

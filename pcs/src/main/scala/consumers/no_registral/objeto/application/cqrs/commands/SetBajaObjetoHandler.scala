@@ -1,8 +1,8 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
-
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.helper.SendToObligaciones
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -32,11 +32,12 @@ class SetBajaObjetoHandler(actor: ObjetoActor) extends SyncCommandHandler[Objeto
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.informBajaToParent(command)
-        actor.deleteSnapshot(event, actor.state) { () =>
+        actor.deleteSnapshot(event, actor.state) { () => //todo revisar si el baja es con estado o con el saldo de todas obligaciones en 0 o ambas?
           actor.deleteObjetoObligacionesSnapshot(event, actor.state) { () =>
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
         }
+        SendToObligaciones(actor.state, actor.context)
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

@@ -45,6 +45,7 @@ class ObjetoSnapshotPersistedHandler(
     } else if (registro.operacion.equals("FD")) {
       val cassandra = new CassandraWriteProduction()
       for {
+
         done <- cassandra
           .cql(
             s"""

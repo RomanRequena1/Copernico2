@@ -8,7 +8,7 @@ import consumers.no_registral.objeto.application.entities.ObjetoMessage
 import consumers.no_registral.objeto.application.entities.ObjetoMessage.ObjetoMessageRoots
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage
-import consumers.no_registral.sujeto.application.cqrs.commands.{SujetoSetBajaFromObjetoHandler, SujetoUpdateFromAntHandler, SujetoUpdateFromObjetoHandler, SujetoUpdateFromTriHandler}
+import consumers.no_registral.sujeto.application.cqrs.commands.{SujetoSetBajaFromObjetoHandler, SujetoUpdateFromAntHandler, SujetoUpdateFromObjetoHandler, SujetoUpdateFromObjetoTreintaProcientoHandler, SujetoUpdateFromTriHandler}
 import consumers.no_registral.sujeto.application.cqrs.queries.{GetSnapshotSujetoHandler, GetStateSujetoHandler}
 import consumers.no_registral.sujeto.application.entity.SujetoMessage.SujetoMessageRoots
 import consumers.no_registral.sujeto.application.entity.{SujetoCommands, SujetoQueries}
@@ -41,6 +41,8 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
   }
 
   override def setupHandlers(): Unit = {
+
+    commandBus.subscribe[SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento](new SujetoUpdateFromObjetoTreintaProcientoHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromAnt](new SujetoUpdateFromAntHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromTri](new SujetoUpdateFromTriHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromObjeto](new SujetoUpdateFromObjetoHandler(this).handle)
@@ -68,7 +70,11 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
   import consumers.no_registral.sujeto.infrastructure.json._
   def persistSnapshot()(handler: Seq[KafkaKeyValue] => Unit): Unit = {
     val sujetoId = SujetoMessageRoots.extractor(persistenceId).sujetoId
-    val event = SujetoSnapshotPersisted(state.registro.map(_.EV_ID).getOrElse(state.lastInternalDeliveryId), sujetoId, state.registro, state.saldo).asJson.toString()
+    val event = SujetoSnapshotPersisted(state.registro.map(_.EV_ID).getOrElse(state.lastInternalDeliveryId),
+      sujetoId,
+      state.registro,
+      state.saldo,
+      Some(state.deuda30Sujeto)).asJson.toString()
     requirements.messageProducer.produce(
       data = Seq(KafkaKeyValue(persistenceId, event)),
       topic = "SujetoSnapshotPersisted"
