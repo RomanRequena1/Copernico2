@@ -16,9 +16,10 @@ object DMNTreintaPorcientoTipo {
   @JsonIgnore
   private val log = LoggerFactory.getLogger(this.getClass)
   def dmn(obj: ObjetoUpdateFromTri):Any = {
+    val path: String = Try(System.getenv("PATH_DMN_CLASIF_OBJETO")).getOrElse("")
     val exclusionObjeto = QueryExclusionObjeto(obj.registro.SOJ_IDENTIFICADOR)
     val isExclusionObjeto = if(exclusionObjeto.isEmpty) "" else exclusionObjeto.head
-    val dmnStream = Try(new FileInputStream("/opt/docker/bin/clasificacion_objeto.dmn"))
+    val dmnStream = Try(new FileInputStream(path))
     val engine = new DmnEngine()
 
     val semaforo_marca: Option[ListDetallesObjeto] => Option[String] = {

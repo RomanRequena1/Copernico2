@@ -13,8 +13,8 @@ object DMNTreintaPorciento {
 
   def dmn(actor: ObligacionExternalDto): Any = {
 
-
-    val dmnStream = Try(new FileInputStream("/opt/docker/bin/decision_30_descuento.dmn"))
+    val path: String = Try(System.getenv("PATH_DMN_DECISION_30")).getOrElse("")
+    val dmnStream = Try(new FileInputStream(path))
     val engine = new DmnEngine()
 
     val ven = actor.BOB_VENCIMIENTO.get.toString.replace(" ", "T")
