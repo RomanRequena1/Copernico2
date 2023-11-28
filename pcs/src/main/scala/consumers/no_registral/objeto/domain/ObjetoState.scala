@@ -27,9 +27,9 @@ case class ObjetoState(
     cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
     deuda30Objeto: Boolean = true,
     clasificacionObjeto: String = "",
-    deuda30Sujeto: Boolean = true,
-    aplicarDescuento: Boolean = true,
-    resulDmn: Int = 0,
+    deuda30Sujeto: Option[Boolean] = None,
+    aplicarDescuento: Option[Boolean] = None,
+    resulDmn: Option[Int] = None,
     obnVencidas: List[Boolean] = List(true, true, true, true, true, true, true, true, true, true, true, true, true)
 ) extends AbstractState[ObjetoEvents] with CbroSerialization{
 
@@ -66,7 +66,7 @@ case class ObjetoState(
           isBaja = false
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
-        copy(deuda30Sujeto = evt.deuda30Sujeto)
+        copy(deuda30Sujeto = Some(evt.deuda30Sujeto))
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
         copy(
           sujetoResponsable = evt.sujetoResponsable match {
@@ -78,7 +78,7 @@ case class ObjetoState(
           sujetos = sujetos + evt.sujetoId,
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
           isBaja = false,
-          clasificacionObjeto = evt.clasificacionObjeto,
+          clasificacionObjeto = evt.clasificacionObjeto.getOrElse(""),
           resulDmn = evt.resultDmn
         )
 //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>

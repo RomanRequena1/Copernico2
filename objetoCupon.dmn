@@ -124,7 +124,7 @@
           <text>"1"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0ec7a4y">
-          <text>"true"</text>
+          <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_0htv2lk">
           <text>"true"</text>
@@ -145,54 +145,12 @@
           <text>"1"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0xyrzf8">
-          <text>"true"</text>
+          <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1q15tev">
           <text>"false"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1p740ni">
-          <text>false</text>
-        </outputEntry>
-      </rule>
-      <rule id="DecisionRule_0djdf25">
-        <description>Buscar cupones y aplicarlos</description>
-        <inputEntry id="UnaryTests_1sz5wsk">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_0a0nedh">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1v39vtw">
-          <text>"1"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_0qm56r8">
-          <text>"false"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1nod3x4">
-          <text>"true"</text>
-        </inputEntry>
-        <outputEntry id="LiteralExpression_0n2e53r">
-          <text>true</text>
-        </outputEntry>
-      </rule>
-      <rule id="DecisionRule_0jm6q2z">
-        <description>No buscar ni aplicar cupones</description>
-        <inputEntry id="UnaryTests_1lzizp6">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_02md5h2">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1qv6no5">
-          <text>"1"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1cvzngb">
-          <text>"false"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1e7895k">
-          <text>"false"</text>
-        </inputEntry>
-        <outputEntry id="LiteralExpression_0261yp8">
           <text>false</text>
         </outputEntry>
       </rule>
@@ -211,52 +169,10 @@
           <text>"true"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0sl08f2">
-          <text>"true"</text>
+          <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_01gyf4o">
           <text>true</text>
-        </outputEntry>
-      </rule>
-      <rule id="DecisionRule_1q04o8e">
-        <description>No buscar ni aplicar cupones</description>
-        <inputEntry id="UnaryTests_0ui9ku9">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_19vn6jy">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1amf7wj">
-          <text>"2"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1bxjsjd">
-          <text>"true"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1ngmx4w">
-          <text>"false"</text>
-        </inputEntry>
-        <outputEntry id="LiteralExpression_0r3e7k7">
-          <text>false</text>
-        </outputEntry>
-      </rule>
-      <rule id="DecisionRule_0uh8nbg">
-        <description>No buscar ni aplicar cupones</description>
-        <inputEntry id="UnaryTests_07hj7zi">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1qzik36">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_0sqtv7s">
-          <text>"2"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_02ihklz">
-          <text>"false"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1f3fmyg">
-          <text>"true"</text>
-        </inputEntry>
-        <outputEntry id="LiteralExpression_0b03q0t">
-          <text>false</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1b30g2a">
@@ -274,7 +190,7 @@
           <text>"false"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_12mvnym">
-          <text>"true"</text>
+          <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1i9xwkp">
           <text>false</text>

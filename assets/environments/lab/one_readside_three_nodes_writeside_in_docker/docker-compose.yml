@@ -71,8 +71,11 @@ services:
       NET_LOGSTASH_DEBUG_MODE: 'OFF'
       DATASTAX_DEBUG_MODE: 'OFF'
       PATH_DMN_OBJETO_CUPON: '/opt/docker/bin/objetoCupon.dmn'
-      PATH_DMN_DECISION_30: '/opt/docker/bin/clasificacion_objeto.dmn'
-      PATH_DMN_CLASIF_OBJETO: '/opt/docker/bin/decision_30_descuento.dmn'
+      PATH_DMN_DECISION_30: '/opt/docker/bin/decision_30_descuento.dmn'
+      PATH_DMN_CLASIF_OBJETO: '/opt/docker/bin/clasificacion_objeto.dmn'
+      DMN_ID_DECISION_30: 'Decision_descuento'
+      DMN_ID_OBJETO_CUPON: 'Decision_0tsof3f'
+      DMN_ID_CLASIF_OBJETO: "Decision_Clasificacion_Objeto"
       MAX_CONCURRENT_REQUESTS: "512"
       MAX_REQUESTS_PER_CONNECTION: "1024"
       POOL_LOCAL_SIZE: "3"

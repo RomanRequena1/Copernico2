@@ -63,8 +63,8 @@ object ObjetoEvents {
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String],
       isAdheridoDebito: Option[Boolean],
-      clasificacionObjeto: String,
-      resultDmn: Int
+      clasificacionObjeto: Option[String],
+      resultDmn: Option[Int]
 
   ) extends ObjetoEvents
 

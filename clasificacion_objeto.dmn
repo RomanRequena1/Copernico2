@@ -82,30 +82,6 @@ No Aplica</description>
           <text>1</text>
         </outputEntry>
       </rule>
-      <rule id="DecisionRule_0y8ktug">
-        <description>Objeto adherido a debito. Condonacion por objeto</description>
-        <inputEntry id="UnaryTests_07tf51w">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1tbiqd2">
-          <text>"S"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_058sgwu">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1uoxq1d">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1y3gkhm">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_16xqh1b">
-          <text></text>
-        </inputEntry>
-        <outputEntry id="LiteralExpression_1oi9wdq">
-          <text>1</text>
-        </outputEntry>
-      </rule>
       <rule id="DecisionRule_1v8bpcb">
         <description>Universo de condonacion a nivel objeto (individualmente)
 Semaforos A o R</description>

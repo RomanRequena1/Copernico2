@@ -14,6 +14,8 @@ object DMNTreintaPorciento {
   def dmn(actor: ObligacionExternalDto): Any = {
 
     val path: String = Try(System.getenv("PATH_DMN_DECISION_30")).getOrElse("")
+    val dmnId: String = Try(System.getenv("DMN_ID_DECISION_30")).getOrElse("id")
+    println("TREINTA " + dmnId)
     val dmnStream = Try(new FileInputStream(path))
     val engine = new DmnEngine()
 
@@ -29,7 +31,7 @@ object DMNTreintaPorciento {
     val isVencida = if (diffDaysOblligaciones > 10) true else false
 
     val chequeoDmn: Either[Product, DmnEngine.EvalResult] = engine.parse(dmnStream.getOrElse(null))
-      .flatMap(dmn => engine.eval(dmn, "Decision_descuento", Utils.mapsToDMN(actor, isVencida, diffDaysOblligaciones, diffYearsOblligaciones, diffDaysOblligacionesVen2)))
+      .flatMap(dmn => engine.eval(dmn, dmnId, Utils.mapsToDMN(actor, isVencida, diffDaysOblligaciones, diffYearsOblligaciones, diffDaysOblligacionesVen2)))
     chequeoDmn.fold(e => log.error("ERROR DMN OBLIGACION::" + e), value => value.value)
   }
 }

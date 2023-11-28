@@ -4,6 +4,7 @@ import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateFromTri
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -18,18 +19,19 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
-    val tipo = Some(DMNTreintaPorcientoTipo.dmn(command)) match {
-      case f if f.get.equals(2) => { //case 0
-        ("2",2)
-      }
-      case f if f.get.equals(-1) => {
-        ("1",-1)
-      }
-      case f if f.get.equals(1) => {
-        ("1",1)
+    def isTipo(cmd: ObjetoUpdateFromTri) = {
+      DMNTreintaPorcientoTipo.dmn(cmd) match {
+        case f if f.equals(2) =>
+          ("2", 2)
+        case f if f.equals(-1) =>
+          ("1", -1)
+
+        case f if f.equals(1) =>
+          ("1", 1)
+
       }
     }
-
+    val dmn = isTipo(command)
 
 
     val event = ObjetoEvents.ObjetoUpdatedFromTri(
@@ -41,8 +43,8 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
       command.isResponsable,
       command.sujetoResponsable,
       command.isAdheridoDebito,
-      tipo._1,
-      tipo._2
+      Some(dmn._1),
+      Some(dmn._2)
     )
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
       log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)

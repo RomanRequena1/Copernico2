@@ -17,6 +17,8 @@ object DMNTreintaPorcientoTipo {
   private val log = LoggerFactory.getLogger(this.getClass)
   def dmn(obj: ObjetoUpdateFromTri):Any = {
     val path: String = Try(System.getenv("PATH_DMN_CLASIF_OBJETO")).getOrElse("")
+    val dmnId: String = Try(System.getenv("DMN_ID_CLASIF_OBJETO")).getOrElse("id")
+    println("TREINTA 2" + dmnId)
     val exclusionObjeto = QueryExclusionObjeto(obj.registro.SOJ_IDENTIFICADOR)
     val isExclusionObjeto = if(exclusionObjeto.isEmpty) "" else exclusionObjeto.head
     val dmnStream = Try(new FileInputStream(path))
@@ -30,8 +32,8 @@ object DMNTreintaPorcientoTipo {
 
 
     val chequeoDmn: Either[Product, DmnEngine.EvalResult] = engine.parse(dmnStream.getOrElse(null))
-      .flatMap(dmn => engine.eval(dmn, "Decision_Clasificacion_Objeto", Map("soj_tipo_objeto" -> obj.registro.SOJ_TIPO_OBJETO,
-        //"soj_adherido_debito" -> obj.registro.SOJ_ADHERIDO_DEBITO.getOrElse("None"),
+      .flatMap(dmn => engine.eval(dmn, dmnId, Map("soj_tipo_objeto" -> obj.registro.SOJ_TIPO_OBJETO,
+        "soj_adherido_debito" -> obj.registro.SOJ_ADHERIDO_DEBITO.getOrElse("None"),
         "soj_estado" -> obj.registro.SOJ_ESTADO.getOrElse("None"),
         "soj_titularidad" -> obj.registro.SOJ_TITULARIDAD.getOrElse("None"),
         "soj_semaforo" -> semaforo_color.getOrElse("None"),
@@ -39,3 +41,4 @@ object DMNTreintaPorcientoTipo {
     chequeoDmn.fold(e => log.error("ERROR DMN OBJETO::" + e), value => value.value)
   }
 }
+
