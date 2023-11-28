@@ -6,7 +6,7 @@ object QueryExclusionSujeto {
   def apply(sujetoId: String): Seq[String] = {
     val session: CqlSession = CqlSession.builder().build()
 
-    val query = s"SELECT * FROM read_side.buc_exclusiones_sujeto WHERE bse_suj_id = '${sujetoId}';" // Reemplazar 'Alice' con el valor deseado
+    val query = s"SELECT * FROM read_side.buc_sujeto_exclusiones WHERE bse_suj_identificador = '${sujetoId}';" // Reemplazar 'Alice' con el valor deseado
 
     val resultSet = session.execute(query)
 

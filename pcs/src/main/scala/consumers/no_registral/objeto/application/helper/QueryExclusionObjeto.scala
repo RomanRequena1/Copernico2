@@ -6,7 +6,7 @@ object QueryExclusionObjeto {
   def apply(objetoId: String): Seq[String] = {
     val session: CqlSession = CqlSession.builder().build()
 
-    val query = s"SELECT * FROM read_side.buc_exclusiones_objeto WHERE boe_obj_id = '${objetoId}';" // Reemplazar 'Alice' con el valor deseado
+    val query = s"SELECT * FROM read_side.buc_objeto_exclusiones WHERE bse_soj_identificador = '${objetoId}';" // Reemplazar 'Alice' con el valor deseado
 
     val resultSet = session.execute(query)
 
@@ -15,7 +15,7 @@ object QueryExclusionObjeto {
     //val result = resultSet.all().asScala.toList
     val userList = resultSet.all().asScala.toList.map { row =>
 
-        row.getString("boe_tipo_exclusion")
+        row.getString("bse_tipo_exclusion")
 
 
     }
