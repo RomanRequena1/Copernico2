@@ -15,17 +15,15 @@ object DMNTreintaPorciento {
 
     val path: String = Try(System.getenv("PATH_DMN_DECISION_30")).getOrElse("")
     val dmnId: String = Try(System.getenv("DMN_ID_DECISION_30")).getOrElse("id")
-    println("TREINTA " + dmnId)
     val dmnStream = Try(new FileInputStream(path))
     val engine = new DmnEngine()
 
     val ven = actor.BOB_VENCIMIENTO.get.toString.replace(" ", "T")
-    val ven2 = actor.BOB_VENCIMIENTO_2.get.toString.replace(" ", "T") // todo revisar si esta bien cargado (MUC)
+    val ven2 = actor.BOB_VENCIMIENTO_2.getOrElse(ven).toString.replace(" ", "T") // todo revisar si esta bien cargado (MUC)
 
     val diffDaysOblligaciones = Utils.diffDaysObligacion(ven)
 
     val diffDaysOblligacionesVen2 = Utils.diffDaysObligacion(ven2)
-
     val diffYearsOblligaciones = Utils.diffYearObligacion(actor.BOB_PERIODO.get)
 
     val isVencida = if (diffDaysOblligaciones > 10) true else false

@@ -53,6 +53,8 @@ case class ObjetoState(
     )*/
   }
 
+  private def isCorrectCuota(obnVencidas: List[Boolean], cuota: Int, value: Boolean) =
+    if(cuota > 12) obnVencidas else obnVencidas.updated(cuota, value)
   private def changeState(event: ObjetoEvents): ObjetoState =
     event match {
       case cmd: ObjetoEvents.ObjetoUpdatedCotitulares =>
@@ -88,7 +90,7 @@ case class ObjetoState(
 //        )
       case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
         val indice = evt.cuota.get.toInt
-        val newObnVencidas = obnVencidas.updated(indice, true)
+        val newObnVencidas = isCorrectCuota(obnVencidas, indice, value = true)
         val _deuda30objeto = if(obnVencidas.contains(false)) false else true
         val obligacionesSaldo_ = obligacionesSaldo + (evt.obligacionId -> evt.saldoObligacion)
         copy(
@@ -102,7 +104,7 @@ case class ObjetoState(
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento =>
         val indice = evt.cuota.get.toInt
-        val newObnVencidas = obnVencidas.updated(indice, false)
+        val newObnVencidas = isCorrectCuota(obnVencidas, indice, value = false)
         val _deuda30objeto = if(newObnVencidas.contains(false)) false else true
         copy(
           obnVencidas = newObnVencidas,
@@ -140,7 +142,7 @@ case class ObjetoState(
         val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
         if(evt.cuota.isEmpty || evt.cuota.get.toInt < 0 || evt.cuota.get.toInt > 12) {
           val indice = evt.cuota.get.toInt
-          val newObnVencidas = obnVencidas.updated(indice, true)
+          val newObnVencidas = isCorrectCuota(obnVencidas, indice, value = true)
           val _deuda30objeto = if (newObnVencidas.contains(false)) false else true
           copy(
             saldo = obligacionesSaldo_.values.sum,
@@ -153,7 +155,7 @@ case class ObjetoState(
           val cuotaIndex_ = evt.cuota.get.toInt
           val cuotasPagadas_ = cuotas.updated(cuotaIndex_, true)
           val indice = evt.cuota.get.toInt
-          val newObnVencidas = obnVencidas.updated(indice, true)
+          val newObnVencidas = isCorrectCuota(obnVencidas, indice, value = true)
           val _deuda30objeto = if (newObnVencidas.contains(false)) false else true
           copy(
             saldo = obligacionesSaldo_.values.sum,

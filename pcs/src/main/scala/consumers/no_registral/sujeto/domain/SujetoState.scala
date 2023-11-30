@@ -52,9 +52,7 @@ final case class SujetoState(
     //if (objVencidas.contains(objetoId)) objVencidas else objVencidas + (objetoId -> (true, clasificacionObjeto))
   }
   private def diffCurrentStateAndNewState(currentObjVnecidad: Map[String, (Boolean, String)], newObjVnecidad: Map[String, (Boolean, String)], deuda30Sujeto: Boolean) = {
-    println("CUMBIA -> newObjVnecidad" + newObjVnecidad)
-    val map = newObjVnecidad.filter(obj => obj._2._2.equals("2"))
-    println("CUMBIA -> map" + map)
+    val map = newObjVnecidad.filter(obj => !obj._2._2.equals("1"))
     if (map.values.forall(_._1)) {
 
       val newTupla = (true, deuda30Sujeto.equals(true))
