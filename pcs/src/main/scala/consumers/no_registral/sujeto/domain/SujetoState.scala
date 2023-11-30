@@ -17,8 +17,8 @@ final case class SujetoState(
                               eventCounter:Int = 0,
                               cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
                               deuda30Sujeto: Boolean = true,
-                              objVencidas: Map[String, (Boolean, String)] = Map.empty,
-                              diffStates: Boolean = false,
+                              objVencidas: Map[String, (Boolean, String)] = Map.empty, //todo este ("idObjeto" -> (valor30%, "tipoObjeto(sale del alta objeto) "))
+                              diffStates: Boolean = false,                             //todo este ("IBG456" -> (true, "2")
                               lastInternalDeliveryId:BigInt = 0
                             ) extends AbstractState[SujetoEvents] with CbroSerialization{
   def +(event: SujetoEvents): SujetoState = {
@@ -52,9 +52,11 @@ final case class SujetoState(
     //if (objVencidas.contains(objetoId)) objVencidas else objVencidas + (objetoId -> (true, clasificacionObjeto))
   }
   private def diffCurrentStateAndNewState(currentObjVnecidad: Map[String, (Boolean, String)], newObjVnecidad: Map[String, (Boolean, String)], deuda30Sujeto: Boolean) = {
-
+    println("CUMBIA -> newObjVnecidad" + newObjVnecidad)
     val map = newObjVnecidad.filter(obj => obj._2._2.equals("2"))
+    println("CUMBIA -> map" + map)
     if (map.values.forall(_._1)) {
+
       val newTupla = (true, deuda30Sujeto.equals(true))
       newTupla
     }
