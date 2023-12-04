@@ -62,12 +62,10 @@ case class ObjetoState(
 
   private def diffCurrentStateAndNewState(currentObnVencidas: Map[String, Boolean], deuda30Objeto: Boolean) = {
     if (currentObnVencidas.values.forall(_ == true)){
-      val newState = (true, deuda30Objeto.equals(true))
-      newState
+      true
     }
     else{
-      val newState = (false, deuda30Objeto.equals(false))
-      newState
+      false
     }
   }
 
@@ -124,15 +122,15 @@ case class ObjetoState(
           sujetos = sujetos + sujetoId,
           isBaja = false,
           obnVencidas = _obnVencidas,
-          deuda30Objeto = diff._1
+          deuda30Objeto = diff
         )
       case  ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, cuota) =>
         val indice = cuota.get.toInt
-        val _obnVencidas = validExitsObnVencidas(obligacionId)
+        val _obnVencidas = validExitsObnVencidasTreinta(obligacionId)
         val diff = diffCurrentStateAndNewState(obnVencidas, deuda30Objeto)
         copy(
           obnVencidas = _obnVencidas,
-          deuda30Objeto = diff._2
+          deuda30Objeto = diff
         )
 
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
@@ -174,7 +172,7 @@ case class ObjetoState(
           obligacionesSaldo = obligacionesSaldo_,
           cuotas = cuotasPagadas_,
           obnVencidas = _obnVencidas,
-          deuda30Objeto = diff._1
+          deuda30Objeto = diff
         )
 
 

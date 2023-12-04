@@ -8,3 +8,4 @@ docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scri
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/infrastructure/akka/tables/tag_views.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/infrastructure/akka/tables/tag_write_progress.cql
 
+

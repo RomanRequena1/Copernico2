@@ -1,7 +1,6 @@
 
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/infrastructure/cqrs/keyspaces/akka_projection.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/infrastructure/cqrs/tables/offset_store.cql
-
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/keyspaces/read_side.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_actividades_sujeto.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_contactos.cql
@@ -20,3 +19,8 @@ docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scri
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_param_plan.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_param_recargo.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_cupon_descuento.cql
+docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_objeto_exclusiones.cql
+docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_sujeto_exclusiones.cql
+docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_plan_cabecera.cql
+
+
