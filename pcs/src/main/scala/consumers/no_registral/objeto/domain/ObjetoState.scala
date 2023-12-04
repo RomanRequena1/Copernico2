@@ -110,11 +110,10 @@ case class ObjetoState(
       //          registro = Some(evt.registro),
       //          sujetos = sujetos + evt.sujetoId
       //        )
-      case  ObjetoEvents.ObjetoUpdatedFromObligacion(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, cuota) =>
-        val indice = cuota.get.toInt
+      case  ObjetoEvents.ObjetoUpdatedFromObligacion(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, _) =>
         val _obnVencidas = validExitsObnVencidas(obligacionId)
         val obligacionesSaldo_ = obligacionesSaldo + (obligacionId -> saldoObligacion)
-        val diff = diffCurrentStateAndNewState(obnVencidas, deuda30Objeto)
+        val diff = diffCurrentStateAndNewState(_obnVencidas, deuda30Objeto)
         copy(
           saldo = obligacionesSaldo_.values.sum,
           obligaciones = obligaciones + obligacionId,
@@ -124,10 +123,9 @@ case class ObjetoState(
           obnVencidas = _obnVencidas,
           deuda30Objeto = diff
         )
-      case  ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, cuota) =>
-        val indice = cuota.get.toInt
+      case  ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento(_, _, _, _, _, obligacionId, _, _, _, _, _) =>
         val _obnVencidas = validExitsObnVencidasTreinta(obligacionId)
-        val diff = diffCurrentStateAndNewState(obnVencidas, deuda30Objeto)
+        val diff = diffCurrentStateAndNewState(_obnVencidas, deuda30Objeto)
         copy(
           obnVencidas = _obnVencidas,
           deuda30Objeto = diff
@@ -162,19 +160,31 @@ case class ObjetoState(
 
       case evt: ObjetoEvents.ObjetoRemovedObligacion =>
         val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
-        val cuotaIndex_ = evt.cuota.get.toInt
-        val cuotasPagadas_ = cuotas.updated(cuotaIndex_, true)
-        val _obnVencidas = obnVencidas - evt.obligacionId
-        val diff = diffCurrentStateAndNewState(obnVencidas, deuda30Objeto)
-        copy(
-          saldo = obligacionesSaldo_.values.sum,
-          obligaciones = obligaciones - evt.obligacionId,
-          obligacionesSaldo = obligacionesSaldo_,
-          cuotas = cuotasPagadas_,
-          obnVencidas = _obnVencidas,
-          deuda30Objeto = diff
-        )
+        if (evt.cuota.isEmpty || evt.cuota.get.toInt < 0 || evt.cuota.get.toInt > 12) {
+          val _obnVencidas = obnVencidas - evt.obligacionId
+          val diff = diffCurrentStateAndNewState(_obnVencidas, deuda30Objeto)
+          copy(
+            saldo = obligacionesSaldo_.values.sum,
+            obligaciones = obligaciones - evt.obligacionId,
+            obligacionesSaldo = obligacionesSaldo_,
+            obnVencidas = _obnVencidas,
+            deuda30Objeto = diff
+          )
+        } else {
+          val cuotaIndex_ = evt.cuota.get.toInt
+          val cuotasPagadas_ = cuotas.updated(cuotaIndex_, true)
+          val _obnVencidas = obnVencidas - evt.obligacionId
+          val diff = diffCurrentStateAndNewState(_obnVencidas, deuda30Objeto)
+          copy(
+            saldo = obligacionesSaldo_.values.sum,
+            obligaciones = obligaciones - evt.obligacionId,
+            obligacionesSaldo = obligacionesSaldo_,
+            cuotas = cuotasPagadas_,
+            obnVencidas = _obnVencidas,
+            deuda30Objeto = diff
 
+          )
+        }
 
       case evt =>
         log.warn(s"Unexpected event at ObjetoState ${evt}")
