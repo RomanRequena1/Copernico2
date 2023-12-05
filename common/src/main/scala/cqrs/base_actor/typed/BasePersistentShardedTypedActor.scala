@@ -25,6 +25,7 @@ abstract class BasePersistentShardedTypedActor[
   val TypeKey: EntityTypeKey[ActorMessages] = EntityTypeKey[ActorMessages](
     utils.Inference.getSimpleName(this.getClass.getName)
   )
+  println("CUMBIA -> " + TypeKey)
   val NR_PARTITIONS: Int = Try(System.getenv("NR_PARTITIONS")).map(_.toInt).getOrElse(30)
 
   val shardActor: ActorRef[ActorMessages] = sharding.init(

@@ -44,7 +44,7 @@ final case class ObligacionSnapshotProjection(
       "bob_vencimiento" -> registro.BOB_VENCIMIENTO,
       "bob_oga_id" -> registro.BOB_OGA_ID,
       "bob_vencimiento_2" -> registro.BOB_VENCIMIENTO_2,
-      "bob_deuda30Obligacion" -> registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.deuda30Obligaciones),
+      "bob_tiene30Obligacion" -> registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.deuda30Obligaciones),
       "bob_resultDmn" -> event.resultDmn
 
     )
