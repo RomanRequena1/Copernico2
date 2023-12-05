@@ -28,7 +28,7 @@ final case class SujetoSnapshotPersistedProjection(
   val others: List[(String, Serializable)] =
     List(
       "suj_saldo" -> event.saldo,
-      "suj_deuda30Sujeto" -> event.deuda30Sujeto
+      //"suj_deuda30Sujeto" -> event.deuda30Sujeto
     )
 
   val bindings: List[(String, Serializable)] = fromRegistro match {

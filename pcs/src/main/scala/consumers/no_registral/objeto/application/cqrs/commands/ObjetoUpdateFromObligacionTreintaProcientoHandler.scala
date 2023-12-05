@@ -37,6 +37,7 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor)
 
     actor.persistEvent(event) { () =>
       actor.state += event
+      println("CUMBIA O T" + actor.state)
       //if (initialization != "true")
       //  actor.informParent(command, actor.state)
       if (actor.state.eventCounter == eventCounterMax) {
