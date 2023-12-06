@@ -48,7 +48,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
-      if (actor.state.deuda30Objeto.equals(false)) {
+      if (actor.state.tiene30Objeto.equals(false)) {
 
         actor.informParentTreintaPorciento(command, actor.state)
         actor.persistSnapshot(event, actor.state) { () =>

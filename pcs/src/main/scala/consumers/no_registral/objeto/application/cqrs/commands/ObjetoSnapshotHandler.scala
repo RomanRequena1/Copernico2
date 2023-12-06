@@ -30,7 +30,7 @@ class ObjetoSnapshotHandler(actor: ObjetoActor) extends SyncCommandHandler[Objet
       actor.state.clasificacionObjeto,
       operacion = ObligacionEvents.operaciones.get("Upsert").get,
       command.idExterno,
-      Some(actor.state.deuda30Objeto),
+      Some(actor.state.tiene30Objeto),
       actor.state.aplicarDescuento,
       actor.state.resulDmn.getOrElse(0)
     )

@@ -165,7 +165,7 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization{
     case class DetallesObligacion(
                                    BOB_MUNICIPIO: Option[String],
                                    RULE_NUMBER: Option[String],
-                                   deuda30Obligaciones: Option[Boolean],
+                                   tiene30Obligaciones: Option[Boolean],
                                    BAND_BATCH: Option[Boolean],
                                    EV_ID: Option[BigInt],
                                    SOJ_ID_EXTERNO: Option[String]

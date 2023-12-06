@@ -1,14 +1,16 @@
 CREATE TABLE IF NOT EXISTS read_side.buc_objeto_exclusiones (
     bse_soj_identificador text,
-    boe_accion text,
-    boe_motivo text,
-    boe_fecha_desde date,
-    boe_fecha_hasta date,
-    boe_origen text,
-    boe_tramite_id text,
-    boe_nombre_gestion text,
-    boe_numero_gestion text,
+    bse_accion text,
+    bse_estado text,
+    bse_fecha_desde date,
+    bse_fecha_hasta date,
+    bse_motivo text,
+    bse_nombre_gestion text,
+    bse_numero_gestion text,
+    bse_origen text,
+    bse_suj_identificador text,
     bse_tipo_exclusion text,
+    bse_tramite_id text,
     PRIMARY KEY (bse_soj_identificador)
 ) WITH bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}

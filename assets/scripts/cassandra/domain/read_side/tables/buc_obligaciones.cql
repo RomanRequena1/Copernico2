@@ -30,7 +30,7 @@ CREATE TABLE read_side.buc_obligaciones (
        bob_oga_id text,
        bob_soj_identificador_2 text,
        bob_vencimiento_2 date,
-       bob_deuda30Obligacion boolean,
+       bob_tiene30Obligacion boolean,
        bob_resultDmn text,
        PRIMARY KEY (bob_suj_identificador, bob_soj_tipo_objeto, bob_soj_identificador, bob_obn_id)
       ) WITH CLUSTERING ORDER BY (bob_soj_tipo_objeto ASC, bob_soj_identificador ASC, bob_obn_id ASC)

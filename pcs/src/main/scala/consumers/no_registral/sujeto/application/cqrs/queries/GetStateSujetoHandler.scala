@@ -17,7 +17,7 @@ class GetStateSujetoHandler(actor: SujetoActor) extends SyncQueryHandler[GetStat
         actor.state.objetos map { case (objetoId, tipoObjeto) => s"$objetoId|$tipoObjeto" },
         actor.state.fechaUltMod,
         actor.state.registro,
-        actor.state.deuda30Sujeto
+        actor.state.tiene30Sujeto
       )
     log.info(s"[${actor.persistenceId}] GetState | $response")
     sender ! response

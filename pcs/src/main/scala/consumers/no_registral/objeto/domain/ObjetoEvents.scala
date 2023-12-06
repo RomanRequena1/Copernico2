@@ -29,7 +29,7 @@ object ObjetoEvents {
                                sujetoId: String,
                                objetoId: String,
                                tipoObjeto: String,
-                               deuda30Sujeto:Boolean,
+                               tiene30Sujeto:Boolean,
                                exclusionSUjeto: String
                              ) extends ObjetoEvents
   case class ObjetoSnapshotPersisted(
@@ -49,7 +49,7 @@ object ObjetoEvents {
       bandTipo: String,
       operacion: String,
       idExterno: Option[String],
-      deuda30Objeto: Option[Boolean],
+      tiene30Objeto: Option[Boolean],
       aplicarDescuento: Option[Boolean],
       resultDmn: Int
   ) extends ObjetoEvents

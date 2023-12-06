@@ -24,7 +24,7 @@ sealed trait PlanPagoExternalDto extends ddd.ExternalDto with CbroSerialization 
 
   def BPD_OBN_ID: String
 
-  def BPD_BOB_PERIODO: Option[LocalDateTime]
+  def BPD_BOB_PERIODO: Option[String]
 
   def BPD_BOB_CUOTA: Option[String]
 
@@ -59,7 +59,7 @@ object PlanPagoExternalDto {
                          BPD_SOJ_TIPO_OBJETO: String,
                          BPD_SOJ_IDENTIFICADOR: String,
                          BPD_OBN_ID: String,
-                         BPD_BOB_PERIODO: Option[LocalDateTime],
+                         BPD_BOB_PERIODO: Option[String],
                          BPD_BOB_CUOTA: Option[String],
                          BPD_BOB_IMPUESTO: Option[String],
                          BPD_BOB_CONCEPTO: Option[String],
@@ -79,7 +79,7 @@ object PlanPagoExternalDto {
                          BPD_SOJ_TIPO_OBJETO: String,
                          BPD_SOJ_IDENTIFICADOR: String,
                          BPD_OBN_ID: String,
-                         BPD_BOB_PERIODO: Option[LocalDateTime],
+                         BPD_BOB_PERIODO: Option[String],
                          BPD_BOB_CUOTA: Option[String],
                          BPD_BOB_IMPUESTO: Option[String],
                          BPD_BOB_CONCEPTO: Option[String],

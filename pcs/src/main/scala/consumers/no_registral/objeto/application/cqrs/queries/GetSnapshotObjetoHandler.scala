@@ -22,7 +22,7 @@ class GetSnapshotObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetS
       actor.state.registro,
       actor.state.exenciones,
       actor.state.clasificacionObjeto,
-      actor.state.deuda30Objeto,
+      actor.state.tiene30Objeto,
       actor.state.aplicarDescuento.getOrElse(true)
     )
 

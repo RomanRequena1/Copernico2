@@ -137,7 +137,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
           case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
           case _ => None
         },
-        Some(consolidatedState.deuda30Objeto),
+        Some(consolidatedState.tiene30Objeto),
         consolidatedState.aplicarDescuento,
         consolidatedState.resulDmn.getOrElse(0)
       )
@@ -180,7 +180,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
           case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
           case _ => None
         },
-        Some(consolidatedState.deuda30Objeto),
+        Some(consolidatedState.tiene30Objeto),
         consolidatedState.aplicarDescuento,
         consolidatedState.resulDmn.getOrElse(0)
       )
@@ -223,7 +223,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
           case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
           case _ => None
         },
-        Some(consolidatedState.deuda30Objeto),
+        Some(consolidatedState.tiene30Objeto),
         consolidatedState.aplicarDescuento,
         consolidatedState.resulDmn.getOrElse(0)
       )

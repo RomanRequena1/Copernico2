@@ -21,8 +21,8 @@ object DMNTreintaPorcientoFinal {
         "suj_exclusionSujeto" -> cmd.exclusionSUjeto,
         "soj_exclusionObjeto" -> isExclusionObjeto,
         "soj_clasificacionObjeto" -> state.clasificacionObjeto,
-        "suj_deuda30Sujeto" -> state.deuda30Sujeto.get.toString,
-        "soj_deuda30Objeto" -> state.deuda30Objeto.toString
+        "suj_tiene30Sujeto" -> state.tiene30Sujeto.get.toString,
+        "soj_tiene30Objeto" -> state.tiene30Objeto.toString
       )))
     chequeoDmn
   }

@@ -16,7 +16,7 @@ final case class SujetoState(
                               lastDeliveryIdByEvents:  BigInt = 0,
                               eventCounter:Int = 0,
                               cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
-                              deuda30Sujeto: Boolean = true,
+                              tiene30Sujeto: Boolean = true,
                               objVencidas: Map[String, (Boolean, String)] = Map.empty, //todo este ("idObjeto" -> (valor30%, "tipoObjeto(sale del alta objeto) "))
                               diffStates: Boolean = false,                             //todo este ("IBG456" -> (true, "2")
                               lastInternalDeliveryId:BigInt = 0
@@ -55,11 +55,11 @@ final case class SujetoState(
     val map = newObjVnecidad.filter(obj => !obj._2._2.equals("1"))
     if (map.values.forall(_._1)) {
 
-      val newTupla = (true, deuda30Sujeto.equals(true))
+      val newTupla = (true, tiene30Sujeto.equals(true))
       newTupla
     }
     else {
-      val newTupla = (false, deuda30Sujeto.equals(false))
+      val newTupla = (false, tiene30Sujeto.equals(false))
       newTupla
     }
   }
@@ -86,7 +86,7 @@ final case class SujetoState(
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
         val _objVencidas = validExitsObjVencidas(objetoId, clasificacionObjeto)
-        val diff = diffCurrentStateAndNewState(objVencidas, _objVencidas, deuda30Sujeto)
+        val diff = diffCurrentStateAndNewState(objVencidas, _objVencidas, tiene30Sujeto)
 
         copy(
           objetos = objetos + ((objetoId, tipoObjeto)),
@@ -95,14 +95,14 @@ final case class SujetoState(
           saldoObligaciones = saldoObligaciones + (objetoKey -> _saldoObligaciones),
           lastInternalDeliveryId = deliveryId,
           objVencidas = _objVencidas,
-          deuda30Sujeto = diff._1,
+          tiene30Sujeto = diff._1,
           diffStates = diff._2
         )
       case SujetoEvents.SujetoUpdatedFromObjetoTreintaPorciento(deliveryId, _, objetoId, tipoObjeto, saldoObjeto, _saldoObligaciones, clasificacionObjeto) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
         val _objVencidas = validExitsObjVencidasTreinta(objetoId, clasificacionObjeto)
-        val diff = diffCurrentStateAndNewState(objVencidas, _objVencidas, deuda30Sujeto)
+        val diff = diffCurrentStateAndNewState(objVencidas, _objVencidas, tiene30Sujeto)
 
         copy(
           objetos = objetos + ((objetoId, tipoObjeto)),
@@ -111,14 +111,14 @@ final case class SujetoState(
           saldoObligaciones = saldoObligaciones + (objetoKey -> _saldoObligaciones),
           lastInternalDeliveryId = deliveryId,
           objVencidas = _objVencidas,
-          deuda30Sujeto = diff._1,
+          tiene30Sujeto = diff._1,
           diffStates = diff._2
         )
       case SujetoEvents.SujetoBajaFromObjetoSet(deliveryId, _, objetoId, tipoObjeto) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos - objetoKey
         val _objVencidas = objVencidas - objetoId
-        val diff = diffCurrentStateAndNewState(objVencidas, _objVencidas, deuda30Sujeto)
+        val diff = diffCurrentStateAndNewState(objVencidas, _objVencidas, tiene30Sujeto)
         copy(
           objetos = objetos - ((objetoId, tipoObjeto)),
           saldoObjetos = _saldoObjetos,
@@ -127,7 +127,7 @@ final case class SujetoState(
           lastInternalDeliveryId = deliveryId,
           objVencidas = _objVencidas,
           diffStates = diff._2,
-          deuda30Sujeto = diff._1
+          tiene30Sujeto = diff._1
         )
       case evt: SujetoEvents.SujetoSnapshotPersisted =>
         copy(

@@ -22,7 +22,7 @@ class GetStateObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetStat
       actor.state.registro,
       actor.state.exenciones,
       actor.state.clasificacionObjeto,
-      actor.state.deuda30Objeto,
+      actor.state.tiene30Objeto,
       actor.state.aplicarDescuento.getOrElse(true)
     )
     log.info(s"[${actor.persistenceId}] GetState | $response")

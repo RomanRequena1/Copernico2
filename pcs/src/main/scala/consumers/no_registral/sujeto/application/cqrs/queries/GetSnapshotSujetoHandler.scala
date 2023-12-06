@@ -17,7 +17,7 @@ class GetSnapshotSujetoHandler(actor: SujetoActor) extends SyncQueryHandler[GetS
         actor.state.objetos map { case (objetoId, tipoObjeto) => s"$objetoId|$tipoObjeto" },
         actor.state.fechaUltMod,
         actor.state.registro,
-        actor.state.deuda30Sujeto
+        actor.state.tiene30Sujeto
       )
 
     actor.saveSnapshot(actor.state)

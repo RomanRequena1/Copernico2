@@ -3,7 +3,7 @@ package consumers.no_registral.objeto.application.helper
 import com.datastax.oss.driver.api.core.CqlSession
 
 object QueryExclusionObjeto {
-  def apply(objetoId: String): Seq[String] = { // todo devolver solo el tipo
+  def apply(objetoId: String): Seq[String] = {
     val session: CqlSession = CqlSession.builder().build()
 
     val query = s"SELECT * FROM read_side.buc_objeto_exclusiones WHERE bse_soj_identificador = '${objetoId}';" // Reemplazar 'Alice' con el valor deseado

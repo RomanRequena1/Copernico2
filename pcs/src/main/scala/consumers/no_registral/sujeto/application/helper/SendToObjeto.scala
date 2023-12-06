@@ -18,7 +18,7 @@ object SendToObjeto {
             case None => ""
           },
           sender.path.toString.last.toString,
-          currentState.deuda30Sujeto,
+          currentState.tiene30Sujeto,
           if(isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
         )
       } else{
@@ -32,7 +32,7 @@ object SendToObjeto {
               case None => ""
             },
             actor.path.toString.last.toString,
-            currentState.deuda30Sujeto,
+            currentState.tiene30Sujeto,
             if(isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
 
           )
@@ -52,7 +52,7 @@ object SendToObjeto {
           case None => ""
         },
         sender.path.toString.last.toString,
-        currentState.deuda30Sujeto,
+        currentState.tiene30Sujeto,
         if (isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
       )
     } else {
@@ -66,7 +66,7 @@ object SendToObjeto {
             case None => ""
           },
           actor.path.toString.last.toString,
-          currentState.deuda30Sujeto,
+          currentState.tiene30Sujeto,
           if (isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
 
         )
@@ -86,7 +86,7 @@ object SendToObjeto {
           case None => ""
         },
         sender.path.toString.last.toString,
-        currentState.deuda30Sujeto,
+        currentState.tiene30Sujeto,
         if (isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
       )
     } else {
@@ -100,7 +100,7 @@ object SendToObjeto {
             case None => ""
           },
           actor.path.toString.last.toString,
-          currentState.deuda30Sujeto,
+          currentState.tiene30Sujeto,
           if (isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
 
         )

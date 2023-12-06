@@ -22,7 +22,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
-      command.deuda30Sujeto,
+      command.tiene30Sujeto,
       command.exclusionSUjeto
     )
     actor.state += event

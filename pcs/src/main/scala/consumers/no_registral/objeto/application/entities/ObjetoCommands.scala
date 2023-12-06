@@ -21,7 +21,7 @@ object ObjetoCommands {
                                sujetoId: String,
                                objetoId: String,
                                tipoObjeto: String,
-                               deuda30Sujeto: Boolean,
+                               tiene30Sujeto: Boolean,
                                exclusionSUjeto: String
                              ) extends ObjetoCommands
   case class ObjetoSnapshot(

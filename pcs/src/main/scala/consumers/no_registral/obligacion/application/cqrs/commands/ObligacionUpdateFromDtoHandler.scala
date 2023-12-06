@@ -49,7 +49,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         if (!(initialization == "true" && command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {
           //actor.informParent(command)
         }
-        if (event.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.deuda30Obligaciones.get.equals(true)) {
+        if (event.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.tiene30Obligaciones.get.equals(true)) {
           actor.informParent(command)
         }
 

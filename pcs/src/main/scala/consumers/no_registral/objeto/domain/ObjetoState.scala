@@ -25,9 +25,9 @@ case class ObjetoState(
                         isAdheridoDebito: Boolean = false,
                         eventCounter:Int = 0,
                         cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
-                        deuda30Objeto: Boolean = true,
+                        tiene30Objeto: Boolean = true,
                         clasificacionObjeto: String = "",
-                        deuda30Sujeto: Option[Boolean] = None,
+                        tiene30Sujeto: Option[Boolean] = None,
                         aplicarDescuento: Option[Boolean] = None,
                         resulDmn: Option[Int] = None,
                         obnVencidas: Map[String, Boolean] = Map.empty
@@ -60,7 +60,7 @@ case class ObjetoState(
     }
   }
 
-  private def diffCurrentStateAndNewState(currentObnVencidas: Map[String, Boolean], deuda30Objeto: Boolean) = {
+  private def diffCurrentStateAndNewState(currentObnVencidas: Map[String, Boolean], tiene30Objeto: Boolean) = {
     if (currentObnVencidas.values.forall(_ == true)){
       true
     }
@@ -90,7 +90,7 @@ case class ObjetoState(
           isBaja = false
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
-        copy(deuda30Sujeto = Some(evt.deuda30Sujeto))
+        copy(tiene30Sujeto = Some(evt.tiene30Sujeto))
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
         copy(
           sujetoResponsable = evt.sujetoResponsable match {
@@ -113,7 +113,7 @@ case class ObjetoState(
       case  ObjetoEvents.ObjetoUpdatedFromObligacion(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, _) =>
         val _obnVencidas = validExitsObnVencidas(obligacionId)
         val obligacionesSaldo_ = obligacionesSaldo + (obligacionId -> saldoObligacion)
-        val diff = diffCurrentStateAndNewState(_obnVencidas, deuda30Objeto)
+        val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
         copy(
           saldo = obligacionesSaldo_.values.sum,
           obligaciones = obligaciones + obligacionId,
@@ -121,14 +121,14 @@ case class ObjetoState(
           sujetos = sujetos + sujetoId,
           isBaja = false,
           obnVencidas = _obnVencidas,
-          deuda30Objeto = diff
+          tiene30Objeto = diff
         )
       case  ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento(_, _, _, _, _, obligacionId, _, _, _, _, _) =>
         val _obnVencidas = validExitsObnVencidasTreinta(obligacionId)
-        val diff = diffCurrentStateAndNewState(_obnVencidas, deuda30Objeto)
+        val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
         copy(
           obnVencidas = _obnVencidas,
-          deuda30Objeto = diff
+          tiene30Objeto = diff
         )
 
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
@@ -162,26 +162,26 @@ case class ObjetoState(
         val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
         if (evt.cuota.isEmpty || evt.cuota.get.toInt < 0 || evt.cuota.get.toInt > 12) {
           val _obnVencidas = obnVencidas - evt.obligacionId
-          val diff = diffCurrentStateAndNewState(_obnVencidas, deuda30Objeto)
+          val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
           copy(
             saldo = obligacionesSaldo_.values.sum,
             obligaciones = obligaciones - evt.obligacionId,
             obligacionesSaldo = obligacionesSaldo_,
             obnVencidas = _obnVencidas,
-            deuda30Objeto = diff
+            tiene30Objeto = diff
           )
         } else {
           val cuotaIndex_ = evt.cuota.get.toInt
           val cuotasPagadas_ = cuotas.updated(cuotaIndex_, true)
           val _obnVencidas = obnVencidas - evt.obligacionId
-          val diff = diffCurrentStateAndNewState(_obnVencidas, deuda30Objeto)
+          val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
           copy(
             saldo = obligacionesSaldo_.values.sum,
             obligaciones = obligaciones - evt.obligacionId,
             obligacionesSaldo = obligacionesSaldo_,
             cuotas = cuotasPagadas_,
             obnVencidas = _obnVencidas,
-            deuda30Objeto = diff
+            tiene30Objeto = diff
 
           )
         }

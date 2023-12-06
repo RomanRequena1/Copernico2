@@ -17,14 +17,14 @@
           <text>soj_clasificacionObjeto</text>
         </inputExpression>
       </input>
-      <input id="InputClause_10oocuw" label="suj_deuda30Sujeto">
+      <input id="InputClause_10oocuw" label="suj_tiene30Sujeto">
         <inputExpression id="LiteralExpression_0b4lc97" typeRef="string">
-          <text>suj_deuda30Sujeto</text>
+          <text>suj_tiene30Sujeto</text>
         </inputExpression>
       </input>
-      <input id="InputClause_1nv1ddv" label="soj_deuda30Objeto">
+      <input id="InputClause_1nv1ddv" label="soj_tiene30Objeto">
         <inputExpression id="LiteralExpression_1b6itz4" typeRef="string">
-          <text>soj_deuda30Objeto</text>
+          <text>soj_tiene30Objeto</text>
         </inputExpression>
       </input>
       <output id="Output_1" label="aplicarDescuento" name="aplicarDescuento" typeRef="string" />

@@ -17,7 +17,7 @@ CREATE TABLE read_side.buc_sujeto_objeto (
     soj_subtipo text,
     soj_identificador_2 text,
     soj_titularidad text,
-    soj_deuda30Objeto boolean,
+    soj_tiene30Objeto boolean,
     soj_aplicarDescuento boolean,
     soj_resultDmn int,
     PRIMARY KEY (soj_suj_identificador, soj_tipo_objeto, soj_identificador)

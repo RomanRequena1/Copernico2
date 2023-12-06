@@ -28,7 +28,7 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
       if(!actor.state.isBaja){
         //actor.informParent(command, actor.state)
         //actor.persistSnapshot(event, actor.state)(() => ())
-        if (actor.state.deuda30Objeto.equals(false)) {
+        if (actor.state.tiene30Objeto.equals(false)) {
 
           actor.informParentTreintaPorciento(command, actor.state)
           actor.persistSnapshot(event, actor.state) { () =>
