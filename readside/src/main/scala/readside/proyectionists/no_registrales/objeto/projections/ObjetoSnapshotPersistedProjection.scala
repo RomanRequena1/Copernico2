@@ -36,7 +36,7 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_adherido_debito" -> r.SOJ_ADHERIDO_DEBITO,
       "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[",",","]")),
       "soj_titularidad" -> r.SOJ_TITULARIDAD,
-      "soj_deuda30Objeto" -> event.deuda30Objeto,
+      "soj_tiene30Objeto" -> event.deuda30Objeto,
       "soj_aplicarDescuento" -> event.aplicarDescuento,
       "soj_resultDmn" -> Some(event.resultDmn)
   ))

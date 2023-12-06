@@ -12,7 +12,6 @@ object DMNTreintaPorcientoFinal {
   def dmn( state: ObjetoState, cmd: ObjetoUpdateFromSujeto, exclusionObjeto: Seq[String]): Either[Product, DmnEngine.EvalResult] = {
     val path: String = Try(System.getenv("PATH_DMN_OBJETO_CUPON")).getOrElse("")
     val dmnId: String = Try(System.getenv("DMN_ID_OBJETO_CUPON")).getOrElse("id")
-    println("TREINTA 1" + dmnId)
     val dmnStream = Try(new FileInputStream(path))
     val engine = new DmnEngine()
     val isExclusionObjeto = if(exclusionObjeto.isEmpty) "" else exclusionObjeto.head

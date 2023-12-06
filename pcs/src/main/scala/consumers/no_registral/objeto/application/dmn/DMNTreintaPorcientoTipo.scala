@@ -18,8 +18,7 @@ object DMNTreintaPorcientoTipo {
   def dmn(obj: ObjetoUpdateFromTri):Any = {
     val path: String = Try(System.getenv("PATH_DMN_CLASIF_OBJETO")).getOrElse("")
     val dmnId: String = Try(System.getenv("DMN_ID_CLASIF_OBJETO")).getOrElse("id")
-    println("TREINTA 2" + dmnId)
-    val exclusionObjeto = QueryExclusionObjeto(obj.registro.SOJ_IDENTIFICADOR)
+    val exclusionObjeto = QueryExclusionObjeto(obj.registro.SOJ_IDENTIFICADOR) // todo ahora deveria devolver el string
     val isExclusionObjeto = if(exclusionObjeto.isEmpty) "" else exclusionObjeto.head
     val dmnStream = Try(new FileInputStream(path))
     val engine = new DmnEngine()

@@ -41,6 +41,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
     actor.persistEvent(event) { () =>
 
       actor.state += event
+      println("CUMBIA O " + actor.state)
       //if (initialization != "true")
       //  actor.informParent(command, actor.state)
       if (actor.state.eventCounter == eventCounterMax) {
