@@ -34,9 +34,4 @@ object Utils {
   }
 }
 
-object test extends App{
-
-  val ven2 = "2023-08-06 00:00:00.0".replace(" ", "T")
-  println(Utils.diffDaysObligacion(ven2))
-}
 

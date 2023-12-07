@@ -24,7 +24,6 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
     )
     actor.persistEvent(event) { () =>
       actor.state += event
-      println("CUMBIA O D  " + actor.state)
       if(!actor.state.isBaja){
         //actor.informParent(command, actor.state)
         //actor.persistSnapshot(event, actor.state)(() => ())
