@@ -168,10 +168,7 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization{
                                    tiene30Obligaciones: Option[Boolean],
                                    BAND_BATCH: Option[Boolean],
                                    EV_ID: Option[BigInt],
-                                   SOJ_ID_EXTERNO: Option[String],
-                                   SOJ_ADQUIRIDO_SUBASTA: Option[String],
-                                   FECHA_SUBASTA: Option[LocalDateTime]
-
+                                   SOJ_ID_EXTERNO: Option[String]
                                  ) extends  CbroSerialization
 
 

@@ -111,7 +111,9 @@ object ObjetoExternalDto{
                              PERIODO_SOJ_OTROS_ATRIBUTOS: Option[String],
                              IMPORTE_SOJ_OTROS_ATRIBUTOS: Option[String],
                              SOJ_SEMAFORO_COLOR: Option[String],
-                             SOJ_SEMAFORO_MARCA: Option[String]
+                             SOJ_SEMAFORO_MARCA: Option[String],
+                             SOJ_ADQUIRIDO_SUBASTA: Option[String],
+                             FECHA_SUBASTA: Option[LocalDateTime]
                            ) extends CbroSerialization
 
   case class Cotitularidad(
