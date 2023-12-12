@@ -44,7 +44,10 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_descripcion" -> Some("Sin descripción"),
       "soj_id_externo" -> event.idExterno,
       "soj_identificador_2" -> event.objetoId2,
-      "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[",",","]"))
+      "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[",",","]")),
+      "soj_tiene30Objeto" -> event.tiene30Objeto,
+      "soj_aplicarDescuento" -> event.aplicarDescuento,
+      "soj_resultDmn" -> Some(event.resultDmn)
     ))
   }
 

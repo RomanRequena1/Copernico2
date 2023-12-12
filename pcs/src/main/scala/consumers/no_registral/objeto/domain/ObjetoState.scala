@@ -26,7 +26,7 @@ case class ObjetoState(
                         eventCounter:Int = 0,
                         cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
                         tiene30Objeto: Boolean = true,
-                        clasificacionObjeto: String = "",
+                        clasificacionObjeto: String = "2",
                         tiene30Sujeto: Option[Boolean] = None,
                         aplicarDescuento: Option[Boolean] = None,
                         resulDmn: Option[Int] = None,

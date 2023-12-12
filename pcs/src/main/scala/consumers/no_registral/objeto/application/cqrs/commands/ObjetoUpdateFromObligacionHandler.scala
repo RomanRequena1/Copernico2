@@ -39,7 +39,6 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
 
 
     actor.persistEvent(event) { () =>
-
       actor.state += event
       //if (initialization != "true")
       //  actor.informParent(command, actor.state)
