@@ -34,7 +34,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
         {
           case d if d.value.equals(true) =>
             val newState = actor.state.copy(aplicarDescuento = Some(true))
-            if(!actor.state.registro.get.SOJ_ESTADO.get.equals("BAJA")){
+            if(!actor.state.registro.get.SOJ_ESTADO.getOrElse("").equals("BAJA")){
               actor.persistSnapshot(event, newState) { () =>
                 sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
               }
@@ -43,7 +43,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
           //todo solo persistir en readside
           case _ =>
             val newState = actor.state.copy(aplicarDescuento = Some(false))
-            if(!actor.state.registro.get.SOJ_ESTADO.get.equals("BAJA")){
+            if(!actor.state.registro.get.SOJ_ESTADO.getOrElse("").equals("BAJA")){
               actor.persistSnapshot(event, newState) { () =>
                 sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
               }
