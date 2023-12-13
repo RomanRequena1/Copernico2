@@ -45,7 +45,7 @@ final case class SujetoState(
 
     objVencidas match {
       //case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (true, clasificacionObjeto))
-      case x if x.contains(objetoId) => x updated (objetoId, (true, clasificacionObjeto)
+      case x if x.contains(objetoId) => x updated (objetoId, (true, clasificacionObjeto))
       case x => x + (objetoId -> ((true, clasificacionObjeto)))
     }
 
@@ -66,7 +66,7 @@ final case class SujetoState(
   private def validExitsObjVencidasTreinta(objetoId: String,clasificacionObjeto: String) = {
     objVencidas match {
       //case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (false, clasificacionObjeto))
-      case x if x.contains(objetoId) => x updated (objetoId, (false, clasificacionObjeto)
+      case x if x.contains(objetoId) => x updated (objetoId, (false, clasificacionObjeto))
       case x => x + (objetoId -> ((false, clasificacionObjeto)))
     }
 
