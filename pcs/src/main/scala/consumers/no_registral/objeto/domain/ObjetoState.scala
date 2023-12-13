@@ -102,7 +102,7 @@ case class ObjetoState(
           sujetos = sujetos + evt.sujetoId,
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
           isBaja = false,
-          clasificacionObjeto = evt.clasificacionObjeto.getOrElse(""),
+          clasificacionObjeto = evt.clasificacionObjeto.getOrElse("2"),
           resulDmn = evt.resultDmn
         )
       //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
