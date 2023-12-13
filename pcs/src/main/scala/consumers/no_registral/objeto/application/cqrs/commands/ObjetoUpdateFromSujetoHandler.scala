@@ -34,16 +34,22 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
         {
           case d if d.value.equals(true) =>
             val newState = actor.state.copy(aplicarDescuento = Some(true))
-            actor.persistSnapshot(event, newState) { () =>
-              sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+            if(!actor.state.registro.get.SOJ_ESTADO.getOrElse("").equals("BAJA")){
+              actor.persistSnapshot(event, newState) { () =>
+                sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+              }
             }
             //.state = newState
           //todo solo persistir en readside
           case _ =>
             val newState = actor.state.copy(aplicarDescuento = Some(false))
-            actor.persistSnapshot(event, newState) { () =>
-              sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+            if(!actor.state.registro.get.SOJ_ESTADO.getOrElse("").equals("BAJA")){
+              actor.persistSnapshot(event, newState) { () =>
+                sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+              }
             }
+
+
         })
     //todo dmn
     //todo print campos que entran al dmn y la salida
