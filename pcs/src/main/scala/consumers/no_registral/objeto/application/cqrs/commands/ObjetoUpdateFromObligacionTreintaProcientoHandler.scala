@@ -36,6 +36,7 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor)
     //val eventCounterMax = Try(System.getenv("EVENT-COUNTER-MAX")).getOrElse(9)
 
     actor.persistEvent(event) { () =>
+      println("STATE OBJ FROM OBN30: " + actor.state)
       actor.state += event
       //if (initialization != "true")
       //  actor.informParent(command, actor.state)

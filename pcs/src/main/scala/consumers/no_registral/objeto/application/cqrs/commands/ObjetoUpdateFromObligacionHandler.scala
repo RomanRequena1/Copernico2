@@ -40,6 +40,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
 
     actor.persistEvent(event) { () =>
       actor.state += event
+      println("STATE OBJ FROM OBN: " + actor.state)
       //if (initialization != "true")
       //  actor.informParent(command, actor.state)
       if (actor.state.eventCounter == eventCounterMax) {

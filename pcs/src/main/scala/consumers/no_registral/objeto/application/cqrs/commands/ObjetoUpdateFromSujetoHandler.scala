@@ -2,6 +2,7 @@ package consumers.no_registral.objeto.application.cqrs.commands
 
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
 import consumers.no_registral.objeto.application.helper.QueryExclusionObjeto
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromSujeto
@@ -26,7 +27,9 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
       command.exclusionSUjeto
     )
     actor.state += event
+    println("STATE OBJ FROM SUJ: " + actor.state)
     val exclusionObjeto = QueryExclusionObjeto(command.objetoId)
+    val obj_default = new ObjetosTri(Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"))
     DMNTreintaPorcientoFinal.dmn(actor.state, command, exclusionObjeto)
       .fold(e => {
         log.error("ERROR DMN OBJETO: " + e)
@@ -34,7 +37,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
         {
           case d if d.value.equals(true) =>
             val newState = actor.state.copy(aplicarDescuento = Some(true))
-            if(!actor.state.registro.get.SOJ_ESTADO.getOrElse("").equals("BAJA")){
+            if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA")){
               actor.persistSnapshot(event, newState) { () =>
                 sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
               }
@@ -43,13 +46,11 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
           //todo solo persistir en readside
           case _ =>
             val newState = actor.state.copy(aplicarDescuento = Some(false))
-            if(!actor.state.registro.get.SOJ_ESTADO.getOrElse("").equals("BAJA")){
+            if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA")){
               actor.persistSnapshot(event, newState) { () =>
                 sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
               }
             }
-
-
         })
     //todo dmn
     //todo print campos que entran al dmn y la salida
