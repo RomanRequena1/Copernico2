@@ -99,7 +99,7 @@ case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitori
   private def isTreintaPorciento(obn: ObligacionesTri): (ObligacionesTri, Any) = {
     //todo set tiene30Obligacion en state
     Some(DMNTreintaPorciento.dmn(obn)) match {
-      case f if f.get.equals(0) => { //case 0
+      case f if f.get.equals(1) => { //case 0
         val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(tiene30Obligaciones = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
         val newDetails = decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))

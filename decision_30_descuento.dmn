@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="decision_30_descuento" name="decision_30_descuento" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="decision_30_descuento" name="decision_30_descuento" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="e2703ed1-e568-4858-b07e-b42f20951cb0">
   <decision id="Decision_descuento" name="decision_30_descuento">
     <decisionTable id="DecisionTable_19dum3t" hitPolicy="FIRST">
       <input id="InputClause_0die5ek" label="bob_tipo">
@@ -704,7 +704,7 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
           <text></text>
         </inputEntry>
         <outputEntry id="LiteralExpression_042rkq5">
-          <text>0</text>
+          <text>1</text>
         </outputEntry>
       </rule>
     </decisionTable>
@@ -712,7 +712,7 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="DMNDiagram_0i21c0s">
       <dmndi:DMNShape id="DMNShape_1tf5606" dmnElementRef="Decision_descuento">
-        <dc:Bounds height="80" width="180" x="490" y="230" />
+        <dc:Bounds height="80" width="180" x="160" y="80" />
       </dmndi:DMNShape>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
