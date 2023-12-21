@@ -8,12 +8,14 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
+import scala.util.Try
 package object akka {
 
   type PersistenceId = String
 
   implicit class AlternativeAskSintax(actorRef: ActorRef) {
-    implicit val timeout: Timeout = 200 seconds
+   val time: Int = Try(System.getenv("TIMEOUT").toInt).getOrElse(300)
+    implicit val timeout: Timeout = time seconds
     def ask[Output: ClassTag](message: Any): Future[Output] = (actorRef ? message).mapTo[Output]
   }
 
