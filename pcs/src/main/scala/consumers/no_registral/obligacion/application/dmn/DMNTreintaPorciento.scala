@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory
 import scalaz.concurrent.Task.Try
 
 import java.io.FileInputStream
+import java.time.{LocalDate, LocalDateTime}
+import java.time.format.DateTimeFormatter
 
 object DMNTreintaPorciento {
 
@@ -19,9 +21,14 @@ object DMNTreintaPorciento {
     val engine = new DmnEngine()
 
     val ven = actor.BOB_VENCIMIENTO.get.toString.replace(" ", "T")
+    val venPro = actor.BOB_PRORROGA.getOrElse(ven).toString.replace(" ", "T")
+
+
     val ven2 = actor.BOB_VENCIMIENTO_2.getOrElse(ven).toString.replace(" ", "T") // todo revisar si esta bien cargado (MUC)
 
-    val diffDaysOblligaciones = Utils.diffDaysObligacion(ven)
+    val vencimientoMayor: String = if (Utils.diffDaysObligacion(ven) < Utils.diffDaysObligacion(venPro)) ven else venPro
+
+    val diffDaysOblligaciones: Long = Utils.diffDaysObligacion(vencimientoMayor)
 
     val diffDaysOblligacionesVen2 = Utils.diffDaysObligacion(ven2)
     val diffYearsOblligaciones = Utils.diffYearObligacion(actor.BOB_PERIODO.get)
@@ -33,4 +40,3 @@ object DMNTreintaPorciento {
     chequeoDmn.fold(e => log.error("ERROR DMN OBLIGACION::" + e), value => value.value)
   }
 }
-

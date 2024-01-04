@@ -41,7 +41,6 @@ class SujetoUpdateFromObjetoTreintaProcientoHandler(actor: SujetoActor)
     actor.persistEvent(event) { () =>
 
       actor.state += event
-      println("STATE SUJ FROM OBJ30: " + actor.state)
         SendToObjeto(actor.state, sender, actor.context.children, actor.context, event)
 
       if (actor.state.eventCounter == eventCounterMax) {
