@@ -15,7 +15,7 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
                      ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
     val event = ObjetoRemovedObligacion(
-      command.deliveryId,
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
