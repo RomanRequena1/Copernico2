@@ -24,7 +24,7 @@ class SujetoSetBajaFromObjetoHandler(actor: SujetoActor) extends SyncCommandHand
     actor.persistEvent(event,Set("Sujeto")) { () =>
 
       actor.state += event
-        SendToObjeto(actor.state, sender, actor.context.children, actor.context, event)
+        SendToObjeto(actor.state, sender, actor.context, event.sujetoId)
       actor.persistSnapshot()(_ => ())
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

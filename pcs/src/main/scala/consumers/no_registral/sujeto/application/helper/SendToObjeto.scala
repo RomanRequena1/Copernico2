@@ -6,13 +6,13 @@ import consumers.no_registral.sujeto.domain.SujetoEvents.{SujetoBajaFromObjetoSe
 import consumers.no_registral.sujeto.domain.SujetoState
 
 object SendToObjeto {
-  def apply(currentState: SujetoState, sender: ActorRef,  children: Iterable[ActorRef], actorContext: ActorContext, event: SujetoUpdatedFromObjeto) : Unit = {
+  def apply(currentState: SujetoState, sender: ActorRef, actorContext: ActorContext, sujetoId: String) : Unit = {
 
-    val isExclusionSujeto = QueryExclusionSujeto(event.sujetoId)
+    val isExclusionSujeto = QueryExclusionSujeto(sujetoId)
       if (currentState.diffStates) {
         sender ! ObjetoUpdateFromSujeto(
           currentState.lastDeliveryIdByEvents,
-          event.sujetoId,
+          sujetoId,
           """Objeto-(.*?)-""".r.findFirstMatchIn(sender.path.toString) match {
             case Some(matched) => matched.group(1)
             case None => ""
@@ -22,11 +22,11 @@ object SendToObjeto {
           if(isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
         )
       } else{
-        children.foreach( actor => {
+        actorContext.children.foreach( actor => {
           val actorSelection = actorContext.actorSelection(actor.path)
           actorSelection ! ObjetoUpdateFromSujeto(
             currentState.lastDeliveryIdByEvents,
-            event.sujetoId,
+            sujetoId,
             """Objeto-(.*?)-""".r.findFirstMatchIn(actor.path.toString) match {
               case Some(matched) => matched.group(1)
               case None => ""
@@ -40,72 +40,6 @@ object SendToObjeto {
       }
   }
 
-  def apply(currentState: SujetoState, sender: ActorRef, children: Iterable[ActorRef], actorContext: ActorContext, event: SujetoUpdatedFromObjetoTreintaPorciento): Unit = {
 
-    val isExclusionSujeto = QueryExclusionSujeto(event.sujetoId)
-    if (currentState.diffStates) {
-      sender ! ObjetoUpdateFromSujeto(
-        currentState.lastDeliveryIdByEvents,
-        event.sujetoId,
-        """Objeto-(.*?)-""".r.findFirstMatchIn(sender.path.toString) match {
-          case Some(matched) => matched.group(1)
-          case None => ""
-        },
-        sender.path.toString.last.toString,
-        currentState.tiene30Sujeto,
-        if (isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
-      )
-    } else {
-      children.foreach(actor => {
-        val actorSelection = actorContext.actorSelection(actor.path)
-        actorSelection ! ObjetoUpdateFromSujeto(
-          currentState.lastDeliveryIdByEvents,
-          event.sujetoId,
-          """Objeto-(.*?)-""".r.findFirstMatchIn(actor.path.toString) match {
-            case Some(matched) => matched.group(1)
-            case None => ""
-          },
-          actor.path.toString.last.toString,
-          currentState.tiene30Sujeto,
-          if (isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
-
-        )
-      })
-    }
-  }
-
-  def apply(currentState: SujetoState, sender: ActorRef, children: Iterable[ActorRef], actorContext: ActorContext, event: SujetoBajaFromObjetoSet): Unit = {
-
-    val isExclusionSujeto = QueryExclusionSujeto(event.sujetoId)
-    if (currentState.diffStates) {
-      sender ! ObjetoUpdateFromSujeto(
-        currentState.lastDeliveryIdByEvents,
-        event.sujetoId,
-        """Objeto-(.*?)-""".r.findFirstMatchIn(sender.path.toString) match {
-          case Some(matched) => matched.group(1)
-          case None => ""
-        },
-        sender.path.toString.last.toString,
-        currentState.tiene30Sujeto,
-        if (isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
-      )
-    } else {
-      children.foreach(actor => {
-        val actorSelection = actorContext.actorSelection(actor.path)
-        actorSelection ! ObjetoUpdateFromSujeto(
-          currentState.lastDeliveryIdByEvents,
-          event.sujetoId,
-          """Objeto-(.*?)-""".r.findFirstMatchIn(actor.path.toString) match {
-            case Some(matched) => matched.group(1)
-            case None => ""
-          },
-          actor.path.toString.last.toString,
-          currentState.tiene30Sujeto,
-          if (isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
-
-        )
-      })
-    }
-  }
 
 }
