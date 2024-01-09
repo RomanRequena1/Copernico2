@@ -60,7 +60,7 @@ case class ObjetoState(
     }
   }
 
-  private def diffCurrentStateAndNewState(currentObnVencidas: Map[String, Boolean], tiene30Objeto: Boolean) = {
+  private def diffCurrentStateAndNewState(currentObnVencidas: Map[String, Boolean], tiene30Objeto: Boolean) = { //todo cambiar nombre de funcion
     if (currentObnVencidas.values.forall(_ == true)){
       true
     }

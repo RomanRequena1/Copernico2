@@ -32,7 +32,7 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
     actor.persistEvent(event) { () =>
 
       actor.state += event
-        SendToObjeto(actor.state, sender, actor.context.children, actor.context, event)
+        SendToObjeto(actor.state, sender, actor.context, event.sujetoId)
 
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
