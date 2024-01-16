@@ -1,6 +1,7 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal
+import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal.DmnFinal
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
 import consumers.no_registral.objeto.application.helper.QueryExclusionObjeto
@@ -29,28 +30,54 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
     actor.state += event
    // val exclusionObjeto = QueryExclusionObjeto(command.objetoId)
     val obj_default = new ObjetosTri(Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"))
-    DMNTreintaPorcientoFinal.dmn(actor.state, command, "")
-      .fold(e => {
-        log.error("ERROR DMN OBJETO: " + e)
-      },
-        {
-          case d if d.value.equals(true) =>
-            val newState = actor.state.copy(aplicarDescuento = Some(true))
-            if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA")){
-              actor.persistSnapshot(event, newState) { () =>
-                sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-              }
-            }
-            //.state = newState
-          //todo solo persistir en readside
-          case _ =>
-            val newState = actor.state.copy(aplicarDescuento = Some(false))
-            if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA")){
-              actor.persistSnapshot(event, newState) { () =>
-                sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-              }
-            }
-        })
+
+
+    val result = DMNTreintaPorcientoFinal.calcularDmnFinal(DmnFinal("",
+      "",
+      actor.state.clasificacionObjeto,
+      actor.state.tiene30Objeto,
+      actor.state.tiene30Sujeto.get)
+    )
+
+
+    result match {
+      case d if d.equals(true) =>
+        val newState = actor.state.copy(aplicarDescuento = Some(true))
+        if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA")){
+          actor.persistSnapshot(event, newState) { () =>
+            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+          }
+        }
+      case _ =>
+        val newState = actor.state.copy(aplicarDescuento = Some(false))
+        if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA")){
+          actor.persistSnapshot(event, newState) { () =>
+            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+          }
+        }
+    }
+//    DMNTreintaPorcientoFinal.dmn(actor.state, command, "")
+//      .fold(e => {
+//        log.error("ERROR DMN OBJETO: " + e)
+//      },
+//        {
+//          case d if d.value.equals(true) =>
+//            val newState = actor.state.copy(aplicarDescuento = Some(true))
+//            if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA")){
+//              actor.persistSnapshot(event, newState) { () =>
+//                sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+//              }
+//            }
+//            //.state = newState
+//          //todo solo persistir en readside
+//          case _ =>
+//            val newState = actor.state.copy(aplicarDescuento = Some(false))
+//            if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA")){
+//              actor.persistSnapshot(event, newState) { () =>
+//                sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+//              }
+//            }
+//        })
     //todo dmn
     //todo print campos que entran al dmn y la salida
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

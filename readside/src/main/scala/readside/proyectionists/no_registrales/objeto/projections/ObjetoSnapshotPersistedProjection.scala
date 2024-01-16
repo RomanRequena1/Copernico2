@@ -18,7 +18,7 @@ case class ObjetoSnapshotPersistedProjection(
         decode[Map[String, List[DetallesObjeto]]](registro.get.SOJ_OTROS_ATRIBUTOS.asJson.toString()).toOption
       }
       val mao = bobDetailsResult match {
-        case Some(value) => Map("BOB_DETALLES" -> value.get("SOJ_DETALLES").asJson.noSpaces)
+        case Some(value) => Map("SOJ_DETALLES" -> value.get("SOJ_DETALLES").asJson.noSpaces)
         case None => None
       }
       Some(List(
