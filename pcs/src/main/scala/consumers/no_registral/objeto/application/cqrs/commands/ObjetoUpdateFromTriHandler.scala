@@ -30,9 +30,9 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
     def isTipo(cmd: ObjetoUpdateFromTri) = {
 
       val result = DMNTreintaPorcientoTipo.calcularDmn(DmnObjeto(cmd.registro.SOJ_TIPO_OBJETO,
-        cmd.registro.SOJ_ADHERIDO_DEBITO.get,
-        cmd.registro.SOJ_ESTADO.get,
-        cmd.registro.SOJ_TITULARIDAD.get,
+        cmd.registro.SOJ_ADHERIDO_DEBITO.getOrElse(""),
+        cmd.registro.SOJ_ESTADO.getOrElse(""),
+        cmd.registro.SOJ_TITULARIDAD.getOrElse(""),
         semaforo_color.getOrElse(""),
         "",
         ""
