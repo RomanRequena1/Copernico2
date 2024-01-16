@@ -27,10 +27,9 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
       command.exclusionSUjeto
     )
     actor.state += event
-    println("STATE OBJ FROM SUJ: " + actor.state)
-    val exclusionObjeto = QueryExclusionObjeto(command.objetoId)
+   // val exclusionObjeto = QueryExclusionObjeto(command.objetoId)
     val obj_default = new ObjetosTri(Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"))
-    DMNTreintaPorcientoFinal.dmn(actor.state, command, exclusionObjeto)
+    DMNTreintaPorcientoFinal.dmn(actor.state, command, "")
       .fold(e => {
         log.error("ERROR DMN OBJETO: " + e)
       },

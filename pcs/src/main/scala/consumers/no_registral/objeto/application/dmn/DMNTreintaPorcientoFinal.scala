@@ -9,17 +9,17 @@ import scala.util.Try
 
 object DMNTreintaPorcientoFinal {
 
-  def dmn( state: ObjetoState, cmd: ObjetoUpdateFromSujeto, exclusionObjeto: Seq[String]): Either[Product, DmnEngine.EvalResult] = {
+  def dmn( state: ObjetoState, cmd: ObjetoUpdateFromSujeto, exclusionObjeto: String): Either[Product, DmnEngine.EvalResult] = {
     val path: String = Try(System.getenv("PATH_DMN_OBJETO_CUPON")).getOrElse("")
     val dmnId: String = Try(System.getenv("DMN_ID_OBJETO_CUPON")).getOrElse("id")
     val dmnStream = Try(new FileInputStream(path))
     val engine = new DmnEngine()
-    val isExclusionObjeto = if(exclusionObjeto.isEmpty) "" else exclusionObjeto.head
+    //val isExclusionObjeto = if(exclusionObjeto.isEmpty) "" else exclusionObjeto.head
 
     val chequeoDmn: Either[Product, DmnEngine.EvalResult] = engine.parse(dmnStream.getOrElse(null))
       .flatMap(dmn => engine.eval(dmn, dmnId, Map(
         "suj_exclusionSujeto" -> cmd.exclusionSUjeto,
-        "soj_exclusionObjeto" -> isExclusionObjeto,
+        "soj_exclusionObjeto" -> "",
         "soj_clasificacionObjeto" -> state.clasificacionObjeto,
         "suj_tiene30Sujeto" -> state.tiene30Sujeto.get.toString,
         "soj_tiene30Objeto" -> state.tiene30Objeto.toString

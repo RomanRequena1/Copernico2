@@ -8,7 +8,7 @@ import consumers.no_registral.sujeto.domain.SujetoState
 object SendToObjeto {
   def apply(currentState: SujetoState, sender: ActorRef, actorContext: ActorContext, sujetoId: String) : Unit = {
 
-    val isExclusionSujeto = QueryExclusionSujeto(sujetoId)
+    //val isExclusionSujeto = QueryExclusionSujeto(sujetoId)
       if (currentState.diffStates) {
         sender ! ObjetoUpdateFromSujeto(
           currentState.lastDeliveryIdByEvents,
@@ -19,7 +19,7 @@ object SendToObjeto {
           },
           sender.path.toString.last.toString,
           currentState.tiene30Sujeto,
-          if(isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
+          ""
         )
       } else{
         actorContext.children.foreach( actor => {
@@ -33,7 +33,7 @@ object SendToObjeto {
             },
             actor.path.toString.last.toString,
             currentState.tiene30Sujeto,
-            if(isExclusionSujeto.isEmpty) "" else isExclusionSujeto.head
+            ""
 
           )
         })
