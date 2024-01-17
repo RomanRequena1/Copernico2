@@ -26,15 +26,13 @@ object DMNTreintaPorcientoTipo {
 
 
   def calcularDmn(dmn: DmnObjeto): Int = {
+    println("CUMBIA " + dmn)
     dmn match {
       case x if x.soj_estado.equals("TRANSF") || x.soj_estado.equals("BAJA") => -1
       case x if x.soj_exclusionObjeto.equals("C") => 1
       case x if x.soj_estado.equals("ESTADO2") => 1
       case x if x.soj_tipo_objeto.equals("I") && (x.soj_semaforo.equals("A") || x.soj_semaforo.equals("R")) => 1
-      case x if x.soj_titularidad.equals("CONDOMINO") ||
-        x.soj_titularidad.equals("CONDOMINIO") ||
-        x.soj_titularidad.equals("CONDOMINO-P") ||
-        x.soj_titularidad.equals("CONDOMINIO-P") => 1
+      case x if x.soj_titularidad.equals("CONDOMINO") || x.soj_titularidad.equals("CONDOMINIO") || x.soj_titularidad.equals("CONDOMINO-P") || x.soj_titularidad.equals("CONDOMINIO-P") => 1
       case _ => 2
 
     }
