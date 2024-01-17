@@ -26,7 +26,6 @@ object DMNTreintaPorcientoTipo {
 
 
   def calcularDmn(dmn: DmnObjeto): Int = {
-    println("CUMBIA " + dmn)
     dmn match {
       case x if x.soj_estado.equals("TRANSF") || x.soj_estado.equals("BAJA") => -1
       case x if x.soj_exclusionObjeto.equals("C") => 1

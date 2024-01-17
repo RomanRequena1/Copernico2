@@ -61,10 +61,10 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
           //sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
        // }
       }
-      actor.persistSnapshot(event, actor.state){ () =>
-        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-
-      }
+//      actor.persistSnapshot(event, actor.state){ () =>
+//        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+//
+//      }
     }
 
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

@@ -1,21 +1,19 @@
 package readside.proyectionists.no_registrales.obligacion
 
-import akka.actor.{ActorRef, ActorSelection}
-import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
-import io.circe.parser.decode
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import com.fasterxml.jackson.annotation.JsonIgnore
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
+import io.circe.parser.decode
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.obligacion.projectionists.ObligacionSnapshotProjection
-import timescaledb.TimescaledbReadsideToCass.connOracleReadsideToCass
-import io.circe.syntax.EncoderOps
+
 import scala.concurrent.Future
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Success}
 
 class ObligacionPersistedSnapshotHandler(
                                           implicit
@@ -32,9 +30,6 @@ class ObligacionPersistedSnapshotHandler(
   override def topicRetry: String = "ObligacionPersistedSnapshot_retry"
 
   override def topicError: String = "ObligacionPersistedSnapshot_error"
-
-  import consumers.no_registral.obligacion.infrastructure.json._
-  val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
   override def processInput(input: String): Either[Throwable, ObligacionPersistedSnapshot] =
     decode[ObligacionPersistedSnapshot](input)
 
@@ -50,12 +45,6 @@ class ObligacionPersistedSnapshotHandler(
             //log.error("ERROR - 1 " + registro.deliveryId)
             log.debug("Persist obligacion" + value)
 
-            if (enable.equals("true")) {
-              Future(connOracleReadsideToCass(registro.deliveryId.toString())).onComplete {
-                case Failure(exception) => log.error("ERROR Future(connOracleReadsideToCass(obligacion.EV_ID.toString())) -> " + exception)
-                case Success(value) => log.debug("Exito ")
-              }
-            }
           }
         }
 
@@ -86,12 +75,7 @@ class ObligacionPersistedSnapshotHandler(
               log.debug("Persiste Obligacion")
               //a ! InsertFromReadside(registro.deliveryId.toString(), a)
               //Future(connOracleReadsideToCass(registro.deliveryId.toString()))
-              if (enable.equals("true")) {
-                Future(connOracleReadsideToCass(registro.deliveryId.toString())).onComplete {
-                  case Failure(exception) => log.error("ERROR Future(connOracleReadsideToCass(obligacion.EV_ID.toString())) -> " + exception)
-                  case Success(value) => log.debug("Exito ")
-                }
-              }
+
             }
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
