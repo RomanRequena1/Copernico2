@@ -11,7 +11,6 @@ import design_principles.actor_model.Response
 import io.circe.parser.decode
 import monitoring.Monitoring
 import org.slf4j.LoggerFactory
-import timescaledb.TimescaledbNifiToKafka.connOracleNifi
 import io.circe.syntax.EncoderOps
 
 import scala.concurrent.Future
@@ -30,12 +29,7 @@ case class ObligacionTributariaTransactionMultiobjeto(actorRef: ActorRef, monito
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] =
   {
-    if (enable.equals("true")) {
-      Future(connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI")).onComplete {
-        case Failure(exception) => log.error("ERROR Future(connOracleNifi(obligacion.EV_ID.toString())) -> " + exception)
-        case Success(value) => log.debug("Exito ")
-      }
-    }
+
     decode[ObligacionesTri](input)
   }
 

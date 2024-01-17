@@ -4,19 +4,17 @@ import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionCommands, ObligacionesTri}
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionCommands, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import design_principles.actor_model.Response
 import io.circe.parser.decode
 import io.circe.syntax.EncoderOps
 import monitoring.Monitoring
-import org.camunda.dmn.DmnEngine
 import org.slf4j.LoggerFactory
-import timescaledb.TimescaledbNifiToKafka.connOracleNifi
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
@@ -33,12 +31,7 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
   def topicError = "DGR-COP-OBLIGACIONES-TRI2_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-    if (enable.equals("true")) {
-      Future(connOracleNifi(input, "DGR-COP-OBLIGACIONES-TRI")).onComplete {
-        case Failure(exception) => log.error("ERROR Future(connOracleNifi(obligacion.EV_ID.toString())) -> " + exception)
-        case Success(value) => log.debug("Exito ")
-      }
-    }
+
     decode[ObligacionesTri](input)
   }
 

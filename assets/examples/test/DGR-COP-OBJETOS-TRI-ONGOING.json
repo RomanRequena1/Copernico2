@@ -1,31 +1,20 @@
 {
-    "EV_ID": "2023113016130710000000000999999344444334445546425343",
-    "SOJ_SUJ_IDENTIFICADOR": "10-10000001-112",
-    "SOJ_TIPO_OBJETO": "B",
-    "SOJ_IDENTIFICADOR": "OBJC33",
-    "SOJ_CAT_SOJ_ID": "TRI",
-    "SOJ_DESCRIPCION": "Pruebas PlanA 04.12aaaaaaaaaaaaaaaaaa",
-    "SOJ_ESTADO": null,
-    "SOJ_FECHA_FIN": null,
-    "SOJ_FECHA_INICIO": "2022-12-28 00:00:00.0",
-    "SOJ_ID_EXTERNO": "4355474",
-    "SOJ_BASE_IMPONIBLE": null,
-    "SOJ_ADHERIDO_DEBITO": "N",
-    "SOJ_TITULARIDAD": "CONDOMINIO",
-    "SOJ_CANAL_ORIGEN": "OTAX",
-    "SOJ_OTROS_ATRIBUTOS": {
-        "SOJ_DETALLES": [
-            {
-                "RESPONSABLE_OTROS_ATRIBUTOS": null,
-                "PORCENTAJE_OTROS_ATRIBUTOS": null,
-                "OTROS_ATRIBUTOS_ADHERIDO_DEBITO": "N",
-                "CUENTA_SOJ_OTROS_ATRIBUTOS": null,
-                "PERIODO_SOJ_OTROS_ATRIBUTOS": null,
-                "IMPORTE_SOJ_OTROS_ATRIBUTOS": null,
-                "SOJ_SEMAFORO_COLOR": null,
-                "SOJ_SEMAFORO_MARCA": null,
-                "FECHA_BAJA": null
-            }
-        ]
-    }
+  "EV_ID" : "20231110182302307436786342579052",
+  "SOJ_SUJ_IDENTIFICADOR" : "000-20092018-1",
+  "SOJ_TIPO_OBJETO" : "A",
+  "SOJ_IDENTIFICADOR" : "AUTO3",
+  "SOJ_CAT_SOJ_ID" : "TRI",
+  "SOJ_DESCRIPCION" : "Zerodis NOVEDAD-VAL TRICICLO",
+  "SOJ_ESTADO" : null,
+  "SOJ_ID_EXTERNO" : "436786342579",
+  "SOJ_CANAL_ORIGEN" : "PSRM",
+  "SOJ_SUBTIPO" : "AUTOMOTOR - Dueño Tipo de Vehículo 10",
+  "SOJ_TITULARIDAD": "CONDOMINIO",
+  "SOJ_OTROS_ATRIBUTOS" : {
+    "SOJ_DETALLES" : [ {
+      "RESPONSABLE_OTROS_ATRIBUTOS" : null,
+      "PORCENTAJE_OTROS_ATRIBUTOS" : "100",
+      "SOJ_OWNER" : "Kripke, Barry"
+    } ]
+  }
 }
