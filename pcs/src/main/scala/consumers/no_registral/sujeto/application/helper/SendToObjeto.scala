@@ -7,16 +7,10 @@ import consumers.no_registral.sujeto.domain.SujetoState
 
 object SendToObjeto {
   def apply(currentState: SujetoState, sender: ActorRef, actorContext: ActorContext, sujetoId: String) : Unit = {
-    val objetoId = """Objeto-(.*?)-""".r.findFirstMatchIn(sender.path.toString) match {
-      case Some(matched) => matched.group(1)
-      case None => ""
-    }
+
     //val isExclusionSujeto = QueryExclusionSujeto(sujetoId)
       if (currentState.diffStates) {
-        println("ENTRO")
-        val actorSelection = actorContext.actorSelection(s"akka://PersonClassificationService/system/sharding/SujetoActor/*/*/Sujeto-*-Objeto-${objetoId}-A")
-        println("ENTRO" + actorSelection.pathString + " + " + actorSelection.anchorPath)
-        actorSelection ! ObjetoUpdateFromSujeto(
+        sender ! ObjetoUpdateFromSujeto(
           currentState.lastDeliveryIdByEvents,
           sujetoId,
           """Objeto-(.*?)-""".r.findFirstMatchIn(sender.path.toString) match {

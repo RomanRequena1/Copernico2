@@ -39,7 +39,6 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
       actor.state.tiene30Sujeto.get)
     )
 
-    println("CUMBIA " + result)
     result match {
 
       case d if d.equals(true) =>

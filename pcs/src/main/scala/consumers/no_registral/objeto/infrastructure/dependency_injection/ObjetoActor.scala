@@ -112,6 +112,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
   import consumers.no_registral.objeto.infrastructure.json._
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
+
     val kafkaTopic = "ObjetoSnapshotPersistedReadside"
     val snapshot =
       ObjetoSnapshotPersisted(
