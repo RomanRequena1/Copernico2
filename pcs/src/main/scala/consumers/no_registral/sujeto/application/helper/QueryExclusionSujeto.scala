@@ -3,6 +3,7 @@ package consumers.no_registral.sujeto.application.helper
 import com.datastax.oss.driver.api.core.CqlSession
 
 object QueryExclusionSujeto {
+
   def apply(sujetoId: String): Seq[String] = {
     val session: CqlSession = CqlSession.builder().build()
 
