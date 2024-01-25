@@ -3,23 +3,23 @@ package consumers.no_registral.tranferencia.infrastructure.dependency_injection
 import akka.actor.Props
 import akka.entity.ShardedEntity
 import akka.entity.ShardedEntity.MonitoringAndMessageProducerTranf
+import consumers.no_registral.tranferencia.application.cqrs.commands.{CreateNewVinculoObjSujToTransfHandler, CreateVinculoObjSujToTransfHandler, UpdateVinculoObjSujToTransfHandler}
+import consumers.no_registral.tranferencia.application.entity.TransferenciaCommands
+import consumers.no_registral.tranferencia.domain.{TransferenciaEvent, TransferenciaState}
 import cqrs.base_actor.untyped.PersistentBaseActor
 
 class TranferenciaActor(requirements: MonitoringAndMessageProducerTranf, objetoActorPropsOption: Option[Props] = None)
-  extends PersistentBaseActor[SujetoEvents, SujetoState](requirements.monitoring) {
+  extends PersistentBaseActor[TransferenciaEvent, TransferenciaState](requirements.monitoring) {
 
-  var state = SujetoState()
+  var state = TransferenciaState()
 
 
   override def setupHandlers(): Unit = {
 
-    commandBus.subscribe[SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento](new SujetoUpdateFromObjetoTreintaProcientoHandler(this).handle)
-    commandBus.subscribe[SujetoCommands.SujetoUpdateFromAnt](new SujetoUpdateFromAntHandler(this).handle)
-    commandBus.subscribe[SujetoCommands.SujetoUpdateFromTri](new SujetoUpdateFromTriHandler(this).handle)
-    commandBus.subscribe[SujetoCommands.SujetoUpdateFromObjeto](new SujetoUpdateFromObjetoHandler(this).handle)
-    commandBus.subscribe[SujetoCommands.SujetoSetBajaFromObjeto](new SujetoSetBajaFromObjetoHandler(this).handle)
-    queryBus.subscribe[SujetoQueries.GetStateSujeto](new GetStateSujetoHandler(this).handle)
-    queryBus.subscribe[SujetoQueries.GetSnapshotSujeto](new GetSnapshotSujetoHandler(this).handle)
+    commandBus.subscribe[TransferenciaCommands.CreateNewVinculoObjSujToTransf](new CreateNewVinculoObjSujToTransfHandler(this).handle)
+    commandBus.subscribe[TransferenciaCommands.CreateVinculoObjSujToTransf](new CreateVinculoObjSujToTransfHandler(this).handle)
+    commandBus.subscribe[TransferenciaCommands.UpdateVinculoObjSujToTransf](new UpdateVinculoObjSujToTransfHandler(this).handle)
+
   }
 
 }
