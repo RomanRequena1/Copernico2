@@ -1,8 +1,10 @@
 package consumers.no_registral.tranferencia.domain
 
+import consumers.no_registral.tranferencia.application.entity.TranferenciaMessage
 import design_principles.actor_model.Event
+import serialization.CbroSerialization
 
-sealed trait TransferenciaEvent extends Event
+sealed trait TransferenciaEvent extends Event with TranferenciaMessage with CbroSerialization
 
 
 object TransferenciaEvent {

@@ -67,6 +67,9 @@ object ShardedEntity {
       monitoring: KamonMonitoring,
       messageProducer: KafkaMessageProducer
   ) extends MonitoringAndMessageProducer
+  case class ProductionMonitoringAndMessageProducerTransf(
+                                                     monitoring: KamonMonitoring
+                                                         ) extends MonitoringAndMessageProducerTranf
 
   case class ShardedEntityRequirements(
       system: ActorSystem

@@ -3,7 +3,7 @@ package consumers.no_registral.sujeto.infrastructure.dependency_injection
 import akka.ActorRefMap
 import akka.actor.{ActorRef, Props}
 import akka.entity.ShardedEntity
-import akka.entity.ShardedEntity.MonitoringAndMessageProducer
+import akka.entity.ShardedEntity.{MonitoringAndMessageProducer, MonitoringAndMessageProducerTranf}
 import consumers.no_registral.objeto.application.entities.ObjetoMessage
 import consumers.no_registral.objeto.application.entities.ObjetoMessage.ObjetoMessageRoots
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -19,6 +19,7 @@ import cqrs.base_actor.untyped.PersistentBaseActor
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import io.circe.syntax.EncoderOps
 import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
+import design_principles.microservice.kafka_consumer_microservice.KafkaConsumerMicroserviceRequirements
 class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[SujetoEvents, SujetoState](requirements.monitoring) {
 

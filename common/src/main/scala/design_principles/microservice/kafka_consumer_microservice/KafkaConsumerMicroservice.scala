@@ -4,9 +4,9 @@ import api.actor_transaction.{ActorTransaction, ActorTransactionController}
 import design_principles.actor_model.mechanism.QueryStateAPI.QueryStateApiRequirements
 import design_principles.microservice.Microservice
 import kafka.{KafkaMessageProcessorRequirements, KafkaMessageProducer}
-import monitoring.{KamonMonitoring}
+import monitoring.KamonMonitoring
 import akka.actor.typed.scaladsl.adapter._
-import akka.entity.ShardedEntity.{ProductionMonitoringAndCassandraWrite, ProductionMonitoringAndMessageProducer}
+import akka.entity.ShardedEntity.{ProductionMonitoringAndCassandraWrite, ProductionMonitoringAndMessageProducer, ProductionMonitoringAndMessageProducerTransf}
 import design_principles.actor_model.mechanism.stream_supervision.UniqueTopicPerNode.uniqueTopicPerNode
 
 abstract class KafkaConsumerMicroservice(implicit m: KafkaConsumerMicroserviceRequirements)
@@ -25,6 +25,10 @@ abstract class KafkaConsumerMicroservice(implicit m: KafkaConsumerMicroserviceRe
     ProductionMonitoringAndMessageProducer(
       monitoring,
       messageProducer
+    )
+  implicit final val monitoringAndMessageProducerTransf: ProductionMonitoringAndMessageProducerTransf =
+    ProductionMonitoringAndMessageProducerTransf(
+      monitoring
     )
   implicit final val monitoringAndCassandraWrite: ProductionMonitoringAndCassandraWrite =
     ProductionMonitoringAndCassandraWrite(

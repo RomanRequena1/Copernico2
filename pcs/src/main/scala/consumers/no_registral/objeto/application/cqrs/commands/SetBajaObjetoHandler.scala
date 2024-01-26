@@ -1,12 +1,16 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
+import akka.actor.ActorRef
+import akka.entity.ShardedEntity.ProductionMonitoringAndMessageProducerTransf
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.application.helper.SendToObligaciones
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
+import consumers.no_registral.tranferencia.infrastructure.dependency_injection.TranferenciaActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
+import monitoring.KamonMonitoring
 
 import scala.util.{Success, Try}
 
@@ -29,6 +33,10 @@ class SetBajaObjetoHandler(actor: ObjetoActor) extends SyncCommandHandler[Objeto
       log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
+
+
+
+
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.informBajaToParent(command)

@@ -15,7 +15,12 @@ object ObjetoCommands {
       tipoObjeto: String,
       cotitulares: Set[String]
   ) extends ObjetoCommands
-
+  case class CommandTest(
+                                      deliveryId: BigInt,
+                                      sujetoId: String,
+                                      objetoId: String,
+                                      tipoObjeto: String
+                                    ) extends ObjetoCommands
   case class ObjetoUpdateFromSujeto(
                                deliveryId: BigInt,
                                sujetoId: String,

@@ -1,5 +1,7 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
+import akka.actor.{ActorRef, ActorSystem, Props}
+import akka.entity.ShardedEntity.{MonitoringAndMessageProducer, MonitoringAndMessageProducerTranf, ProductionMonitoringAndMessageProducerTransf}
 import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo.DmnObjeto
@@ -9,13 +11,16 @@ import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoU
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
+import consumers.no_registral.tranferencia.application.entity.TransferenciaCommands.CreateVinculoObjSujToTransf
+import consumers.no_registral.tranferencia.infrastructure.dependency_injection.TranferenciaActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
+import monitoring.KamonMonitoring
 
 import scala.util.{Success, Try}
 
-class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromTri] {
+class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requerimentTransf: MonitoringAndMessageProducer) extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromTri] {
   override def handle(
       command: ObjetoCommands.ObjetoUpdateFromTri
   ): Try[Response.SuccessProcessing] = {
@@ -78,6 +83,17 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor) extends SyncCommandHandler[
       log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
+
+      implicit val system: ActorSystem = actor.context.system
+      implicit val actorProp: Props = TranferenciaActor.props(requerimentTransf)
+      implicit val actorTranf: ActorRef = system.actorOf(actorProp)
+
+      actorTranf ! CreateVinculoObjSujToTransf(command.deliveryId,
+      command.sujetoId,
+      command.objetoId,
+      command.tipoObjeto,
+      "true")
+
       // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular
       actor.persistEvent(event) { () =>
         actor.state += event
