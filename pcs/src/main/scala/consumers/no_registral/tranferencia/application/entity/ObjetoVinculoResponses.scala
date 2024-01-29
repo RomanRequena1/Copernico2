@@ -5,17 +5,17 @@ import java.time.LocalDateTime
 import design_principles.actor_model.Response
 import serialization.CbroSerialization
 
-sealed trait TransferenciaResponses extends Response
+sealed trait ObjetoVinculoResponses extends Response
 
-object TransferenciaResponses {
-  case class GetTransferenciaResponse(
+object ObjetoVinculoResponses {
+  case class GetObjetoVinculoResponse(
                                 lastDeliveryIdByEvents: BigInt,
                                 fechaUltMod: LocalDateTime = LocalDateTime.MIN,
-                              ) extends TransferenciaResponses with CbroSerialization
+                              ) extends ObjetoVinculoResponses with CbroSerialization
 
 
   case class GetExencionResponse(
                                   exencion: Option[Exencion]
-                                ) extends TransferenciaResponses with CbroSerialization
+                                ) extends ObjetoVinculoResponses with CbroSerialization
 
 }

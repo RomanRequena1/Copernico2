@@ -45,16 +45,16 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
 
         val newState = actor.state.copy(aplicarDescuento = Some(true))
         if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA") && newState.aplicarDescuento.isDefined){
-          actor.persistSnapshot(event, newState) { () =>
-            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-          }
+//          actor.persistSnapshot(event, newState) { () =>
+//            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+//          }
         }
       case _ =>
         val newState = actor.state.copy(aplicarDescuento = Some(false))
         if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA") && newState.aplicarDescuento.isDefined){
-          actor.persistSnapshot(event, newState) { () =>
-            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-          }
+//          actor.persistSnapshot(event, newState) { () =>
+//            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+//          }
         }
     }
 //    DMNTreintaPorcientoFinal.dmn(actor.state, command, "")

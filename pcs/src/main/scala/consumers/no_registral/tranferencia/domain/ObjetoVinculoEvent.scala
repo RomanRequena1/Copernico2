@@ -1,30 +1,30 @@
 package consumers.no_registral.tranferencia.domain
 
-import consumers.no_registral.tranferencia.application.entity.TranferenciaMessage
+import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoMessage
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
-sealed trait TransferenciaEvent extends Event with TranferenciaMessage with CbroSerialization
+sealed trait ObjetoVinculoEvent extends Event with ObjetoVinculoMessage with CbroSerialization
 
 
-object TransferenciaEvent {
+object ObjetoVinculoEvent {
 
-  case class CreatedVinculoObjSujToTransf(
+  case class CreatedObjetoVinculoFromObj(
                                         sujetoId: String,
                                         objetoId: String,
                                         tipoObj: String,
-                                        tiene30ObjetoTranf: String
-                                      ) extends TransferenciaEvent
+                                        tiene30ObjetoTranf: Boolean
+                                      ) extends ObjetoVinculoEvent
   case class UpdatedVinculoObjSujToTransf(
                                           sujetoId: String,
                                           objetoId: String,
                                           tipoObj: String,
-                                          tiene30ObjetoTranf: String
-                                        ) extends TransferenciaEvent
+                                          tiene30ObjetoTranf: Boolean
+                                        ) extends ObjetoVinculoEvent
   case class CreatedNewVinculoObjSujToTransf(
                                            sujetoId: String,
                                            objetoId: String,
                                            tipoObj: String,
-                                           tiene30ObjetoTranf: String
-                                         ) extends TransferenciaEvent
+                                           tiene30ObjetoTranf: Boolean
+                                         ) extends ObjetoVinculoEvent
 }

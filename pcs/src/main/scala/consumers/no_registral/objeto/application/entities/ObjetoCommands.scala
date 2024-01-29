@@ -19,7 +19,8 @@ object ObjetoCommands {
                                       deliveryId: BigInt,
                                       sujetoId: String,
                                       objetoId: String,
-                                      tipoObjeto: String
+                                      tipoObjeto: String,
+                                      des: String
                                     ) extends ObjetoCommands
   case class ObjetoUpdateFromSujeto(
                                deliveryId: BigInt,

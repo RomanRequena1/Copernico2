@@ -42,7 +42,6 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
   }
 
   override def setupHandlers(): Unit = {
-
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento](new SujetoUpdateFromObjetoTreintaProcientoHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromAnt](new SujetoUpdateFromAntHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromTri](new SujetoUpdateFromTriHandler(this).handle)

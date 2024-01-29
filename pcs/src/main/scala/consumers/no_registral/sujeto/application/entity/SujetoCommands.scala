@@ -8,7 +8,6 @@ sealed trait SujetoCommands extends Command with SujetoMessage with Deliverable 
 
 object SujetoCommands {
 
-
   case class SujetoUpdateFromTri(
       deliveryId: BigInt,
       sujetoId: String,

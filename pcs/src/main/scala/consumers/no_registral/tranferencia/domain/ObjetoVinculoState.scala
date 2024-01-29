@@ -6,7 +6,7 @@ import serialization.CbroSerialization
 import java.time.LocalDateTime
 
 
-final case class TransferenciaState(
+final case class ObjetoVinculoState(
     objetoId: String = "",
     tipoObj: String = "",
     sujetoIdActual: Option[VinculoActual] = None,
@@ -14,10 +14,10 @@ final case class TransferenciaState(
     eventCounter: Int = 0,
     map: Map[VinculoActual, Boolean] = Map.empty,
     tiene30ObjetoTranf: Boolean = false
-                                   ) extends AbstractState[TransferenciaEvent] with CbroSerialization{
+                                   ) extends AbstractState[ObjetoVinculoEvent] with CbroSerialization{
 
 
-  def +(event: TransferenciaEvent): TransferenciaState  = {
+  def +(event: ObjetoVinculoEvent): ObjetoVinculoState  = {
     eventCounter match {
       case n if (n > (50)) => changeState(event).copy(
         fechaUltMod = LocalDateTime.now,
@@ -34,14 +34,15 @@ final case class TransferenciaState(
       eventCounter = eventCounter + 1
     )*/
   }
-  private def changeState(event: TransferenciaEvent): TransferenciaState =
+  private def changeState(event: ObjetoVinculoEvent): ObjetoVinculoState =
     event match {
-      case evt: TransferenciaEvent.CreatedVinculoObjSujToTransf =>
+      case evt: ObjetoVinculoEvent.CreatedObjetoVinculoFromObj =>
         copy(
-          tiene30ObjetoTranf = false
+          tiene30ObjetoTranf = false,
+          map = map + (VinculoActual(evt.sujetoId,evt.objetoId,evt.tipoObj) -> evt.tiene30ObjetoTranf)
         )
-      case evt =>
-        log.warn(s"Unexpected event at TransferenciaState ${evt}")
+      case _ =>
+        log.warn(s"Unexpected event at ObjetoVinculoState ")
         this
     }
 }
