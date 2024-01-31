@@ -1,27 +1,22 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
-import akka.actor.{ActorRef, ActorSystem, Props}
-import akka.entity.ShardedEntity.{MonitoringAndMessageProducer, MonitoringAndMessageProducerTranf, ProductionMonitoringAndMessageProducerTransf}
-import akka.persistence.SnapshotSelectionCriteria
+import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo.DmnObjeto
-import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateFromTri
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
+import consumers.no_registral.objeto.application.helper.SendObjetoToObjetoVinculo
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
-import consumers.no_registral.tranferencia.application.entity.TranferenciaMessage.TranferenciaMessageRoots
-import consumers.no_registral.tranferencia.application.entity.TransferenciaCommands.CreateVinculoObjSujToTransf
-import consumers.no_registral.tranferencia.infrastructure.dependency_injection.TranferenciaActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
-import monitoring.KamonMonitoring
+import design_principles.actor_model.mechanism.DeliveryIdManagement._
 
 import scala.util.{Success, Try}
 
-class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requerimentTransf: MonitoringAndMessageProducer) extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromTri] {
+class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer) extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromTri] {
   override def handle(
       command: ObjetoCommands.ObjetoUpdateFromTri
   ): Try[Response.SuccessProcessing] = {
@@ -84,36 +79,16 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requerimentTransf: Monitori
       log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
-      val tranferenciaMessageRoots = TranferenciaMessageRoots(command.objetoId).toString
-      implicit val system: ActorSystem = actor.context.system
-      implicit val actorProp: Props = TranferenciaActor.props(requerimentTransf)
 
-
-      try {
-        implicit val actorTranf: ActorRef = system.actorOf(actorProp, tranferenciaMessageRoots)
-
-        actorTranf ! CreateVinculoObjSujToTransf(command.deliveryId,
-          command.sujetoId,
-          command.objetoId,
-          command.tipoObjeto,
-          true)
-      }
-      catch {
-        case e:Exception => {
-          val act = actor.context.actorSelection("akka://PersonClassificationService/user/ObjetoTranf-AUTO")
-          act ! CreateVinculoObjSujToTransf(command.deliveryId,
-            command.sujetoId,
-            command.objetoId,
-            command.tipoObjeto,
-            true)
-        }
-      }
 
 
       // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular
       actor.persistEvent(event) { () =>
         actor.state += event
-        actor.informParent(command, actor.state)
+
+        SendObjetoToObjetoVinculo(actor, command, requeriment)
+
+        //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler
         if (actor.state.eventCounter == eventCounterMax) {
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }

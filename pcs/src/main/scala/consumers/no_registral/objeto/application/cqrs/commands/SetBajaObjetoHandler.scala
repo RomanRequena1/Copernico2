@@ -7,7 +7,6 @@ import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.application.helper.SendToObligaciones
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
-import consumers.no_registral.tranferencia.infrastructure.dependency_injection.TranferenciaActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 import monitoring.KamonMonitoring

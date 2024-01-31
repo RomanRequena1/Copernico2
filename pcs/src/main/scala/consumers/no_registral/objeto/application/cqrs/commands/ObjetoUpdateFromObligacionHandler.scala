@@ -1,7 +1,9 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
+import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.helper.SendObjetoToObjetoVinculo
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromObligacion
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -11,7 +13,7 @@ import org.slf4j.LoggerFactory
 
 import scala.util.{Success, Try}
 
-class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
+class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
     extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromObligacion] {
   override def handle(
       command: ObjetoCommands.ObjetoUpdateFromObligacion
@@ -46,21 +48,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor)
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
-      if (actor.state.tiene30Objeto.equals(false)) {
-
-        actor.informParentTreintaPorciento(command, actor.state)
-        //actor.persistSnapshot(event, actor.state) { () =>
-          //sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-        //}
-      }
-
-      else {
-
-        actor.informParent(command, actor.state)
-        //actor.persistSnapshot(event, actor.state) { () =>
-          //sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-       // }
-      }
+      SendObjetoToObjetoVinculo(actor, command, requeriment)
 //      actor.persistSnapshot(event, actor.state){ () =>
 //        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 //

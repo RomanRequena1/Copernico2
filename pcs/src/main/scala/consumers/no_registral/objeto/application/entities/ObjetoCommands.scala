@@ -15,12 +15,12 @@ object ObjetoCommands {
       tipoObjeto: String,
       cotitulares: Set[String]
   ) extends ObjetoCommands
-  case class CommandTest(
+  case class UpdateState30ObjetoFromObjVinculo(
                                       deliveryId: BigInt,
                                       sujetoId: String,
                                       objetoId: String,
                                       tipoObjeto: String,
-                                      des: String
+                                      tiene30ObjetoVinculo: Boolean
                                     ) extends ObjetoCommands
   case class ObjetoUpdateFromSujeto(
                                deliveryId: BigInt,

@@ -91,6 +91,8 @@ case class ObjetoState(
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
         copy(tiene30Sujeto = Some(evt.tiene30Sujeto))
+      case evt: ObjetoEvents.UpdatedState30ObjetoFromObjVinculo =>
+        copy(tiene30Objeto = evt.tiene30ObjetoVinculo) //todo
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
         copy(
           sujetoResponsable = evt.sujetoResponsable match {

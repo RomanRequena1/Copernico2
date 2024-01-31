@@ -9,18 +9,16 @@ sealed trait ObjetoVinculoEvent extends Event with ObjetoVinculoMessage with Cbr
 
 object ObjetoVinculoEvent {
 
-  case class CreatedObjetoVinculoFromObj(
+  case class UpdatedVinculoObjetoFromObj(
                                         sujetoId: String,
                                         objetoId: String,
                                         tipoObj: String,
-                                        tiene30ObjetoTranf: Boolean
+                                        tiene30Objeto: Boolean,
+                                        isResponsable: Option[Boolean],
+                                        estadoObj: Option[String],
+                                        titularidad: Option[String]
                                       ) extends ObjetoVinculoEvent
-  case class UpdatedVinculoObjSujToTransf(
-                                          sujetoId: String,
-                                          objetoId: String,
-                                          tipoObj: String,
-                                          tiene30ObjetoTranf: Boolean
-                                        ) extends ObjetoVinculoEvent
+
   case class CreatedNewVinculoObjSujToTransf(
                                            sujetoId: String,
                                            objetoId: String,

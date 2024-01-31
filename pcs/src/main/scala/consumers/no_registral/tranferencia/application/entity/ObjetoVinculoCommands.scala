@@ -8,22 +8,19 @@ sealed trait ObjetoVinculoCommands extends Command with ObjetoVinculoMessage wit
 
 object ObjetoVinculoCommands {
 
-  case class CreateObjetoVinculoFromObj(
+  case class UpdateVinculoObjetoFromObj(
                                   deliveryId: BigInt,
                                   sujetoId: String,
                                   objetoId: String,
                                   tipoObj: String,
-                                  tiene30Objeto: Boolean
+                                  tiene30Objeto: Boolean,
+                                  isResponsable: Option[Boolean],
+                                  estadoObj: Option[String],
+                                  titularidad: Option[String]
                                 ) extends ObjetoVinculoCommands {
 
   }
-  case class UpdateVinculoObjSujToTransf(
-                                          deliveryId: BigInt,
-                                          sujetoId: String,
-                                          objetoId: String,
-                                          tipoObj: String,
-                                          tiene30ObjetoTranf: Boolean
-                                      ) extends ObjetoVinculoCommands
+
   case class CreateNewVinculoObjSujToTransf(
                                              deliveryId: BigInt,
                                           sujetoId: String,

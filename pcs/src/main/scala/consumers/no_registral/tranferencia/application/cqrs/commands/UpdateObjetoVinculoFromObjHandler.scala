@@ -2,9 +2,9 @@ package consumers.no_registral.tranferencia.application.cqrs.commands
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
-import consumers.no_registral.objeto.application.entities.ObjetoCommands.{ UpdateState30ObjetoFromObjVinculo}
+import consumers.no_registral.objeto.application.entities.ObjetoCommands.UpdateState30ObjetoFromObjVinculo
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
-import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands.CreateObjetoVinculoFromObj
+import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands.UpdateVinculoObjetoFromObj
 import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -12,15 +12,15 @@ import design_principles.actor_model.Response
 
 import scala.util.{Success, Try}
 
-class CreateVinculoObjetoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[CreateObjetoVinculoFromObj] {
-  override def handle(command: CreateObjetoVinculoFromObj): Try[Response.SuccessProcessing] = {
+class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[UpdateVinculoObjetoFromObj] {
+  override def handle(command: UpdateVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
     println("Llego? CreateVinculoObjSujToTransfHandler::::: " + command + " - "
       + command.tiene30Objeto + " - "
       + actor.context.self.path + " - "
       + actor.context.sender().path)
 
-    val event = ObjetoVinculoEvent.CreatedObjetoVinculoFromObj(
+    val event = ObjetoVinculoEvent.UpdatedVinculoObjetoFromObj(
       command.sujetoId,
       command.objetoId,
       command.tipoObj,

@@ -1,6 +1,8 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
+import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.helper.SendObjetoToObjetoVinculo
 import consumers.no_registral.objeto.domain.ObjetoEvents._
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -8,7 +10,7 @@ import design_principles.actor_model.Response
 
 import scala.util.{Success, Try}
 
-class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
+class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
   extends SyncCommandHandler[ObjetoCommands.ObjetoRemoveObligacion] {
   override def handle(
                        command: ObjetoCommands.ObjetoRemoveObligacion
@@ -27,21 +29,7 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor)
       if(!actor.state.isBaja){
         //actor.informParent(command, actor.state)
         //actor.persistSnapshot(event, actor.state)(() => ())
-        if (actor.state.tiene30Objeto.equals(false)) {
-
-          actor.informParentTreintaPorciento(command, actor.state)
-          //actor.persistSnapshot(event, actor.state) { () =>
-         //   sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-        //  }
-        }
-
-        else {
-
-          actor.informParent(command, actor.state)
-        //  actor.persistSnapshot(event, actor.state) { () =>
-          //  sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-       //   }
-        }
+        SendObjetoToObjetoVinculo(actor, command, requeriment)
       }
 
 

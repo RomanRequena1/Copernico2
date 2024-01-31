@@ -30,18 +30,18 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
 
   override def setupHandlers(): Unit = {
     commandBus.subscribe[ObjetoCommands.ObjetoSnapshot](new ObjetoSnapshotHandler(this).handle)
-    commandBus.subscribe[ObjetoCommands.CommandTest](new TestHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.UpdateState30ObjetoFromObjVinculo](new UpdateState30ObjetoFromObjVinculoHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromSujeto](new ObjetoUpdateFromSujetoHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagAdd](new ObjetoTagAddHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagRemove](new ObjetoTagRemoveHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromAnt](new ObjetoUpdateFromAntHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromTri](new ObjetoUpdateFromTriHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoCommands.SetBajaObjeto](new SetBajaObjetoHandler(this).handle)
-    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObligacion](new ObjetoUpdateFromObligacionHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObligacion](new ObjetoUpdateFromObligacionHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateCotitulares](new ObjetoUpdateCotitularesHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoAddExencion](new ObjetoAddExencionHandler(this).handle)
-    commandBus.subscribe[ObjetoCommands.ObjetoRemoveObligacion](new ObjetoRemoveObligacionHandler(this).handle)
-    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento](new ObjetoUpdateFromObligacionTreintaProcientoHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoRemoveObligacion](new ObjetoRemoveObligacionHandler(this, requirements).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento](new ObjetoUpdateFromObligacionTreintaProcientoHandler(this, requirements).handle)
     queryBus.subscribe[ObjetoQueries.GetStateObjeto](new GetStateObjetoHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetStateExencion](new GetStateExencionHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetSnapshotObjeto](new GetSnapshotObjetoHandler(this).handle)
@@ -113,7 +113,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
   import consumers.no_registral.objeto.infrastructure.json._
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
-    println("TestHandler " + evt.aggregateRoot + " - " + consolidatedState + " - " + consolidatedState.registro)
+    println("TestHandler " + evt.aggregateRoot)
     val kafkaTopic = "ObjetoSnapshotPersistedReadside"
     val snapshot =
       ObjetoSnapshotPersisted(

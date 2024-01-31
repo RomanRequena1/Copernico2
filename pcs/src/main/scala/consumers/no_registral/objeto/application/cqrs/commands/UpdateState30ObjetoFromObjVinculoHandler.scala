@@ -3,38 +3,36 @@ package consumers.no_registral.objeto.application.cqrs.commands
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
 import consumers.no_registral.objeto.domain.ObjetoEvents
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromObligacion
+import consumers.no_registral.objeto.domain.ObjetoEvents.{ObjetoUpdatedFromObligacion, UpdatedState30ObjetoFromObjVinculo}
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
+import ddd.eventCounterMax
 import design_principles.actor_model.Response
 
 import scala.util.{Success, Try}
 
-class TestHandler(actor: ObjetoActor) extends SyncCommandHandler[ObjetoCommands.CommandTest] {
+class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor) extends SyncCommandHandler[ObjetoCommands.UpdateState30ObjetoFromObjVinculo] {
   override def handle(
-                       command: ObjetoCommands.CommandTest
+                       command: ObjetoCommands.UpdateState30ObjetoFromObjVinculo
                      ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-
-
-    println("Llego TestHandler " + command)
-    val event = ObjetoUpdatedFromObligacion(
-      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
+    println("Llego UpdateState30ObjetoFromObjVinculoHandler " + command + " - " + command.tiene30ObjetoVinculo)
+    val event = UpdatedState30ObjetoFromObjVinculo(
+      command.deliveryId,
       command.sujetoId,
       command.objetoId,
-      None,
       command.tipoObjeto,
-      "None",
-      1.1,
-      false,
-      None,
-      None,
-      None
-
+      command.tiene30ObjetoVinculo
     )
-
-    actor.persistSnapshot(event, actor.state) { () =>
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+    actor.persistEvent(event) { () =>
+      actor.state += event
+      if (actor.state.eventCounter == eventCounterMax) {
+        actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+      }
+      if(actor.state.tiene30Objeto.equals(false))
+        actor.informParentTreintaPorciento(command, actor.state)
+      else
+        actor.informParent(command, actor.state)
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
