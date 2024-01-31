@@ -19,10 +19,13 @@ object ObjetoVinculoEvent {
                                         titularidad: Option[String]
                                       ) extends ObjetoVinculoEvent
 
-  case class CreatedNewVinculoObjSujToTransf(
+  case class CreatedTransfVinculoObjetoFromObj(
                                            sujetoId: String,
                                            objetoId: String,
                                            tipoObj: String,
-                                           tiene30ObjetoTranf: Boolean
+                                           tiene30Objeto: Boolean,
+                                           isResponsable: Option[Boolean],
+                                           estadoObj: Option[String],
+                                           titularidad: Option[String]
                                          ) extends ObjetoVinculoEvent
 }

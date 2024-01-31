@@ -21,11 +21,14 @@ object ObjetoVinculoCommands {
 
   }
 
-  case class CreateNewVinculoObjSujToTransf(
+  case class CreateTransfVinculoObjetoFromObj(
                                              deliveryId: BigInt,
                                           sujetoId: String,
                                           objetoId: String,
                                           tipoObj: String,
-                                          tiene30ObjetoTranf: Boolean
+                                          tiene30Objeto: Boolean,
+                                          isResponsable: Option[Boolean],
+                                          estadoObj: Option[String],
+                                          titularidad: Option[String]
                                         ) extends ObjetoVinculoCommands
 }

@@ -2,6 +2,7 @@ package consumers.no_registral.objeto.application.cqrs.commands
 
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
 import consumers.no_registral.objeto.application.helper.SendObjetoToObjetoVinculo
 import consumers.no_registral.objeto.domain.ObjetoEvents._
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -16,6 +17,8 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
                        command: ObjetoCommands.ObjetoRemoveObligacion
                      ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
+    val obj_default: ObjetosTri = ObjetosTri(Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"))
+
     val event = ObjetoRemovedObligacion(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
@@ -29,7 +32,7 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
       if(!actor.state.isBaja){
         //actor.informParent(command, actor.state)
         //actor.persistSnapshot(event, actor.state)(() => ())
-        SendObjetoToObjetoVinculo(actor, command, requeriment)
+        SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state.registro.getOrElse(obj_default).SOJ_ESTADO, requeriment)
       }
 
 

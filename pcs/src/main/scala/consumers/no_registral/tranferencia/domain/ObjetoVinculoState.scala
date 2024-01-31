@@ -17,7 +17,6 @@ final case class ObjetoVinculoState(
     tiene30ObjetoVinculo: Boolean = false //todo si ese objeto tiene 30 que depende de todos los vinculos, depende el caso
                                    ) extends AbstractState[ObjetoVinculoEvent] with CbroSerialization{
 
-
   def +(event: ObjetoVinculoEvent): ObjetoVinculoState  = {
     eventCounter match {
       case n if (n > (50)) => changeState(event).copy(
@@ -36,28 +35,64 @@ final case class ObjetoVinculoState(
     )*/
   }
 
-  private def calcular30desdeMapVinculo(mapVinculo: Map[Vinculo, VinculoCotitular]): Boolean =
-    if (mapVinculo.forall(_._2.tiene30Objeto)) true else false //todo sacar si no se hace mas compleja despues
-  private def validExitsObjVinculo(vinculo: Vinculo, vinculoCotitular: VinculoCotitular) = {
+  private def calcular30desdeMapVinculo(mapVinculo: Map[Vinculo, VinculoCotitular], mapTransf: Map[Vinculo, VinculoCotitular]): Boolean = {
+    if(mapTransf.isEmpty)
+        if (mapVinculo.forall(_._2.tiene30Objeto)) true else false //todo sacar si no se hace mas compleja despues}
+    else
+      if (mapVinculo.forall(_._2.tiene30Objeto) && mapTransf.forall(_._2.tiene30Objeto)) true else false
+  }
 
+// fuction that update the mapVinculo with the new vinculo and return the new map, but if the vinculo is already in the map, it update the vinculo
+// def UpdateObjVinculo(vinculo: Vinculo, vinculoCotitular: VinculoCotitular): Map[Vinculo, VinculoCotitular] = {
+//   if (mapVinculo.contains(vinculo))
+//     mapVinculo.updated(vinculo, vinculoCotitular)
+//   else
+//     mapVinculo + (vinculo -> vinculoCotitular)
+//
+// }
+
+
+  private def UpdateObjVinculo(vinculo: Vinculo, vinculoCotitular: VinculoCotitular) = {
     mapVinculo match {
       //case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (true, clasificacionObjeto))
       case x if x.contains(vinculo) => x updated(vinculo, vinculoCotitular)
-      case x => x + (vinculo -> (vinculoCotitular))
+      case x => x + (vinculo -> vinculoCotitular)
     }
   }
+  private def UpdateObjVinculoWithTransf(vinculo: Vinculo, vinculoCotitular: VinculoCotitular) = {
+    mapTransf match {
+      //case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (true, clasificacionObjeto))
+      case x if x.contains(vinculo) => x updated(vinculo, vinculoCotitular)
+      case x => x + (vinculo -> vinculoCotitular)
+    }
+  }
+
+
+
+
   private def changeState(event: ObjetoVinculoEvent): ObjetoVinculoState =
     event match {
       case evt: ObjetoVinculoEvent.UpdatedVinculoObjetoFromObj =>
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
         val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.estadoObj, evt.titularidad)
-        val _Map = mapVinculo + (_vinculo -> _vinculoCotitular)
-        println("CUMBIA " + calcular30desdeMapVinculo(_Map))
-        val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(_Map)
+        val _mapVinculo = UpdateObjVinculo(_vinculo, _vinculoCotitular)
+        println("CUMBIA " + calcular30desdeMapVinculo(_mapVinculo, mapTransf))
+        val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(_mapVinculo, mapTransf)
 
         copy(
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
-          mapVinculo = _Map
+          mapVinculo = _mapVinculo
+        )
+      case evt: ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj =>
+        val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
+        val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.estadoObj, evt.titularidad)
+        val _mapVinculo = mapVinculo - _vinculo
+        val _mapTransf = UpdateObjVinculoWithTransf(_vinculo, _vinculoCotitular)
+        val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(_mapVinculo, _mapTransf)
+        copy(
+          tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
+          mapVinculo = _mapVinculo,
+          mapTransf = _mapTransf
         )
       case _ =>
         log.warn(s"Unexpected event at ObjetoVinculoState ")

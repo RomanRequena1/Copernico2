@@ -3,6 +3,7 @@ package consumers.no_registral.objeto.application.cqrs.commands
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
 import consumers.no_registral.objeto.application.helper.SendObjetoToObjetoVinculo
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromObligacion
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -19,6 +20,8 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: Monitor
       command: ObjetoCommands.ObjetoUpdateFromObligacion
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
+    val obj_default: ObjetosTri = ObjetosTri(Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"))
+
     val event = ObjetoUpdatedFromObligacion(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
@@ -48,7 +51,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: Monitor
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
-      SendObjetoToObjetoVinculo(actor, command, requeriment)
+      SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state.registro.getOrElse(obj_default).SOJ_ESTADO, requeriment)
 //      actor.persistSnapshot(event, actor.state){ () =>
 //        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 //
