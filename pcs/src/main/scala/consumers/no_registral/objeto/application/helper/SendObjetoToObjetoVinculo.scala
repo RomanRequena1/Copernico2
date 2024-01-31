@@ -8,6 +8,7 @@ import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoA
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands.{CreateTransfVinculoObjetoFromObj, UpdateVinculoObjetoFromObj}
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoMessage.ObjetoVinculoMessageRoots
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
+import design_principles.actor_model.Response
 
 
 //todo --------------------------- REFACTORIZAR ----------------------------------
@@ -23,7 +24,7 @@ object SendObjetoToObjetoVinculo {
     try {
       implicit val actorTranf: ActorRef = system.actorOf(actorProp, tranferenciaMessageRoots)
 
-      if(estado.getOrElse("").equals("TRANSF"))
+      if(estado.getOrElse("").equals("TRANSF")) {
         actorTranf ! CreateTransfVinculoObjetoFromObj(0,
           sujetoId,
           objetoId,
@@ -33,7 +34,12 @@ object SendObjetoToObjetoVinculo {
           actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD
         )
-      else
+        if(actor.state.tiene30Objeto.equals(false))
+          actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents,sujetoId,objetoId, tipoObjeto, actor.state)
+        else
+          actor.informParent(actor.state.lastDeliveryIdByEvents,sujetoId,objetoId, tipoObjeto, actor.state)
+
+      } else
       actorTranf ! UpdateVinculoObjetoFromObj(0,
         sujetoId,
         objetoId,
@@ -47,7 +53,7 @@ object SendObjetoToObjetoVinculo {
     catch {
       case e:Exception => {
         val act = actor.context.actorSelection(s"akka://PersonClassificationService/user/ObjetoVinculo-${objetoId}")
-        if(estado.getOrElse("").equals("TRANSF"))
+        if(estado.getOrElse("").equals("TRANSF")) {
           act ! CreateTransfVinculoObjetoFromObj(0,
             sujetoId,
             objetoId,
@@ -57,7 +63,11 @@ object SendObjetoToObjetoVinculo {
             actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
             actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD
           )
-
+          if(actor.state.tiene30Objeto.equals(false))
+            actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents,sujetoId,objetoId, tipoObjeto, actor.state)
+          else
+            actor.informParent(actor.state.lastDeliveryIdByEvents,sujetoId,objetoId, tipoObjeto, actor.state)
+        }
         else
           act ! UpdateVinculoObjetoFromObj(0,
             sujetoId,

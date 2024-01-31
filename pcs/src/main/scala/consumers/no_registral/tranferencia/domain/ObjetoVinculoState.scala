@@ -38,8 +38,10 @@ final case class ObjetoVinculoState(
   private def calcular30desdeMapVinculo(mapVinculo: Map[Vinculo, VinculoCotitular], mapTransf: Map[Vinculo, VinculoCotitular]): Boolean = {
     if(mapTransf.isEmpty)
         if (mapVinculo.forall(_._2.tiene30Objeto)) true else false //todo sacar si no se hace mas compleja despues}
-    else
-      if (mapVinculo.forall(_._2.tiene30Objeto) && mapTransf.forall(_._2.tiene30Objeto)) true else false
+    else {
+      val _mapVinculo = mapVinculo.filter(e => !e._2.estado.getOrElse("").equals("TRANSF"))
+      if (_mapVinculo.forall(_._2.tiene30Objeto) && mapTransf.forall(_._2.tiene30Objeto)) true else false
+    }
   }
 
 // fuction that update the mapVinculo with the new vinculo and return the new map, but if the vinculo is already in the map, it update the vinculo
@@ -59,13 +61,7 @@ final case class ObjetoVinculoState(
       case x => x + (vinculo -> vinculoCotitular)
     }
   }
-  private def UpdateObjVinculoWithTransf(vinculo: Vinculo, vinculoCotitular: VinculoCotitular) = {
-    mapTransf match {
-      //case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (true, clasificacionObjeto))
-      case x if x.contains(vinculo) => x updated(vinculo, vinculoCotitular)
-      case x => x + (vinculo -> vinculoCotitular)
-    }
-  }
+
 
 
 
@@ -86,8 +82,8 @@ final case class ObjetoVinculoState(
       case evt: ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj =>
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
         val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.estadoObj, evt.titularidad)
-        val _mapVinculo = mapVinculo - _vinculo
-        val _mapTransf = UpdateObjVinculoWithTransf(_vinculo, _vinculoCotitular)
+        val _mapVinculo = if (_vinculoCotitular.isResponsable.get) mapVinculo - _vinculo else mapVinculo
+        val _mapTransf = if (_vinculoCotitular.isResponsable.get) mapTransf + (_vinculo -> _vinculoCotitular) else mapTransf
         val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(_mapVinculo, _mapTransf)
         copy(
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,

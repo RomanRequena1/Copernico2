@@ -86,14 +86,23 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       actor.persistEvent(event) { () =>
         actor.state += event
         //todo juicio persiste, pero no se us apara el calculo del 30%?
-        if(actor.state.registro.get.SOJ_IDENTIFICADOR.startsWith("PP")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
+        if(actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
+          if(actor.state.tiene30Objeto.equals(false))
+            actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
+          else
+            actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto , actor.state)
           actor.persistSnapshot(event, actor.state) { () =>
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
         }
-        else
+        else {
           SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
-
+          if(actor.state.registro.get.SOJ_ESTADO.getOrElse("").equals("TRANSF")){
+            actor.persistSnapshot(event, actor.state) { () =>
+              sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+            }
+          }
+        }
         //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler
         if (actor.state.eventCounter == eventCounterMax) {
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))

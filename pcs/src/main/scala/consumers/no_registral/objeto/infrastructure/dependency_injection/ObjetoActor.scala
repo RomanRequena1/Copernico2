@@ -256,24 +256,24 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
 
   def withCotitulares(sujetos: Set[String]): Boolean =
     sujetos.size > 1*/
-  def informParentTreintaPorciento(cmd: ObjetoCommands, state: ObjetoState): Unit = {
+  def informParentTreintaPorciento(deliveryId: BigInt, sujetoId: String ,objetoId : String,tipoObjeto: String, state: ObjetoState): Unit = {
     context.parent ! SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
-      cmd.deliveryId,
-      cmd.sujetoId,
-      cmd.objetoId,
-      cmd.tipoObjeto,
+      deliveryId,
+      sujetoId,
+      objetoId,
+      tipoObjeto,
       state.saldo,
       state.obligacionesSaldo.values.sum,
       state.clasificacionObjeto
     )
   }
 
-  def informParent(cmd: ObjetoCommands, state: ObjetoState): Unit = {
+  def informParent(deliveryId: BigInt, sujetoId: String ,objetoId : String,tipoObjeto: String, state: ObjetoState): Unit = {
     context.parent ! SujetoCommands.SujetoUpdateFromObjeto(
-      cmd.deliveryId,
-      cmd.sujetoId,
-      cmd.objetoId,
-      cmd.tipoObjeto,
+      deliveryId,
+      sujetoId,
+      objetoId,
+      tipoObjeto,
       state.saldo,
       state.obligacionesSaldo.values.sum,
       state.clasificacionObjeto

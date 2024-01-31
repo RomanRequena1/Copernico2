@@ -30,9 +30,9 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor) extends SyncC
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
       if(actor.state.tiene30Objeto.equals(false))
-        actor.informParentTreintaPorciento(command, actor.state)
+        actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
       else
-        actor.informParent(command, actor.state)
+        actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
