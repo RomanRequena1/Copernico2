@@ -2,7 +2,7 @@ package consumers.no_registral.tranferencia.application.cqrs.commands
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
-import consumers.no_registral.objeto.application.entities.ObjetoCommands.CommandTest
+import consumers.no_registral.objeto.application.entities.ObjetoCommands.{ UpdateState30ObjetoFromObjVinculo}
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands.CreateObjetoVinculoFromObj
 import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent
@@ -12,7 +12,7 @@ import design_principles.actor_model.Response
 
 import scala.util.{Success, Try}
 
-class CreateVinculoObjSujToTransfHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[CreateObjetoVinculoFromObj] {
+class CreateVinculoObjetoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[CreateObjetoVinculoFromObj] {
   override def handle(command: CreateObjetoVinculoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
     println("Llego? CreateVinculoObjSujToTransfHandler::::: " + command + " - "
@@ -24,7 +24,10 @@ class CreateVinculoObjSujToTransfHandler(actor: ObjetoVinculoActor, tranferencia
       command.sujetoId,
       command.objetoId,
       command.tipoObj,
-      command.tiene30Objeto
+      command.tiene30Objeto,
+      command.isResponsable,
+      command.estadoObj,
+      command.titularidad
     )
 
     implicit val ssytem: ActorSystem = actor.context.system
@@ -35,11 +38,11 @@ class CreateVinculoObjSujToTransfHandler(actor: ObjetoVinculoActor, tranferencia
     actor.persistEvent(event) { () =>
 
       actor.state += event
-      println("map -> " + actor.state.map)
-      actor.state.map.foreach {
+      println("map -> " + actor.state.mapVinculo)
+      actor.state.mapVinculo.foreach {
         e => {
           println("vin -> " + e._1)
-          actorSujetoGeneral ! CommandTest(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, )
+          actorSujetoGeneral ! UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo)
         }
       }
     }
