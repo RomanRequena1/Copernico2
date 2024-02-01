@@ -24,7 +24,7 @@ class ObjetoUpdateCotitularesHandler(actor: ObjetoActor)
     )
     actor.persistEvent(event) { () =>
       actor.state += event
-      actor.informParent(command, actor.state)
+      actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
       actor.persistSnapshot(event, actor.state) { () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }

@@ -29,6 +29,7 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor) extends SyncC
       if (actor.state.eventCounter == eventCounterMax) {
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
+      println("CUMBIA "  + command + " - " + actor.state.tiene30Objeto)
       if(actor.state.tiene30Objeto.equals(false))
         actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
       else

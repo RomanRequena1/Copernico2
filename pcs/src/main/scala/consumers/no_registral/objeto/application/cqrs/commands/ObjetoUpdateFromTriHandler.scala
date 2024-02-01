@@ -97,11 +97,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
         }
         else {
           SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
-          if(actor.state.registro.get.SOJ_ESTADO.getOrElse("").equals("TRANSF")){
-            actor.persistSnapshot(event, actor.state) { () =>
-              sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-            }
-          }
         }
         //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler
         if (actor.state.eventCounter == eventCounterMax) {

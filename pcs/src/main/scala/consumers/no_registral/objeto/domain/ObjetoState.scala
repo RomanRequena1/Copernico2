@@ -26,6 +26,7 @@ case class ObjetoState(
                         eventCounter:Int = 0,
                         cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
                         tiene30Objeto: Boolean = true,
+                        tiene30ObjetoVinculo: Boolean = true,
                         clasificacionObjeto: String = "2",
                         tiene30Sujeto: Option[Boolean] = None,
                         aplicarDescuento: Option[Boolean] = None,
@@ -60,8 +61,16 @@ case class ObjetoState(
     }
   }
 
-  private def diffCurrentStateAndNewState(currentObnVencidas: Map[String, Boolean], tiene30Objeto: Boolean) = { //todo cambiar nombre de funcion
-    if (currentObnVencidas.values.forall(_ == true)){
+  private def diffCurrentStateAndNewStateTest(currentObnVencidas: Map[String, Boolean],  _tiene30ObjetoVinculo: Boolean) = { //todo cambiar nombre de funcion
+    if (currentObnVencidas.values.forall(_ == true) && _tiene30ObjetoVinculo.equals(true)) {
+      true
+    }
+    else{
+      false
+    }
+  }
+  private def diffCurrentStateAndNewState(currentObnVencidas: Map[String, Boolean], _tiene30ObjetoVinculo: Boolean) = { //todo cambiar nombre de funcion
+    if (currentObnVencidas.values.forall(_ == true)) {
       true
     }
     else{
@@ -92,7 +101,10 @@ case class ObjetoState(
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
         copy(tiene30Sujeto = Some(evt.tiene30Sujeto))
       case evt: ObjetoEvents.UpdatedState30ObjetoFromObjVinculo =>
-        copy(tiene30Objeto = evt.tiene30ObjetoVinculo) //todo
+        val _tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo
+        copy(tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
+            tiene30Objeto = diffCurrentStateAndNewStateTest(obnVencidas, _tiene30ObjetoVinculo)
+        ) //todo
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
         copy(
           sujetoResponsable = evt.sujetoResponsable match {

@@ -43,7 +43,7 @@ class ObjetoAddExencionHandler(actor: ObjetoActor)(implicit messageProducer: Mes
                                                                    obligacionId.split("-").last,
                                                                    command.exencion)
         }
-        actor.informParent(command, actor.state)
+        actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
 
         messageProducer.produce(
           Seq(

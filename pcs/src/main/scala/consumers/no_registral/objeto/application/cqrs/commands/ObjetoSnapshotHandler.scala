@@ -38,7 +38,7 @@ class ObjetoSnapshotHandler(actor: ObjetoActor) extends SyncCommandHandler[Objet
     val sender = actor.context.sender()
     actor.persistSnapshot(event, consolidatedState) { () =>
       actor.state = consolidatedState
-      actor.informParent(command, actor.state)
+      actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

@@ -34,7 +34,7 @@ class ObjetoUpdateFromAntHandler(actor: ObjetoActor) extends SyncCommandHandler[
       // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular
       actor.persistEvent(event) { () =>
         actor.state += event
-        actor.informParent(command, actor.state)
+        actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
 //        if (actor.state.eventCounter == eventCounterMax) {
 //          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
 //        }
