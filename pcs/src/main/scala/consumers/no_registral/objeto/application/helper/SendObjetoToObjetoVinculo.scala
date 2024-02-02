@@ -14,18 +14,24 @@ import design_principles.actor_model.Response
 //todo --------------------------- REFACTORIZAR ----------------------------------
 object SendObjetoToObjetoVinculo {
   val obj_default: ObjetosTri = ObjetosTri(Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"))
+  /**
+   * 1. Crear actor
+   * Si el actor ya existe, se envía el mensaje al actor existente que entra por el catch y si no existe se crea el actor
+   * Si estado es TRANSF se envia el mensaje CreateTransfVinculoObjetoFromObj y se hace los informes hacia el padre
+   * Si estado no es TRANSF se envia el mensaje UpdateVinculoObjetoFromObj
+   */
   def apply(actor: ObjetoActor,sujetoId: String, objetoId: String, tipoObjeto: String,estado: Option[String], requeriment: MonitoringAndMessageProducer ): Unit = {
     println("CUMBIA SendObjetoToObjetoVinculo  -> ")
-    val tranferenciaMessageRoots = ObjetoVinculoMessageRoots(objetoId).toString
+    val objetoVinculoMessageRoots = ObjetoVinculoMessageRoots(objetoId).toString
     implicit val system: ActorSystem = actor.context.system
     implicit val actorProp: Props = ObjetoVinculoActor.props(requeriment)
 
 
     try {
-      implicit val actorTranf: ActorRef = system.actorOf(actorProp, tranferenciaMessageRoots)
+      implicit val actorObjetoVinculo: ActorRef = system.actorOf(actorProp, objetoVinculoMessageRoots)
 
       if(estado.getOrElse("").equals("TRANSF")) {
-        actorTranf ! CreateTransfVinculoObjetoFromObj(0,
+        actorObjetoVinculo ! CreateTransfVinculoObjetoFromObj(0,
           sujetoId,
           objetoId,
           tipoObjeto,
@@ -40,7 +46,7 @@ object SendObjetoToObjetoVinculo {
           actor.informParent(actor.state.lastDeliveryIdByEvents,sujetoId,objetoId, tipoObjeto, actor.state)
 
       } else
-      actorTranf ! UpdateVinculoObjetoFromObj(0,
+        actorObjetoVinculo ! UpdateVinculoObjetoFromObj(0,
         sujetoId,
         objetoId,
         tipoObjeto,

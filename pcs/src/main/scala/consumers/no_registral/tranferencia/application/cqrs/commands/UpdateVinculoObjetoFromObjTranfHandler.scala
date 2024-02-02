@@ -12,7 +12,7 @@ import design_principles.actor_model.Response
 
 import scala.util.{Success, Try}
 
-class CreateNewVinculoObjetoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[CreateTransfVinculoObjetoFromObj] {
+class UpdateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[CreateTransfVinculoObjetoFromObj] {
   override def handle(command: CreateTransfVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
     println("Llego? CreateNewVinculoObjetoFromObjHandler::::: " + command + " - "
@@ -30,21 +30,23 @@ class CreateNewVinculoObjetoFromObjHandler(actor: ObjetoVinculoActor, tranferenc
       command.titularidad
     )
 
-    implicit val ssytem: ActorSystem = actor.context.system
-    //todo para mandar mensajes a todos los objetos de los distintos vinculos
+    implicit val system: ActorSystem = actor.context.system
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
 
 
     actor.persistEvent(event) { () =>
-      //todo a quien mando los mensajes? jajaja
       actor.state += event
       println("mapTransf -> " + actor.state.mapTransf)
       println("mapVinculo mapTransf-> " + actor.state.mapVinculo)
+
+
+      //Recorre el map de vinculos y manda mensaje a los objetos
+
       actor.state.mapVinculo.foreach {
         e => {
           println("vin -> " + e._1 + " - " + e._2 + " - " + !e._2.estado.getOrElse("").equals("TRANSF"))
-          if(!e._2.estado.getOrElse("").equals("TRANSF"))
-            actorSujetoGeneral ! UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo)
+
+          actorSujetoGeneral ! UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo)
         }
       }
     }

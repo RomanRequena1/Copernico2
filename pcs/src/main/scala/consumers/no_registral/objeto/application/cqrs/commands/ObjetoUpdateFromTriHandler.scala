@@ -17,6 +17,12 @@ import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import scala.util.{Success, Try}
 
 class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer) extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromTri] {
+
+  /**
+   * Si el objeto es tipo M y actor.state.tiene30Objeto es false, entonces informParentTreintaPorciento y si actor.state.tiene30Objeto es true, entonces informParent.
+   * En ambos casos, persistSnapshot.
+   * En el caso del else, se envía el objeto a objeto vinculo.
+   */
   override def handle(
       command: ObjetoCommands.ObjetoUpdateFromTri
   ): Try[Response.SuccessProcessing] = {
@@ -83,9 +89,12 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
 
 
       // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular
+
+
       actor.persistEvent(event) { () =>
         actor.state += event
         //todo juicio persiste, pero no se us apara el calculo del 30%?
+
         if(actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
           if(actor.state.tiene30Objeto.equals(false))
             actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)

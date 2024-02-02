@@ -49,7 +49,6 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
 
-
       SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state.registro.getOrElse(obj_default).SOJ_ESTADO, requeriment)
 
     }

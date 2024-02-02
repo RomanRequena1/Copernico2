@@ -3,7 +3,7 @@ package consumers.no_registral.tranferencia.infrastructure.dependency_injection
 import akka.actor.Props
 import akka.entity.ShardedEntity
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
-import consumers.no_registral.tranferencia.application.cqrs.commands.{CreateNewVinculoObjetoFromObjHandler, UpdateObjetoVinculoFromObjHandler}
+import consumers.no_registral.tranferencia.application.cqrs.commands.{UpdateVinculoObjetoFromObjTranfHandler, UpdateObjetoVinculoFromObjHandler}
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands
 import consumers.no_registral.tranferencia.domain.{ObjetoVinculoEvent, ObjetoVinculoState}
 import cqrs.base_actor.untyped.PersistentBaseActor
@@ -15,7 +15,7 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoActor
 
   override def setupHandlers(): Unit = {
     commandBus.subscribe[ObjetoVinculoCommands.UpdateVinculoObjetoFromObj](new UpdateObjetoVinculoFromObjHandler(this, requirements).handle)
-    commandBus.subscribe[ObjetoVinculoCommands.CreateTransfVinculoObjetoFromObj](new CreateNewVinculoObjetoFromObjHandler(this, requirements).handle)
+    commandBus.subscribe[ObjetoVinculoCommands.CreateTransfVinculoObjetoFromObj](new UpdateVinculoObjetoFromObjTranfHandler(this, requirements).handle)
   }
 }
 object ObjetoVinculoActor extends ShardedEntity[MonitoringAndMessageProducer] {

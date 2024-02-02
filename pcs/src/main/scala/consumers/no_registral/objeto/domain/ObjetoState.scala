@@ -60,8 +60,11 @@ case class ObjetoState(
       case x => x + (obligacionId -> true) //la creo sino existe
     }
   }
-
+  /**
+   * 1. Si todos los valores del map son true y tiene30ObjetoVinculo es true, entonces tiene30Objeto es true y sino es false
+   */
   private def diffCurrentStateAndNewStateTest(currentObnVencidas: Map[String, Boolean],  _tiene30ObjetoVinculo: Boolean) = { //todo cambiar nombre de funcion
+
     if (currentObnVencidas.values.forall(_ == true) && _tiene30ObjetoVinculo.equals(true)) {
       true
     }

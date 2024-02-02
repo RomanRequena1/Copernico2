@@ -12,6 +12,10 @@ import design_principles.actor_model.Response
 import scala.util.{Success, Try}
 
 class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor) extends SyncCommandHandler[ObjetoCommands.UpdateState30ObjetoFromObjVinculo] {
+
+  /**
+   * Si el objeto tiene 30% manda mensaje a los objetos vinculados y si no manda mensaje a los objetos vinculados
+   */
   override def handle(
                        command: ObjetoCommands.UpdateState30ObjetoFromObjVinculo
                      ): Try[Response.SuccessProcessing] = {
@@ -30,6 +34,8 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor) extends SyncC
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
       println("CUMBIA "  + command + " - " + actor.state.tiene30Objeto)
+
+
       if(actor.state.tiene30Objeto.equals(false))
         actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
       else
