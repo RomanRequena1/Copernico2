@@ -20,6 +20,8 @@ import kafka.KafkaMessageProducer.KafkaKeyValue
 import io.circe.syntax.EncoderOps
 import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 import design_principles.microservice.kafka_consumer_microservice.KafkaConsumerMicroserviceRequirements
+
+
 class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[SujetoEvents, SujetoState](requirements.monitoring) {
 

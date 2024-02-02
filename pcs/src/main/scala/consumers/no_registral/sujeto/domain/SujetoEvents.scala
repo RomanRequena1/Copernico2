@@ -19,6 +19,7 @@ object SujetoEvents {
       tiene30Sujeto: Option[Boolean]
   ) extends SujetoEvents
 
+
   case class SujetoUpdatedFromObjetoTreintaPorciento(
                                                       deliveryId: BigInt,
                                                       sujetoId: String,

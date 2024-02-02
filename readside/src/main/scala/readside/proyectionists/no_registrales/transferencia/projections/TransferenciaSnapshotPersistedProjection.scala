@@ -1,0 +1,3 @@
+package readside.proyectionists.no_registrales.transferencia.projections
+
+case class TransferenciaSnapshotPersistedProjection()

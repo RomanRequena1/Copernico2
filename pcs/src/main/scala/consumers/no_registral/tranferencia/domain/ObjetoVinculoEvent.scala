@@ -4,10 +4,20 @@ import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoMessa
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
-sealed trait ObjetoVinculoEvent extends Event with ObjetoVinculoMessage with CbroSerialization
+sealed trait ObjetoVinculoEvent extends Event with ObjetoVinculoMessage with CbroSerialization {
+  def tipoObj: String
+}
 
 
 object ObjetoVinculoEvent {
+
+  case class ObjetoVinculoSnapshotPersisted(
+                                             objetoId: String,
+                                             tipoObj: String,
+                                             mapTransf: Map[Vinculo, VinculoCotitular] = Map.empty,
+                                             mapVinculo: Map[Vinculo, VinculoCotitular] = Map.empty
+                                           ) extends ObjetoVinculoEvent
+
 
   case class UpdatedVinculoObjetoFromObj(
                                         sujetoId: String,

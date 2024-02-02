@@ -99,8 +99,6 @@ final case class ObjetoVinculoState(
   }
 
 
-
-
   private def changeState(event: ObjetoVinculoEvent): ObjetoVinculoState =
     event match {
       case evt: ObjetoVinculoEvent.UpdatedVinculoObjetoFromObj =>
@@ -125,6 +123,13 @@ final case class ObjetoVinculoState(
           mapVinculo = _mapVinculo,
           mapTransf = _mapTransf
         )
+//      case evt: ObjetoVinculoEvent.ObjetoVinculoSnapshotPersisted =>
+//        copy(
+//          objetoId = evt.objetoId,
+//          tipoObj = evt.tipoObj,
+//          mapTransf = evt.mapTransf,
+//          mapVinculo = evt.mapVinculo
+//        )
       case _ =>
         log.warn(s"Unexpected event at ObjetoVinculoState ")
         this
