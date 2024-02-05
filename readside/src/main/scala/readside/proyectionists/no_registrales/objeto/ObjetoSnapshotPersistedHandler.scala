@@ -33,7 +33,7 @@ class ObjetoSnapshotPersistedHandler(
 
   override def processMessage(registro: ObjetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
     //recordLag(calculateLag(registro.deliveryId.toString))
-    val projection = ObjetoSnapshotPersistedProjection(registro)
+    val projection: ObjetoSnapshotPersistedProjection = ObjetoSnapshotPersistedProjection(registro)
     if (registro.operacion.equals("U")) {
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
