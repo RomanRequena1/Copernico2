@@ -28,7 +28,7 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
 
   def persistSnapshot(evt: ObjetoVinculoEvent, consolidatedState: ObjetoVinculoState)(handler: () => Unit): Unit = {
     println("TestHandler " + evt.aggregateRoot)
-    val kafkaTopic = "ObjetoVinculoSnapshotPersistedReadside"
+    val kafkaTopic = "ObjetoVinculoPersisted"
     val snapshot =
       ObjetoVinculoSnapshotPersisted(
         evt.objetoId,
@@ -40,7 +40,7 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
       data = Seq(
         KafkaKeyValue(
           snapshot.aggregateRoot,
-          snapshot.asJson.toString()
+          snapshot.asJson.noSpaces
         )
       ),
       topic = kafkaTopic

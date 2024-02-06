@@ -4,8 +4,7 @@ CREATE TABLE read_side.buc_objeto_vinculo (
     soj_map_transf text,
     soj_map_vinculo text,
     PRIMARY KEY (soj_identificador)
-) WITH CLUSTERING ORDER BY (soj_tipo_objeto ASC, soj_identificador ASC)
-    AND bloom_filter_fp_chance = 0.01
+) WITH  bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
     AND comment = ''
     AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}

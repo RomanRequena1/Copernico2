@@ -45,7 +45,8 @@ object Main extends App {
       new consumers.registral.tramite.infrastructure.main.TramiteMicroservice,
       new JuicioObnMicroservice,
       new ExclusionesSujetoMicroservice,
-      new ExclusionesObjetoMicroservice
+      new ExclusionesObjetoMicroservice,
+      new consumers.no_registral.tranferencia.infrastructure.main.TranferencuaMicroservice
     )
   }
 }

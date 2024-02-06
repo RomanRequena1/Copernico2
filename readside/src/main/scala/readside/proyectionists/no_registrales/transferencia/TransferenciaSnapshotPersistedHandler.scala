@@ -27,14 +27,15 @@ class TransferenciaSnapshotPersistedHandler (
     override def topicError: String = "ObjetoVinculoPersisted_error"
 
     override def processInput(input: String): Either[Throwable, ObjetoVinculoSnapshotPersisted] = {
-      decode[ObjetoVinculoSnapshotPersisted](input)
+      println("CUMBIA -> " + input)
+      decode[ObjetoVinculoSnapshotPersisted](input.toString)
     }
 
     val cassandra = new CassandraWriteProduction()
 
     override def processMessage(registro: ObjetoVinculoSnapshotPersisted): Future[Response.SuccessProcessing] = {
       //recordLag(calculateLag(registro.deliveryId.toString))
-
+      println("CUMBIA -> Llego?")
       val projection: TransferenciaSnapshotPersistedProjection = TransferenciaSnapshotPersistedProjection(registro)
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {

@@ -9,7 +9,7 @@ import design_principles.microservice.kafka_consumer_microservice.{
 }
 import readside.proyectionists.no_registrales.transferencia.TransferenciaSnapshotPersistedHandler
 
-case class TransferenciaProjectionistMicroservice(
+class TransferenciaProjectionistMicroservice(
                                                    implicit m: KafkaConsumerMicroserviceRequirements
                                                  ) extends KafkaConsumerMicroservice {
 

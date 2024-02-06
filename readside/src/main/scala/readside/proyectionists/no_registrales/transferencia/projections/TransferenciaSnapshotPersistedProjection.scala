@@ -7,9 +7,7 @@ case class TransferenciaSnapshotPersistedProjection(
 ) extends TransferenciaProjection{
 
 
-  def bindings: List[(String, Option[String])] = List(
-    "soj_identificador" -> Some(event.objetoId),
-    "soj_tipo_objeto" -> Some(event.tipoObj),
+  def bindings: List[(String, Option[String])] = List("soj_tipo_objeto" -> Some(event.tipoObj),
     "soj_map_transf" -> Some(event.mapTransf.toString()),
     "soj_map_vinculo" -> Some(event.mapVinculo.toString())
   )

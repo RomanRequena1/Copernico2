@@ -14,8 +14,8 @@ object ObjetoVinculoEvent {
   case class ObjetoVinculoSnapshotPersisted(
                                              objetoId: String,
                                              tipoObj: String,
-                                             mapTransf: Map[Vinculo, VinculoCotitular] = Map.empty,
-                                             mapVinculo: Map[Vinculo, VinculoCotitular] = Map.empty
+                                             mapTransf: Map[Vinculo, VinculoCotitular],
+                                             mapVinculo: Map[Vinculo, VinculoCotitular]
                                            ) extends ObjetoVinculoEvent
 
 
