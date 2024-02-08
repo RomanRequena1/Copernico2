@@ -57,13 +57,13 @@ object ObjetoVinculoImplicits {
       for {
         objetoId <- c.downField("objetoId").as[String]
         tipoObj <- c.downField("tipoObj").as[String]
+        tiene30ObjetoVinculo <- c.downField("tiene30objeto").as[Boolean]
         mapTransf <- c.downField("mapTransf").as[Map[Vinculo, VinculoCotitular]](Decoder.decodeMap[Vinculo, VinculoCotitular])
         mapVinculo <- c.downField("mapVinculo").as[Map[Vinculo, VinculoCotitular]](Decoder.decodeMap[Vinculo, VinculoCotitular])
-      } yield ObjetoVinculoSnapshotPersisted(objetoId, tipoObj, mapTransf, mapVinculo)
+      } yield ObjetoVinculoSnapshotPersisted(objetoId, tipoObj, tiene30ObjetoVinculo, mapTransf, mapVinculo)
     }
   }
 }
-
 
 
 

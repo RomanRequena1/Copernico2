@@ -14,6 +14,7 @@ object ObjetoVinculoEvent {
   case class ObjetoVinculoSnapshotPersisted(
                                              objetoId: String,
                                              tipoObj: String,
+                                             tiene30ObjetoVinculo: Boolean,
                                              mapTransf: Map[Vinculo, VinculoCotitular],
                                              mapVinculo: Map[Vinculo, VinculoCotitular]
                                            ) extends ObjetoVinculoEvent

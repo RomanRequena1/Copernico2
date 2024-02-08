@@ -35,6 +35,7 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
       ObjetoVinculoSnapshotPersisted(
         evt.objetoId,
         evt.tipoObj,
+        consolidatedState.tiene30ObjetoVinculo,
         consolidatedState.mapTransf,
         consolidatedState.mapVinculo)
 
