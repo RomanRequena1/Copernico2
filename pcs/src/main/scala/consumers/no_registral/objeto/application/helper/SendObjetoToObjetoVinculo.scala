@@ -5,7 +5,7 @@ import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.{ObjetoRemoveObligacion, ObjetoUpdateFromObligacion, ObjetoUpdateFromObnTreintaPorciento, ObjetoUpdateFromTri}
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
-import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands.{CreateTransfVinculoObjetoFromObj, UpdateVinculoObjetoFromObj}
+import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands.{CreateTransfVinculoObjetoFromObj, RemoveObjetoVinculo, UpdateVinculoObjetoFromObj}
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoMessage.ObjetoVinculoMessageRoots
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import design_principles.actor_model.Response
@@ -45,7 +45,20 @@ object SendObjetoToObjetoVinculo {
         else
           actor.informParent(actor.state.lastDeliveryIdByEvents,sujetoId,objetoId, tipoObjeto, actor.state)
 
-      } else
+      }
+      if(actor.state.registro.get.SOJ_ESTADO.contains("BAJA")){
+        println("llego al if baja")
+        actorObjetoVinculo ! RemoveObjetoVinculo(0,
+          sujetoId,
+          objetoId,
+          tipoObjeto,
+          actor.state.tiene30Objeto,
+          Some(actor.state.isResponsable),
+          actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
+          actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD)
+      }
+
+      else
         actorObjetoVinculo ! UpdateVinculoObjetoFromObj(0,
         sujetoId,
         objetoId,
@@ -55,6 +68,7 @@ object SendObjetoToObjetoVinculo {
         actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
         actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD
       )
+
     }
     catch {
       case e:Exception => {

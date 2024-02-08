@@ -36,7 +36,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
     commandBus.subscribe[ObjetoCommands.ObjetoTagRemove](new ObjetoTagRemoveHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromAnt](new ObjetoUpdateFromAntHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromTri](new ObjetoUpdateFromTriHandler(this, requirements).handle)
-    commandBus.subscribe[ObjetoCommands.SetBajaObjeto](new SetBajaObjetoHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.SetBajaObjeto](new SetBajaObjetoHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObligacion](new ObjetoUpdateFromObligacionHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateCotitulares](new ObjetoUpdateCotitularesHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoAddExencion](new ObjetoAddExencionHandler(this).handle)
@@ -288,7 +288,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
       cmd.tipoObjeto
     )
   }
-
 }
 
 object ObjetoActor {

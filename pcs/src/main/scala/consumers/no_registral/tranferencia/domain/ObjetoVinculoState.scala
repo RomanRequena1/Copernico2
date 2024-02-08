@@ -123,6 +123,18 @@ final case class ObjetoVinculoState(
           mapVinculo = _mapVinculo,
           mapTransf = _mapTransf
         )
+
+      case evt: ObjetoVinculoEvent.RemovedVinculoObjetoFromObj =>
+        val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
+        val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj)
+        val _mapVinculo = if(mapVinculo.contains(_vinculo)) mapVinculo - _vinculo else mapVinculo //todo por ahora lo vamos a eliminar
+        val _mapTransf = if (mapTransf.contains(_vinculo)) mapTransf - _vinculo else mapTransf //todo por ahora lo vamos a eliminar
+        val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(_mapVinculo, _mapTransf)
+        copy(
+          tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
+          mapVinculo = _mapVinculo,
+          mapTransf = _mapTransf
+        )
 //      case evt: ObjetoVinculoEvent.ObjetoVinculoSnapshotPersisted =>
 //        copy(
 //          objetoId = evt.objetoId,

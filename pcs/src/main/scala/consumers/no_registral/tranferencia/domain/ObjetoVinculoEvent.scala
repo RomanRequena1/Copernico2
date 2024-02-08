@@ -29,6 +29,44 @@ object ObjetoVinculoEvent {
                                         titularidad: Option[String]
                                       ) extends ObjetoVinculoEvent
 
+  case class RemovedVinculoObjetoFromObj(
+                                          sujetoId: String,
+                                          objetoId: String,
+                                          tipoObj: String,
+                                          tiene30Objeto: Boolean,
+                                          isResponsable: Option[Boolean],
+                                          estadoObj: Option[String],
+                                          titularidad: Option[String]
+                                        ) extends ObjetoVinculoEvent
+
+  case class CreatedTransfVinculoObjetoFromObj(
+                                           sujetoId: String,
+                                           objetoId: String,
+                                           tipoObj: String,
+                                           tiene30Objeto: Boolean,
+                                           isResponsable: Option[Boolean],
+                                           estadoObj: Option[String],
+                                           titularidad: Option[String]
+                                         ) extends ObjetoVinculoEvent{
+
+  case class ObjetoVinculoSnapshotPersisted(
+                                             objetoId: String,
+                                             tipoObj: String,
+                                             mapTransf: Map[Vinculo, VinculoCotitular],
+                                             mapVinculo: Map[Vinculo, VinculoCotitular]
+                                           ) extends ObjetoVinculoEvent
+
+
+  case class UpdatedVinculoObjetoFromObj(
+                                        sujetoId: String,
+                                        objetoId: String,
+                                        tipoObj: String,
+                                        tiene30Objeto: Boolean,
+                                        isResponsable: Option[Boolean],
+                                        estadoObj: Option[String],
+                                        titularidad: Option[String]
+                                      ) extends ObjetoVinculoEvent
+
   case class CreatedTransfVinculoObjetoFromObj(
                                            sujetoId: String,
                                            objetoId: String,
@@ -38,4 +76,5 @@ object ObjetoVinculoEvent {
                                            estadoObj: Option[String],
                                            titularidad: Option[String]
                                          ) extends ObjetoVinculoEvent
+}
 }

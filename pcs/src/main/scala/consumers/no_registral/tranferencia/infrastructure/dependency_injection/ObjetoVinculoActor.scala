@@ -3,7 +3,7 @@ package consumers.no_registral.tranferencia.infrastructure.dependency_injection
 import akka.actor.Props
 import akka.entity.ShardedEntity
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
-import consumers.no_registral.tranferencia.application.cqrs.commands.{UpdateObjetoVinculoFromObjHandler, UpdateVinculoObjetoFromObjTranfHandler}
+import consumers.no_registral.tranferencia.application.cqrs.commands.{RemoveObjetoVinculoFromObjHandler, UpdateObjetoVinculoFromObjHandler, UpdateVinculoObjetoFromObjTranfHandler}
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands
 import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent.ObjetoVinculoSnapshotPersisted
 import consumers.no_registral.tranferencia.domain.{ObjetoVinculoEvent, ObjetoVinculoState}
@@ -24,10 +24,12 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
   override def setupHandlers(): Unit = {
     commandBus.subscribe[ObjetoVinculoCommands.UpdateVinculoObjetoFromObj](new UpdateObjetoVinculoFromObjHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoVinculoCommands.CreateTransfVinculoObjetoFromObj](new UpdateVinculoObjetoFromObjTranfHandler(this, requirements).handle)
+    commandBus.subscribe[ObjetoVinculoCommands.RemoveObjetoVinculo](new RemoveObjetoVinculoFromObjHandler(this, requirements).handle)
+
   }
 
   def persistSnapshot(evt: ObjetoVinculoEvent, consolidatedState: ObjetoVinculoState)(handler: () => Unit): Unit = {
-    println("TestHandler " + evt.aggregateRoot)
+    println("PERSIST SNAPSHOT " + evt.aggregateRoot)
     val kafkaTopic = "ObjetoVinculoPersisted"
     val snapshot =
       ObjetoVinculoSnapshotPersisted(

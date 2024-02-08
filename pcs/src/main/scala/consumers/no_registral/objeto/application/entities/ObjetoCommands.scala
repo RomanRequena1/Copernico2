@@ -15,6 +15,7 @@ object ObjetoCommands {
       tipoObjeto: String,
       cotitulares: Set[String]
   ) extends ObjetoCommands
+
   case class UpdateState30ObjetoFromObjVinculo(
                                       deliveryId: BigInt,
                                       sujetoId: String,
@@ -22,6 +23,7 @@ object ObjetoCommands {
                                       tipoObjeto: String,
                                       tiene30ObjetoVinculo: Boolean
                                     ) extends ObjetoCommands
+
   case class ObjetoUpdateFromSujeto(
                                deliveryId: BigInt,
                                sujetoId: String,
@@ -30,6 +32,7 @@ object ObjetoCommands {
                                tiene30Sujeto: Boolean,
                                exclusionSUjeto: String
                              ) extends ObjetoCommands
+
   case class ObjetoSnapshot(
       deliveryId: BigInt,
       sujetoId: String,

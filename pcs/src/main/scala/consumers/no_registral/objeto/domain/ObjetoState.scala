@@ -199,7 +199,6 @@ case class ObjetoState(
             cuotas = cuotasPagadas_,
             obnVencidas = _obnVencidas,
             tiene30Objeto = diff
-
           )
         }
 

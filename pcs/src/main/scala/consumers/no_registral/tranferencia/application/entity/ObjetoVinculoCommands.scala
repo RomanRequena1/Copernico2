@@ -1,5 +1,6 @@
 package consumers.no_registral.tranferencia.application.entity
 
+import consumers.no_registral.tranferencia.domain.{ObjetoVinculoEvent, Vinculo, VinculoCotitular}
 import design_principles.actor_model.Command
 import serialization.CbroSerialization
 
@@ -17,9 +18,19 @@ object ObjetoVinculoCommands {
                                   isResponsable: Option[Boolean],
                                   estadoObj: Option[String],
                                   titularidad: Option[String]
-                                ) extends ObjetoVinculoCommands {
+                                ) extends ObjetoVinculoCommands
 
-  }
+  case class RemoveObjetoVinculo(
+                                  deliveryId: BigInt,
+                                  sujetoId: String,
+                                  objetoId: String,
+                                  tipoObj: String,
+                                  tiene30Objeto: Boolean,
+                                  isResponsable: Option[Boolean],
+                                  estadoObj: Option[String],
+                                  titularidad: Option[String]
+                                ) extends ObjetoVinculoCommands
+
 
   case class CreateTransfVinculoObjetoFromObj(
                                              deliveryId: BigInt,

@@ -2,11 +2,9 @@ package consumers.no_registral.tranferencia.infrastructure.json
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoResponses.GetObjetoVinculoResponse
 import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent.ObjetoVinculoSnapshotPersisted
 import consumers.no_registral.tranferencia.domain.{Vinculo, VinculoCotitular}
-import consumers.no_registral.tranferencia.infrastructure.json.test.Vinculo1
-import io.circe.Decoder.Result
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax.EncoderOps
-import io.circe.{Decoder, DecodingFailure, Encoder, HCursor, Json, KeyDecoder, KeyEncoder, jawn}
+import io.circe._
 object ObjetoVinculoImplicits {
 
 
@@ -51,6 +49,8 @@ object ObjetoVinculoImplicits {
       } yield Vinculo(sujetoId, objetoId, tipoObj)
     }
   }
+
+
   // Decoder for ObjetoVinculoSnapshotPersisted
   implicit val objetoVinculoDecoder: Decoder[ObjetoVinculoSnapshotPersisted] = new Decoder[ObjetoVinculoSnapshotPersisted] {
     override def apply(c: HCursor): Decoder.Result[ObjetoVinculoSnapshotPersisted] = {
@@ -65,6 +65,8 @@ object ObjetoVinculoImplicits {
 }
 
 
+
+
 object test extends App{
 
 
@@ -75,6 +77,8 @@ object test extends App{
   implicit val Vinculo1Encoder: Encoder[Vinculo1] = deriveEncoder
 
   implicit val ObjetoVinculo1SnapshotPersistedEncoder: Encoder[ObjetoVinculo1SnapshotPersisted] = deriveEncoder
+
+
 
   /**
    * Este implicit es para poder serializar un Map[Vinculo1, Vinculo1Cotitular1] a Json
