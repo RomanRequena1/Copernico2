@@ -111,11 +111,12 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
         if (actor.state.eventCounter == eventCounterMax) {
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
-//        actor.persistSnapshot(event, actor.state) { () =>
+        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+
+        //        actor.persistSnapshot(event, actor.state) { () =>
 //          /*if (!actor.state.isResponsable) {
 //            actor.removeObligaciones()
 //          }*/
-//          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 //
 //        }
       }

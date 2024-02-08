@@ -42,6 +42,7 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
         }
+          println("SEND TO OBLIGACIONES "+SendToObligaciones(actor.state, actor.context))
         SendToObligaciones(actor.state, actor.context)
         println("LLEGO SEND OBJ VIN" + SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment))
         SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
