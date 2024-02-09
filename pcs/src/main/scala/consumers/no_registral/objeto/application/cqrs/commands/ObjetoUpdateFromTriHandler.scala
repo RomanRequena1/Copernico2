@@ -16,7 +16,7 @@ import design_principles.actor_model.mechanism.DeliveryIdManagement._
 
 import scala.util.{Success, Try}
 
-class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  q) extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromTri] {
+class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAndMessageProducer) extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromTri] {
 
   /**
    * Si el objeto es tipo M y actor.state.tiene30Objeto es false, entonces informParentTreintaPorciento y si actor.state.tiene30Objeto es true, entonces informParent.
