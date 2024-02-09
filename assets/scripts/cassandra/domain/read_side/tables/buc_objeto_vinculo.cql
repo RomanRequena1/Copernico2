@@ -1,6 +1,7 @@
 CREATE TABLE read_side.buc_objeto_vinculo (
     soj_identificador text,
     soj_tipo_objeto text,
+    soj_tiene30objetovinculo boolean,
     soj_map_transf text,
     soj_map_vinculo text,
     PRIMARY KEY (soj_identificador)

@@ -27,7 +27,7 @@ class TransferenciaSnapshotPersistedHandler (
 
     override def processInput(input: String): Either[Throwable, ObjetoVinculoSnapshotPersisted] = {
       println("CUMBIA -> " + input)
-      decode[ObjetoVinculoSnapshotPersisted](input.toString)
+      decode[ObjetoVinculoSnapshotPersisted](input)
     }
 
     val cassandra = new CassandraWriteProduction()
@@ -38,8 +38,8 @@ class TransferenciaSnapshotPersistedHandler (
       val projection: TransferenciaSnapshotPersistedProjection = TransferenciaSnapshotPersistedProjection(registro)
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
-          case Failure(exception) => log.error("Dont persist sujeto " + exception )
-          case Success(value) => log.debug("Persist sujeto " + value )
+          case Failure(exception) => log.error("Dont persist transferencia " + exception )
+          case Success(value) => log.debug("Persist transferencia " + value )
           //connOracleReadsideToCass(registro.deliveryId.toString(),"sujeto", registro.registro.get.SUJ_CANAL_ORIGEN.getOrElse("TAX"))
         }
       } yield SuccessProcessing(registro.aggregateRoot, 0)
