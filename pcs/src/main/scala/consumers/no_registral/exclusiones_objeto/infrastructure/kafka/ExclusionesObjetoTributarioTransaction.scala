@@ -1,20 +1,19 @@
-package consumers.registral.exclusiones_objeto.infrastructure.kafka
+package consumers.no_registral.exclusiones_objeto.infrastructure.kafka
 
+import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.registral.exclusiones_objeto.application.entities.{ExclusionesObjetoCommands, ExclusionesObjetoTri}
-import consumers.registral.exclusiones_objeto.infrastructure.dependency_injection.ExclusionesObjetoActor
-import consumers.registral.exclusiones_objeto.infrastructure.json._
+import consumers.no_registral.exclusiones_objeto.application.entities.{ExclusionesObjetoCommands, ExclusionesObjetoTri}
 import design_principles.actor_model.Response
-import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
-import io.circe.parser._
+import io.circe.parser.decode
 import monitoring.Monitoring
+import consumers.no_registral.exclusiones_objeto.infrastructure.json.ExclusionesObjetoImplicits._
+
 import scala.concurrent.Future
 
-
-case class ExclusionesObjetoTributarioTransaction(actor: ExclusionesObjetoActor, monitoring: Monitoring)(
-implicit
-actorTransactionRequirements: ActorTransactionRequirements
+case class ExclusionesObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitoring)(
+  implicit
+  actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ExclusionesObjetoTri](monitoring) {
   def topic = "DGR-COP-EXCLUSIONES-OBJETO-TRI"
 
@@ -24,7 +23,7 @@ actorTransactionRequirements: ActorTransactionRequirements
 
   def processInput(input: String): Either[Throwable, ExclusionesObjetoTri] = {
     decode[ExclusionesObjetoTri](input)
-}
+  }
 
 
   override def processMessage(registro: ExclusionesObjetoTri): Future[Response.SuccessProcessing] = {
@@ -33,6 +32,7 @@ actorTransactionRequirements: ActorTransactionRequirements
       deliveryId = registro.EV_ID,
       registro = registro
     )
-    actor.ask(command)
+    actorRef.ask(command)
   }
 }
+

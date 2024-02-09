@@ -1,4 +1,5 @@
 import com.typesafe.config.ConfigFactory
+import consumers.no_registral.exclusiones_objeto.infrastructure.main.ExclusionesObjetoMicroservice
 import consumers.no_registral.tranferencia.infrastructure.main.TranferencuaMicroservice
 import consumers.registral.exclusiones_objeto.infrastructure.main.ExclusionesObjetoMicroservice
 import consumers.registral.exclusiones_sujeto.infrastructure.main.ExclusionesSujetoMicroservice

@@ -1,4 +1,4 @@
-package consumers.registral.exclusiones_objeto.application.entities
+package consumers.no_registral.exclusiones_objeto.application.entities
 
 import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
 import serialization.CbroSerialization
@@ -39,7 +39,7 @@ sealed trait ExclusionesObjetoExternalDto extends ddd.ExternalDto with CbroSeria
 }
 
 
-  case class ExclusionesObjetoTri(EV_ID: BigInt,
+case class ExclusionesObjetoTri(EV_ID: BigInt,
                                 BOE_SOJ_IDENTIFICADOR: String,
                                 BOE_ACCION: Option[String],
                                 BOE_MOTIVO: Option[String],
@@ -50,10 +50,10 @@ sealed trait ExclusionesObjetoExternalDto extends ddd.ExternalDto with CbroSeria
                                 BOE_NOMBRE_GESTION: Option[String],
                                 BOE_NUMERO_GESTION: Option[String],
                                 BOE_TIPO_EXCLUSION: Option[String])
-    extends ExclusionesObjetoExternalDto with CbroSerialization
+  extends ExclusionesObjetoExternalDto with CbroSerialization
 
 
-  case class ExclusionesObjetoAnt(EV_ID: BigInt,
+case class ExclusionesObjetoAnt(EV_ID: BigInt,
                                 BOE_SOJ_IDENTIFICADOR: String,
                                 BOE_ACCION: Option[String],
                                 BOE_MOTIVO: Option[String],
@@ -64,5 +64,4 @@ sealed trait ExclusionesObjetoExternalDto extends ddd.ExternalDto with CbroSeria
                                 BOE_NOMBRE_GESTION: Option[String],
                                 BOE_NUMERO_GESTION: Option[String],
                                 BOE_TIPO_EXCLUSION: Option[String])
-    extends ExclusionesObjetoExternalDto with CbroSerialization
-
+  extends ExclusionesObjetoExternalDto with CbroSerialization

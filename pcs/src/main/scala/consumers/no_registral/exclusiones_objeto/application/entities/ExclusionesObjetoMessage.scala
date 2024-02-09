@@ -1,6 +1,6 @@
-package consumers.registral.exclusiones_objeto.application.entities
+package consumers.no_registral.exclusiones_objeto.application.entities
 
-import consumers.registral.exclusiones_objeto.application.entities.ExclusionesObjetoMessage.ExclusionesObjetoMessageRoots
+import consumers.no_registral.exclusiones_objeto.application.entities.ExclusionesObjetoMessage.ExclusionesObjetoMessageRoots
 import design_principles.actor_model.ShardedMessage
 
 trait ExclusionesObjetoMessage extends ShardedMessage {
