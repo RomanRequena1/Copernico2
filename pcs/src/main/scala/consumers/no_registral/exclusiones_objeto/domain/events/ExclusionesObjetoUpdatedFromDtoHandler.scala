@@ -1,7 +1,7 @@
-package consumers.registral.exclusiones_objeto.domain.events
+package consumers.no_registral.exclusiones_objeto.domain.events
 
-import consumers.registral.exclusiones_objeto.domain.ExclusionesObjetoEvents.ExclusionesObjetoUpdatedFromDto
-import consumers.registral.exclusiones_objeto.domain.ExclusionesObjetoState
+import consumers.no_registral.exclusiones_objeto.domain.ExclusionesObjetoEvents.ExclusionesObjetoUpdatedFromDto
+import consumers.no_registral.exclusiones_objeto.domain.ExclusionesObjetoState
 
 import java.time.LocalDateTime
 
@@ -13,3 +13,4 @@ class ExclusionesObjetoUpdatedFromDtoHandler {
         fechaUltMod = LocalDateTime.now
       )
 }
+

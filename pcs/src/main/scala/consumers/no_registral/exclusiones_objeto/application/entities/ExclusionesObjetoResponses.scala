@@ -1,4 +1,4 @@
-package consumers.registral.exclusiones_objeto.application.entities
+package consumers.no_registral.exclusiones_objeto.application.entities
 
 import serialization.CbroSerialization
 
@@ -9,6 +9,7 @@ sealed trait ExclusionesObjetoResponses extends CbroSerialization
 object ExclusionesObjetoResponses {
 
   case class GetExclusionesObjetoResponse(registro: Option[ExclusionesObjetoExternalDto] = None,
-                                         fechaUltMod: LocalDateTime)
+                                          fechaUltMod: LocalDateTime)
     extends design_principles.actor_model.Response with CbroSerialization
 }
+
