@@ -1,6 +1,5 @@
 package consumers.no_registral.tranferencia.application.entity
 
-import consumers.no_registral.tranferencia.domain.{ObjetoVinculoEvent, Vinculo, VinculoCotitular}
 import design_principles.actor_model.Command
 import serialization.CbroSerialization
 
@@ -33,7 +32,7 @@ object ObjetoVinculoCommands {
 
 
   case class CreateTransfVinculoObjetoFromObj(
-                                             deliveryId: BigInt,
+                                          deliveryId: BigInt,
                                           sujetoId: String,
                                           objetoId: String,
                                           tipoObj: String,

@@ -32,7 +32,7 @@ case class ExclusionesObjetoTributarioTransaction(actorRef: ActorRef, monitoring
       deliveryId = registro.EV_ID,
       registro = registro
     )
-    actorRef.ask(command)
+    actorRef.ask[Response.SuccessProcessing](command)
   }
 }
 

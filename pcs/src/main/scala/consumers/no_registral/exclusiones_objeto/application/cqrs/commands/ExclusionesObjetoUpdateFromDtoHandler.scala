@@ -9,7 +9,7 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
 
 import scala.util.{Success, Try}
-class ExclusionesObjetoUpdateFromDtoHandler (actor: ExclusionesObjetoActor,requeriment: MonitoringAndMessageProducer)
+class ExclusionesObjetoUpdateFromDtoHandler (actor: ExclusionesObjetoActor, requeriment: MonitoringAndMessageProducer)
   extends SyncCommandHandler[ExclusionesObjetoCommands.ExclusionesObjetoUpdateFromDto] {
   override def handle(
                        command: ExclusionesObjetoCommands.ExclusionesObjetoUpdateFromDto
@@ -20,6 +20,7 @@ class ExclusionesObjetoUpdateFromDtoHandler (actor: ExclusionesObjetoActor,reque
       command.objetoId,
       command.registro
     )
+
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
       log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)

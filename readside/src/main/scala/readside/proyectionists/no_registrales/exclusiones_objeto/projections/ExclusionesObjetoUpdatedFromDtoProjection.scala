@@ -1,11 +1,11 @@
-package readside.proyectionists.registrales.exclusiones_objeto.projections
+package readside.proyectionists.no_registrales.exclusiones_objeto.projections
 
-import consumers.registral.exclusiones_objeto.application.entities.ExclusionesObjetoExternalDto
-import consumers.registral.exclusiones_objeto.domain.ExclusionesObjetoEvents
+import consumers.no_registral.exclusiones_objeto.application.entities.ExclusionesObjetoExternalDto
+import consumers.no_registral.exclusiones_objeto.domain.ExclusionesObjetoEvents
 
 case class ExclusionesObjetoUpdatedFromDtoProjection(
-    event: ExclusionesObjetoEvents.ExclusionesObjetoUpdatedFromDto
-) extends ExclusionesObjetoProjection {
+                                                      event: ExclusionesObjetoEvents.ExclusionesObjetoUpdatedFromDto
+                                                    ) extends ExclusionesObjetoProjection {
   val registro: ExclusionesObjetoExternalDto = event.registro
 
   def bindings: List[(String, Serializable)] = List(

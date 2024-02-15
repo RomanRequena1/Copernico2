@@ -1,5 +1,6 @@
 package readside.proyectionists.no_registrales.obligacion
 
+import akka.Done.done
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
@@ -44,14 +45,12 @@ class ObligacionPersistedSnapshotHandler(
           case Success(value) => {
             //log.error("ERROR - 1 " + registro.deliveryId)
             log.debug("Persist obligacion" + value)
-
           }
         }
-
-
-
-      } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
+      }
+      yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
     } else {
+
       val cassandra = new CassandraWriteProduction()
       val bco = registro.registro match {
         case Some(x) => x.BOB_CANAL_ORIGEN.getOrElse("TAX")

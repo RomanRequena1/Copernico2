@@ -87,7 +87,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
     } else {
 
 
-
       // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular
 
 

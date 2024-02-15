@@ -6,6 +6,10 @@ import consumers.no_registral.exclusiones_objeto.domain.ExclusionesObjetoEvents.
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax._
 import io.circe.{Decoder, Encoder, Json}
+
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import scala.util.Try
 object ExclusionesObjetoImplicits {
 
   //todo COMMANDS
@@ -27,4 +31,12 @@ object ExclusionesObjetoImplicits {
   ExclusionesObjetoUpdatedFromDto
   implicit val ExclusionesObjetoUpdatedFromDtoDecoder: Decoder[ExclusionesObjetoUpdatedFromDto] = deriveDecoder
   implicit val ExclusionesObjetoUpdatedFromDtoEncoder: Encoder[ExclusionesObjetoUpdatedFromDto] = deriveEncoder
+
+  implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
+    Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
+  }
+  implicit val localDateTimeEncoder: Encoder[LocalDateTime] = Encoder.encodeString.contramap { dateTime =>
+    dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
+  }
+
 }
