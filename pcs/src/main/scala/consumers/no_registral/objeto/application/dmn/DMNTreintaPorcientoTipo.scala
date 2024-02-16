@@ -27,8 +27,8 @@ object DMNTreintaPorcientoTipo {
 
   def calcularDmn(dmn: DmnObjeto): Int = {
     dmn match {
-      case x if x.soj_tipo_objeto.equals("M") => 1
-      //case x if x.soj_estado.equals("BAJA") => 2 // todo aunque sea baja, si tiene 30% deberia seguir impactando (baja con deuda) . Como se maneja la fachafindevinculo?(baja impositiva )
+      //case x if x.soj_tipo_objeto.equals("M") => 2 // todo en caso de que el tipo de objeto sea M  debe inpactar en el 30
+      case x if x.soj_estado.equals("BAJA") => 1 // todo en caso de que el estado sea baja debe impactar en el 30
       case x if x.soj_estado.equals("TRANSF")  => 1
       case x if x.soj_exclusionObjeto.equals("C") => 1
       case x if x.soj_estado.equals("ESTADO2") => 1
