@@ -89,7 +89,7 @@ object SendObjetoToObjetoVinculo {
             else
               actor.informParent(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
           case x if x.getOrElse("").equals("BAJA") =>
-            println("llego al if baja")
+            println("ELIMINO VINCOBJETO"+sujetoId)
             act ! RemoveObjetoVinculo(0,
               sujetoId,
               objetoId,
