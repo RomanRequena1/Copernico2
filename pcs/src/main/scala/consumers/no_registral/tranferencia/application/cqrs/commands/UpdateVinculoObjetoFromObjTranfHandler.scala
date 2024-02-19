@@ -29,6 +29,7 @@ class UpdateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranfere
       command.estadoObj,
       command.titularidad
     )
+    println("EVENTO DE CREATEVINCULOFROMOBJ: "+event)
 
     implicit val system: ActorSystem = actor.context.system
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)

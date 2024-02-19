@@ -48,7 +48,6 @@ object SendObjetoToObjetoVinculo {
 
         case x if x.getOrElse("").equals("BAJA") =>
           println("ELIMINO VINCOBJETO"+sujetoId)
-          println("llego al if baja")
           actorObjetoVinculo ! RemoveObjetoVinculo(0,
             sujetoId,
             objetoId,
