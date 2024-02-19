@@ -17,7 +17,7 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
       command: ObjetoCommands.SetBajaObjeto
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    println("LLEGO SETBAJA OBJETO HANDLER")
+    log.error("LLEGO SETBAJA OBJETO HANDLER")
     val event = ObjetoEvents.ObjetoBajaSet(
       command.deliveryId,
       command.sujetoId,
@@ -42,9 +42,7 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
         }
-          println("SEND TO OBLIGACIONES "+SendToObligaciones(actor.state, actor.context))
         SendToObligaciones(actor.state, actor.context)
-        println("LLEGO SEND OBJ VIN" + SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment))
         SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
       }
     }
