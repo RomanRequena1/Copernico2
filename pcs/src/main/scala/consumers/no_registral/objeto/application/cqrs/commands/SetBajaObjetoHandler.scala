@@ -17,9 +17,9 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
       command: ObjetoCommands.SetBajaObjeto
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    println("LLEGO SETBAJA OBJETO HANDLER")
+    log.error("LLEGO SETBAJA OBJETO HANDLER")
     val event = ObjetoEvents.ObjetoBajaSet(
-      command.deliveryId,
+      actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -27,13 +27,8 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
       command.isResponsable,
       command.sujetoResponsable
     )
-
-
-    if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-    } else {
-
+    if(command.deliveryId.signum < 0 || !isIdempotent(command, actor.state.lastDeliveryIdByEvents)){
+      log.error("ENTRE AL EV_ID NEGATIVO DEL BAJA")
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.informBajaToParent(command)
@@ -42,11 +37,16 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
         }
-          println("SEND TO OBLIGACIONES "+SendToObligaciones(actor.state, actor.context))
         SendToObligaciones(actor.state, actor.context)
-        println("LLEGO SEND OBJ VIN" + SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment))
         SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
       }
+    }
+
+    else if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
+      log.error("ENTRE AL EV_ID IDEMPOTENT DEL BAJA")
+
+      log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

@@ -68,9 +68,8 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
     }
     val dmn = isTipo(command)
 
-
     val event = ObjetoEvents.ObjetoUpdatedFromTri(
-      command.deliveryId,
+      actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -81,14 +80,11 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
       Some(dmn._1),
       Some(dmn._2)
     )
-    if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-    } else {
+    println("last::: " + actor.state.lastDeliveryIdByEvents) //3
+    println("COMMAND:: " + command.deliveryId) //-6
 
-
-      // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular
-
+    if(command.deliveryId.signum < 0 || !isIdempotent(command, actor.state.lastDeliveryIdByEvents)){
+      log.error("ENTRE AL EV_ID NEGATIVO DEL UPDATE")
 
       actor.persistEvent(event) { () =>
         actor.state += event
@@ -104,6 +100,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
           }
         }
         else {
+          log.error("SEND OBJETO TO OBJETO VINCULO: "+ SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment))
           SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
         }
         //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler
@@ -111,15 +108,14 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-
-        //        actor.persistSnapshot(event, actor.state) { () =>
-//          /*if (!actor.state.isResponsable) {
-//            actor.removeObligaciones()
-//          }*/
-//
-//        }
       }
+    }
 
+    else if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
+      log.error("ENTRE AL EV_ID IDEMPOTENT DEL ALTA")
+
+      log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
