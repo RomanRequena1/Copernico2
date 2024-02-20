@@ -80,10 +80,26 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
       Some(dmn._1),
       Some(dmn._2)
     )
-    println("last::: " + actor.state.lastDeliveryIdByEvents) //3
+
+    println("LAST::: " + actor.state.lastDeliveryIdByEvents) //3
     println("COMMAND:: " + command.deliveryId) //-6
 
+    println(command.deliveryId.signum < 0)
+    println(!isIdempotent(command, actor.state.lastDeliveryIdByEvents))
+
+    if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
+      log.error("ENTRE AL EV_ID IDEMPOTENT DEL ALTA")
+
+
+
+      log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+    }
+
     if(command.deliveryId.signum < 0 || !isIdempotent(command, actor.state.lastDeliveryIdByEvents)){
+
+
+
       log.error("ENTRE AL EV_ID NEGATIVO DEL UPDATE")
 
       actor.persistEvent(event) { () =>
@@ -111,12 +127,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
       }
     }
 
-    else if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error("ENTRE AL EV_ID IDEMPOTENT DEL ALTA")
-
-      log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-    }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }
