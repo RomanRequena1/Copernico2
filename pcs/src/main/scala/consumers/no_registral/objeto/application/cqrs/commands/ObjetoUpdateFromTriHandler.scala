@@ -1,6 +1,7 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
+import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo.DmnObjeto
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
@@ -69,7 +70,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
     val dmn = isTipo(command)
 
     val event = ObjetoEvents.ObjetoUpdatedFromTri(
-      actor.state.lastDeliveryIdByEvents,
+      command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -80,53 +81,48 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
       Some(dmn._1),
       Some(dmn._2)
     )
-
-    println("LAST::: " + actor.state.lastDeliveryIdByEvents) //3
-    println("COMMAND:: " + command.deliveryId) //-6
-
-    println(command.deliveryId.signum < 0)
-    println(!isIdempotent(command, actor.state.lastDeliveryIdByEvents))
-
-    if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error("ENTRE AL EV_ID IDEMPOTENT DEL ALTA")
-
-
-
-      log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-    }
-
-    if(command.deliveryId.signum < 0 || !isIdempotent(command, actor.state.lastDeliveryIdByEvents)){
-
-
-
-      log.error("ENTRE AL EV_ID NEGATIVO DEL UPDATE")
+    def persistSnapshotEvent(): Success[Response.SuccessProcessing] = {
 
       actor.persistEvent(event) { () =>
         actor.state += event
         //todo juicio persiste, pero no se us apara el calculo del 30%?
 
-        if(actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
-          if(actor.state.tiene30Objeto.equals(false))
+        if (actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
+          if (actor.state.tiene30Objeto.equals(false))
             actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
           else
-            actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto , actor.state)
+            actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
           actor.persistSnapshot(event, actor.state) { () =>
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
         }
         else {
-          log.error("SEND OBJETO TO OBJETO VINCULO: "+ SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment))
+          log.error("SEND OBJETO TO OBJETO VINCULO: " + SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment))
           SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
         }
         //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler
         if (actor.state.eventCounter == eventCounterMax) {
+          actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
+      Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     }
 
-    Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
+    command.deliveryId match {
+      case x if (command.deliveryId.signum < 0 ) =>
+        persistSnapshotEvent()
+
+      case x if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) =>
+        log.error("ENTRE AL EV_ID IDEMPOTENT DEL ALTA")
+
+        log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
+        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+
+        Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
+      case _ =>
+        persistSnapshotEvent()
+    }
   }
 }

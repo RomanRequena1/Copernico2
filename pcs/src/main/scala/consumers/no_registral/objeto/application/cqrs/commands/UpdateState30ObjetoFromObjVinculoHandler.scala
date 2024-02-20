@@ -20,7 +20,7 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor) extends SyncC
                        command: ObjetoCommands.UpdateState30ObjetoFromObjVinculo
                      ): Try[Response.SuccessProcessing] = {
     val event = UpdatedState30ObjetoFromObjVinculo(
-      command.deliveryId,
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -31,9 +31,6 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor) extends SyncC
       if (actor.state.eventCounter == eventCounterMax) {
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
-
-
-
 
       if(actor.state.tiene30Objeto.equals(false)) {
         actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)

@@ -38,7 +38,7 @@ case class ObjetoState(
     eventCounter match {
       case n if (n > (eventCounterMax)) => changeState(event).copy(
         fechaUltMod = LocalDateTime.now,
-        lastDeliveryIdByEvents =  event.deliveryId,
+        lastDeliveryIdByEvents = event.deliveryId,
         eventCounter = 0
       )
       case n => changeState(event).copy(
@@ -102,17 +102,19 @@ case class ObjetoState(
           isBaja = false
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
-        copy(tiene30Sujeto = Some(evt.tiene30Sujeto))
+        copy(tiene30Sujeto = Some(evt.tiene30Sujeto),
+        )
       case evt: ObjetoEvents.UpdatedState30ObjetoFromObjVinculo =>
         val _tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo
         copy(tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
-            tiene30Objeto = diffCurrentStateAndNewStateTest(obnVencidas, _tiene30ObjetoVinculo)
+            tiene30Objeto = diffCurrentStateAndNewStateTest(obnVencidas, _tiene30ObjetoVinculo),
         ) //todo
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
         copy(
           sujetoResponsable = evt.sujetoResponsable match {
             case Some(value) => Some(value)
             case None => this.sujetoResponsable
+
           },
           isResponsable = evt.isResponsable.getOrElse(false),
           registro = Some(evt.registro),
@@ -120,7 +122,7 @@ case class ObjetoState(
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
           isBaja = false,
           clasificacionObjeto = evt.clasificacionObjeto.getOrElse("2"),
-          resulDmn = evt.resultDmn
+          resulDmn = evt.resultDmn,
         )
       //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
       //        copy(
@@ -138,14 +140,14 @@ case class ObjetoState(
           sujetos = sujetos + sujetoId,
           isBaja = false,
           obnVencidas = _obnVencidas,
-          tiene30Objeto = diff
+          tiene30Objeto = diff,
         )
       case  ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento(_, _, _, _, _, obligacionId, _, _, _, _, _) =>
         val _obnVencidas = validExitsObnVencidasTreinta(obligacionId)
         val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
         copy(
           obnVencidas = _obnVencidas,
-          tiene30Objeto = diff
+          tiene30Objeto = diff,
         )
 
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
