@@ -18,8 +18,8 @@ class UpdateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranfere
     val sender = actor.context.sender()
     log.error("Llego Transf? CreateNewVinculoObjetoFromObjHandler::::: " + command + " - "
       + command.tiene30Objeto + " - "
-      + actor.context.self.path + " - "
-      + actor.context.sender().path)
+      + command.objetoId + " - "
+      + command.sujetoId)
 
     val event = ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj(
       command.sujetoId,
