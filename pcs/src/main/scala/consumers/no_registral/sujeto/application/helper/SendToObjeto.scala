@@ -6,18 +6,15 @@ import consumers.no_registral.sujeto.domain.SujetoEvents.{SujetoBajaFromObjetoSe
 import consumers.no_registral.sujeto.domain.SujetoState
 
 object SendToObjeto {
-  def apply(currentState: SujetoState, sender: ActorRef, actorContext: ActorContext, sujetoId: String) : Unit = {
-
+  def apply(currentState: SujetoState, sender: ActorRef, actorContext: ActorContext, sujetoId: String, objetoId: String, tipoObjeto: String) : Unit = {
+    println("CUMBIAAAAAAAAAAAAAAAA PATH "+  sender.path.toString)
     //val isExclusionSujeto = QueryExclusionSujeto(sujetoId)
       if (currentState.diffStates) {
         sender ! ObjetoUpdateFromSujeto(
           currentState.lastDeliveryIdByEvents,
           sujetoId,
-          """Objeto-(.*?)-""".r.findFirstMatchIn(sender.path.toString) match {
-            case Some(matched) => matched.group(1)
-            case None => ""
-          },
-          sender.path.toString.last.toString,
+          objetoId,
+          tipoObjeto,
           currentState.tiene30Sujeto,
           ""
         )

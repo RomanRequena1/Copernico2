@@ -28,7 +28,7 @@ object SendObjetoToObjetoVinculo {
 
     log.error("CUMBIA SendObjetoToObjetoVinculo  -> ")
     val objetoVinculoMessageRoots = ObjetoVinculoMessageRoots(objetoId).toString
-    implicit val system: ActorSystem = actor.context.system
+    //implicit val system: ActorSystem = actor.context.system
     implicit val actorProp: Props = ObjetoVinculoActor.props(requeriment)
 
 
@@ -36,7 +36,8 @@ object SendObjetoToObjetoVinculo {
 
 
     val actorTry = Try {
-      implicit val actorObjetoVinculo: ActorRef = system.actorOf(actorProp, objetoVinculoMessageRoots)
+      implicit val actorObjetoVinculo: ActorRef = actor.context.actorOf(actorProp, objetoVinculoMessageRoots)
+      println("CUMBIAAAA ::::::::::::::::: actor::::::::::::::::::::: " + actorObjetoVinculo.path + " - " )
       actorObjetoVinculo
     }
 

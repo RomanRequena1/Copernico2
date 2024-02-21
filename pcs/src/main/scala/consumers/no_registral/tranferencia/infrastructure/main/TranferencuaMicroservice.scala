@@ -8,21 +8,3 @@ import consumers.no_registral.tranferencia.infrastructure.http.ObjetoVinculoStat
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 
-class TranferencuaMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice  {
-    implicit val actorProp: Props = ObjetoVinculoActor.props(monitoringAndMessageProducer)
-    implicit val actorTranf: ActorRef = classicSystem.actorOf(actorProp)
-
-
-
-
-    override def actorTransactions: Set[ActorTransaction[_]] = Set()
-
-
-    override def route: Route = {
-      (Seq(
-        ObjetoVinculoStateAPI(actorTranf, monitoring).route
-      ) ++
-        actorTransactions.map(_.route).toSeq) reduce (_ ~ _)
-    }
-
-  }

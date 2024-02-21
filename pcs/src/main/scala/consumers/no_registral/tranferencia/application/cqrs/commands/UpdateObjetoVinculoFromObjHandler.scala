@@ -31,7 +31,7 @@ class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaA
     )
 
     log.error("EVENTO DE UPDATEVINCULOFROMOBJ: "+event)
-
+    println("STATE ::::::::::: " + actor.state.mapVinculo)
     implicit val ssytem: ActorSystem = actor.context.system
     //todo para mandar mensajes a todos los objetos de los distintos vinculos
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)

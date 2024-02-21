@@ -1,6 +1,5 @@
 import com.typesafe.config.ConfigFactory
 import consumers.no_registral.exclusiones_objeto.infrastructure.main.ExclusionesObjetoMicroservice
-import consumers.no_registral.tranferencia.infrastructure.main.TranferencuaMicroservice
 import consumers.no_registral.exclusiones_objeto.infrastructure.main.ExclusionesObjetoMicroservice
 import consumers.registral.exclusiones_sujeto.infrastructure.main.ExclusionesSujetoMicroservice
 import consumers.registral.juicio_obn.infrastructure.main.JuicioObnMicroservice
@@ -23,7 +22,6 @@ object Main extends App {
     implicit val localImplicit: KafkaConsumerMicroserviceRequirements = microserviceProvisioning
     Seq(
       new consumers.no_registral.sujeto.infrastructure.main.SujetoMicroservice,
-      new TranferencuaMicroservice,
       //new consumers.no_registral.cotitularidad.infrastructure.main.CotitularidadMicroservice,
       new consumers.no_registral.objeto.infrastructure.main.ObjetoMicroservice,
       new consumers.no_registral.obligacion.infrastructure.main.ObligacionMicroservice,
@@ -47,7 +45,6 @@ object Main extends App {
       new JuicioObnMicroservice,
       new ExclusionesSujetoMicroservice,
       new ExclusionesObjetoMicroservice,
-      new consumers.no_registral.tranferencia.infrastructure.main.TranferencuaMicroservice
     )
   }
 }

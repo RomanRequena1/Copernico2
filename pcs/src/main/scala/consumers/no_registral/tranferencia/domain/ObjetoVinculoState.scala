@@ -70,19 +70,30 @@ final case class ObjetoVinculoState(
 
     mapVinculo match {
       //case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (true, clasificacionObjeto))
-      case x if x.contains(_vinculo) => x updated(_vinculo, _vinculoCotitular)
-      case x => x + (_vinculo -> _vinculoCotitular)
+      case x if x.contains(_vinculo) => {
+        log.error("CUMBIA UpdateObjVinculo x.contains(_vinculo) " + _vinculoCotitular  + " - " + _vinculo)
+        x updated(_vinculo, _vinculoCotitular)}
+      case x => {
+        log.error("CUMBIA UpdateObjVinculo x " + _vinculoCotitular  + " - " + _vinculo)
+        x + (_vinculo -> _vinculoCotitular)
+      }
     }
   }
+
+
 
   /**
    * Si mapTransf no contiene el vinculo, se agrega el vinculo al map solo si el vinculo es responsable y tiene 30 es false
    * Si mapTransf contiene el vinculo, se verifica si el valor del vinculo es igual al valor del vinculoCotitular, si es igual no se hace nada, si es distinto se elimina el vinculo del map
    */
   private def updateMapTransf(_vinculo: Vinculo, _vinculoCotitular: VinculoCotitular): Map[Vinculo, VinculoCotitular] = {
-
-    if(!mapTransf.contains(_vinculo)){
-        if(_vinculoCotitular.isResponsable.get && _vinculoCotitular.tiene30Objeto.equals(false)) mapTransf + (_vinculo -> _vinculoCotitular) else mapTransf
+    if(mapTransf.filterNot(x => !x._1.sujetoId.equals(_vinculo.sujetoId)).isEmpty){
+        if(_vinculoCotitular.isResponsable.get && _vinculoCotitular.tiene30Objeto.equals(false))
+          {
+            mapTransf + (_vinculo -> _vinculoCotitular)
+          } else {
+          mapTransf
+        }
     }
     else {
         val _vinculoOld = mapTransf.find(e => e._1.equals(_vinculo))
@@ -117,7 +128,7 @@ final case class ObjetoVinculoState(
         log.error("ENTRE UPDATE CREATE TRANSF VINC OBJETO"+evt.objetoId + " + " + evt.sujetoId)
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
         val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj)
-        val _mapVinculo = if(mapVinculo.contains(_vinculo)) mapVinculo - _vinculo else mapVinculo
+        val _mapVinculo = mapVinculo.filterNot(x => x._1.sujetoId.equals(evt.sujetoId)) //todo por ahora lo vamos a eliminar
         val _mapTransf = updateMapTransf(_vinculo, _vinculoCotitular)
         val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(_mapVinculo, _mapTransf)
         copy(
@@ -149,6 +160,5 @@ final case class ObjetoVinculoState(
         this
     }
 }
-
 
 

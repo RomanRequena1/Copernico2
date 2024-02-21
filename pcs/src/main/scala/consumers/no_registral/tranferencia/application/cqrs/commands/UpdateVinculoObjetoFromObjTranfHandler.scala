@@ -34,7 +34,7 @@ class UpdateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranfere
     implicit val system: ActorSystem = actor.context.system
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
 
-
+    println("STATE transf::::::::::: " + actor.state.mapVinculo)
     actor.persistEvent(event) { () =>
       actor.state += event
       log.error("LOG mapTransf -> " + actor.state.mapTransf)

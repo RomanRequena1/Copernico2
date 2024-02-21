@@ -102,10 +102,13 @@ services:
       - '8082:8082'
       - '5002:9095'
     environment:
+      TIMEOUT: 200
       SEED_NODES: 'akka://PersonClassificationService@172.22.1.3:2551'
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
-
+      PATH_DMN_OBJETO_CUPON: '/opt/docker/bin/objetoCupon.dmn'
+      PATH_DMN_DECISION_30: '/opt/docker/bin/decision_30_descuento.dmn'
+      PATH_DMN_CLASIF_OBJETO: '/opt/docker/bin/clasificacion_objeto.dmn'
       LOGSTASH: '172.22.5.3:5000'
       CLUSTER_IP: 172.22.1.1
       CLUSTER_PORT: 2552

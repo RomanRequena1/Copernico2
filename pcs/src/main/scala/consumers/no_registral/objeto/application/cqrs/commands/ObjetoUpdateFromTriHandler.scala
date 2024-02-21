@@ -127,7 +127,7 @@ object test {
         }
       }
       else {
-        log.error("SEND OBJETO TO OBJETO VINCULO: " + SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment))
+        log.error("SEND OBJETO TO OBJETO VINCULO: " )
         SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
       }
       //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler

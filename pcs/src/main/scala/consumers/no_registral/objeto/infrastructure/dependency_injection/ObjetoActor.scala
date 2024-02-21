@@ -30,7 +30,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
 
   override def setupHandlers(): Unit = {
     commandBus.subscribe[ObjetoCommands.ObjetoSnapshot](new ObjetoSnapshotHandler(this).handle)
-    commandBus.subscribe[ObjetoCommands.UpdateState30ObjetoFromObjVinculo](new UpdateState30ObjetoFromObjVinculoHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.UpdateState30ObjetoFromObjVinculo](new UpdateState30ObjetoFromObjVinculoHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromSujeto](new ObjetoUpdateFromSujetoHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagAdd](new ObjetoTagAddHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagRemove](new ObjetoTagRemoveHandler(this).handle)
@@ -257,6 +257,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
   def withCotitulares(sujetos: Set[String]): Boolean =
     sujetos.size > 1*/
   def informParentTreintaPorciento(deliveryId: BigInt, sujetoId: String ,objetoId : String,tipoObjeto: String, state: ObjetoState): Unit = {
+
     context.parent ! SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
       deliveryId,
       sujetoId,

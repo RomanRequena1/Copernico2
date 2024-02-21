@@ -37,11 +37,12 @@ class SujetoUpdateFromObjetoTreintaProcientoHandler(actor: SujetoActor)
     //    }
 
     //    if (initialization != "true") {
-
+println("LLEGO A SujetoUpdateFromObjetoTreintaProcientoHandler"+ command)
     actor.persistEvent(event) { () =>
 
       actor.state += event
-        SendToObjeto(actor.state, sender, actor.context, event.sujetoId)
+      println("LLEGO A SujetoUpdateFromObjetoTreintaProcientoHandler 2"+ actor.state.objVencidas)
+        SendToObjeto(actor.state, sender, actor.context, event.sujetoId, command.objetoId, command.tipoObjeto)
 
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
