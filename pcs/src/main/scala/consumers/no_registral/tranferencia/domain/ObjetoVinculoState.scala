@@ -102,7 +102,7 @@ final case class ObjetoVinculoState(
   private def changeState(event: ObjetoVinculoEvent): ObjetoVinculoState =
     event match {
       case evt: ObjetoVinculoEvent.UpdatedVinculoObjetoFromObj =>
-        log.error("ENTRE UPDATE VINCULO OBJETO"+evt)
+        log.error("ENTRE UPDATE VINCULO OBJETO"+evt.objetoId + " + " + evt.sujetoId)
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj) // se arma la clave del map
         val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj) // se arma el valor del map
         val _mapVinculo = UpdateObjVinculo(_vinculo, _vinculoCotitular)
@@ -114,7 +114,7 @@ final case class ObjetoVinculoState(
           mapVinculo = _mapVinculo
         )
       case evt: ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj =>
-        log.error("ENTRE UPDATE CREATE TRANSF VINC OBJETO"+evt)
+        log.error("ENTRE UPDATE CREATE TRANSF VINC OBJETO"+evt.objetoId + " + " + evt.sujetoId)
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
         val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj)
         val _mapVinculo = if(mapVinculo.contains(_vinculo)) mapVinculo - _vinculo else mapVinculo
@@ -127,7 +127,7 @@ final case class ObjetoVinculoState(
         )
 
       case evt: ObjetoVinculoEvent.RemovedVinculoObjetoFromObj =>
-        log.error("ENTRE REMOVE VINCULO OBJETO"+evt)
+        log.error("ENTRE REMOVE VINCULO OBJETO"+evt.objetoId + " + " + evt.sujetoId)
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
         val _mapVinculo = if(mapVinculo.contains(_vinculo)) mapVinculo - _vinculo else mapVinculo //todo por ahora lo vamos a eliminar
         val _mapTransf = if (mapTransf.contains(_vinculo)) mapTransf - _vinculo else mapTransf //todo por ahora lo vamos a eliminar
