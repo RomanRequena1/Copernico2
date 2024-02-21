@@ -2,6 +2,8 @@ package consumers.no_registral.objeto.application.cqrs.commands
 
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import akka.persistence.SnapshotSelectionCriteria
+import com.fasterxml.jackson.annotation.JsonIgnore
+import consumers.no_registral.objeto.application.cqrs.commands.test.persistSnapshotEvent
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo.DmnObjeto
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
@@ -9,11 +11,13 @@ import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoU
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
 import consumers.no_registral.objeto.application.helper.SendObjetoToObjetoVinculo
 import consumers.no_registral.objeto.domain.ObjetoEvents
+import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromTri
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.{Success, Try}
 
@@ -70,7 +74,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
     val dmn = isTipo(command)
 
     val event = ObjetoEvents.ObjetoUpdatedFromTri(
-      command.deliveryId,
+      if (command.deliveryId.signum < 0) actor.state.lastDeliveryIdByEvents else command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -81,38 +85,12 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
       Some(dmn._1),
       Some(dmn._2)
     )
-    def persistSnapshotEvent(): Success[Response.SuccessProcessing] = {
 
-      actor.persistEvent(event) { () =>
-        actor.state += event
-        //todo juicio persiste, pero no se us apara el calculo del 30%?
-
-        if (actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
-          if (actor.state.tiene30Objeto.equals(false))
-            actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
-          else
-            actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
-          actor.persistSnapshot(event, actor.state) { () =>
-            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-          }
-        }
-        else {
-          log.error("SEND OBJETO TO OBJETO VINCULO: " + SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment))
-          SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
-        }
-        //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler
-        if (actor.state.eventCounter == eventCounterMax) {
-          actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
-          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
-        }
-        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-      }
-      Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
-    }
 
     command.deliveryId match {
       case x if (command.deliveryId.signum < 0 ) =>
-        persistSnapshotEvent()
+
+        persistSnapshotEvent(event, actor, command, requeriment)
 
       case x if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) =>
         log.error("ENTRE AL EV_ID IDEMPOTENT DEL ALTA")
@@ -122,7 +100,43 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
 
         Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
       case _ =>
-        persistSnapshotEvent()
+        persistSnapshotEvent(event, actor, command, requeriment)
     }
+  }
+}
+
+
+object test {
+  def persistSnapshotEvent(event: ObjetoUpdatedFromTri, actor: ObjetoActor, command: ObjetoUpdateFromTri,requeriment: MonitoringAndMessageProducer ): Success[Response.SuccessProcessing] = {
+    val sender = actor.context.sender()
+    @JsonIgnore
+    val log: Logger = LoggerFactory.getLogger(this.getClass)
+
+
+    actor.persistEvent(event) { () =>
+      actor.state += event
+      //todo juicio persiste, pero no se us apara el calculo del 30%?
+
+      if (actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
+        if (actor.state.tiene30Objeto.equals(false))
+          actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
+        else
+          actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
+        actor.persistSnapshot(event, actor.state) { () =>
+          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+        }
+      }
+      else {
+        log.error("SEND OBJETO TO OBJETO VINCULO: " + SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment))
+        SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
+      }
+      //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler
+      if (actor.state.eventCounter == eventCounterMax) {
+        actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
+        actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+      }
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+    }
+    Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }
