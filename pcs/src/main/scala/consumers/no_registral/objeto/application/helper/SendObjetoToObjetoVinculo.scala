@@ -33,98 +33,61 @@ object SendObjetoToObjetoVinculo {
 
 
     val actorPath = s"akka://PersonClassificationService/system/sharding/SujetoActor/*/${sujetoId}/Sujeto-${sujetoId}-Objeto-${objetoId}-${tipoObjeto}/ObjetoVinculo-${objetoId}"
-
      // s"akka://PersonClassificationService/user/ObjetoVinculo-${objetoId}"
 
 
-    val actorTry = Try {
-      implicit val actorObjetoVinculo: ActorRef = actor.context.actorOf(actorProp, objetoVinculoMessageRoots)
-      println("CUMBIAAAA ::::::::::::::::: actor::::::::::::::::::::: " + actorObjetoVinculo.path + " - " )
-      actorObjetoVinculo
-    }
-
-    actorTry match {
-      case Success(actorObjetoVinculo) =>
-        estado match {
-          case x if x.getOrElse("").equals("TRANSF") =>
-            log.error("CREO TRANSF VINCULOOBJETO"+sujetoId)
-            actorObjetoVinculo ! CreateTransfVinculoObjetoFromObj(0,
-              sujetoId,
-              objetoId,
-              tipoObjeto,
-              actor.state.tiene30Objeto,
-              Some(actor.state.isResponsable),
-              actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
-              actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD
-            )
-            if (actor.state.tiene30Objeto.equals(false))
-              actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
-            else
-              actor.informParent(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
-
-          case x if x.getOrElse("").equals("BAJA") =>
-            log.error("ELIMINO VINCOBJETO"+sujetoId)
-            actorObjetoVinculo ! RemoveObjetoVinculo(0,
-              sujetoId,
-              objetoId,
-              tipoObjeto,
-              actor.state.tiene30Objeto,
-              Some(actor.state.isResponsable),
-              actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
-              actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD)
-          case _ =>
-            log.error("CREO UPDATEVINCULOOBJETO"+sujetoId)
-            actorObjetoVinculo ! UpdateVinculoObjetoFromObj(0,
-              sujetoId,
-              objetoId,
-              tipoObjeto,
-              actor.state.tiene30Objeto,
-              Some(actor.state.isResponsable),
-              actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
-              actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD
-            )
+    actor.context.child(objetoVinculoMessageRoots) match {
+      case Some(value) => actor.context.stop(value)
+      case None =>
+        val actorTry = Try {
+          implicit val actorObjetoVinculo: ActorRef = actor.context.actorOf(actorProp, objetoVinculoMessageRoots)
+          println("CUMBIAAAA ::::::::::::::::: actor::::::::::::::::::::: " + actorObjetoVinculo.path + " - " )
+          actorObjetoVinculo
         }
+        actorTry match {
+          case Success(actorObjetoVinculo) =>
+            estado match {
+              case x if x.getOrElse("").equals("TRANSF") =>
+                log.error("CREO TRANSF VINCULOOBJETO"+sujetoId)
+                actorObjetoVinculo ! CreateTransfVinculoObjetoFromObj(0,
+                  sujetoId,
+                  objetoId,
+                  tipoObjeto,
+                  actor.state.tiene30Objeto,
+                  Some(actor.state.isResponsable),
+                  actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
+                  actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD
+                )
+                if (actor.state.tiene30Objeto.equals(false))
+                  actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
+                else
+                  actor.informParent(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
 
-      case Failure(exception) =>
-        log.error(s"Hubo un error al crear el actor: ${exception.getMessage}")
-        estado match {
-          case x if x.getOrElse("").equals("TRANSF") =>
-            log.error("CREATE TRANSF VINCULOOBJETO"+sujetoId)
-            actor.context.actorSelection(actorPath) ! CreateTransfVinculoObjetoFromObj(0,
-              sujetoId,
-              objetoId,
-              tipoObjeto,
-              actor.state.tiene30Objeto,
-              Some(actor.state.isResponsable),
-              actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
-              actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD
-            )
-            if (actor.state.tiene30Objeto.equals(false))
-              actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
-            else
-              actor.informParent(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
-          case x if x.getOrElse("").equals("BAJA") =>
+              case x if x.getOrElse("").equals("BAJA") =>
+                log.error("ELIMINO VINCOBJETO"+sujetoId)
+                actorObjetoVinculo ! RemoveObjetoVinculo(0,
+                  sujetoId,
+                  objetoId,
+                  tipoObjeto,
+                  actor.state.tiene30Objeto,
+                  Some(actor.state.isResponsable),
+                  actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
+                  actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD)
+              case _ =>
+                log.error("CREO UPDATEVINCULOOBJETO"+sujetoId)
+                actorObjetoVinculo ! UpdateVinculoObjetoFromObj(0,
+                  sujetoId,
+                  objetoId,
+                  tipoObjeto,
+                  actor.state.tiene30Objeto,
+                  Some(actor.state.isResponsable),
+                  actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
+                  actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD
+                )
+            }
 
-            actor.context.actorSelection(actorPath) ! RemoveObjetoVinculo(0,
-              sujetoId,
-              objetoId,
-              tipoObjeto,
-              actor.state.tiene30Objeto,
-              Some(actor.state.isResponsable),
-              actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
-              actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD)
-          case _ =>
-            log.error("CREO UPDATEVINCULOOBJETO"+sujetoId)
-            actor.context.actorSelection(actorPath) ! UpdateVinculoObjetoFromObj(0,
-              sujetoId,
-              objetoId,
-              tipoObjeto,
-              actor.state.tiene30Objeto,
-              Some(actor.state.isResponsable),
-              actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
-              actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD
-            )
-        }
+          case Failure(exception) => log.error(s"Hubo un error al crear el actor: ${exception.getMessage}")
+      }
     }
   }
 }
