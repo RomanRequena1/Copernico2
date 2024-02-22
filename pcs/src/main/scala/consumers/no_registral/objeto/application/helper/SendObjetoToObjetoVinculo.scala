@@ -32,7 +32,9 @@ object SendObjetoToObjetoVinculo {
     implicit val actorProp: Props = ObjetoVinculoActor.props(requeriment)
 
 
-    val actorPath = s"akka://PersonClassificationService/user/ObjetoVinculo-${objetoId}"
+    val actorPath = s"akka://PersonClassificationService/system/sharding/SujetoActor/*/${sujetoId}/Sujeto-${sujetoId}-Objeto-${objetoId}-${tipoObjeto}/ObjetoVinculo-${objetoId}"
+
+     // s"akka://PersonClassificationService/user/ObjetoVinculo-${objetoId}"
 
 
     val actorTry = Try {
