@@ -155,6 +155,7 @@ services:
       - '8083:8083'
       - '5003:9095'
     environment:
+      TIMEOUT: 200
       SEED_NODES: 'akka://PersonClassificationService@172.22.1.3:2551'
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'

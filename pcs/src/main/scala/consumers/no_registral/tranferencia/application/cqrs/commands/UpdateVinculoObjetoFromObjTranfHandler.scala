@@ -16,11 +16,8 @@ import scala.util.{Success, Try}
 class UpdateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[CreateTransfVinculoObjetoFromObj] {
   override def handle(command: CreateTransfVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    log.error("Llego Transf? CreateNewVinculoObjetoFromObjHandler::::: " + command + " - "
-      + command.tiene30Objeto + " - "
-      + command.objetoId + " - "
-      + command.sujetoId)
 
+    println("HOLAPATHTRANSF  + " + actor.context.self.path)
     val event = ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj(
       command.sujetoId,
       command.objetoId,
@@ -34,18 +31,14 @@ class UpdateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranfere
     implicit val system: ActorSystem = actor.context.system
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
 
-    println("STATE transf::::::::::: " + actor.state.mapVinculo)
     actor.persistEvent(event) { () =>
       actor.state += event
-      log.error("LOG mapTransf -> " + actor.state.mapTransf)
-      log.error("LOG mapVinculo mapTransf-> " + actor.state.mapVinculo)
 
 
       //Recorre el map de vinculos y manda mensaje a los objetos
 
       actor.state.mapVinculo.foreach {
         e => {
-          log.error("vin -> " + e._1 + " - " + e._2 + " - " + !e._2.estado.getOrElse("").equals("TRANSF"))
 
           actorSujetoGeneral ! UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo)
         }

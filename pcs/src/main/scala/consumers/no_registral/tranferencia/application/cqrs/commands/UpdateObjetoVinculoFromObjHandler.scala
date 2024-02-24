@@ -15,11 +15,7 @@ import scala.util.{Success, Try}
 class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[UpdateVinculoObjetoFromObj] {
   override def handle(command: UpdateVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    log.error("Llego? CreateVinculoObjSujToTransfHandler::::: " + command + " - "
-      + command.tiene30Objeto + " - "
-      + command.objetoId + " - "
-      + command.sujetoId)
-
+    println("HOLAPATH  + " + actor.context.self.path)
     val event = ObjetoVinculoEvent.UpdatedVinculoObjetoFromObj(
       command.sujetoId,
       command.objetoId,
@@ -30,8 +26,6 @@ class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaA
       command.titularidad
     )
 
-    log.error("EVENTO DE UPDATEVINCULOFROMOBJ: "+event)
-    println("STATE ::::::::::: " + actor.state.mapVinculo)
     implicit val ssytem: ActorSystem = actor.context.system
     //todo para mandar mensajes a todos los objetos de los distintos vinculos
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
@@ -39,10 +33,8 @@ class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaA
     actor.persistEvent(event) { () =>
 
       actor.state += event
-      log.error("mapViculo -> " + actor.state.mapVinculo)
       actor.state.mapVinculo.foreach {
         e => {
-          log.error("vin -> " + e._1)
             actorSujetoGeneral ! UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo)
         }
       }
