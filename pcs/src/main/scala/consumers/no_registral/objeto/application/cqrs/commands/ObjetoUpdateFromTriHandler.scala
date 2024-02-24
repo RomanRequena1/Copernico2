@@ -88,9 +88,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
 
 
     command.deliveryId match {
-      case x if (command.deliveryId.signum < 0 ) =>
 
-        persistSnapshotEvent(event, actor, command, requeriment)
 
       case x if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) =>
         log.error("ENTRE AL EV_ID IDEMPOTENT DEL ALTA")
