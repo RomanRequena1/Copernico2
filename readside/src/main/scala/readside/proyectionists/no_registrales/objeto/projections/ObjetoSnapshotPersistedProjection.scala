@@ -38,7 +38,7 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_titularidad" -> r.SOJ_TITULARIDAD,
       "soj_tiene30Objeto" -> event.tiene30Objeto,
       "soj_aplicarDescuento" -> event.aplicarDescuento,
-      "soj_resultDmn" -> Some(event.resultDmn)
+      "soj_resultDmn" -> Some(event.bandTipo.toInt)
   ))
     case None => Some(List(
       "soj_descripcion" -> Some("Sin descripción"),
@@ -47,7 +47,7 @@ case class ObjetoSnapshotPersistedProjection(
       "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[",",","]")),
       "soj_tiene30Objeto" -> event.tiene30Objeto,
       "soj_aplicarDescuento" -> event.aplicarDescuento,
-      "soj_resultDmn" -> Some(event.resultDmn)
+      "soj_resultDmn" -> Some(event.bandTipo.toInt)
     ))
   }
 

@@ -257,7 +257,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
   def withCotitulares(sujetos: Set[String]): Boolean =
     sujetos.size > 1*/
   def informParentTreintaPorciento(deliveryId: BigInt, sujetoId: String ,objetoId : String,tipoObjeto: String, state: ObjetoState): Unit = {
-
+    println("CUMBIA PATH SUJETO informParentTreintaPorciento" + context.parent.path)
     context.parent ! SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
       deliveryId,
       sujetoId,
@@ -270,6 +270,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
   }
 
   def informParent(deliveryId: BigInt, sujetoId: String ,objetoId : String,tipoObjeto: String, state: ObjetoState): Unit = {
+    println("CUMBIA PATH SUJETO informParent" + context.parent.path)
     context.parent ! SujetoCommands.SujetoUpdateFromObjeto(
       deliveryId,
       sujetoId,

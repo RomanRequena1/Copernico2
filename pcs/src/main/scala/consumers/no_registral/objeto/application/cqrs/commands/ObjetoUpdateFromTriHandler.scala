@@ -87,17 +87,18 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
     )
 
 
-    command.deliveryId match {
 
 
-      case x if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) =>
-        log.error("ENTRE AL EV_ID IDEMPOTENT DEL ALTA")
 
-        log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
-        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+    if(isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
+      log.error("ENTRE AL EV_ID IDEMPOTENT DEL ALTA")
 
-        Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
-      case _ =>
+
+      log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+
+      Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
+    } else {
         persistSnapshotEvent(event, actor, command, requeriment)
     }
   }

@@ -10,15 +10,17 @@ object SendToObjeto {
     println("CUMBIAAAAAAAAAAAAAAAA PATH "+  sender.path.toString)
     //val isExclusionSujeto = QueryExclusionSujeto(sujetoId)
       if (currentState.diffStates) {
+        println("CUMBIAAAAAAAAAAAAAAAA PATH 2 true "+  currentState.diffStates)
         sender ! ObjetoUpdateFromSujeto(
-          currentState.lastDeliveryIdByEvents,
-          sujetoId,
-          objetoId,
-          tipoObjeto,
-          currentState.tiene30Sujeto,
-          ""
+          deliveryId = currentState.lastDeliveryIdByEvents,
+          sujetoId = sujetoId,
+          objetoId = objetoId,
+          tipoObjeto = tipoObjeto,
+          tiene30Sujeto = currentState.tiene30Sujeto,
+          exclusionSUjeto = ""
         )
       } else{
+        println("CUMBIAAAAAAAAAAAAAAAA PATH 2 else"+  currentState.diffStates)
         actorContext.children.foreach( actor => {
           val actorSelection = actorContext.actorSelection(actor.path)
           actorSelection ! ObjetoUpdateFromSujeto(

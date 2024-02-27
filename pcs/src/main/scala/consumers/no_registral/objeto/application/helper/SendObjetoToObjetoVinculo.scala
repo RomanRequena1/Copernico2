@@ -49,7 +49,7 @@ object SendObjetoToObjetoVinculo {
 
     estado match {
       case x if x.getOrElse("").equals("TRANSF") =>
-        Obje ! CreateTransfVinculoObjetoFromObj(objetoId = objetoId,
+        Obje.ask[Response.SuccessProcessing](CreateTransfVinculoObjetoFromObj(objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = 0,
           tipoObj = tipoObjeto,
@@ -57,14 +57,14 @@ object SendObjetoToObjetoVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD
-        )
+        ))
         if (actor.state.tiene30Objeto.equals(false))
           actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
         else
           actor.informParent(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
 
       case x if x.getOrElse("").equals("BAJA") =>
-        Obje ! RemoveObjetoVinculo(
+        Obje.ask[Response.SuccessProcessing](RemoveObjetoVinculo(
           objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = 0,
@@ -72,16 +72,16 @@ object SendObjetoToObjetoVinculo {
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
-          titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD)
+          titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD))
       case _ =>
-        Obje ! UpdateVinculoObjetoFromObj(objetoId = objetoId,
+        Obje.ask[Response.SuccessProcessing](UpdateVinculoObjetoFromObj(objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = 0,
           tipoObj = tipoObjeto,
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
-          titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD)
+          titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD))
 
     }
 

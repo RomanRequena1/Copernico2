@@ -7,13 +7,14 @@ import api.actor_transaction.ActorTransaction
 import consumers.no_registral.obligacion.infrastructure.consumer.{ObligacionNoTributariaTransaction, ObligacionTributariaRetryTransaction, ObligacionTributariaTransaction, ObligacionTributariaTransaction2, ObligacionTributariaTransaction3, ObligacionTributariaTransactionAutomotor, ObligacionTributariaTransactionBilletera, ObligacionTributariaTransactionCuotaPlan, ObligacionTributariaTransactionEmbarcacion, ObligacionTributariaTransactionIngresoBruto, ObligacionTributariaTransactionInmueble, ObligacionTributariaTransactionJuicio, ObligacionTributariaTransactionMultiobjeto}
 import consumers.no_registral.obligacion.infrastructure.http.ObligacionStateAPI
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
+import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import org.slf4j.LoggerFactory
 
 class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
 
   implicit val actor: ActorRef = SujetoActor.startWithRequirements(monitoringAndMessageProducer)
-
+  ObjetoVinculoActor.startWithRequirements(monitoringAndMessageProducer)
   //private val log = LoggerFactory.getLogger(this.getClass)
   //val timescaledbActor: ActorRef = m.ctx.actorOf(Props[TimesActor](), "timescaledb")
   //log.error("CUMBIA " + timescaledbActor.path)
