@@ -155,7 +155,7 @@ curl 0.0.0.0:8081/state/sujeto/20-07869259-7
 ###------------------------------------------------------------------------------------------------------------------------------------###
 
 ### get objeto state
-curl 0.0.0.0:8001/state/sujeto/20-01741580-9/objeto/120215400226/tipo/I
+curl 0.0.0.0:8081/state/sujeto/23-667147641-13/objeto/DIOS9/tipo/A
 ###------------------------------------------------------------------------------------------------------------------------------------###
 
 ### get juicio viejo state
@@ -178,7 +178,7 @@ curl 0.0.0.0:8081/state/sujeto/20-21392869-44/objeto/ABC123/tipo/M/obligacion/20
 ###------------------------------------------------------------------------------------------------------------------------------------###
 
 ### SNAPSHOTS
-kafkacat -b 0.0.0.0:9092 -C -t ObligacionPersistedSnapshot
+kafkacat -b 0.0.0.0:9092 -C -t ObjetoVinculoPersisted
 kafkacat -b 0.0.0.0:9092 -C -t ObjetoSnapshotPersistedReadside SujetoSnapshotPersisted
 
 kafkacat -b 0.0.0.0:9092 -C -t SujetoSnapshotPersisted

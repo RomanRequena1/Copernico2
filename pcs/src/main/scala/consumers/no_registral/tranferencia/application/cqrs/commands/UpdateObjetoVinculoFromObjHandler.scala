@@ -15,7 +15,6 @@ import scala.util.{Success, Try}
 class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[UpdateVinculoObjetoFromObj] {
   override def handle(command: UpdateVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    println("HOLAPATH  + " + actor.context.self.path)
     val event = ObjetoVinculoEvent.UpdatedVinculoObjetoFromObj(
       command.sujetoId,
       command.objetoId,

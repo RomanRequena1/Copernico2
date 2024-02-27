@@ -7,10 +7,8 @@ import consumers.no_registral.sujeto.domain.SujetoState
 
 object SendToObjeto {
   def apply(currentState: SujetoState, sender: ActorRef, actorContext: ActorContext, sujetoId: String, objetoId: String, tipoObjeto: String) : Unit = {
-    println("CUMBIAAAAAAAAAAAAAAAA PATH "+  sender.path.toString)
     //val isExclusionSujeto = QueryExclusionSujeto(sujetoId)
       if (currentState.diffStates) {
-        println("CUMBIAAAAAAAAAAAAAAAA PATH 2 true "+  currentState.diffStates)
         sender ! ObjetoUpdateFromSujeto(
           deliveryId = currentState.lastDeliveryIdByEvents,
           sujetoId = sujetoId,
@@ -20,7 +18,6 @@ object SendToObjeto {
           exclusionSUjeto = ""
         )
       } else{
-        println("CUMBIAAAAAAAAAAAAAAAA PATH 2 else"+  currentState.diffStates)
         actorContext.children.foreach( actor => {
           val actorSelection = actorContext.actorSelection(actor.path)
           actorSelection ! ObjetoUpdateFromSujeto(

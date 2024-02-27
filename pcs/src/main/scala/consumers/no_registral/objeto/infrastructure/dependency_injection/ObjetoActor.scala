@@ -113,7 +113,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
   import consumers.no_registral.objeto.infrastructure.json._
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
-    println("TestHandler " + evt.aggregateRoot)
     val kafkaTopic = "ObjetoSnapshotPersistedReadside"
     val snapshot =
       ObjetoSnapshotPersisted(
@@ -257,7 +256,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
   def withCotitulares(sujetos: Set[String]): Boolean =
     sujetos.size > 1*/
   def informParentTreintaPorciento(deliveryId: BigInt, sujetoId: String ,objetoId : String,tipoObjeto: String, state: ObjetoState): Unit = {
-    println("CUMBIA PATH SUJETO informParentTreintaPorciento" + context.parent.path)
     context.parent ! SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
       deliveryId,
       sujetoId,
@@ -270,7 +268,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
   }
 
   def informParent(deliveryId: BigInt, sujetoId: String ,objetoId : String,tipoObjeto: String, state: ObjetoState): Unit = {
-    println("CUMBIA PATH SUJETO informParent" + context.parent.path)
     context.parent ! SujetoCommands.SujetoUpdateFromObjeto(
       deliveryId,
       sujetoId,

@@ -17,7 +17,6 @@ class UpdateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranfere
   override def handle(command: CreateTransfVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
-    println("HOLAPATHTRANSF  + " + actor.context.self.path)
     val event = ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj(
       command.sujetoId,
       command.objetoId,
@@ -36,7 +35,6 @@ class UpdateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranfere
 
 
       //Recorre el map de vinculos y manda mensaje a los objetos
-
       actor.state.mapVinculo.foreach {
         e => {
 

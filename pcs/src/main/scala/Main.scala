@@ -1,6 +1,4 @@
 import com.typesafe.config.ConfigFactory
-import consumers.no_registral.exclusiones_objeto.infrastructure.main.ExclusionesObjetoMicroservice
-import consumers.no_registral.exclusiones_objeto.infrastructure.main.ExclusionesObjetoMicroservice
 import consumers.registral.exclusiones_sujeto.infrastructure.main.ExclusionesSujetoMicroservice
 import consumers.registral.juicio_obn.infrastructure.main.JuicioObnMicroservice
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
@@ -44,7 +42,7 @@ object Main extends App {
       new consumers.registral.tramite.infrastructure.main.TramiteMicroservice,
       new JuicioObnMicroservice,
       new ExclusionesSujetoMicroservice,
-      new ExclusionesObjetoMicroservice,
+      new consumers.no_registral.tranferencia.infrastructure.main.TranferencuaMicroservice
     )
   }
 }

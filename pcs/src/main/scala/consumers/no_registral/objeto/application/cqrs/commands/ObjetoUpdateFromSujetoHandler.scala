@@ -31,7 +31,6 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
    // val exclusionObjeto = QueryExclusionObjeto(command.objetoId)
     val obj_default = new ObjetosTri(Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"))
 
-    println("CUMBIA ObjetoUpdateFromSujetoHandler " + actor.context.self.path)
     val result = DMNTreintaPorcientoFinal.calcularDmnFinal(DmnFinal("",
       "",
       actor.state.clasificacionObjeto,

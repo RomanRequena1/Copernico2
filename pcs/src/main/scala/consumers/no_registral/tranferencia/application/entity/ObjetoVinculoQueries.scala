@@ -10,11 +10,4 @@ object ObjetoVinculoQueries {
   case class GetStateObjetoVinculo(objetoId: String) extends ObjetoVinculoQueries {
     override type ReturnType = GetObjetoVinculoResponse
   }
-  case class GetStateExencion(objetoId: String)
-    extends ObjetoVinculoQueries {
-    override type ReturnType = GetObjetoVinculoResponse
-  }
-  case class GetSnapshotObjetoVinculo(objetoId: String) extends ObjetoVinculoQueries {
-    override type ReturnType = GetObjetoVinculoResponse
-  }
 }

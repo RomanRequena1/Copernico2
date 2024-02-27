@@ -58,6 +58,6 @@ case class ObjetoVinculoStateAPI(actor: ActorRef, monitoring: Monitoring)(
 
 object ObjetoVinculoStateAPI {
   def nestedRoute(name: String)(andThen: String => Route): Route = pathPrefix(name / Segment)(andThen)
-  def withObjeto: (String => Route) => Route = nestedRoute("objeto") _
+  def withObjeto: (String => Route) => Route = nestedRoute("ObjetoVinculo") _
 
 }

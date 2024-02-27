@@ -35,7 +35,6 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor,requeriment: M
 
 
 
-    println("LLEGO A UpdateState30ObjetoFromObjVinculoHandler" + command)
     actor.persistEvent(event) { () =>
       actor.state += event
       if (actor.state.eventCounter == eventCounterMax) {
@@ -43,13 +42,9 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor,requeriment: M
       }
 
       if(actor.state.tiene30Objeto.equals(false)) {
-        println("LLEGO A UpdateState30ObjetoFromObjVinculoHandler false" + command)
-        println("CUMBIA PATH SUJETO actor.state.tiene30Objeto.equals(false)" + actor.context.parent.path)
         SendToSujeto(actor, requeriment, event)
 
       } else {
-        println("LLEGO A UpdateState30ObjetoFromObjVinculoHandler true" + command)
-        println("CUMBIA PATH SUJETO actor.state.tiene30Objeto.equals(true)" + actor.context.parent.path)
         SendToSujeto1(actor, requeriment, event)
       }
 
