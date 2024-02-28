@@ -14,6 +14,8 @@ class ObjetoMapRemoveFromObligacionHandler(actor: ObjetoActor)
                        command: ObjetoCommands.RemoveObjetoFromObligacion
                      ): Try[Response.SuccessProcessing] = {
 
+    log.error("Llego al handler del removemap")
+
     val event = RemovedObjetoFromObligacion(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
