@@ -1,7 +1,6 @@
 package consumers.registral.calendario.application.entities
 
 import consumers.registral.calendario.application.entities.CalendarioMessage.CalendarioMessageRoots
-import serialization.CbroSerialization
 
 trait CalendarioMessage extends design_principles.actor_model.ShardedMessage{
 

@@ -1,6 +1,5 @@
 package consumers.no_registral.obligacion.infrastructure.http
 
-import java.time.LocalDateTime
 import akka.actor.{ActorRef, ActorSystem, PoisonPill}
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes.{InternalServerError, NotFound, OK}
@@ -9,16 +8,14 @@ import akka.http.scaladsl.server.Route
 import api.Utils
 import consumers.no_registral.objeto.application.entities.ObjetoQueries.GetStateObjeto
 import consumers.no_registral.objeto.application.entities.ObjetoResponses.GetObjetoResponse
-import consumers.no_registral.obligacion.application.entities.ObligacionQueries.{
-  GetSnapshotObligacion,
-  GetStateObligacion
-}
+import consumers.no_registral.obligacion.application.entities.ObligacionQueries.{GetSnapshotObligacion, GetStateObligacion}
 import consumers.no_registral.obligacion.application.entities.ObligacionResponses.GetObligacionResponse
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import design_principles.actor_model.mechanism.QueryStateAPI
 import design_principles.actor_model.mechanism.QueryStateAPI.QueryStateApiRequirements
-import monitoring.Monitoring
 import io.circe.syntax.EncoderOps
+import monitoring.Monitoring
+
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext
 

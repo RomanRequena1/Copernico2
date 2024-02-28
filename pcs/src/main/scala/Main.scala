@@ -1,8 +1,8 @@
 import com.typesafe.config.ConfigFactory
 import consumers.registral.exclusiones_sujeto.infrastructure.main.ExclusionesSujetoMicroservice
 import consumers.registral.juicio_obn.infrastructure.main.JuicioObnMicroservice
-import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import design_principles.microservice.kafka_consumer_microservice.MainApplication.startMicroservices
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 
 object Main extends App {

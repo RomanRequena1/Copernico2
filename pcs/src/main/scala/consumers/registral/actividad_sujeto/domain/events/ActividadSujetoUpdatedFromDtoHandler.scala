@@ -1,9 +1,9 @@
 package consumers.registral.actividad_sujeto.domain.events
 
-import java.time.LocalDateTime
-
 import consumers.registral.actividad_sujeto.domain.ActividadSujetoEvents.ActividadSujetoUpdatedFromDto
 import consumers.registral.actividad_sujeto.domain.ActividadSujetoState
+
+import java.time.LocalDateTime
 
 class ActividadSujetoUpdatedFromDtoHandler {
   def handle(state: ActividadSujetoState, event: ActividadSujetoUpdatedFromDto): ActividadSujetoState =

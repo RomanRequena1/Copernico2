@@ -4,8 +4,8 @@ import consumers.registral.tramite.application.entities.Tramite
 import consumers.registral.tramite.application.entities.TramiteCommands.TramiteUpdateFromDto
 import consumers.registral.tramite.application.entities.TramiteResponses.GetTramiteResponse
 import consumers.registral.tramite.domain.TramiteEvents.TramiteUpdatedFromDto
-import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
+import io.circe.{Decoder, Encoder}
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

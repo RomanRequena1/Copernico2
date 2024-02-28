@@ -1,7 +1,7 @@
 package readside.proyectionists.registrales.exencion.projections
 
-import consumers.no_registral.objeto.domain.ObjetoEvents
 import cassandra.mechanism.UpdateReadSideProjection
+import consumers.no_registral.objeto.domain.ObjetoEvents
 
 trait ExencionProjection extends UpdateReadSideProjection[ObjetoEvents.ObjetoAddedExencion] {
   def collectionName: String = "read_side.buc_exenciones"

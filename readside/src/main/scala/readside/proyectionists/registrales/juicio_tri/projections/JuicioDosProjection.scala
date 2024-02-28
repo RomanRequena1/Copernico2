@@ -1,6 +1,5 @@
 package readside.proyectionists.registrales.juicio_tri.projections
 
-import cassandra.CassandraTypesAdapter.int
 import cassandra.mechanism.UpdateReadSideProjection
 import consumers.registral.juicio_tri.domain.JuicioDosEvents
 

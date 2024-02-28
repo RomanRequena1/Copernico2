@@ -3,8 +3,8 @@ package readside.proyectionists.registrales.juicio_obn.projections
 import consumers.registral.juicio_obn.application.entities.{DetallesJuicioTri, JuicioObnTri}
 import consumers.registral.juicio_obn.domain.JuicioObnEvents
 import consumers.registral.juicio_obn.infrastructure.json.json._
-import io.circe.syntax.EncoderOps
 import io.circe.parser._
+import io.circe.syntax.EncoderOps
 
 
 case class JuicioObnUpdatedFromDtoProjection(

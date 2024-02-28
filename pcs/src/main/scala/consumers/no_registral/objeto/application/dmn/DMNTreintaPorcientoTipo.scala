@@ -1,16 +1,7 @@
 package consumers.no_registral.objeto.application.dmn
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateFromTri
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
-import consumers.no_registral.objeto.application.helper.QueryExclusionObjeto
-import consumers.no_registral.objeto.domain.ObjetoState
-import org.camunda.dmn.DmnEngine
 import org.slf4j.LoggerFactory
-
-import java.io.FileInputStream
-import scala.util.Try
 
 object DMNTreintaPorcientoTipo {
   @JsonIgnore

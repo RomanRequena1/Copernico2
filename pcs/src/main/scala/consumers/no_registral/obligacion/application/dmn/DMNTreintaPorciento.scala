@@ -1,13 +1,11 @@
 package consumers.no_registral.obligacion.application.dmn
 
-import consumers.no_registral.obligacion.application.entities.{ObligacionExternalDto, ObligacionesTri}
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
 import org.camunda.dmn.DmnEngine
 import org.slf4j.LoggerFactory
 import scalaz.concurrent.Task.Try
 
 import java.io.FileInputStream
-import java.time.{LocalDate, LocalDateTime}
-import java.time.format.DateTimeFormatter
 
 object DMNTreintaPorciento {
 

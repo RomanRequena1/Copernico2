@@ -2,13 +2,12 @@ package consumers.registral.cupon_descuento.infrastructure.http
 
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.server.Route
 import consumers.registral.cupon_descuento.application.entities.CuponDescuentoQueries.GetStateCuponDescuento
 import consumers.registral.cupon_descuento.infrastructure.dependency_injection.CuponDescuentoActor
 import consumers.registral.cupon_descuento.infrastructure.http.CuponDescuentoStateAPI.{withCuponDescuento, withObjeto, withSujeto, withTipoObjeto}
+import consumers.registral.cupon_descuento.infrastructure.json.json.GetCuponDescuentoResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
-import consumers.registral.cupon_descuento.infrastructure.json.json.GetCuponDescuentoResponseEncoder
 
 import java.time.LocalDateTime
 

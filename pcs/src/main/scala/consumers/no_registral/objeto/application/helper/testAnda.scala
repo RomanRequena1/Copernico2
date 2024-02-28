@@ -1,6 +1,6 @@
 package consumers.no_registral.objeto.application.helper
 
-import akka.actor.{ActorRef, Props}
+import akka.actor.Props
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor

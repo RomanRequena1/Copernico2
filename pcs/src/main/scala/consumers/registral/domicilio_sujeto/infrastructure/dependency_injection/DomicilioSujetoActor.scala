@@ -1,7 +1,6 @@
 package consumers.registral.domicilio_sujeto.infrastructure.dependency_injection
 
 import akka.actor.typed.ActorSystem
-import com.typesafe.config.Config
 import consumers.registral.domicilio_sujeto.application.cqrs.commands.DomicilioSujetoUpdateFromDtoHandler
 import consumers.registral.domicilio_sujeto.application.cqrs.queries.GetStateDomicilioSujetoHandler
 import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoCommands.DomicilioSujetoUpdateFromDto

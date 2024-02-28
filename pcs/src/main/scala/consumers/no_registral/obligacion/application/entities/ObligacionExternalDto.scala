@@ -1,11 +1,10 @@
 package consumers.no_registral.obligacion.application.entities
 
 import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
+import ddd.ExternalDto
+import serialization.CbroSerialization
 
 import java.time.LocalDateTime
-import ddd.ExternalDto
-import play.api.libs.json.JsObject
-import serialization.CbroSerialization
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(

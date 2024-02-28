@@ -1,12 +1,5 @@
 package consumers.no_registral.objeto.application.dmn
 
-import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateFromSujeto
-import consumers.no_registral.objeto.domain.ObjetoState
-import org.camunda.dmn.DmnEngine
-
-import java.io.FileInputStream
-import scala.util.Try
-
 object DMNTreintaPorcientoFinal {
   case class DmnFinal(suj_exclusionSujeto: String,
                       soj_exclusionObjeto: String,

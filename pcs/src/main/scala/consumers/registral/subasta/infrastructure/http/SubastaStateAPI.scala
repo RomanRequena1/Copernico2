@@ -1,7 +1,5 @@
 package consumers.registral.subasta.infrastructure.http
 
-import java.time.LocalDateTime
-
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.subasta.application.entities.SubastaQueries.GetStateSubasta
@@ -9,6 +7,8 @@ import consumers.registral.subasta.infrastructure.dependency_injection.SubastaAc
 import consumers.registral.subasta.infrastructure.json.json.GetSubastaResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
+
+import java.time.LocalDateTime
 
 case class SubastaStateAPI(actor: SubastaActor, monitoring: Monitoring)(implicit
                                                                         system: akka.actor.typed.ActorSystem[_])

@@ -8,8 +8,8 @@ import consumers.registral.domicilio_objeto.domain.DomicilioObjetoEvents.Domicil
 import consumers.registral.domicilio_objeto.domain.DomicilioObjetoState
 import consumers.registral.domicilio_objeto.infrastructure.json._
 import design_principles.actor_model.Response
-import kafka.KafkaMessageProducer.KafkaKeyValue
 import io.circe.syntax.EncoderOps
+import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 
 class DomicilioObjetoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {

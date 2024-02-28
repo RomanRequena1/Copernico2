@@ -8,8 +8,9 @@ import consumers.registral.juicio_tri.infrastructure.dependency_injection.Juicio
 import consumers.registral.juicio_tri.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
-import monitoring.Monitoring
 import io.circe.parser.decode
+import monitoring.Monitoring
+
 import scala.concurrent.Future
 
 case class JuicioDosTributarioTransaction(actor: JuicioDosActor, monitoring: Monitoring)(

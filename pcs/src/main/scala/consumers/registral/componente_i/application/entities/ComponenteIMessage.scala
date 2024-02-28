@@ -3,7 +3,6 @@ package consumers.registral.componente_i.application.entities
 import consumers.no_registral.objeto.application.entities.ObjetoMessage
 import consumers.no_registral.sujeto.application.entity.SujetoMessage
 import consumers.registral.componente_i.application.entities.ComponenteIMessage.ComponenteIMessageRoots
-import consumers.registral.cupon_descuento.application.entities.CuponDescuentoMessage.CuponDescuentoMessageRoots
 import serialization.CbroSerialization
 
 trait ComponenteIMessage extends design_principles.actor_model.ShardedMessage with SujetoMessage with ObjetoMessage with CbroSerialization {

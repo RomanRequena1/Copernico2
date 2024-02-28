@@ -1,15 +1,14 @@
 package readside.proyectionists.registrales.juicio
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
-
-import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.juicio.domain.JuicioEvents.JuicioUpdatedFromDto
-import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
-import readside.proyectionists.registrales.juicio.projections.JuicioUpdatedFromDtoProjection
-import consumers.registral.juicio.infrastructure.json._
+import design_principles.actor_model.Response.SuccessProcessing
 import io.circe.parser._
+import readside.proyectionists.registrales.juicio.projections.JuicioUpdatedFromDtoProjection
+
+import scala.concurrent.Future
 class JuicioUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite

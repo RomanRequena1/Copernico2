@@ -4,9 +4,9 @@ import consumers.registral.cupon_descuento.application.entities.CuponDescuentoCo
 import consumers.registral.cupon_descuento.application.entities.CuponDescuentoResponses.GetCuponDescuentoResponse
 import consumers.registral.cupon_descuento.application.entities.{CuponDescuentoTri, DetallesCuponDescuento, ListDetalleCuponDescuenta}
 import consumers.registral.cupon_descuento.domain.CuponDescuentoEvents.{CuponDescuentoPersistedSnapshot, CuponDescuentoRemoved, CuponDescuentoUpdatedFromDto}
-import io.circe.{Decoder, Encoder, Json}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax.EncoderOps
+import io.circe.{Decoder, Encoder, Json}
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

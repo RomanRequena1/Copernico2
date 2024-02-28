@@ -5,11 +5,11 @@ import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoCommands
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoExternalDto.DomicilioObjetoTri
 import consumers.registral.domicilio_objeto.infrastructure.dependency_injection.DomicilioObjetoActor
+import consumers.registral.domicilio_objeto.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import io.circe.parser._
 import monitoring.Monitoring
-import consumers.registral.domicilio_objeto.infrastructure.json._
 
 import scala.concurrent.Future
 

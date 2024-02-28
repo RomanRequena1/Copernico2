@@ -1,16 +1,14 @@
 package readside.proyectionists.registrales.exencion
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
-
-import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import cassandra.write.CassandraWriteProduction
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoAddedExencion
-import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
-import monitoring.Monitoring
-import readside.proyectionists.registrales.exencion.projections.ObjetoAddedExencionProjection
+import design_principles.actor_model.Response.SuccessProcessing
 import io.circe.parser._
+import readside.proyectionists.registrales.exencion.projections.ObjetoAddedExencionProjection
+
+import scala.concurrent.Future
 class ObjetoAddedExencionHandler(
     implicit
     r: MonitoringAndCassandraWrite

@@ -1,19 +1,19 @@
 package consumers.registral.juicio_obn.application.cqrs.commands
 
-import design_principles.actor_model.Response
+import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
 import consumers.registral.juicio_obn.application.entities.JuicioObnCommands.JuicioObnDeleteFromDto
 import consumers.registral.juicio_obn.domain.JuicioObnEvents.JuicioObnDeletedFromDto
 import consumers.registral.juicio_obn.domain.JuicioObnState
-import kafka.MessageProducer
-import akka.actor.Status.Success
 import consumers.registral.juicio_obn.infrastructure.dependency_injection.JuicioObnActor
-import kafka.KafkaMessageProducer.KafkaKeyValue
 import consumers.registral.juicio_obn.infrastructure.json.json._
+import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
-import org.slf4j.LoggerFactory
 import io.circe.syntax.EncoderOps
+import kafka.KafkaMessageProducer.KafkaKeyValue
+import kafka.MessageProducer
+import org.slf4j.LoggerFactory
 
 class JuicioObnDeleteFromDtoHandler(actor: JuicioObnActor)(implicit messageProducer: MessageProducer) {
   def handle(

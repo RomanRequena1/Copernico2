@@ -1,7 +1,6 @@
 package consumers.registral.tramite.infrastructure.dependency_injection
 
 import akka.actor.typed.ActorSystem
-import com.typesafe.config.Config
 import consumers.registral.tramite.application.cqrs.commands.TramiteUpdateFromDtoHandler
 import consumers.registral.tramite.application.cqrs.queries.GetStateTramiteHandler
 import consumers.registral.tramite.application.entities.TramiteCommands.TramiteUpdateFromDto

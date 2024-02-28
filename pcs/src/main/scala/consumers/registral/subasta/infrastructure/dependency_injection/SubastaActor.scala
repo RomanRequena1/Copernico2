@@ -1,7 +1,6 @@
 package consumers.registral.subasta.infrastructure.dependency_injection
 
 import akka.actor.typed.ActorSystem
-import com.typesafe.config.Config
 import consumers.registral.subasta.application.cqrs.commands.SubastaUpdateFromDtoHandler
 import consumers.registral.subasta.application.cqrs.queries.GetStateSubastaHandler
 import consumers.registral.subasta.application.entities.SubastaCommands.SubastaUpdateFromDto

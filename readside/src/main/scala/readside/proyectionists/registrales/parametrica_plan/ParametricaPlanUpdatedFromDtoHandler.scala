@@ -1,17 +1,15 @@
 package readside.proyectionists.registrales.parametrica_plan
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
-
-import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.parametrica_plan.domain.ParametricaPlanEvents.ParametricaPlanUpdatedFromDto
-import design_principles.actor_model.Response.SuccessProcessing
-import design_principles.actor_model.Response
-import monitoring.Monitoring
-import readside.proyectionists.registrales.parametrica_plan.projections.ParametricaPlanUpdatedFromDtoProjection
-import io.circe.parser._
 import consumers.registral.parametrica_plan.infrastructure.json.ParametricaPlanImplicits._
+import design_principles.actor_model.Response
+import design_principles.actor_model.Response.SuccessProcessing
+import io.circe.parser._
+import readside.proyectionists.registrales.parametrica_plan.projections.ParametricaPlanUpdatedFromDtoProjection
+
+import scala.concurrent.Future
 class ParametricaPlanUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite
@@ -20,8 +18,6 @@ class ParametricaPlanUpdatedFromDtoHandler(
   override def topic: String = "ParametricaPlanUpdatedFromDto"
   override def topicRetry: String = "ParametricaPlanUpdatedFromDto_retry"
   override def topicError: String = "ParametricaPlanUpdatedFromDto_error"
-
-  import consumers.registral.parametrica_plan.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, ParametricaPlanUpdatedFromDto] =
     decode[ParametricaPlanUpdatedFromDto](input)

@@ -1,7 +1,5 @@
 package consumers.registral.declaracion_jurada.infrastructure.http
 
-import java.time.LocalDateTime
-
 import akka.actor.typed.ActorSystem
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
@@ -10,6 +8,8 @@ import consumers.registral.declaracion_jurada.infrastructure.dependency_injectio
 import consumers.registral.declaracion_jurada.infrastructure.json.json.GetDeclaracionJuradaResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
+
+import java.time.LocalDateTime
 
 case class DeclaracionJuradaStateAPI(actor: DeclaracionJuradaActor, monitoring: Monitoring)(implicit
                                                                                             system: ActorSystem[_])

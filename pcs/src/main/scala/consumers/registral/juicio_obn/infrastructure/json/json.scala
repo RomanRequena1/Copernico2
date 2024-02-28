@@ -7,6 +7,7 @@ import consumers.registral.juicio_obn.domain.JuicioObnEvents.{JuicioObnDeletedFr
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax.EncoderOps
 import io.circe.{Decoder, Encoder, Json}
+
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.util.Try

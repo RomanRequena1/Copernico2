@@ -3,10 +3,7 @@ package readside.proyectionists.registrales.parametrica_recargo.infrastructure.m
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import readside.proyectionists.registrales.parametrica_recargo.ParametricaRecargoUpdatedFromDtoHandler
 
 class ParametricaRecargoProjectionistMicroservice(

@@ -1,7 +1,5 @@
 package consumers.registral.domicilio_objeto.infrastructure.http
 
-import java.time.LocalDateTime
-
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoQueries.GetStateDomicilioObjeto
@@ -9,6 +7,8 @@ import consumers.registral.domicilio_objeto.infrastructure.dependency_injection.
 import consumers.registral.domicilio_objeto.infrastructure.json.GetDomicilioObjetoResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
+
+import java.time.LocalDateTime
 
 case class DomicilioObjetoStateAPI(actor: DomicilioObjetoActor, monitoring: Monitoring)(
     implicit

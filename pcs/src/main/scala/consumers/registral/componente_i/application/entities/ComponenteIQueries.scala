@@ -1,7 +1,6 @@
 package consumers.registral.componente_i.application.entities
 
 import consumers.registral.componente_i.application.entities.ComponenteIResponses.GetComponenteIResponse
-import consumers.registral.cupon_descuento.application.entities.CuponDescuentoResponses.GetCuponDescuentoResponse
 import design_principles.actor_model.Query
 
 sealed trait ComponenteIQueries extends Query with ComponenteIMessage

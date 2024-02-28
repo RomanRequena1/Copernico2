@@ -5,10 +5,10 @@ import api.actor_transaction.ActorTransaction
 import consumers.registral.cupon_descuento.domain.CuponDescuentoEvents.CuponDescuentoPersistedSnapshot
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
+import io.circe.parser._
 import org.slf4j.LoggerFactory
 import readside.proyectionists.registrales.cupon_descuento.projectionists.CuponDescuentoSnapshotProjection
-import consumers.registral.cupon_descuento.infrastructure.json.json._
-import io.circe.parser._
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 

@@ -4,9 +4,10 @@ import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.juicio_tri.application.entities.JuicioDosQueries.GetStateJuicioDos
 import consumers.registral.juicio_tri.infrastructure.dependency_injection.JuicioDosActor
-import design_principles.actor_model.mechanism.QueryStateAPI
 import consumers.registral.juicio_tri.infrastructure.json.json.GetJuicioDosResponseEncoder
+import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
+
 import java.time.LocalDateTime
 
 case class JuicioDosStateAPI (actor: JuicioDosActor, monitoring: Monitoring)(implicit system: akka.actor.typed.ActorSystem[_])

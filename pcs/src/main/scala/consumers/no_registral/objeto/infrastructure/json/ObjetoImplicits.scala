@@ -1,7 +1,7 @@
 package consumers.no_registral.objeto.infrastructure.json
 
 import consumers.no_registral.objeto.application.entities.ObjetoCommands._
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{Cotitularidad, DetallesObjeto, Exencion, ListDetallesObjeto, ObjetosAnt, ObjetosTri}
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto._
 import consumers.no_registral.objeto.application.entities.ObjetoResponses.{GetExencionResponse, GetObjetoResponse}
 import consumers.no_registral.objeto.application.entities._
 import consumers.no_registral.objeto.domain.ObjetoEvents._

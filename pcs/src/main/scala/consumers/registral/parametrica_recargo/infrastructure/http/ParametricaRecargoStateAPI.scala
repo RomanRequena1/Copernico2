@@ -1,7 +1,5 @@
 package consumers.registral.parametrica_recargo.infrastructure.http
 
-import java.time.LocalDateTime
-
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.{Directive, Route}
 import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoQueries.GetStateParametricaRecargo
@@ -9,6 +7,8 @@ import consumers.registral.parametrica_recargo.infrastructure.dependency_injecti
 import consumers.registral.parametrica_recargo.infrastructure.json.json.GetParametricaRecargoResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
+
+import java.time.LocalDateTime
 
 case class ParametricaRecargoStateAPI(actor: ParametricaRecargoActor, monitoring: Monitoring)(
     implicit

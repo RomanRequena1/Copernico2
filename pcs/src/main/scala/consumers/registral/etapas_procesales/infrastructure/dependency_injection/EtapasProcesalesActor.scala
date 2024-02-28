@@ -1,7 +1,6 @@
 package consumers.registral.etapas_procesales.infrastructure.dependency_injection
 
 import akka.actor.typed.ActorSystem
-import com.typesafe.config.Config
 import consumers.registral.etapas_procesales.application.cqrs.commands.EtapasProcesalesUpdateFromDtoHandler
 import consumers.registral.etapas_procesales.application.cqrs.queries.GetStateEtapasProcesalesHandler
 import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesCommands.EtapasProcesalesUpdateFromDto

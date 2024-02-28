@@ -1,6 +1,6 @@
 package consumers.no_registral.sujeto.application.cqrs.queries
 
-import consumers.no_registral.sujeto.application.entity.SujetoQueries.{GetSnapshotSujeto, GetStateSujeto}
+import consumers.no_registral.sujeto.application.entity.SujetoQueries.GetSnapshotSujeto
 import consumers.no_registral.sujeto.application.entity.SujetoResponses.GetSujetoResponse
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import cqrs.untyped.query.QueryHandler.SyncQueryHandler

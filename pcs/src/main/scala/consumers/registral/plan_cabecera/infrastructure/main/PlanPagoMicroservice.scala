@@ -1,7 +1,7 @@
 package consumers.registral.plan_cabecera.infrastructure.main
 
-import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
 import consumers.registral.plan_cabecera.domain.PlanCabeceraState
 import consumers.registral.plan_cabecera.infrastructure.dependency_injection.PlanCabeceraActor

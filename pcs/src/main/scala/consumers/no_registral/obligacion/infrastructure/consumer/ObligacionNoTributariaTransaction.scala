@@ -4,14 +4,13 @@ package consumers.no_registral.obligacion.infrastructure.consumer
  import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
  import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento
  import consumers.no_registral.obligacion.application.entities
- import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionCommands, ObligacionesAnt}
  import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
+ import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionCommands, ObligacionesAnt}
  import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
  import design_principles.actor_model.Response
  import io.circe.parser.decode
  import io.circe.syntax.EncoderOps
  import monitoring.Monitoring
- import org.camunda.dmn.DmnEngine
 
  import scala.concurrent.Future
 

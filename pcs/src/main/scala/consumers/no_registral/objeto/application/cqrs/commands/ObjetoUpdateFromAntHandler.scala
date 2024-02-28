@@ -1,13 +1,11 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
-import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo
-import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
-import ddd.eventCounterMax
 import design_principles.actor_model.Response
+import design_principles.actor_model.mechanism.DeliveryIdManagement._
 
 import scala.util.{Success, Try}
 

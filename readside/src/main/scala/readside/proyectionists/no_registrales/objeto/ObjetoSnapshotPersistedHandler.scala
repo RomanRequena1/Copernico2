@@ -5,12 +5,13 @@ import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import com.fasterxml.jackson.annotation.JsonIgnore
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
+import io.circe.parser.decode
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.objeto.projections.ObjetoSnapshotPersistedProjection
-import io.circe.parser.decode
-import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 

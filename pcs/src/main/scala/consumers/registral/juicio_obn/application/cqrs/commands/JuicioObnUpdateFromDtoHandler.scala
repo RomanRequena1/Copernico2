@@ -3,16 +3,16 @@ package consumers.registral.juicio_obn.application.cqrs.commands
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
-import consumers.registral.juicio_obn.infrastructure.json.json._
 import consumers.registral.juicio_obn.application.entities.JuicioObnCommands.JuicioObnUpdateFromDto
 import consumers.registral.juicio_obn.domain.JuicioObnEvents.JuicioObnUpdatedFromDto
 import consumers.registral.juicio_obn.domain.JuicioObnState
 import consumers.registral.juicio_obn.infrastructure.dependency_injection.JuicioObnActor
+import consumers.registral.juicio_obn.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import io.circe.syntax.EncoderOps
 import org.slf4j.LoggerFactory
 
 class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProducer: MessageProducer) {

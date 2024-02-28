@@ -9,9 +9,9 @@ import consumers.registral.juicio_tri.domain.JuicioDosState
 import consumers.registral.juicio_tri.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import io.circe.syntax.EncoderOps
 
 class JuicioDosUpdateFromDtoHandler(implicit messageProducer: MessageProducer){
   def handle(command: JuicioDosUpdateFromDto)(state: JuicioDosState)(replyTo: ActorRef[Success]): ReplyEffect[JuicioDosUpdatedFromDto, JuicioDosState] = {

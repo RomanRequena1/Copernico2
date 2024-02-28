@@ -8,8 +8,9 @@ import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoComma
 import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
-import scala.util.{Success, Try}
 import design_principles.actor_model.Response
+
+import scala.util.{Success, Try}
 
 
 class RemoveObjetoVinculoFromObjHandler (actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[RemoveObjetoVinculo] {

@@ -2,10 +2,10 @@ package consumers.no_registral.tranferencia.application.entity
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
 import consumers.no_registral.tranferencia.domain.{Vinculo, VinculoCotitular}
-
-import java.time.LocalDateTime
 import design_principles.actor_model.Response
 import serialization.CbroSerialization
+
+import java.time.LocalDateTime
 
 sealed trait ObjetoVinculoResponses extends Response
 

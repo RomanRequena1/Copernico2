@@ -2,9 +2,9 @@ package consumers.no_registral.obligacion.application.dmn
 
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
 
-import java.time.{LocalDate, LocalDateTime}
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.time.{LocalDate, LocalDateTime}
 
 object Utils {
 

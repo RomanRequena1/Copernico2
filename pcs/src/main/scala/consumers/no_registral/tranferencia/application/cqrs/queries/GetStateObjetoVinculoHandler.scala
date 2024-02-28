@@ -1,8 +1,5 @@
 package consumers.no_registral.tranferencia.application.cqrs.queries
 
-import consumers.no_registral.objeto.application.entities.ObjetoQueries.GetStateObjeto
-import consumers.no_registral.objeto.application.entities.ObjetoResponses.GetObjetoResponse
-import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoQueries.GetStateObjetoVinculo
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoResponses.GetObjetoVinculoResponse
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor

@@ -4,12 +4,12 @@ import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.calendario.application.entities.{CalendarioCommands, CalendarioExternalDto}
 import consumers.registral.calendario.infrastructure.dependency_injection.CalendarioActor
+import consumers.registral.calendario.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
-import monitoring.Monitoring
 import io.circe.parser._
-import consumers.registral.calendario.infrastructure.json.json._
-import io.circe.Encoder
+import monitoring.Monitoring
+
 import scala.concurrent.Future
 
 case class CalendarioTransaction(actor: CalendarioActor, monitoring: Monitoring)(

@@ -1,7 +1,5 @@
 package consumers.no_registral.sujeto.application.cqrs.commands
 
-import akka.Done
-import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.sujeto.application.entity.SujetoCommands.SujetoSetBajaFromObjeto
 import consumers.no_registral.sujeto.application.helper.SendToObjeto
 import consumers.no_registral.sujeto.domain.SujetoEvents

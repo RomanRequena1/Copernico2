@@ -1,9 +1,10 @@
 package consumers.no_registral.objeto.application.entities
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import java.time.LocalDateTime
 import design_principles.actor_model.Response
 import serialization.CbroSerialization
+
+import java.time.LocalDateTime
 
 sealed trait ObjetoResponses extends Response
 

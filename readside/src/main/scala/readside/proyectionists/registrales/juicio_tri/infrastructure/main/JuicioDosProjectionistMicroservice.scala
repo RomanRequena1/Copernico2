@@ -3,8 +3,8 @@ package readside.proyectionists.registrales.juicio_tri.infrastructure.main
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
-import readside.proyectionists.registrales.juicio_tri.{JuicioDosRemovedSnapshotHandler, JuicioDosUpdatedSnapshotHandler}
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
+import readside.proyectionists.registrales.juicio_tri.{JuicioDosRemovedSnapshotHandler, JuicioDosUpdatedSnapshotHandler}
 
 class JuicioDosProjectionistMicroservice(
     implicit m: KafkaConsumerMicroserviceRequirements

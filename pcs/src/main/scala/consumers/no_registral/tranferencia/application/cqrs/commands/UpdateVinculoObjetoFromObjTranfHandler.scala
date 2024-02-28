@@ -10,7 +10,6 @@ import consumers.no_registral.tranferencia.infrastructure.dependency_injection.O
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 
-import java.time.LocalDate
 import scala.util.{Success, Try}
 
 class UpdateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[CreateTransfVinculoObjetoFromObj] {

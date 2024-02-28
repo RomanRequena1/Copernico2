@@ -1,18 +1,13 @@
 package consumers.no_registral.objeto.application.helper
 
-import akka.actor.{ActorRef, ActorSystem, Props}
+import akka.actor.ActorSystem
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
-import consumers.no_registral.objeto.application.entities.ObjetoCommands.{ObjetoRemoveObligacion, ObjetoUpdateFromObligacion, ObjetoUpdateFromObnTreintaPorciento, ObjetoUpdateFromTri}
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands.{CreateTransfVinculoObjetoFromObj, RemoveObjetoVinculo, UpdateVinculoObjetoFromObj}
-import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoMessage.ObjetoVinculoMessageRoots
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import design_principles.actor_model.Response
 import org.slf4j.{Logger, LoggerFactory}
-import consumers.no_registral.objeto.application.helper.testAnda
-import scala.concurrent.Future
-import scala.util.{Failure, Success, Try}
 
 
 //todo --------------------------- REFACTORIZAR ----------------------------------

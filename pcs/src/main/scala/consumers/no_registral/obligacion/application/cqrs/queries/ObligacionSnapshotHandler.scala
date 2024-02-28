@@ -1,7 +1,7 @@
 package consumers.no_registral.obligacion.application.cqrs.queries
 
-import consumers.no_registral.obligacion.application.entities.{ObligacionQueries, ObligacionResponses}
 import consumers.no_registral.obligacion.application.entities.ObligacionResponses.GetObligacionResponse
+import consumers.no_registral.obligacion.application.entities.{ObligacionQueries, ObligacionResponses}
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import cqrs.untyped.query.QueryHandler.SyncQueryHandler
 

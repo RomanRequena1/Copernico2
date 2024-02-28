@@ -1,7 +1,5 @@
 package consumers.registral.actividad_sujeto.infrastructure.http
 
-import java.time.LocalDateTime
-
 import akka.actor.typed.ActorSystem
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.{Directive, Route}
@@ -10,6 +8,8 @@ import consumers.registral.actividad_sujeto.infrastructure.dependency_injection.
 import consumers.registral.actividad_sujeto.infrastructure.json.json.GetActividadSujetoResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
+
+import java.time.LocalDateTime
 
 case class ActividadSujetoStateAPI(actor: ActividadSujetoActor, monitoring: Monitoring)(implicit system: ActorSystem[_])
     extends QueryStateAPI(monitoring) {

@@ -1,12 +1,9 @@
 package readside.proyectionists.no_registrales.transferencia.infrastructure
 
 import akka.http.scaladsl.server.Directives._
-import api.actor_transaction.ActorTransaction
 import akka.http.scaladsl.server.Route
-import design_principles.microservice.kafka_consumer_microservice.{
-  KafkaConsumerMicroservice,
-  KafkaConsumerMicroserviceRequirements
-}
+import api.actor_transaction.ActorTransaction
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import readside.proyectionists.no_registrales.transferencia.TransferenciaSnapshotPersistedHandler
 
 class TransferenciaProjectionistMicroservice(

@@ -6,11 +6,11 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoCommands.DomicilioSujetoUpdateFromDto
 import consumers.registral.domicilio_sujeto.domain.DomicilioSujetoEvents.DomicilioSujetoUpdatedFromDto
 import consumers.registral.domicilio_sujeto.domain.DomicilioSujetoState
+import consumers.registral.domicilio_sujeto.infrastructure.json._
 import design_principles.actor_model.Response
 import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import consumers.registral.domicilio_sujeto.infrastructure.json._
 
 class DomicilioSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 

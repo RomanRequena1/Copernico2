@@ -7,11 +7,10 @@ import consumers.registral.subasta.infrastructure.dependency_injection.SubastaAc
 import consumers.registral.subasta.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
-import monitoring.Monitoring
 import io.circe.parser.decode
+import monitoring.Monitoring
 
 import scala.concurrent.Future
-import scala.util.Try
 
 case class SubastaTransaction(actor: SubastaActor, monitoring: Monitoring)(
     implicit

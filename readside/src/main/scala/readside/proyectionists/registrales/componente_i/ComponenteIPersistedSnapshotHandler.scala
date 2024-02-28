@@ -4,15 +4,15 @@ import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import com.fasterxml.jackson.annotation.JsonIgnore
 import consumers.registral.componente_i.domain.ComponenteIEvents.ComponenteIPersistedSnapshot
+import consumers.registral.componente_i.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
+import io.circe.parser._
 import org.slf4j.LoggerFactory
 import readside.proyectionists.registrales.componente_i.projectionists.ComponenteISnapshotProjection
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-import consumers.registral.componente_i.infrastructure.json.json._
-import io.circe.parser._
 class ComponenteIPersistedSnapshotHandler(
                                           implicit
                                           r: MonitoringAndCassandraWrite

@@ -4,10 +4,10 @@ import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.exclusiones_sujeto.domain.ExclusionesSujetoEvents.ExclusionesSujetoUpdatedFromDto
+import consumers.registral.exclusiones_sujeto.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
 import io.circe.parser._
-import consumers.registral.exclusiones_sujeto.infrastructure.json._
 import readside.proyectionists.registrales.exclusiones_sujeto.projections.ExclusionesSujetoUpdatedFromDtoProjection
 
 import scala.concurrent.Future

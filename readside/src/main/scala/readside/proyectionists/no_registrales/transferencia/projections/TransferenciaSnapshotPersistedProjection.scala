@@ -1,6 +1,6 @@
 package readside.proyectionists.no_registrales.transferencia.projections
 
-import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent.{ObjetoVinculoSnapshotPersisted, UpdatedVinculoObjetoFromObj}
+import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent.ObjetoVinculoSnapshotPersisted
 
 case class TransferenciaSnapshotPersistedProjection(
     event: ObjetoVinculoSnapshotPersisted

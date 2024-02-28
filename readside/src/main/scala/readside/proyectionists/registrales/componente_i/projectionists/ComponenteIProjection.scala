@@ -2,7 +2,6 @@ package readside.proyectionists.registrales.componente_i.projectionists
 
 import cassandra.mechanism.UpdateReadSideProjection
 import consumers.registral.componente_i.domain.ComponenteIEvents
-import consumers.registral.cupon_descuento.domain.CuponDescuentoEvents
 
 trait ComponenteIProjection extends UpdateReadSideProjection[ComponenteIEvents] {
   def collectionName: String = "read_side.buc_componente_i"

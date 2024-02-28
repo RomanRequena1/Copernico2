@@ -9,6 +9,7 @@ import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
+
 import scala.util.{Success, Try}
 
 

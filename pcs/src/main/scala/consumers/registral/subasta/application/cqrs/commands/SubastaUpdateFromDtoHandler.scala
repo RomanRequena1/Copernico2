@@ -1,6 +1,4 @@
 package consumers.registral.subasta.application.cqrs.commands
-import io.circe.syntax.EncoderOps
-
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
@@ -9,6 +7,7 @@ import consumers.registral.subasta.domain.SubastaEvents.SubastaUpdatedFromDto
 import consumers.registral.subasta.domain.SubastaState
 import consumers.registral.subasta.infrastructure.json.json._
 import design_principles.actor_model.Response
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 

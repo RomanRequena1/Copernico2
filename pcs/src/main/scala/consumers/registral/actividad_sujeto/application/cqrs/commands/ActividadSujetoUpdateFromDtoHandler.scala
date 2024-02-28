@@ -6,11 +6,11 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoCommands.ActividadSujetoUpdateFromDto
 import consumers.registral.actividad_sujeto.domain.ActividadSujetoEvents.ActividadSujetoUpdatedFromDto
 import consumers.registral.actividad_sujeto.domain.ActividadSujetoState
+import consumers.registral.actividad_sujeto.infrastructure.json.json._
 import design_principles.actor_model.Response
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import io.circe.syntax.EncoderOps
-import consumers.registral.actividad_sujeto.infrastructure.json.json._
 
 class ActividadSujetoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 

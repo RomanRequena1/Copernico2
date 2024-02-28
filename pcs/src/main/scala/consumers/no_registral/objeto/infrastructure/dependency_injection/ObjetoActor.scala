@@ -2,12 +2,14 @@ package consumers.no_registral.objeto.infrastructure.dependency_injection
 
 import akka.ActorRefMap
 import akka.actor.{ActorRef, Props}
-import akka.entity.ShardedEntity.{MonitoringAndMessageProducer, MonitoringAndMessageProducerTranf}
+import akka.entity.ShardedEntity
+import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.cqrs.commands._
 import consumers.no_registral.objeto.application.cqrs.queries.{GetSnapshotObjetoHandler, GetStateExencionHandler, GetStateObjetoHandler}
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoQueries}
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import consumers.no_registral.objeto.domain.{ObjetoEvents, ObjetoState}
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage._
 import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionMessage}
@@ -15,10 +17,9 @@ import consumers.no_registral.obligacion.domain.ObligacionEvents
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import consumers.no_registral.sujeto.application.entity.SujetoCommands
 import cqrs.base_actor.untyped.PersistentBaseActor
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import io.circe.syntax.EncoderOps
-import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 
 
 class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorPropsOption: Option[Props] = None)
@@ -36,6 +37,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
     commandBus.subscribe[ObjetoCommands.ObjetoTagRemove](new ObjetoTagRemoveHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromAnt](new ObjetoUpdateFromAntHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromTri](new ObjetoUpdateFromTriHandler(this, requirements).handle)
+    commandBus.subscribe[ObjetoCommands.RemoveObjetoFromObligacion](new ObjetoMapRemoveFromObligacionHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.SetBajaObjeto](new SetBajaObjetoHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObligacion](new ObjetoUpdateFromObligacionHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateCotitulares](new ObjetoUpdateCotitularesHandler(this).handle)
@@ -109,8 +111,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
         case _ => ()
       }
   }
-
-  import consumers.no_registral.objeto.infrastructure.json._
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
     val kafkaTopic = "ObjetoSnapshotPersistedReadside"
@@ -289,7 +289,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
   }
 }
 
-object ObjetoActor {
+object ObjetoActor extends ShardedEntity[MonitoringAndMessageProducer]{
   def props(requirements: MonitoringAndMessageProducer): Props =
     Props(new ObjetoActor(requirements, None)).withDispatcher("my-dispatcher") //TODO added my-dispatcher
   type ObligacionAgregateRoot = (String, String, String, String)

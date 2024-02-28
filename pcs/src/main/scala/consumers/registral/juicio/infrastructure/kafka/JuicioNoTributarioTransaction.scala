@@ -3,7 +3,7 @@ package consumers.registral.juicio.infrastructure.kafka
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.juicio.application.entities.JuicioCommands
-import consumers.registral.juicio.application.entities.JuicioExternalDto.{DetallesJuicio, JuicioAnt}
+import consumers.registral.juicio.application.entities.JuicioExternalDto.JuicioAnt
 import consumers.registral.juicio.infrastructure.dependency_injection.JuicioActor
 import consumers.registral.juicio.infrastructure.json._
 import design_principles.actor_model.Response

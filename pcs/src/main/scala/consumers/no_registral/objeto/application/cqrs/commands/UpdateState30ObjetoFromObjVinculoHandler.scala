@@ -1,15 +1,10 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
-import akka.actor.{ActorRef, ActorSystem}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
 import consumers.no_registral.objeto.application.helper.{SendToSujeto, SendToSujeto1}
-import consumers.no_registral.objeto.domain.ObjetoEvents
-import consumers.no_registral.objeto.domain.ObjetoEvents.{ObjetoUpdatedFromObligacion, UpdatedState30ObjetoFromObjVinculo}
+import consumers.no_registral.objeto.domain.ObjetoEvents.UpdatedState30ObjetoFromObjVinculo
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
-import consumers.no_registral.sujeto.application.entity.SujetoCommands
-import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response

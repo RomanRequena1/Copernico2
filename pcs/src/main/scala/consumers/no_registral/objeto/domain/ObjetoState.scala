@@ -2,7 +2,6 @@ package consumers.no_registral.objeto.domain
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromSujeto
 import ddd.{AbstractState, eventCounterMax}
 import serialization.CbroSerialization
 
@@ -203,6 +202,14 @@ case class ObjetoState(
             tiene30Objeto = diff
           )
         }
+      case evt: ObjetoEvents.RemovedObjetoFromObligacion =>
+        val _obnVencidas = obnVencidas - evt.obligacionId
+        val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
+        copy(
+          obnVencidas = _obnVencidas,
+          tiene30Objeto = diff
+        )
+
 
       case evt =>
         log.warn(s"Unexpected event at ObjetoState ${evt}")

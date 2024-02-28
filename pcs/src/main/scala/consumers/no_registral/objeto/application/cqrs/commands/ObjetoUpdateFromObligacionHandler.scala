@@ -10,7 +10,6 @@ import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoA
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
-import org.slf4j.LoggerFactory
 
 import scala.util.{Success, Try}
 

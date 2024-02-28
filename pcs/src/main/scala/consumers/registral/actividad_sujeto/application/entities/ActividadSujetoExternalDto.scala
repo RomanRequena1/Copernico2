@@ -1,9 +1,8 @@
 package consumers.registral.actividad_sujeto.application.entities
 
-import java.time.LocalDateTime
-import ddd.ExternalDto
-import play.api.libs.json.JsObject
 import serialization.CbroSerialization
+
+import java.time.LocalDateTime
 
 
   case class ActividadSujeto(

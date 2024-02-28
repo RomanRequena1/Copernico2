@@ -3,7 +3,6 @@ package consumers.no_registral.obligacion.application.cqrs.commands
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands
 import consumers.no_registral.obligacion.domain.ObligacionEvents
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
-
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 

@@ -1,10 +1,8 @@
 package consumers.no_registral.objeto.application.helper
 
-import akka.actor.{ActorContext, ActorRef}
-import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateFromSujeto
+import akka.actor.ActorContext
 import consumers.no_registral.objeto.domain.ObjetoState
-import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionRemoveInfoFromObjeto}
-import consumers.no_registral.sujeto.domain.SujetoState
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionRemoveInfoFromObjeto
 
 object SendToObligaciones {
   def apply(newState: ObjetoState, actorContext: ActorContext) : Unit = {

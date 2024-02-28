@@ -1,7 +1,6 @@
 package consumers.registral.calendario.infrastructure.dependency_injection
 
 import akka.actor.typed.ActorSystem
-import com.typesafe.config.Config
 import consumers.registral.calendario.application.cqrs.commands.CalendarioUpdateFromDtoHandler
 import consumers.registral.calendario.application.cqrs.queries.GetStateCalendarioHandler
 import consumers.registral.calendario.application.entities.CalendarioCommands.CalendarioUpdateFromDto

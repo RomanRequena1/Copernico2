@@ -5,7 +5,6 @@ import consumers.registral.contacto.domain.ContactoEvents.ContactoUpdatedFromDto
 import consumers.registral.contacto.domain.ContactoExternalDto
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}
-import play.api.libs.json.Json
 
  object json {
    implicit val ContactoUpdateFromDtoDecoder: Decoder[ContactoUpdateFromDto] = deriveDecoder

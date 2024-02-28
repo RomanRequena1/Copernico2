@@ -1,7 +1,5 @@
 package consumers.registral.juicio_obn.application.entities
 
-import play.api.libs.json.JsObject
-
 import java.time.LocalDateTime
 
 case class JuicioObnTri(

@@ -11,6 +11,7 @@ import design_principles.actor_model.Response.SuccessProcessing
 import io.circe.parser.decode
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.transferencia.projections.TransferenciaSnapshotPersistedProjection
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 

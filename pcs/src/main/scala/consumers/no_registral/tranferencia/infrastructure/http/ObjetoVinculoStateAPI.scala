@@ -7,12 +7,10 @@ import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import consumers.no_registral.objeto.application.entities.ObjetoQueries.{GetSnapshotObjeto, GetStateExencion, GetStateObjeto}
-import consumers.no_registral.objeto.application.entities.ObjetoResponses.{GetExencionResponse, GetObjetoResponse}
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoQueries.GetStateObjetoVinculo
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoResponses.GetObjetoVinculoResponse
-import consumers.no_registral.tranferencia.infrastructure.json.ObjetoVinculoImplicits._
 import consumers.no_registral.tranferencia.infrastructure.http.ObjetoVinculoStateAPI.withObjeto
+import consumers.no_registral.tranferencia.infrastructure.json.ObjetoVinculoImplicits._
 import design_principles.actor_model.mechanism.QueryStateAPI
 import design_principles.actor_model.mechanism.QueryStateAPI.QueryStateApiRequirements
 import monitoring.Monitoring

@@ -10,7 +10,6 @@ import design_principles.actor_model.Response
 import io.circe.parser.decode
 import io.circe.syntax.EncoderOps
 import monitoring.Monitoring
-import org.slf4j.LoggerFactory
 
 import scala.concurrent.Future
 

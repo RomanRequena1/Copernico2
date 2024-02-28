@@ -1,8 +1,8 @@
 package consumers.registral.calendario.application.entities
 
-import java.time.LocalDateTime
-import ddd.ExternalDto
 import serialization.CbroSerialization
+
+import java.time.LocalDateTime
 
 case class CalendarioExternalDto(
     EV_ID: String,

@@ -1,6 +1,5 @@
 package readside.proyectionists.no_registrales.obligacion
 
-import akka.Done.done
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction

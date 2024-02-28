@@ -2,18 +2,13 @@ package consumers.no_registral.sujeto.application.cqrs.commands
 
 import akka.actor.ActorRef
 import akka.persistence.SnapshotSelectionCriteria
-import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento
-import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.sujeto.application.entity.SujetoCommands
 import consumers.no_registral.sujeto.application.helper.SendToObjeto
 import consumers.no_registral.sujeto.domain.SujetoEvents
-import consumers.no_registral.sujeto.domain.SujetoEvents.SujetoUpdatedFromObjetoTreintaPorciento
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
-import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
 
 import scala.util.{Success, Try}
 

@@ -1,7 +1,6 @@
 package consumers.registral.parametrica_recargo.infrastructure.dependency_injection
 
 import akka.actor.typed.ActorSystem
-import com.typesafe.config.Config
 import consumers.registral.parametrica_recargo.application.cqrs.commands.ParametricaRecargoUpdateFromDtoHandler
 import consumers.registral.parametrica_recargo.application.cqrs.queries.GetStateParametricaRecargoHandler
 import consumers.registral.parametrica_recargo.application.entities.ParametricaRecargoCommands.ParametricaRecargoUpdateFromDto

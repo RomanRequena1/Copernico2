@@ -1,16 +1,16 @@
 package consumers.registral.plan_pago_detalles.application.cqrs.commands
 
-import io.circe.syntax.EncoderOps
 import akka.actor.Status.Success
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.plan_pago_detalles.application.entities.PlanPagoCommands.PlanPagoRemoveFromDto
 import consumers.registral.plan_pago_detalles.domain.PlanPagoEvents.PlanPagoRemovedFromDto
 import consumers.registral.plan_pago_detalles.domain.PlanPagoState
+import consumers.registral.plan_pago_detalles.infrastructure.json.json._
 import design_principles.actor_model.Response
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import consumers.registral.plan_pago_detalles.infrastructure.json.json._
 
 class PlanPagoRemoveHandler (implicit messageProducer: MessageProducer){
 

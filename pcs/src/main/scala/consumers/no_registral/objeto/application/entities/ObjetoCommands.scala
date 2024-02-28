@@ -15,6 +15,15 @@ object ObjetoCommands {
       tipoObjeto: String,
       cotitulares: Set[String]
   ) extends ObjetoCommands
+  case class RemoveObjetoFromObligacion(
+                                         deliveryId: BigInt,
+                                         sujetoId: String,
+                                         objetoId: String,
+                                         tipoObjeto: String,
+                                         obligacionId: String,
+                                         cuota: Option[String]
+                                       ) extends ObjetoCommands
+
 
   case class UpdateState30ObjetoFromObjVinculo(
                                       deliveryId: BigInt,

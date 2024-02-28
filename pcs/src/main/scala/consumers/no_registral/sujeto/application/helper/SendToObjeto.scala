@@ -2,8 +2,8 @@ package consumers.no_registral.sujeto.application.helper
 
 import akka.actor.{ActorContext, ActorRef}
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateFromSujeto
-import consumers.no_registral.sujeto.domain.SujetoEvents.{SujetoBajaFromObjetoSet, SujetoUpdatedFromObjeto, SujetoUpdatedFromObjetoTreintaPorciento}
 import consumers.no_registral.sujeto.domain.SujetoState
+
 
 object SendToObjeto {
   def apply(currentState: SujetoState, sender: ActorRef, actorContext: ActorContext, sujetoId: String, objetoId: String, tipoObjeto: String) : Unit = {

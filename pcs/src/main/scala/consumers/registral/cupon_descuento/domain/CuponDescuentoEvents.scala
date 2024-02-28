@@ -1,7 +1,6 @@
 package consumers.registral.cupon_descuento.domain
 
-import consumers.registral.cupon_descuento.application.entities.{ CuponDescuentoMessage, CuponDescuentoTri, DetallesCuponDescuento}
-import consumers.registral.cupon_descuento.application.entities.DetallesCuponDescuento
+import consumers.registral.cupon_descuento.application.entities.{CuponDescuentoMessage, CuponDescuentoTri, DetallesCuponDescuento}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 

@@ -2,14 +2,14 @@ package consumers.registral.juicio_obn.infrastructure.kafka
 
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
-import consumers.registral.juicio_obn.application.entities.JuicioObnCommands.{JuicioObnDeleteFromDto, JuicioObnUpdateFromDto}
-import consumers.registral.juicio_obn.application.entities.{DetallesJuicioTri, JuicioObnCommands, JuicioObnTri}
+import consumers.registral.juicio_obn.application.entities.JuicioObnCommands.JuicioObnUpdateFromDto
+import consumers.registral.juicio_obn.application.entities.{JuicioObnCommands, JuicioObnTri}
 import consumers.registral.juicio_obn.infrastructure.dependency_injection.JuicioObnActor
-import design_principles.actor_model.Response
-import monitoring.Monitoring
 import consumers.registral.juicio_obn.infrastructure.json.json._
+import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import io.circe.parser._
+import monitoring.Monitoring
 
 import scala.concurrent.Future
 

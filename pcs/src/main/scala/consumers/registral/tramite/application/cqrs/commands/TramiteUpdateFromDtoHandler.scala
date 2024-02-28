@@ -6,11 +6,11 @@ import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.tramite.application.entities.TramiteCommands.TramiteUpdateFromDto
 import consumers.registral.tramite.domain.TramiteEvents.TramiteUpdatedFromDto
 import consumers.registral.tramite.domain.TramiteState
+import consumers.registral.tramite.infrastructure.json._
 import design_principles.actor_model.Response
 import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import consumers.registral.tramite.infrastructure.json._
 
 class TramiteUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 

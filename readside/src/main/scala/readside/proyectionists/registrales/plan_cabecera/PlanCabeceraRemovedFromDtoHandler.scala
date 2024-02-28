@@ -4,11 +4,12 @@ import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.plan_cabecera.domain.PlanCabeceraEvents.PlanCabeceraRemovedFromDto
+import consumers.registral.plan_cabecera.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
-import org.slf4j.LoggerFactory
 import io.circe.parser._
-import consumers.registral.plan_cabecera.infrastructure.json.json._
+import org.slf4j.LoggerFactory
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 

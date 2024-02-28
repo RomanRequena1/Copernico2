@@ -1,6 +1,6 @@
 package readside.proyectionists.registrales.juicio_tri.projections
 
-import consumers.registral.juicio_tri.application.entities.{JuicioDosTri}
+import consumers.registral.juicio_tri.application.entities.JuicioDosTri
 import consumers.registral.juicio_tri.domain.JuicioDosEvents
 
 case class JuicioDosUpdatedFromDtoProjection(

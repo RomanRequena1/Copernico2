@@ -1,8 +1,8 @@
 package consumers.registral.juicio_tri.infrastructure.json
 
 import consumers.registral.juicio_tri.application.entities.JuicioDosCommands.{JuicioDosRemoveFromDto, JuicioDosUpdateFromDto}
-import consumers.registral.juicio_tri.application.entities.JuicioDosTri
 import consumers.registral.juicio_tri.application.entities.JuicioDosResponses.GetJuicioDosResponse
+import consumers.registral.juicio_tri.application.entities.JuicioDosTri
 import consumers.registral.juicio_tri.domain.JuicioDosEvents.{JuicioDosRemovedFromDto, JuicioDosUpdatedFromDto}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}

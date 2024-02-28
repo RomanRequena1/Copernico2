@@ -4,9 +4,10 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import consumers.registral.plan_cabecera.application.entities.PlanCabeceraQueries.GetStatePlanCabecera
 import consumers.registral.plan_cabecera.infrastructure.dependency_injection.PlanCabeceraActor
+import consumers.registral.plan_cabecera.infrastructure.json.json._
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
-import consumers.registral.plan_cabecera.infrastructure.json.json._
+
 import java.time.LocalDateTime
 
 case class PlanCabeceraStateAPI(actor: PlanCabeceraActor, monitoring: Monitoring)(implicit
