@@ -204,16 +204,17 @@ case class ObjetoState(
         }
 
       case evt: ObjetoEvents.RemovedObjetoFromObligacion =>
-        val _obnVencidas = if(obnVencidas.contains(evt.obligacionId)) obnVencidas - evt.obligacionId else obnVencidas
+        val _obnVencidas =
+          if (obnVencidas.contains(evt.obligacionId)) {
+            obnVencidas - evt.obligacionId
+          } else {
+            obnVencidas
+          }
         val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
-
-        log.error("TIENE30: " + tiene30Objeto + "OBJ VINC: " + tiene30ObjetoVinculo)
-
         copy(
           obnVencidas = _obnVencidas,
           tiene30Objeto = diff
         )
-
       case evt =>
         log.warn(s"Unexpected event at ObjetoState ${evt}")
         this

@@ -14,6 +14,7 @@ class ObligacionRemoveFromObjeto(actor: ObligacionActor, requeriment: Monitoring
   override def handle(command: ObligacionRemoveInfoFromObjeto): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
+
     val event =
       ObligacionEvents.ObligacionRemovedInfoFromObjeto(
         command.deliveryId,
@@ -22,7 +23,7 @@ class ObligacionRemoveFromObjeto(actor: ObligacionActor, requeriment: Monitoring
         command.tipoObjeto,
         command.obligacionId,
         actor.state.registro.get,
-        actor.state.registro.get.BOB_CUOTA
+        actor.state.registro.get.BOB_CUOTA,
       )
 
       actor.persistEvent(event) { () =>

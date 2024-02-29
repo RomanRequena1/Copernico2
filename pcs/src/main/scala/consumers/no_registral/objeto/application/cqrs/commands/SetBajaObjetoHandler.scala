@@ -16,7 +16,6 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
       command: ObjetoCommands.SetBajaObjeto
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    log.error("LLEGO SETBAJA OBJETO HANDLER")
     val event = ObjetoEvents.ObjetoBajaSet(
       actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
@@ -27,7 +26,6 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
       command.sujetoResponsable
     )
     if(command.deliveryId.signum < 0 || !isIdempotent(command, actor.state.lastDeliveryIdByEvents)){
-      log.error("ENTRE AL EV_ID NEGATIVO DEL BAJA")
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.informBajaToParent(command)
@@ -42,8 +40,6 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
     }
 
     else if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error("ENTRE AL EV_ID IDEMPOTENT DEL BAJA")
-
       log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     }
