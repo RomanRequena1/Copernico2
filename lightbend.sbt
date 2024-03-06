@@ -1,7 +1,7 @@
 ThisBuild / resolvers += "lightbend-commercial-mvn" at
-  "https://repo.lightbend.com/pass/6kHELK6KmBWLKH_YkIglRAdWYsZwhbEUjRql432xR5Q90OYs/commercial-releases"
+  "https://repo.lightbend.com/pass/6kHELK6KmBWLKH_YkIglRPboBcwMhndjDC5GSdvAsFObYzPM/commercial-releases"
 ThisBuild / resolvers += Resolver.url("lightbend-commercial-ivy",
-  url("https://repo.lightbend.com/pass/6kHELK6KmBWLKH_YkIglRAdWYsZwhbEUjRql432xR5Q90OYs/commercial-releases"))(Resolver.ivyStylePatterns)
+  url("https://repo.lightbend.com/pass/6kHELK6KmBWLKH_YkIglRPboBcwMhndjDC5GSdvAsFObYzPM/commercial-releases"))(Resolver.ivyStylePatterns)
 
 
 credentials += Credentials(Path.userHome / ".lightbend" / "commercial.credentials")
