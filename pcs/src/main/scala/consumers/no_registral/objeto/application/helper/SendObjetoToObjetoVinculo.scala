@@ -9,6 +9,8 @@ import consumers.no_registral.tranferencia.infrastructure.dependency_injection.O
 import design_principles.actor_model.Response
 import org.slf4j.{Logger, LoggerFactory}
 
+import scala.util.{Failure, Success}
+
 
 //todo --------------------------- REFACTORIZAR ----------------------------------
 object SendObjetoToObjetoVinculo {
@@ -28,8 +30,6 @@ object SendObjetoToObjetoVinculo {
 
     val actorPath = s"akka://PersonClassificationService/system/sharding/SujetoActor/*/${sujetoId}/Sujeto-${sujetoId}-Objeto-${objetoId}-${tipoObjeto}/ObjetoVinculo-${objetoId}"
     // s"akka://PersonClassificationService/user/ObjetoVinculo-${objetoId}"
-    log.error("Se va a crear  en none del actor" + sujetoId + " - " + objetoId + ")")
-
     val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"))
 
     implicit val ac: ActorSystem = actor.context.system
@@ -44,7 +44,7 @@ object SendObjetoToObjetoVinculo {
 
     estado match {
       case x if x.getOrElse("").equals("TRANSF") =>
-        Obje.ask[Response.SuccessProcessing](CreateTransfVinculoObjetoFromObj(objetoId = objetoId,
+        val res = Obje.ask[Response.SuccessProcessing](CreateTransfVinculoObjetoFromObj(objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = 0,
           tipoObj = tipoObjeto,
@@ -53,13 +53,18 @@ object SendObjetoToObjetoVinculo {
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD
         ))
+        res.onComplete {
+          case Failure(exception) => log.error("Error to send event to objeto_vinculo (TRANSF)" + exception + "objID: "+ objetoId + "sujID: "+sujetoId)
+          case Success(value) => log.debug("Sent event to objet_vinculo " + " objID: "+ objetoId + " sujID: "+ sujetoId)
+        }
+
         if (actor.state.tiene30Objeto.equals(false))
           actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
         else
           actor.informParent(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
 
       case x if x.getOrElse("").equals("BAJA") =>
-        Obje.ask[Response.SuccessProcessing](RemoveObjetoVinculo(
+        val res = Obje.ask[Response.SuccessProcessing](RemoveObjetoVinculo(
           objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = 0,
@@ -68,8 +73,13 @@ object SendObjetoToObjetoVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD))
+        res.onComplete {
+          case Failure(exception) => log.error("Error to send event to objeto_vinculo (BAJA) " + exception + " objID: "+ objetoId + "sujID: "+sujetoId)
+          case Success(value) => log.debug("Sent event to objet_vinculo " + " objID: "+ objetoId + " sujID: "+ sujetoId)
+        }
+
       case _ =>
-        Obje.ask[Response.SuccessProcessing](UpdateVinculoObjetoFromObj(objetoId = objetoId,
+        val res = Obje.ask[Response.SuccessProcessing](UpdateVinculoObjetoFromObj(objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = 0,
           tipoObj = tipoObjeto,
@@ -77,6 +87,11 @@ object SendObjetoToObjetoVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD))
+        res.onComplete {
+          case Failure(exception) => log.error("Error to send event to objeto_vinculo " + exception + " objID: "+ objetoId + " sujID: "+sujetoId)
+          case Success(value) => log.debug("Sent event to objet_vinculo " + " objID: "+ objetoId + " sujID: "+ sujetoId)
+        }
+
 
     }
 

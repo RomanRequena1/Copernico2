@@ -24,3 +24,4 @@ class GetStateObjetoVinculoHandler(actor: ObjetoVinculoActor) extends SyncQueryH
     Success(response)
   }
 }
+
