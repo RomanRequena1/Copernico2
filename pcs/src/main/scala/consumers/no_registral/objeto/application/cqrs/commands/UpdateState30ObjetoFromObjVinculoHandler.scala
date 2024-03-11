@@ -29,7 +29,6 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor,requeriment: M
 
 
 
-
     actor.persistEvent(event) { () =>
       actor.state += event
       if (actor.state.eventCounter == eventCounterMax) {

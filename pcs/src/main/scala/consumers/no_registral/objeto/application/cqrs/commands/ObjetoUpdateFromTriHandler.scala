@@ -1,5 +1,6 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
+import akka.actor.{ActorRef, ActorSystem}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import akka.persistence.SnapshotSelectionCriteria
 import com.fasterxml.jackson.annotation.JsonIgnore
@@ -15,6 +16,7 @@ import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromTri
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.sujeto.application.entity.SujetoCommands
+import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
@@ -110,6 +112,9 @@ object test {
     @JsonIgnore
     val log: Logger = LoggerFactory.getLogger(this.getClass)
 
+    implicit val ac: ActorSystem = actor.context.system
+    val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
+
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
     actor.persistEvent(event) { () =>
       actor.state += event
@@ -152,7 +157,7 @@ object test {
         }
       }
       else {
-        SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
+        SendObjetoToObjetoVinculo(Obje,actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
       }
       //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler
       if (actor.state.eventCounter == eventCounterMax) {

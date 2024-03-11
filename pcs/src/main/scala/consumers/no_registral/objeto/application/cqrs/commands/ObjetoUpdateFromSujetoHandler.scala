@@ -24,6 +24,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
       command.tiene30Sujeto,
       command.exclusionSUjeto
     )
+
     actor.state += event
    // val exclusionObjeto = QueryExclusionObjeto(command.objetoId)
     val obj_default = new ObjetosTri(Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"))

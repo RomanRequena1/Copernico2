@@ -1,6 +1,6 @@
 package consumers.no_registral.objeto.application.helper
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorRef, ActorSystem}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -24,7 +24,7 @@ object SendObjetoToObjetoVinculo {
    */
   protected val log: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def apply(actor: ObjetoActor, sujetoId: String, objetoId: String, tipoObjeto: String, estado: Option[String], requeriment: MonitoringAndMessageProducer): Unit = {
+  def apply(Obje: ActorRef,actor: ObjetoActor, sujetoId: String, objetoId: String, tipoObjeto: String, estado: Option[String], requeriment: MonitoringAndMessageProducer): Unit = {
     //implicit val system: ActorSystem = actor.context.system
 
 
@@ -32,8 +32,7 @@ object SendObjetoToObjetoVinculo {
     // s"akka://PersonClassificationService/user/ObjetoVinculo-${objetoId}"
     val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"))
 
-    implicit val ac: ActorSystem = actor.context.system
-    val Obje = ObjetoVinculoActor.startWithRequirements(requeriment)
+
 
     //          implicit val actorObjetoVinculo: ActorRef = actor.context.actorOf(actorProp, objetoVinculoMessageRoots)
     //          println("CUMBIAAAA ::::::::::::::::: actor::::::::::::::::::::: " + actorObjetoVinculo.path + " - ")

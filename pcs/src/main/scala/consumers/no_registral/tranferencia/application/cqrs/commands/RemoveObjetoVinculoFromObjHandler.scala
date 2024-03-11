@@ -17,10 +17,6 @@ class RemoveObjetoVinculoFromObjHandler (actor: ObjetoVinculoActor, tranferencia
   override def handle(command: RemoveObjetoVinculo): Try[Response.SuccessProcessing] = {
 
     val sender = actor.context.sender()
-    log.error("LLEGO HANDLER REMOVE....." + command + " - "
-      + command.tiene30Objeto + " - "
-      + actor.context.self.path + " - "
-      + actor.context.sender().path)
 
     val event = ObjetoVinculoEvent.RemovedVinculoObjetoFromObj(
       command.sujetoId,
@@ -39,10 +35,8 @@ class RemoveObjetoVinculoFromObjHandler (actor: ObjetoVinculoActor, tranferencia
     actor.persistEvent(event) { () =>
 
       actor.state += event
-      log.error("LOG REMOVE mapViculo -> " + actor.state.mapVinculo)
       actor.state.mapVinculo.foreach {
         e => {
-          log.error("LOG REMOVE vin -> " + e._1)
           actorSujetoGeneral.ask[Response.SuccessProcessing](UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo))
         }
       }

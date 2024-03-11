@@ -1,10 +1,12 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
+import akka.actor.{ActorRef, ActorSystem}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.application.helper.{SendObjetoToObjetoVinculo, SendToObligaciones}
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
+import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
@@ -26,6 +28,9 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
       command.sujetoResponsable
     )
     if(command.deliveryId.signum < 0 || !isIdempotent(command, actor.state.lastDeliveryIdByEvents)){
+      implicit val ac: ActorSystem = actor.context.system
+      val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
+
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.informBajaToParent(command)
@@ -35,7 +40,7 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
           }
         }
         SendToObligaciones(actor)
-        SendObjetoToObjetoVinculo(actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
+        SendObjetoToObjetoVinculo(Obje,actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
       }
     }
 

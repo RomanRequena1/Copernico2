@@ -129,12 +129,10 @@ class KafkaCommittablePartitionedMessageProcessor(
               .map {
                 case Left((message, cause)) =>
                   //log.error(cause)
-                  log.error("Cause of RETRY_TOPIC or ERROR_TOPIC: " + cause + " -->" + message.record.key)
                   RejectedMessagesCounter.increment()
                   val output = Seq(message.record.value)
                   if (cause.contains("AskTimeoutException")){
                     //  log.error("Retrying due to AskTimeoutException -->" + message.record.key)
-                    log.error("Cause of RETRY_TOPIC: " + cause + " -->" + message.record.key)
                     ProducerMessage.multi(
                       records = output.map { o =>
                         new ProducerRecord(
@@ -146,7 +144,6 @@ class KafkaCommittablePartitionedMessageProcessor(
                       passThrough = message.committableOffset
                     )
                   } else {
-                    log.error("Cause of RETRY_TOPIC: " + cause + " -->" + message.record.key)
                     ProducerMessage.multi(
                       records = output.map { o =>
                         new ProducerRecord(
