@@ -35,7 +35,7 @@ class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaA
       actor.state += event
       actor.state.mapVinculo.foreach {
         e => {
-            actorSujetoGeneral ! UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo)
+            actorSujetoGeneral.ask[Response.SuccessProcessing](UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo))
         }
       }
       actor.persistSnapshot(event, actor.state) { () =>

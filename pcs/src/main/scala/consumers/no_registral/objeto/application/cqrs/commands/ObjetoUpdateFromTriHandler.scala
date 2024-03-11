@@ -13,6 +13,7 @@ import consumers.no_registral.objeto.application.helper.SendObjetoToObjetoVincul
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromTri
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
+import consumers.no_registral.sujeto.application.entity.SujetoCommands
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
@@ -91,9 +92,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
 
 
     if(isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error("ENTRE AL EV_ID IDEMPOTENT DEL ALTA")
-
-
       log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 
@@ -117,10 +115,29 @@ object test {
       //todo juicio persiste, pero no se us apara el calculo del 30%?
 
       if (actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
-        if (actor.state.tiene30Objeto.equals(false))
-          actor.informParentTreintaPorciento(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
-        else
-          actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
+        if (actor.state.tiene30Objeto.equals(false)) {
+          actor.context.parent.ask[Response.SuccessProcessing](SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
+            command.deliveryId,
+            command.sujetoId,
+            command.objetoId,
+            command.tipoObjeto,
+            actor.state.saldo,
+            actor.state.obligacionesSaldo.values.sum,
+            actor.state.clasificacionObjeto
+          ))
+        } else {
+          {
+            actor.context.parent.ask[Response.SuccessProcessing](SujetoCommands.SujetoUpdateFromObjeto(
+              command.deliveryId,
+              command.sujetoId,
+              command.objetoId,
+              command.tipoObjeto,
+              actor.state.saldo,
+              actor.state.obligacionesSaldo.values.sum,
+              actor.state.clasificacionObjeto
+            ))
+          }
+        }
         actor.persistSnapshot(event, actor.state) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }

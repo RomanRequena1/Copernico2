@@ -6,6 +6,7 @@ import consumers.no_registral.objeto.domain.ObjetoEvents.UpdatedState30ObjetoFro
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.sujeto.application.entity.SujetoCommands
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
+import design_principles.actor_model.Response
 
 object SendToSujeto {
 
@@ -14,7 +15,7 @@ object SendToSujeto {
       implicit val system: ActorSystem = actor.context.system
       implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(requeriment)
 
-      actorSujetoGeneral ! SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
+      actorSujetoGeneral.ask[Response.SuccessProcessing](SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
         event.deliveryId,
         event.sujetoId,
         event.objetoId,
@@ -22,7 +23,8 @@ object SendToSujeto {
         actor.state.saldo,
         actor.state.obligacionesSaldo.values.sum,
         actor.state.clasificacionObjeto
-      )
+      ))
+      actor.context.sender ! Response.SuccessProcessing(event.aggregateRoot, event.deliveryId)
     }
 
 }
