@@ -13,7 +13,6 @@ object SendToSujeto1 {
   def apply(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer, event: UpdatedState30ObjetoFromObjVinculo): Unit = {
     implicit val system: ActorSystem = actor.context.system
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(requeriment)
-
     actorSujetoGeneral.ask[Response.SuccessProcessing](SujetoCommands.SujetoUpdateFromObjeto(
       event.deliveryId,
       event.sujetoId,

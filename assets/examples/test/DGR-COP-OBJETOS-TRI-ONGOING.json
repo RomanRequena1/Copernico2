@@ -1,11 +1,11 @@
  {
-  "EV_ID" : "4",
+  "EV_ID" : "5",
   "SOJ_SUJ_IDENTIFICADOR" : "2",
   "SOJ_TIPO_OBJETO" : "A",
   "SOJ_IDENTIFICADOR" : "HUNTER",
   "SOJ_CAT_SOJ_ID" : "TRI",
   "SOJ_DESCRIPCION" : "Des",
-  "SOJ_ESTADO" : "BAJA",
+  "SOJ_ESTADO" : null,
   "SOJ_ID_EXTERNO" : "436786342579",
   "SOJ_CANAL_ORIGEN" : "PSRM",
   "SOJ_SUBTIPO" : "AUTOMOTOR - Dueño Tipo de Vehículo 10",

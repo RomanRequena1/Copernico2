@@ -10,6 +10,7 @@ import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateFromTri
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
 import consumers.no_registral.objeto.application.helper.SendObjetoToObjetoVinculo
+import consumers.no_registral.objeto.application.helper.SendObjetoToObjetoVinculo.log
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromTri
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -20,7 +21,7 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import org.slf4j.{Logger, LoggerFactory}
 
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
 class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAndMessageProducer) extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromTri] {
 
@@ -109,14 +110,14 @@ object test {
     @JsonIgnore
     val log: Logger = LoggerFactory.getLogger(this.getClass)
 
-
+    implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
     actor.persistEvent(event) { () =>
       actor.state += event
       //todo juicio persiste, pero no se us apara el calculo del 30%?
 
       if (actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
         if (actor.state.tiene30Objeto.equals(false)) {
-          actor.context.parent.ask[Response.SuccessProcessing](SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
+          val res = actor.context.parent.ask[Response.SuccessProcessing](SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
             command.deliveryId,
             command.sujetoId,
             command.objetoId,
@@ -125,9 +126,13 @@ object test {
             actor.state.obligacionesSaldo.values.sum,
             actor.state.clasificacionObjeto
           ))
+          res.onComplete {
+            case Failure(exception) => log.error("Error to send event to sujeto tipo M false " + exception + " objID: "+ command.objetoId + "sujID: "+ command.sujetoId)
+            case Success(value) => log.debug("Sent event to sujeto tipo M false " + " objID: "+ command.objetoId + " sujID: "+ command.sujetoId)
+          }
         } else {
           {
-            actor.context.parent.ask[Response.SuccessProcessing](SujetoCommands.SujetoUpdateFromObjeto(
+            val res = actor.context.parent.ask[Response.SuccessProcessing](SujetoCommands.SujetoUpdateFromObjeto(
               command.deliveryId,
               command.sujetoId,
               command.objetoId,
@@ -136,6 +141,10 @@ object test {
               actor.state.obligacionesSaldo.values.sum,
               actor.state.clasificacionObjeto
             ))
+            res.onComplete {
+              case Failure(exception) => log.error("Error to send event to sujeto tipo M true " + exception + " objID: "+ command.objetoId + "sujID: "+ command.sujetoId)
+              case Success(value) => log.debug("Sent event to sujeto tipo M true " + " objID: "+ command.objetoId + " sujID: "+ command.sujetoId)
+            }
           }
         }
         actor.persistSnapshot(event, actor.state) { () =>
