@@ -20,7 +20,6 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
   def topic = "DGR-COP-OBJETOS-TRI"
   def topicRetry = "DGR-COP-OBJETOS-TRI_retry"
   def topicError = "DGR-COP-OBJETOS-TRI_error"
-
   def processInput(input: String): Either[Throwable, ObjetosTri] =
     decode[ObjetosTri](input)
 

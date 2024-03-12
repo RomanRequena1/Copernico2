@@ -10,8 +10,7 @@ import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo.Dmn
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateFromTri
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
-import consumers.no_registral.objeto.application.helper.SendObjetoToObjetoVinculo
-import consumers.no_registral.objeto.application.helper.SendObjetoToObjetoVinculo.log
+import consumers.no_registral.objeto.application.helper.{SendObjetoToObjetoVinculo, testIfObjVinculo}
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromTri
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -36,6 +35,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor,  requeriment: MonitoringAnd
       command: ObjetoCommands.ObjetoUpdateFromTri
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
+    val log: Logger = LoggerFactory.getLogger(this.getClass)
 
     val semaforo_marca: Option[ListDetallesObjeto] => Option[String] = {
             case Some(d) => d.SOJ_DETALLES.head.SOJ_SEMAFORO_MARCA
@@ -112,9 +112,10 @@ object test {
     @JsonIgnore
     val log: Logger = LoggerFactory.getLogger(this.getClass)
 
+
+
     implicit val ac: ActorSystem = actor.context.system
     val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
-
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
     actor.persistEvent(event) { () =>
       actor.state += event
