@@ -11,8 +11,12 @@ import design_principles.actor_model.Response
 import io.circe.parser.decode
 import io.circe.syntax.EncoderOps
 import monitoring.Monitoring
+import org.camunda.dmn.DmnEngine
+import org.camunda.dmn.parser.ParsedDmn
 import org.slf4j.LoggerFactory
+import scalaz.\/
 
+import java.io.FileInputStream
 import scala.concurrent.Future
 import scala.util.Try
 

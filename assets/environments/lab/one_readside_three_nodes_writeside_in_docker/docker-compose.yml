@@ -109,6 +109,7 @@ services:
       PATH_DMN_OBJETO_CUPON: '/opt/docker/bin/objetoCupon.dmn'
       PATH_DMN_DECISION_30: '/opt/docker/bin/decision_30_descuento.dmn'
       PATH_DMN_CLASIF_OBJETO: '/opt/docker/bin/clasificacion_objeto.dmn'
+      DMN_ID_DECISION_30: 'Decision_descuento'
       LOGSTASH: '172.22.5.3:5000'
       CLUSTER_IP: 172.22.1.1
       CLUSTER_PORT: 2552
@@ -167,6 +168,8 @@ services:
       PROMETHEUS_PORT: 9095
       STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
       NAME_TABLE1: 'table_nifi_to_kafka'
+      DMN_ID_DECISION_30: 'Decision_descuento'
+      PATH_DMN_DECISION_30: '/opt/docker/bin/decision_30_descuento.dmn'
       NAME_TABLE2: 'table_kafka_to_pcs'
       NAME_TABLE3: 'table_pcs_to_kafka'
       NAME_TABLE4: 'table_readsie_to_cass'

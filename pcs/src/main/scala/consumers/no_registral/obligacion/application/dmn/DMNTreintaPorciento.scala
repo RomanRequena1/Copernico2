@@ -1,8 +1,13 @@
 package consumers.no_registral.obligacion.application.dmn
 
+import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento.log
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
+import consumers.no_registral.obligacion.application.helper.FileStreamDmn
+import consumers.no_registral.obligacion.application.helper.FileStreamDmn.dmnStream
 import org.camunda.dmn.DmnEngine
+import org.camunda.dmn.parser.ParsedDmn
 import org.slf4j.LoggerFactory
+import scalaz.\/
 import scalaz.concurrent.Task.Try
 
 import java.io.FileInputStream
@@ -10,13 +15,9 @@ import java.io.FileInputStream
 object DMNTreintaPorciento {
 
   private val log = LoggerFactory.getLogger(this.getClass)
-
   def dmn(actor: ObligacionExternalDto): Any = {
 
-    val path: String = Try(System.getenv("PATH_DMN_DECISION_30")).getOrElse("")
     val dmnId: String = Try(System.getenv("DMN_ID_DECISION_30")).getOrElse("id")
-    val dmnStream = Try(new FileInputStream(path))
-    val engine = new DmnEngine()
 
     val ven = actor.BOB_VENCIMIENTO.get.toString.replace(" ", "T")
     val venPro = actor.BOB_PRORROGA.getOrElse(ven).toString.replace(" ", "T")
@@ -33,8 +34,14 @@ object DMNTreintaPorciento {
 
     val isVencida = if (diffDaysOblligaciones > 10) true else false
 
-    val chequeoDmn: Either[Product, DmnEngine.EvalResult] = engine.parse(dmnStream.getOrElse(null))
-      .flatMap(dmn => engine.eval(dmn, dmnId, Utils.mapsToDMN(actor, isVencida, diffDaysOblligaciones, diffYearsOblligaciones, diffDaysOblligacionesVen2)))
-    chequeoDmn.fold(e => log.error("ERROR DMN OBLIGACION::" + e), value => value.value)
+
+    val engine = new DmnEngine()
+
+
+    dmnStream.flatMap(dmn => engine.eval(dmn, dmnId, Utils.mapsToDMN(actor, isVencida, diffDaysOblligaciones, diffYearsOblligaciones, diffDaysOblligacionesVen2)))
+      .fold(e => log.error("ERROR DMN OBLIGACION::" + e), value => value.value)
   }
+
+
 }
+

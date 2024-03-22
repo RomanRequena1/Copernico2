@@ -9,11 +9,23 @@ import consumers.no_registral.obligacion.infrastructure.http.ObligacionStateAPI
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
+import org.camunda.dmn.DmnEngine
+import org.camunda.dmn.parser.ParsedDmn
+import scalaz.\/
+import scalaz.concurrent.Task.Try
+
+import java.io.FileInputStream
 
 class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
 
   implicit val actor: ActorRef = SujetoActor.startWithRequirements(monitoringAndMessageProducer)
   ObjetoVinculoActor.startWithRequirements(monitoringAndMessageProducer)
+
+  println("HOLA UNA VEZ? CUMBIA")
+
+
+
+
   //private val log = LoggerFactory.getLogger(this.getClass)
   //val timescaledbActor: ActorRef = m.ctx.actorOf(Props[TimesActor](), "timescaledb")
   //log.error("CUMBIA " + timescaledbActor.path)

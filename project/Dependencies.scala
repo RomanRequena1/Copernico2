@@ -108,6 +108,7 @@ object Dependencies {
         "org.postgresql" % "postgresql" % "42.6.0" ::
         "com.zaxxer" % "HikariCP" % "3.4.5" ::
         "org.camunda.bpm.extension.dmn.scala" % "dmn-engine" % "1.8.0" ::
+        "org.camunda.bpm.dmn" % "camunda-engine-dmn" % "7.21.0-alpha4"::
         //"com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion % "protobuf" ::
         "io.circe" %% "circe-core" % "0.14.3"::
         "io.circe" %% "circe-generic" % "0.14.3" ::
