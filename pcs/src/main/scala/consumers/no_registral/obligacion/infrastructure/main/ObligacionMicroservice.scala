@@ -21,7 +21,7 @@ class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) 
   implicit val actor: ActorRef = SujetoActor.startWithRequirements(monitoringAndMessageProducer)
   ObjetoVinculoActor.startWithRequirements(monitoringAndMessageProducer)
 
-  println("HOLA UNA VEZ? CUMBIA")
+  //println("HOLA UNA VEZ? CUMBIA")
 
 
 

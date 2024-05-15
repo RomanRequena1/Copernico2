@@ -30,7 +30,9 @@ case class ObjetoState(
                         tiene30Sujeto: Option[Boolean] = None,
                         aplicarDescuento: Option[Boolean] = None,
                         resulDmn: Option[Int] = None,
-                        obnVencidas: Map[String, Boolean] = Map.empty
+                        obnVencidas: Map[String, Boolean] = Map.empty,
+                        deuda30Objeto: Boolean = true,
+                        tipoExclusion: String = ""
                       ) extends AbstractState[ObjetoEvents] with CbroSerialization{
 
   override def +(event: ObjetoEvents): ObjetoState = {
