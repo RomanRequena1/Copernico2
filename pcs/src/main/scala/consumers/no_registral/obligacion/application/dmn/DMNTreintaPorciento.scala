@@ -31,6 +31,7 @@ object DMNTreintaPorciento {
 
     val diffDaysOblligacionesVen2 = Utils.diffDaysObligacion(ven2)
     val diffYearsOblligaciones = Utils.diffYearObligacion(actor.BOB_PERIODO.get)
+    val dias_prescripcion = diffDaysOblligaciones
 
     val isVencida = if (diffDaysOblligaciones > 10) true else false
 
@@ -38,7 +39,7 @@ object DMNTreintaPorciento {
     val engine = new DmnEngine()
 
 
-    dmnStream.flatMap(dmn => engine.eval(dmn, dmnId, Utils.mapsToDMN(actor, isVencida, diffDaysOblligaciones, diffYearsOblligaciones, diffDaysOblligacionesVen2)))
+    dmnStream.flatMap(dmn => engine.eval(dmn, dmnId, Utils.mapsToDMN(actor, isVencida, diffDaysOblligaciones, diffYearsOblligaciones, diffDaysOblligacionesVen2, dias_prescripcion)))
       .fold(e => log.error("ERROR DMN OBLIGACION::" + e), value => value.value)
   }
 
