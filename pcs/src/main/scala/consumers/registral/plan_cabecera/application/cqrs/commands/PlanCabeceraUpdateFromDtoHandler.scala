@@ -1,16 +1,16 @@
 package consumers.registral.plan_cabecera.application.cqrs.commands
 
-import akka.actor.typed.ActorRef
 import akka.actor.Status.Success
+import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
 import consumers.registral.plan_cabecera.application.entities.PlanCabeceraCommands.PlanCabeceraUpdateFromDto
 import consumers.registral.plan_cabecera.domain.PlanCabeceraEvents.PlanCabeceraUpdatedFromDto
 import consumers.registral.plan_cabecera.domain.PlanCabeceraState
-import kafka.KafkaMessageProducer.KafkaKeyValue
-import kafka.MessageProducer
 import consumers.registral.plan_cabecera.infrastructure.json.json._
 import design_principles.actor_model.Response
 import io.circe.syntax.EncoderOps
+import kafka.KafkaMessageProducer.KafkaKeyValue
+import kafka.MessageProducer
 
 
 class PlanCabeceraUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {

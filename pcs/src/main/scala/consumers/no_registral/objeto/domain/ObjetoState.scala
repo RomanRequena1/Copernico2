@@ -2,7 +2,6 @@ package consumers.no_registral.objeto.domain
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromSujeto
 import ddd.{AbstractState, eventCounterMax}
 import serialization.CbroSerialization
 
@@ -26,18 +25,21 @@ case class ObjetoState(
                         eventCounter:Int = 0,
                         cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
                         tiene30Objeto: Boolean = true,
+                        tiene30ObjetoVinculo: Boolean = true,
                         clasificacionObjeto: String = "2",
                         tiene30Sujeto: Option[Boolean] = None,
                         aplicarDescuento: Option[Boolean] = None,
                         resulDmn: Option[Int] = None,
-                        obnVencidas: Map[String, Boolean] = Map.empty
+                        obnVencidas: Map[String, Boolean] = Map.empty,
+                        deuda30Objeto: Boolean = true,
+                        tipoExclusion: String = ""
                       ) extends AbstractState[ObjetoEvents] with CbroSerialization{
 
   override def +(event: ObjetoEvents): ObjetoState = {
     eventCounter match {
       case n if (n > (eventCounterMax)) => changeState(event).copy(
         fechaUltMod = LocalDateTime.now,
-        lastDeliveryIdByEvents =  event.deliveryId,
+        lastDeliveryIdByEvents = event.deliveryId,
         eventCounter = 0
       )
       case n => changeState(event).copy(
@@ -59,9 +61,20 @@ case class ObjetoState(
       case x => x + (obligacionId -> true) //la creo sino existe
     }
   }
+  /**
+   * 1. Si todos los valores del map son true y tiene30ObjetoVinculo es true, entonces tiene30Objeto es true y sino es false
+   */
+  private def diffCurrentStateAndNewStateTest(currentObnVencidas: Map[String, Boolean],  _tiene30ObjetoVinculo: Boolean) = { //todo cambiar nombre de funcion
 
-  private def diffCurrentStateAndNewState(currentObnVencidas: Map[String, Boolean], tiene30Objeto: Boolean) = {
-    if (currentObnVencidas.values.forall(_ == true)){
+    if (currentObnVencidas.values.forall(_ == true) && _tiene30ObjetoVinculo.equals(true)) {
+      true
+    }
+    else{
+      false
+    }
+  }
+  private def diffCurrentStateAndNewState(currentObnVencidas: Map[String, Boolean], _tiene30ObjetoVinculo: Boolean) = { //todo cambiar nombre de funcion
+    if (currentObnVencidas.values.forall(_ == true)) {
       true
     }
     else{
@@ -90,12 +103,19 @@ case class ObjetoState(
           isBaja = false
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
-        copy(tiene30Sujeto = Some(evt.tiene30Sujeto))
+        copy(tiene30Sujeto = Some(evt.tiene30Sujeto),
+        )
+      case evt: ObjetoEvents.UpdatedState30ObjetoFromObjVinculo =>
+        val _tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo
+        copy(tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
+            tiene30Objeto = diffCurrentStateAndNewStateTest(obnVencidas, _tiene30ObjetoVinculo),
+        ) //todo
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
         copy(
           sujetoResponsable = evt.sujetoResponsable match {
             case Some(value) => Some(value)
             case None => this.sujetoResponsable
+
           },
           isResponsable = evt.isResponsable.getOrElse(false),
           registro = Some(evt.registro),
@@ -103,7 +123,7 @@ case class ObjetoState(
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
           isBaja = false,
           clasificacionObjeto = evt.clasificacionObjeto.getOrElse("2"),
-          resulDmn = evt.resultDmn
+          resulDmn = evt.resultDmn,
         )
       //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
       //        copy(
@@ -121,14 +141,14 @@ case class ObjetoState(
           sujetos = sujetos + sujetoId,
           isBaja = false,
           obnVencidas = _obnVencidas,
-          tiene30Objeto = diff
+          tiene30Objeto = diff,
         )
       case  ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento(_, _, _, _, _, obligacionId, _, _, _, _, _) =>
         val _obnVencidas = validExitsObnVencidasTreinta(obligacionId)
         val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
         copy(
           obnVencidas = _obnVencidas,
-          tiene30Objeto = diff
+          tiene30Objeto = diff,
         )
 
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
@@ -182,10 +202,21 @@ case class ObjetoState(
             cuotas = cuotasPagadas_,
             obnVencidas = _obnVencidas,
             tiene30Objeto = diff
-
           )
         }
 
+      case evt: ObjetoEvents.RemovedObjetoFromObligacion =>
+        val _obnVencidas =
+          if (obnVencidas.contains(evt.obligacionId)) {
+            obnVencidas - evt.obligacionId
+          } else {
+            obnVencidas
+          }
+        val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
+        copy(
+          obnVencidas = _obnVencidas,
+          tiene30Objeto = diff
+        )
       case evt =>
         log.warn(s"Unexpected event at ObjetoState ${evt}")
         this

@@ -1,7 +1,5 @@
 package consumers.no_registral.sujeto.application.cqrs.commands
 
-import akka.Done
-import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.sujeto.application.entity.SujetoCommands.SujetoSetBajaFromObjeto
 import consumers.no_registral.sujeto.application.helper.SendToObjeto
 import consumers.no_registral.sujeto.domain.SujetoEvents
@@ -24,7 +22,7 @@ class SujetoSetBajaFromObjetoHandler(actor: SujetoActor) extends SyncCommandHand
     actor.persistEvent(event,Set("Sujeto")) { () =>
 
       actor.state += event
-        SendToObjeto(actor.state, sender, actor.context.children, actor.context, event)
+        SendToObjeto(actor.state, sender, actor.context, event.sujetoId, command.objetoId, command.tipoObjeto)
       actor.persistSnapshot()(_ => ())
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

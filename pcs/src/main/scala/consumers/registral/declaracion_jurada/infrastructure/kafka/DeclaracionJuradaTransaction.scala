@@ -4,10 +4,10 @@ import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.declaracion_jurada.application.entities.{DeclaracionJurada, DeclaracionJuradaCommands}
 import consumers.registral.declaracion_jurada.infrastructure.dependency_injection.DeclaracionJuradaActor
+import consumers.registral.declaracion_jurada.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import io.circe.parser._
-import consumers.registral.declaracion_jurada.infrastructure.json.json._
 import monitoring.Monitoring
 
 import scala.concurrent.Future

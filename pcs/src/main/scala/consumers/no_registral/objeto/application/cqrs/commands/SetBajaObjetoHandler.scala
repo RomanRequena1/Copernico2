@@ -1,23 +1,25 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
-import design_principles.actor_model.mechanism.DeliveryIdManagement._
+import akka.actor.{ActorRef, ActorSystem}
+import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import consumers.no_registral.objeto.application.helper.SendToObligaciones
+import consumers.no_registral.objeto.application.helper.{SendObjetoToObjetoVinculo, SendToObligaciones}
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
+import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
+import design_principles.actor_model.mechanism.DeliveryIdManagement._
 
 import scala.util.{Success, Try}
 
-class SetBajaObjetoHandler(actor: ObjetoActor) extends SyncCommandHandler[ObjetoCommands.SetBajaObjeto] {
+class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer) extends SyncCommandHandler[ObjetoCommands.SetBajaObjeto] {
   override def handle(
       command: ObjetoCommands.SetBajaObjeto
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-
     val event = ObjetoEvents.ObjetoBajaSet(
-      command.deliveryId,
+      actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -25,10 +27,10 @@ class SetBajaObjetoHandler(actor: ObjetoActor) extends SyncCommandHandler[Objeto
       command.isResponsable,
       command.sujetoResponsable
     )
-    if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-    } else {
+    if(command.deliveryId.signum < 0 || !isIdempotent(command, actor.state.lastDeliveryIdByEvents)){
+      implicit val ac: ActorSystem = actor.context.system
+      val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
+
       actor.persistEvent(event) { () =>
         actor.state += event
         actor.informBajaToParent(command)
@@ -37,8 +39,14 @@ class SetBajaObjetoHandler(actor: ObjetoActor) extends SyncCommandHandler[Objeto
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
         }
-        SendToObligaciones(actor.state, actor.context)
+        SendToObligaciones(actor)
+        SendObjetoToObjetoVinculo(Obje,actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
       }
+    }
+
+    else if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
+      log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

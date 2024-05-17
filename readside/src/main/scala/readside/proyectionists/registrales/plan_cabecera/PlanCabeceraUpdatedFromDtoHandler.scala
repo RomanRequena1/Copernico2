@@ -1,15 +1,15 @@
 package readside.proyectionists.registrales.plan_cabecera
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
-
-import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.plan_cabecera.domain.PlanCabeceraEvents.PlanCabeceraUpdatedFromDto
-import design_principles.actor_model.Response.SuccessProcessing
-import design_principles.actor_model.Response
 import consumers.registral.plan_cabecera.infrastructure.json.json._
+import design_principles.actor_model.Response
+import design_principles.actor_model.Response.SuccessProcessing
 import io.circe.parser._
 import readside.proyectionists.registrales.plan_cabecera.projections.PlanCabeceraUpdatedFromDtoProjection
+
+import scala.concurrent.Future
 class PlanCabeceraUpdatedFromDtoHandler(
                                          implicit
                                          r: MonitoringAndCassandraWrite

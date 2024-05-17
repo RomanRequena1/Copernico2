@@ -2,9 +2,9 @@ package readside.proyectionists.registrales.juicio.projections
 import consumers.registral.juicio.application.entities.JuicioExternalDto
 import consumers.registral.juicio.application.entities.JuicioExternalDto.DetallesJuicio
 import consumers.registral.juicio.domain.JuicioEvents
-import io.circe.syntax.EncoderOps
 import consumers.registral.juicio.infrastructure.json._
 import io.circe.parser._
+import io.circe.syntax.EncoderOps
 
 case class JuicioUpdatedFromDtoProjection(
     event: JuicioEvents.JuicioUpdatedFromDto

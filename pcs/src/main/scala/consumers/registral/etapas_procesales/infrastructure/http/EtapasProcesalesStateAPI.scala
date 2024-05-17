@@ -1,7 +1,5 @@
 package consumers.registral.etapas_procesales.infrastructure.http
 
-import java.time.LocalDateTime
-
 import akka.actor.typed.ActorSystem
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.{Directive, Route}
@@ -10,6 +8,8 @@ import consumers.registral.etapas_procesales.infrastructure.dependency_injection
 import consumers.registral.etapas_procesales.infrastructure.json.GetEtapasProcesalesResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
+
+import java.time.LocalDateTime
 
 case class EtapasProcesalesStateAPI(actor: EtapasProcesalesActor, monitoring: Monitoring)(implicit
                                                                                           system: ActorSystem[_])

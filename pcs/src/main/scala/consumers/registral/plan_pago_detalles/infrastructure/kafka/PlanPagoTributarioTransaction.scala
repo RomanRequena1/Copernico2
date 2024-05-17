@@ -5,11 +5,12 @@ import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.plan_pago_detalles.application.entities.PlanPagoCommands
 import consumers.registral.plan_pago_detalles.application.entities.PlanPagoExternalDto.PlanPagoTri
 import consumers.registral.plan_pago_detalles.infrastructure.dependency_injection.PlanPagoActor
+import consumers.registral.plan_pago_detalles.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
 import io.circe.parser.decode
 import monitoring.Monitoring
-import consumers.registral.plan_pago_detalles.infrastructure.json.json._
+
 import scala.concurrent.Future
 
 case class PlanPagoTributarioTransaction(actor: PlanPagoActor, monitoring: Monitoring)(

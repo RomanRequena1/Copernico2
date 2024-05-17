@@ -1,13 +1,11 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
-import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo
-import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
-import ddd.eventCounterMax
 import design_principles.actor_model.Response
+import design_principles.actor_model.mechanism.DeliveryIdManagement._
 
 import scala.util.{Success, Try}
 
@@ -34,7 +32,7 @@ class ObjetoUpdateFromAntHandler(actor: ObjetoActor) extends SyncCommandHandler[
       // because ObjetoNovedadCotitularidad, the event processor, needs this event to publish AddCotitular
       actor.persistEvent(event) { () =>
         actor.state += event
-        actor.informParent(command, actor.state)
+        actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
 //        if (actor.state.eventCounter == eventCounterMax) {
 //          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
 //        }

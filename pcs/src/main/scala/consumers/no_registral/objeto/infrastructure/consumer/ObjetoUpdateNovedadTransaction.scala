@@ -1,14 +1,15 @@
 package consumers.no_registral.objeto.infrastructure.consumer
 
-import scala.concurrent.Future
 import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoSnapshot
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import design_principles.actor_model.Response
-import monitoring.Monitoring
 import io.circe.parser.decode
+import monitoring.Monitoring
+
+import scala.concurrent.Future
 case class ObjetoUpdateNovedadTransaction(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
     actorTransactionRequirements: ActorTransactionRequirements

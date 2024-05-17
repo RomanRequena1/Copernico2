@@ -1,15 +1,15 @@
 package readside.proyectionists.registrales.plan_pago_detalles
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
-
-import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.plan_pago_detalles.domain.PlanPagoEvents.PlanPagoUpdatedFromDto
-import design_principles.actor_model.Response.SuccessProcessing
-import design_principles.actor_model.Response
-import readside.proyectionists.registrales.plan_pago_detalles.projections.PlanPagoUpdatedFromDtoProjection
 import consumers.registral.plan_pago_detalles.infrastructure.json.json._
+import design_principles.actor_model.Response
+import design_principles.actor_model.Response.SuccessProcessing
 import io.circe.parser._
+import readside.proyectionists.registrales.plan_pago_detalles.projections.PlanPagoUpdatedFromDtoProjection
+
+import scala.concurrent.Future
 class PlanPagoUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite

@@ -91,7 +91,13 @@ object ObjetoEvents {
       tipoObjeto: String,
       tagRemoved: String
   ) extends ObjetoEvents
-
+  case class UpdatedState30ObjetoFromObjVinculo(
+                                                deliveryId: BigInt,
+                                                sujetoId: String,
+                                                objetoId: String,
+                                                tipoObjeto: String,
+                                                tiene30ObjetoVinculo: Boolean
+                                              ) extends ObjetoEvents
   case class ObjetoUpdatedFromObligacion(
       deliveryId: BigInt,
       sujetoId: String,
@@ -140,6 +146,15 @@ object ObjetoEvents {
       obligacionId: String,
       cuota:Option[String]
   ) extends ObjetoEvents
+  case class RemovedObjetoFromObligacion(
+                                          deliveryId: BigInt,
+                                          sujetoId: String,
+                                          objetoId: String,
+                                          tipoObjeto: String,
+                                          obligacionId: String,
+                                          cuota: Option[String]
+                                        ) extends ObjetoEvents
+
 
   case class ObjetoUpdatedFromObnTreintaProciento(
       deliveryId: BigInt,

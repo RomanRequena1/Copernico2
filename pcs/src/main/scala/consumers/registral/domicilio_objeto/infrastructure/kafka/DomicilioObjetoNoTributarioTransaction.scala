@@ -5,11 +5,12 @@ import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoCommands
 import consumers.registral.domicilio_objeto.application.entities.DomicilioObjetoExternalDto.DomicilioObjetoAnt
 import consumers.registral.domicilio_objeto.infrastructure.dependency_injection.DomicilioObjetoActor
+import consumers.registral.domicilio_objeto.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
-import monitoring.Monitoring
 import io.circe.parser._
-import consumers.registral.domicilio_objeto.infrastructure.json._
+import monitoring.Monitoring
+
 import scala.concurrent.Future
 
 case class DomicilioObjetoNoTributarioTransaction(actor: DomicilioObjetoActor, monitoring: Monitoring)(

@@ -1,6 +1,7 @@
 package consumers.registral.plan_pago_detalles.application.entities
 
 import serialization.CbroSerialization
+
 import java.time.LocalDateTime
 
 sealed trait PlanPagoResponses extends CbroSerialization

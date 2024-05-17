@@ -1,7 +1,7 @@
 package readside.proyectionists.registrales.parametrica_recargo.projections
 
-import consumers.registral.parametrica_recargo.domain.ParametricaRecargoEvents
 import cassandra.mechanism.UpdateReadSideProjection
+import consumers.registral.parametrica_recargo.domain.ParametricaRecargoEvents
 
 trait ParametricaRecargoProjection extends UpdateReadSideProjection[ParametricaRecargoEvents] {
   def collectionName: String = "read_side.buc_param_recargo"

@@ -4,13 +4,14 @@ import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.juicio_tri.domain.JuicioDosEvents.JuicioDosRemovedFromDto
+import consumers.registral.juicio_tri.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
+import io.circe.parser._
 import org.slf4j.LoggerFactory
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-import io.circe.parser._
-import consumers.registral.juicio_tri.infrastructure.json.json._
 class JuicioDosRemovedSnapshotHandler(
                                      implicit r: MonitoringAndCassandraWrite
                                    ) extends ActorTransaction[JuicioDosRemovedFromDto](r.monitoring)(r.actorTransactionRequirements) {
@@ -21,8 +22,6 @@ class JuicioDosRemovedSnapshotHandler(
   override def topicRetry: String = "JuicioDosRemovedSnapshot_retry"
 
   override def topicError: String = "JuicioDosRemovedSnapshot_error"
-
-  import consumers.registral.juicio_tri.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, JuicioDosRemovedFromDto] =
     decode[JuicioDosRemovedFromDto](input)

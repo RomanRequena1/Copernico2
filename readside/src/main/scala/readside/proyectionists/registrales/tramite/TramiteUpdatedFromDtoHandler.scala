@@ -1,16 +1,14 @@
 package readside.proyectionists.registrales.tramite
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
-
-import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.tramite.domain.TramiteEvents.TramiteUpdatedFromDto
-import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
-import monitoring.Monitoring
-import readside.proyectionists.registrales.tramite.projections.TramiteUpdatedFromDtoProjection
+import design_principles.actor_model.Response.SuccessProcessing
 import io.circe.parser._
+import readside.proyectionists.registrales.tramite.projections.TramiteUpdatedFromDtoProjection
+
+import scala.concurrent.Future
 class TramiteUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite

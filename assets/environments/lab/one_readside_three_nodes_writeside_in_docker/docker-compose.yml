@@ -47,6 +47,7 @@ services:
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
       ENABLE_TRAZ: 'false'
+      TIMEOUT: 200
       STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres'
       USER_POSTGRES: 'postgres'
       PASSWORD_POSTGRES: 'password'
@@ -101,10 +102,14 @@ services:
       - '8082:8082'
       - '5002:9095'
     environment:
+      TIMEOUT: 200
       SEED_NODES: 'akka://PersonClassificationService@172.22.1.3:2551'
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
-
+      PATH_DMN_OBJETO_CUPON: '/opt/docker/bin/objetoCupon.dmn'
+      PATH_DMN_DECISION_30: '/opt/docker/bin/decision_30_descuento.dmn'
+      PATH_DMN_CLASIF_OBJETO: '/opt/docker/bin/clasificacion_objeto.dmn'
+      DMN_ID_DECISION_30: 'Decision_descuento'
       LOGSTASH: '172.22.5.3:5000'
       CLUSTER_IP: 172.22.1.1
       CLUSTER_PORT: 2552
@@ -151,6 +156,7 @@ services:
       - '8083:8083'
       - '5003:9095'
     environment:
+      TIMEOUT: 200
       SEED_NODES: 'akka://PersonClassificationService@172.22.1.3:2551'
       KAFKA_BROKERS_LIST: '172.22.0.5:29092'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
@@ -162,6 +168,8 @@ services:
       PROMETHEUS_PORT: 9095
       STRING_CONEXION_TIMESCALEDB: 'jdbc:postgresql://172.22.2.1:5432/postgres?user=postgres&password=password'
       NAME_TABLE1: 'table_nifi_to_kafka'
+      DMN_ID_DECISION_30: 'Decision_descuento'
+      PATH_DMN_DECISION_30: '/opt/docker/bin/decision_30_descuento.dmn'
       NAME_TABLE2: 'table_kafka_to_pcs'
       NAME_TABLE3: 'table_pcs_to_kafka'
       NAME_TABLE4: 'table_readsie_to_cass'

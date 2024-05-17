@@ -1,16 +1,16 @@
 package readside.proyectionists.no_registrales.sujeto
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
-
-import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import com.fasterxml.jackson.annotation.JsonIgnore
 import consumers.no_registral.sujeto.domain.SujetoEvents.SujetoSnapshotPersisted
-import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
+import design_principles.actor_model.Response.SuccessProcessing
+import io.circe.parser.decode
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.sujeto.projections.SujetoSnapshotPersistedProjection
-import io.circe.parser.decode
+
+import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 class SujetoSnapshotPersistedHandler(

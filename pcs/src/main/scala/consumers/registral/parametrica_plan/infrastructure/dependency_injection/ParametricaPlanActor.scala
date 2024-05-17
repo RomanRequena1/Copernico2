@@ -1,7 +1,6 @@
 package consumers.registral.parametrica_plan.infrastructure.dependency_injection
 
 import akka.actor.typed.ActorSystem
-import com.typesafe.config.Config
 import consumers.registral.parametrica_plan.application.cqrs.commands.ParametricaPlanUpdateFromDtoHandler
 import consumers.registral.parametrica_plan.application.cqrs.queries.GetStateParametricaPlanHandler
 import consumers.registral.parametrica_plan.application.entities.ParametricaPlanCommands.ParametricaPlanUpdateFromDto

@@ -17,8 +17,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 class KafkaCommittablePartitionedMessageProcessor(
-    transactionRequirements: KafkaMessageProcessorRequirements
-) extends MessageProcessor {
+                                                   transactionRequirements: KafkaMessageProcessorRequirements
+                                                 ) extends MessageProcessor {
 
   type CommitableMsg = ConsumerMessage.CommittableMessage[String, String]
 
@@ -42,12 +42,12 @@ class KafkaCommittablePartitionedMessageProcessor(
   def transactionalId: String = java.util.UUID.randomUUID().toString
 
   final def run(
-      SOURCE_TOPIC: String,
-      SINK_TOPIC: String,
-      RETRY_TOPIC: String,
-      ERROR_TOPIC: String,
-      algorithm: String => Future[Seq[String]]
-  ): (Option[MessageProcessorKillSwitch], Future[Done]) = {
+                 SOURCE_TOPIC: String,
+                 SINK_TOPIC: String,
+                 RETRY_TOPIC: String,
+                 ERROR_TOPIC: String,
+                 algorithm: String => Future[Seq[String]]
+               ): (Option[MessageProcessorKillSwitch], Future[Done]) = {
 
     //Counter created to monitor the number of messages processed
     val ProcessedMessagesCounter = transactionRequirements.monitoring.counter(
@@ -96,17 +96,17 @@ class KafkaCommittablePartitionedMessageProcessor(
      *the stream and a Future[Done] in case of wanting to know if the operation was correct.*/
     val consumerGroupGraph: RunnableGraph[(UniqueKillSwitch, Future[Done])] =
       commitableSource
-      //.buffer(10000, OverflowStrategy.backpressure)
+        //.buffer(10000, OverflowStrategy.backpressure)
         .mapAsyncUnordered(NR_PARTITIONS) {
           case (topicPartition, source: Source[CommitableMsg, NotUsed]) =>
             source
-            //.buffer(CONSUMER_PARALLELISM * NR_PARTITIONS, OverflowStrategy.backpressure)
+              //.buffer(CONSUMER_PARALLELISM * NR_PARTITIONS, OverflowStrategy.backpressure)
               .addAttributes( /* Instrument with cinammon */
                 CinnamonAttributes.instrumented(reportByName = true,
-                                                perFlow = true,
-                                                perConnection = true,
-                                                perBoundary = true,
-                                                traceable = true)
+                  perFlow = true,
+                  perConnection = true,
+                  perBoundary = true,
+                  traceable = true)
               )
               .mapAsync(CONSUMER_PARALLELISM) { message: CommitableMsg =>
                 val input: String = message.record.value
@@ -132,7 +132,7 @@ class KafkaCommittablePartitionedMessageProcessor(
                   RejectedMessagesCounter.increment()
                   val output = Seq(message.record.value)
                   if (cause.contains("AskTimeoutException")){
-                  //  log.error("Retrying due to AskTimeoutException -->" + message.record.key)
+                    //  log.error("Retrying due to AskTimeoutException -->" + message.record.key)
                     ProducerMessage.multi(
                       records = output.map { o =>
                         new ProducerRecord(
@@ -175,9 +175,9 @@ class KafkaCommittablePartitionedMessageProcessor(
               //            a.parts.map(a => a.record.value)
               //        }
               .instrumentedRunWith(Committer.sink(committerSettings))(name = "CommittablePartitioned",
-                                                                      perFlow = true,
-                                                                      perConnection = true,
-                                                                      perBoundary = true)
+                perFlow = true,
+                perConnection = true,
+                perBoundary = true)
         }
         .viaMat(KillSwitches.single)(Keep.right)
         .withAttributes(akka.defaultSupervisionStrategy)
@@ -201,6 +201,5 @@ class KafkaCommittablePartitionedMessageProcessor(
         run(SOURCE_TOPIC, SINK_TOPIC, RETRY_TOPIC, ERROR_TOPIC, algorithm)
     }
     (Some(killSwitch), done)
-
   }
 }

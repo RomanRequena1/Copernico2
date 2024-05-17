@@ -1,6 +1,5 @@
 package consumers.registral.actividad_sujeto.application.entities
 
-import consumers.registral.actividad_sujeto.application.entities.ActividadSujeto
 import design_principles.actor_model.Command
 import serialization.CbroSerialization
 

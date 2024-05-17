@@ -1,11 +1,11 @@
 package consumers.registral.actividad_sujeto.infrastructure.json
 
-import consumers.registral.actividad_sujeto.application.entities.{ActividadSujeto, DetallesActividadSujeto}
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoCommands.ActividadSujetoUpdateFromDto
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoResponses.GetActividadSujetoResponse
+import consumers.registral.actividad_sujeto.application.entities.{ActividadSujeto, DetallesActividadSujeto}
 import consumers.registral.actividad_sujeto.domain.ActividadSujetoEvents.ActividadSujetoUpdatedFromDto
-import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
+import io.circe.{Decoder, Encoder}
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

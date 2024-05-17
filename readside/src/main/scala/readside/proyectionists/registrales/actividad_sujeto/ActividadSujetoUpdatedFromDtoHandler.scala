@@ -1,20 +1,14 @@
 package readside.proyectionists.registrales.actividad_sujeto
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
-
-import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.actividad_sujeto.domain.ActividadSujetoEvents.ActividadSujetoUpdatedFromDto
-import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
-import monitoring.Monitoring
-import readside.proyectionists.registrales.actividad_sujeto.projections.{
-  ActividadSujetoProjection,
-  ActividadSujetoUpdatedFromDtoProjection
-}
-import consumers.registral.actividad_sujeto.infrastructure.json._
+import design_principles.actor_model.Response.SuccessProcessing
 import io.circe.parser._
+import readside.proyectionists.registrales.actividad_sujeto.projections.ActividadSujetoUpdatedFromDtoProjection
+
+import scala.concurrent.Future
 class ActividadSujetoUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite

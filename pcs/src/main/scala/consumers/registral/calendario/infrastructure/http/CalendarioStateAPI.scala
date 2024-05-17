@@ -1,7 +1,5 @@
 package consumers.registral.calendario.infrastructure.http
 
-import java.time.LocalDateTime
-
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.calendario.application.entities.CalendarioQueries.GetStateCalendario
@@ -9,6 +7,8 @@ import consumers.registral.calendario.infrastructure.dependency_injection.Calend
 import consumers.registral.calendario.infrastructure.json.json.GetCalendarioResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
+
+import java.time.LocalDateTime
 
 case class CalendarioStateAPI(actor: CalendarioActor, monitoring: Monitoring)(
     implicit

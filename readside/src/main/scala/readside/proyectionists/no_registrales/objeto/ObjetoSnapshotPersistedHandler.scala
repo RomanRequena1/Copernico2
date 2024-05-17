@@ -5,12 +5,13 @@ import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import com.fasterxml.jackson.annotation.JsonIgnore
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
+import io.circe.parser.decode
 import org.slf4j.LoggerFactory
 import readside.proyectionists.no_registrales.objeto.projections.ObjetoSnapshotPersistedProjection
-import io.circe.parser.decode
-import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
@@ -33,13 +34,13 @@ class ObjetoSnapshotPersistedHandler(
 
   override def processMessage(registro: ObjetoSnapshotPersisted): Future[Response.SuccessProcessing] = {
     //recordLag(calculateLag(registro.deliveryId.toString))
-    val projection = ObjetoSnapshotPersistedProjection(registro)
+    val projection: ObjetoSnapshotPersistedProjection = ObjetoSnapshotPersistedProjection(registro)
     if (registro.operacion.equals("U")) {
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
-          case Failure(exception) => log.error("Dont persist objeto" + exception )
-          case Success(value) => log.debug("Persist objeto" + value )
-            //connOracleReadsideToCass(registro.deliveryId.toString(),"objeto", registro.registro.get.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
+          case Failure(exception) => println("Dont persist objeto" + exception )
+          case Success(value) => println("Persist objeto" + value )
+          //connOracleReadsideToCass(registro.deliveryId.toString(),"objeto", registro.registro.get.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
         }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
     } else if (registro.operacion.equals("FD")) {

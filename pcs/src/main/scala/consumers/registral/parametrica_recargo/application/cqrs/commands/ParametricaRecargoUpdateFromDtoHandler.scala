@@ -8,9 +8,9 @@ import consumers.registral.parametrica_recargo.domain.ParametricaRecargoEvents.P
 import consumers.registral.parametrica_recargo.domain.{ParametricaRecargoEvents, ParametricaRecargoState}
 import consumers.registral.parametrica_recargo.infrastructure.json.json._
 import design_principles.actor_model.Response
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import io.circe.syntax.EncoderOps
 
 class ParametricaRecargoUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 

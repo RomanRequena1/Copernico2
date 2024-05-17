@@ -1,6 +1,6 @@
 package consumers.no_registral.obligacion.infrastructure.dependency_injection
 
-import akka.actor.{ActorSelection, Props}
+import akka.actor.Props
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.obligacion.application.cqrs.commands._
@@ -10,14 +10,11 @@ import consumers.no_registral.obligacion.application.entities.ObligacionMessage.
 import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionQueries}
 import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionPersistedSnapshot, ObligacionUpdatedFromDto}
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
-import cqrs.base_actor.untyped.PersistentBaseActor
-import kafka.KafkaMessageProducer.KafkaKeyValue
-import timescaledb.TimescaledbPcsToKafka.connOracleWriteSideToKafka
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
-import io.circe._
+import cqrs.base_actor.untyped.PersistentBaseActor
 import io.circe.syntax.EncoderOps
+import kafka.KafkaMessageProducer.KafkaKeyValue
 
-import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
 
@@ -34,7 +31,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateFromDto](new ObligacionUpdateFromDtoHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateExencion](new ObligacionUpdateExencionHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionRemove](new ObligacionRemoveHandler(this).handle)
-    commandBus.subscribe[ObligacionCommands.ObligacionRemoveInfoFromObjeto](new ObligacionRemoveFromObjeto(this).handle)
+    commandBus.subscribe[ObligacionCommands.ObligacionRemoveInfoFromObjeto](new ObligacionRemoveFromObjeto(this, requirements).handle)
   }
 
   def informParent(cmd: ObligacionCommands): Unit = {
@@ -92,8 +89,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       cmd.cuota
     )
   }
-
-  import consumers.no_registral.obligacion.infrastructure.json._
   def persistSnapshot()(handler: () => Unit): Unit = {
     val ids = ObligacionMessageRoots.extractor(persistenceId)
 
@@ -130,12 +125,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         //if (enable.equals("true")) {
           //Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
         //}
-        if (enable.equals("true")) {
-          Future(connOracleWriteSideToKafka(lastDeliveryId.toString())).onComplete {
-            case Failure(exception) => log.error("ERROR Future(connOracleWriteSideToKafka(obligacion.EV_ID.toString())) -> " + exception)
-            case Success(value) => log.debug("Exito ")
-          }
-        }
       }
     }
   }
@@ -173,12 +162,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
         //if (enable.equals("true")) {
           //Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
-        if (enable.equals("true")) {
-          Future(connOracleWriteSideToKafka(lastDeliveryId.toString())).onComplete {
-            case Failure(exception) => log.error("ERROR Future(connOracleWriteSideToKafka(obligacion.EV_ID.toString())) -> " + exception)
-            case Success(value) => log.debug("Exito ")
-          }
-        }
         //}
       }
     }

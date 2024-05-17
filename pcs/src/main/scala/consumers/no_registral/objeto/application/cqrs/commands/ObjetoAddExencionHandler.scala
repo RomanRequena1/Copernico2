@@ -1,17 +1,17 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
-import scala.util.{Success, Try}
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands
-import consumers.registral.declaracion_jurada.domain.DeclaracionJuradaEvents.DeclaracionJuradaUpdatedFromDto
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
-import io.circe.syntax.EncoderOps
+
+import scala.util.{Success, Try}
 class ObjetoAddExencionHandler(actor: ObjetoActor)(implicit messageProducer: MessageProducer)
     extends SyncCommandHandler[ObjetoCommands.ObjetoAddExencion] {
   override def handle(
@@ -43,7 +43,7 @@ class ObjetoAddExencionHandler(actor: ObjetoActor)(implicit messageProducer: Mes
                                                                    obligacionId.split("-").last,
                                                                    command.exencion)
         }
-        actor.informParent(command, actor.state)
+        actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
 
         messageProducer.produce(
           Seq(

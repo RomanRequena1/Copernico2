@@ -5,8 +5,8 @@ import akka.http.scaladsl.server.Route
 import consumers.registral.componente_i.application.entities.ComponenteIQueries.GetStateComponenteI
 import consumers.registral.componente_i.infrastructure.dependency_injection.ComponenteIActor
 import consumers.registral.componente_i.infrastructure.http.ComponenteIStateAPI.{withComponenteI, withObjeto, withSujeto, withTipoObjeto}
-import design_principles.actor_model.mechanism.QueryStateAPI
 import consumers.registral.componente_i.infrastructure.json.json.GetComponenteIResponseEncoder
+import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
 
 import java.time.LocalDateTime

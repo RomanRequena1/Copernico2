@@ -1,9 +1,9 @@
 package consumers.registral.parametrica_plan.domain.events
 
-import java.time.LocalDateTime
-
 import consumers.registral.parametrica_plan.domain.ParametricaPlanEvents.ParametricaPlanUpdatedFromDto
 import consumers.registral.parametrica_plan.domain.ParametricaPlanState
+
+import java.time.LocalDateTime
 
 class ParametricaPlanUpdatedFromDtoHandler {
   def handle(state: ParametricaPlanState, event: ParametricaPlanUpdatedFromDto): ParametricaPlanState =

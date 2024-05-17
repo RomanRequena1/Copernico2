@@ -1,7 +1,7 @@
 package readside.proyectionists.registrales.juicio_obn.infrastructure.main
 
-import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Route
 import api.actor_transaction.ActorTransaction
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import readside.proyectionists.registrales.juicio_obn.{JuicioObnDeletedSnapshotHandler, JuicioObnUpdatedSnapshotHandler}

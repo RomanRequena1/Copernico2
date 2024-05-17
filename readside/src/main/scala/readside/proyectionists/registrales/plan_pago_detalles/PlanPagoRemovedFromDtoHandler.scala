@@ -4,11 +4,12 @@ import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.plan_pago_detalles.domain.PlanPagoEvents.PlanPagoRemovedFromDto
+import consumers.registral.plan_pago_detalles.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
-import org.slf4j.LoggerFactory
-import consumers.registral.plan_pago_detalles.infrastructure.json.json._
 import io.circe.parser._
+import org.slf4j.LoggerFactory
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 

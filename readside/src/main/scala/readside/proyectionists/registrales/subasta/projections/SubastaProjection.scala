@@ -1,6 +1,6 @@
 package readside.proyectionists.registrales.subasta.projections
-import consumers.registral.subasta.domain.SubastaEvents
 import cassandra.mechanism.UpdateReadSideProjection
+import consumers.registral.subasta.domain.SubastaEvents
 
 trait SubastaProjection extends UpdateReadSideProjection[SubastaEvents] {
   def collectionName: String = "read_side.buc_subastas"

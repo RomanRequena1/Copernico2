@@ -1,7 +1,6 @@
 package consumers.registral.domicilio_sujeto.application.entities
 
 import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
-import consumers.no_registral.obligacion.application.entities.{ObligacionesAnt, ObligacionesTri}
 import consumers.registral.domicilio_sujeto.application.entities.DomicilioSujetoExternalDto.{DomicilioSujetoAnt, DomicilioSujetoTri}
 import serialization.CbroSerialization
 

@@ -1,7 +1,6 @@
 package consumers.registral.declaracion_jurada.infrastructure.dependency_injection
 
 import akka.actor.typed.ActorSystem
-import com.typesafe.config.Config
 import consumers.registral.declaracion_jurada.application.cqrs.commands.DeclaracionJuradaUpdateFromDtoHandler
 import consumers.registral.declaracion_jurada.application.cqrs.queries.GetStateDeclaracionJuradaHandler
 import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaCommands.DeclaracionJuradaUpdateFromDto

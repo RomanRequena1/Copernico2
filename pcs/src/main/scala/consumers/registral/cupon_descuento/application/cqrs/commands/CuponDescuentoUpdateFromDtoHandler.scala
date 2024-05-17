@@ -6,7 +6,6 @@ import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
 import consumers.registral.cupon_descuento.application.entities.CuponDescuentoCommands.CuponDescuentoUpdateFromDto
 import consumers.registral.cupon_descuento.domain.CuponDescuentoEvents.CuponDescuentoUpdatedFromDto
 import consumers.registral.cupon_descuento.domain.CuponDescuentoState
-import consumers.registral.cupon_descuento.domain.events.CuponDescuentoUpdatedFromDtoHandler
 import consumers.registral.cupon_descuento.infrastructure.json.json._
 import design_principles.actor_model.Response
 import io.circe.syntax.EncoderOps

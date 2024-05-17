@@ -5,8 +5,8 @@ import consumers.registral.componente_i.application.entities.ComponenteIResponse
 import consumers.registral.componente_i.application.entities.{ComponenteITri, DetallesComponenteI, ListDetallesComponenteI}
 import consumers.registral.componente_i.domain.ComponenteIEvents.{ComponenteIPersistedSnapshot, ComponenteIRemoved, ComponenteIUpdatedFromDto}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
-import io.circe.{Decoder, Encoder, Json}
 import io.circe.syntax.EncoderOps
+import io.circe.{Decoder, Encoder, Json}
 object json {
   implicit val ComponenteIRemoveDecoder: Decoder[ComponenteIRemove] = deriveDecoder
   implicit val ComponenteIRemoveEncoder: Encoder[ComponenteIRemove] = deriveEncoder

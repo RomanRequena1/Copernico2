@@ -4,11 +4,12 @@ import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.tramite.application.entities.{Tramite, TramiteCommands}
 import consumers.registral.tramite.infrastructure.dependency_injection.TramiteActor
+import consumers.registral.tramite.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
-import monitoring.Monitoring
 import io.circe.parser._
-import consumers.registral.tramite.infrastructure.json._
+import monitoring.Monitoring
+
 import scala.concurrent.Future
 
 case class TramiteTransaction(actor: TramiteActor, monitoring: Monitoring)(

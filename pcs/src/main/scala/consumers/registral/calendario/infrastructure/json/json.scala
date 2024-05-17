@@ -4,9 +4,8 @@ import consumers.registral.calendario.application.entities.CalendarioCommands.Ca
 import consumers.registral.calendario.application.entities.CalendarioExternalDto
 import consumers.registral.calendario.application.entities.CalendarioResponses.GetCalendarioResponse
 import consumers.registral.calendario.domain.CalendarioEvents.CalendarioUpdatedFromDto
-import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
-import play.api.libs.json.Json
+import io.circe.{Decoder, Encoder}
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

@@ -5,12 +5,12 @@ import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
 import consumers.registral.parametrica_plan.application.entities.ParametricaPlanCommands.ParametricaPlanUpdateFromDto
 import consumers.registral.parametrica_plan.domain.ParametricaPlanEvents.ParametricaPlanUpdatedFromDto
-import consumers.registral.parametrica_plan.domain.{ParametricaPlanEvents, ParametricaPlanState}
+import consumers.registral.parametrica_plan.domain.ParametricaPlanState
 import consumers.registral.parametrica_plan.infrastructure.json.ParametricaPlanImplicits._
 import design_principles.actor_model.Response
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import io.circe.syntax.EncoderOps
 
 class ParametricaPlanUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
 

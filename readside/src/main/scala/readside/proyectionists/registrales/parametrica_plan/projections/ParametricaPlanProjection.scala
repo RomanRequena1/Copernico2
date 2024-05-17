@@ -1,7 +1,7 @@
 package readside.proyectionists.registrales.parametrica_plan.projections
 
-import consumers.registral.parametrica_plan.domain.ParametricaPlanEvents
 import cassandra.mechanism.UpdateReadSideProjection
+import consumers.registral.parametrica_plan.domain.ParametricaPlanEvents
 
 trait ParametricaPlanProjection extends UpdateReadSideProjection[ParametricaPlanEvents] {
   def collectionName: String = "read_side.buc_param_plan"

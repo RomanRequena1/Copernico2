@@ -1,16 +1,14 @@
 package readside.proyectionists.registrales.domicilio_sujeto
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
-
-import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.domicilio_sujeto.domain.DomicilioSujetoEvents.DomicilioSujetoUpdatedFromDto
-import design_principles.actor_model.Response.SuccessProcessing
 import design_principles.actor_model.Response
-import monitoring.Monitoring
-import readside.proyectionists.registrales.domicilio_sujeto.projections.DomicilioSujetoUpdatedFromDtoProjection
+import design_principles.actor_model.Response.SuccessProcessing
 import io.circe.parser._
+import readside.proyectionists.registrales.domicilio_sujeto.projections.DomicilioSujetoUpdatedFromDtoProjection
+
+import scala.concurrent.Future
 class DomicilioSujetoUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite

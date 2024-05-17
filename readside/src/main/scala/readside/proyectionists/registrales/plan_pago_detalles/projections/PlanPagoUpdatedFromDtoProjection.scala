@@ -1,8 +1,6 @@
 package readside.proyectionists.registrales.plan_pago_detalles.projections
 import consumers.registral.plan_pago_detalles.application.entities.PlanPagoExternalDto
 import consumers.registral.plan_pago_detalles.domain.PlanPagoEvents
-import io.circe.parser._
-import io.circe.syntax.EncoderOps
 case class PlanPagoUpdatedFromDtoProjection(
     event: PlanPagoEvents.PlanPagoUpdatedFromDto
 ) extends PlanPagoProjection {

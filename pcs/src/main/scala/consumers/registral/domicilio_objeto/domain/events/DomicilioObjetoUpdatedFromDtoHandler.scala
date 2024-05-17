@@ -1,9 +1,9 @@
 package consumers.registral.domicilio_objeto.domain.events
 
-import java.time.LocalDateTime
-
 import consumers.registral.domicilio_objeto.domain.DomicilioObjetoEvents.DomicilioObjetoUpdatedFromDto
 import consumers.registral.domicilio_objeto.domain.DomicilioObjetoState
+
+import java.time.LocalDateTime
 
 class DomicilioObjetoUpdatedFromDtoHandler {
   def handle(state: DomicilioObjetoState, event: DomicilioObjetoUpdatedFromDto): DomicilioObjetoState =

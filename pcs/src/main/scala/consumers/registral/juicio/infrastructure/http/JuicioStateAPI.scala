@@ -1,7 +1,5 @@
 package consumers.registral.juicio.infrastructure.http
 
-import java.time.LocalDateTime
-
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.juicio.application.entities.JuicioQueries.GetStateJuicio
@@ -9,6 +7,8 @@ import consumers.registral.juicio.infrastructure.dependency_injection.JuicioActo
 import consumers.registral.juicio.infrastructure.json.GetJuicioResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
+
+import java.time.LocalDateTime
 
 case class JuicioStateAPI(actor: JuicioActor, monitoring: Monitoring)(implicit system: akka.actor.typed.ActorSystem[_])
     extends QueryStateAPI(monitoring) {

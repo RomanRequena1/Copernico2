@@ -1,10 +1,10 @@
 package consumers.registral.tramite.domain
 
-import java.time.LocalDateTime
-import consumers.registral.tramite.application.entities.Tramite
-import consumers.registral.tramite.application.entities.TramiteMessage
+import consumers.registral.tramite.application.entities.{Tramite, TramiteMessage}
 import cqrs.base_actor.typed.AbstractStateWithCQRS
 import serialization.CbroSerialization
+
+import java.time.LocalDateTime
 
 case class TramiteState(
     registro: Option[Tramite] = None,

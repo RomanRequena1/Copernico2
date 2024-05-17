@@ -1,6 +1,5 @@
 package consumers.registral.componente_i.domain
 
-import consumers.registral.componente_i.application.entities.DetallesComponenteI
 import consumers.registral.componente_i.application.entities.{ComponenteIMessage, ComponenteITri, DetallesComponenteI}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization

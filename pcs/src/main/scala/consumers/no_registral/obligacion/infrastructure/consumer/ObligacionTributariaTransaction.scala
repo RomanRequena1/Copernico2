@@ -10,9 +10,13 @@ import design_principles.actor_model.Response
 import io.circe.parser.decode
 import io.circe.syntax.EncoderOps
 import monitoring.Monitoring
-import org.slf4j.LoggerFactory
+import org.camunda.dmn.DmnEngine
+import org.camunda.dmn.parser.ParsedDmn
+import scalaz.\/
 
+import java.io.FileInputStream
 import scala.concurrent.Future
+import scala.util.Either
 
 case class ObligacionTributariaTransaction(actorRef : ActorRef, monitoring: Monitoring)(
     implicit

@@ -4,15 +4,15 @@ import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
 import api.actor_transaction.ActorTransaction
 import com.fasterxml.jackson.annotation.JsonIgnore
 import consumers.registral.juicio_obn.domain.JuicioObnEvents.JuicioObnUpdatedFromDto
+import consumers.registral.juicio_obn.infrastructure.json.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.Response.SuccessProcessing
+import io.circe.parser._
 import org.slf4j.LoggerFactory
 import readside.proyectionists.registrales.juicio_obn.projections.JuicioObnUpdatedFromDtoProjection
-import consumers.registral.juicio_obn.infrastructure.json.json._
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-import io.circe.parser._
 class JuicioObnUpdatedSnapshotHandler(
                                               implicit
                                               r: MonitoringAndCassandraWrite
@@ -25,8 +25,6 @@ class JuicioObnUpdatedSnapshotHandler(
   override def topicRetry: String = "JuicioObnUpdatedFronDto_retry"
 
   override def topicError: String = "JuicioObnUpdatedFronDto_error"
-
-  import consumers.registral.juicio_obn.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, JuicioObnUpdatedFromDto] = {
     decode[JuicioObnUpdatedFromDto](input)

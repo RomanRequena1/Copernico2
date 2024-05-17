@@ -1,8 +1,8 @@
 package consumers.registral.declaracion_jurada.infrastructure.json
 
-import consumers.registral.declaracion_jurada.application.entities.{DeclaracionJurada, DetalleDeclaracionJurada}
 import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaCommands.DeclaracionJuradaUpdateFromDto
 import consumers.registral.declaracion_jurada.application.entities.DeclaracionJuradaResponses.GetDeclaracionJuradaResponse
+import consumers.registral.declaracion_jurada.application.entities.{DeclaracionJurada, DetalleDeclaracionJurada}
 import consumers.registral.declaracion_jurada.domain.DeclaracionJuradaEvents.DeclaracionJuradaUpdatedFromDto
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}

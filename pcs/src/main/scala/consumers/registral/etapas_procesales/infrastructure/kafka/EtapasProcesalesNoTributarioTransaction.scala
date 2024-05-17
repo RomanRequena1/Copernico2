@@ -5,11 +5,12 @@ import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesCommands
 import consumers.registral.etapas_procesales.application.entities.EtapasProcesalesExternalDto.EtapasProcesalesAnt
 import consumers.registral.etapas_procesales.infrastructure.dependency_injection.EtapasProcesalesActor
+import consumers.registral.etapas_procesales.infrastructure.json._
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.TypedAsk.AkkaTypedTypedAsk
-import monitoring.Monitoring
-import consumers.registral.etapas_procesales.infrastructure.json._
 import io.circe.parser._
+import monitoring.Monitoring
+
 import scala.concurrent.Future
 
 case class EtapasProcesalesNoTributarioTransaction(actor: EtapasProcesalesActor, monitoring: Monitoring)(

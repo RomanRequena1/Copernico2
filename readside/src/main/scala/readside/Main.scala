@@ -1,15 +1,12 @@
 package readside
 
 import com.typesafe.config.{Config, ConfigFactory}
-import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import design_principles.microservice.kafka_consumer_microservice.MainApplication.startMicroservices
-import design_principles.microservice.kafka_consumer_microservice.KafkaConsumerMicroserviceRequirements
-import monitoring.KamonMonitoring
-import readside.proyectionists.registrales.exclusiones_objeto.infrastructure.main.ExclusionesObjetoProjectionistMicroservice
+import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 import readside.proyectionists.registrales.exclusiones_sujeto.infrastructure.main.ExclusionesSujetoProjectionistMicroservice
 import readside.proyectionists.registrales.juicio_obn.infrastructure.main.JuicioObnProjectionstMicroservice
 
-object Main extends App {
+object  Main extends App {
 
   private val config: Config = ConfigFactory.load()
   val ip = config.getString("http.ip")
@@ -45,8 +42,8 @@ object Main extends App {
       new readside.proyectionists.registrales.subasta.infrastructure.main.SubastaProjectionistMicroservice,
       new readside.proyectionists.registrales.tramite.infrastructure.main.TramiteProjectionistMicroservice,
       new JuicioObnProjectionstMicroservice,
-      new ExclusionesObjetoProjectionistMicroservice,
-      new ExclusionesSujetoProjectionistMicroservice
+      new ExclusionesSujetoProjectionistMicroservice,
+      new readside.proyectionists.no_registrales.transferencia.infrastructure.TransferenciaProjectionistMicroservice
     )
   }
 }

@@ -1,11 +1,10 @@
 package consumers.no_registral.obligacion.application.entities
 
 import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
+import ddd.ExternalDto
+import serialization.CbroSerialization
 
 import java.time.LocalDateTime
-import ddd.ExternalDto
-import play.api.libs.json.JsObject
-import serialization.CbroSerialization
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(
@@ -168,7 +167,12 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization{
                                    tiene30Obligaciones: Option[Boolean],
                                    BAND_BATCH: Option[Boolean],
                                    EV_ID: Option[BigInt],
-                                   SOJ_ID_EXTERNO: Option[String]
+                                   SOJ_ID_EXTERNO: Option[String],
+                                   EVO_OBN_PEO_ID_MATERIAL: Option[String],
+                                   JUICIO_MULTIOBJETO: Option[String],
+                                   BOB_INTERES_FINANCIACION: Option[String],
+                                   EVO_OBN_PEO_ID_FORMAL: Option[String],
+                                   PLAN_MULTIOBJETO: Option[String]
                                  ) extends  CbroSerialization
 
 

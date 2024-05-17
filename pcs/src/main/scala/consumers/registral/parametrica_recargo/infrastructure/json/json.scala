@@ -7,6 +7,7 @@ import consumers.registral.parametrica_recargo.application.entities.ParametricaR
 import consumers.registral.parametrica_recargo.domain.ParametricaRecargoEvents.ParametricaRecargoUpdatedFromDto
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}
+
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.util.Try

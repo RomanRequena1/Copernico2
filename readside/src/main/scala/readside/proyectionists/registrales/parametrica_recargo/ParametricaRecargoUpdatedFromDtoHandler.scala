@@ -1,17 +1,15 @@
 package readside.proyectionists.registrales.parametrica_recargo
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
-
-import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
-import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import cassandra.write.CassandraWriteProduction
 import consumers.registral.parametrica_recargo.domain.ParametricaRecargoEvents.ParametricaRecargoUpdatedFromDto
-import design_principles.actor_model.Response.SuccessProcessing
-import design_principles.actor_model.Response
-import monitoring.Monitoring
-import readside.proyectionists.registrales.parametrica_recargo.projections.ParametricaRecargoUpdatedFromDtoProjection
-import io.circe.parser._
 import consumers.registral.parametrica_recargo.infrastructure.json.json._
+import design_principles.actor_model.Response
+import design_principles.actor_model.Response.SuccessProcessing
+import io.circe.parser._
+import readside.proyectionists.registrales.parametrica_recargo.projections.ParametricaRecargoUpdatedFromDtoProjection
+
+import scala.concurrent.Future
 class ParametricaRecargoUpdatedFromDtoHandler(
     implicit
     r: MonitoringAndCassandraWrite
@@ -20,8 +18,6 @@ class ParametricaRecargoUpdatedFromDtoHandler(
   override def topic: String = "ParametricaRecargoUpdatedFromDto"
   override def topicRetry: String = "ParametricaRecargoUpdatedFromDto_retry"
   override def topicError: String = "ParametricaRecargoUpdatedFromDto_error"
-
-  import consumers.registral.parametrica_recargo.infrastructure.json._
 
   override def processInput(input: String): Either[Throwable, ParametricaRecargoUpdatedFromDto] =
     decode[ParametricaRecargoUpdatedFromDto](input)

@@ -1,6 +1,6 @@
 package readside.proyectionists.registrales.tramite.projections
-import consumers.registral.tramite.domain.TramiteEvents
 import cassandra.mechanism.UpdateReadSideProjection
+import consumers.registral.tramite.domain.TramiteEvents
 
 trait TramiteProjection extends UpdateReadSideProjection[TramiteEvents] {
   def collectionName: String = "read_side.buc_tramites"

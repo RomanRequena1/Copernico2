@@ -1,7 +1,6 @@
 package consumers.registral.actividad_sujeto.infrastructure.dependency_injection
 
 import akka.actor.typed.ActorSystem
-import com.typesafe.config.Config
 import consumers.registral.actividad_sujeto.application.cqrs.commands.ActividadSujetoUpdateFromDtoHandler
 import consumers.registral.actividad_sujeto.application.cqrs.queries.GetStateActividadSujetoHandler
 import consumers.registral.actividad_sujeto.application.entities.ActividadSujetoCommands.ActividadSujetoUpdateFromDto

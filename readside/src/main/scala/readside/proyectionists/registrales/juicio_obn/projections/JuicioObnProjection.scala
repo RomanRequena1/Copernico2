@@ -1,8 +1,6 @@
 package readside.proyectionists.registrales.juicio_obn.projections
 
-import cassandra.CassandraTypesAdapter.int
 import cassandra.mechanism.UpdateReadSideProjection
-import consumers.registral.juicio.domain.JuicioEvents
 import consumers.registral.juicio_obn.domain.JuicioObnEvents
 
 trait JuicioObnProjection extends UpdateReadSideProjection[JuicioObnEvents] {

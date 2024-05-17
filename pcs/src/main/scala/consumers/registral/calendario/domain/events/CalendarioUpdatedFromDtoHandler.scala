@@ -1,9 +1,9 @@
 package consumers.registral.calendario.domain.events
 
-import java.time.LocalDateTime
-
 import consumers.registral.calendario.domain.CalendarioEvents.CalendarioUpdatedFromDto
 import consumers.registral.calendario.domain.CalendarioState
+
+import java.time.LocalDateTime
 
 class CalendarioUpdatedFromDtoHandler {
   def handle(state: CalendarioState, event: CalendarioUpdatedFromDto): CalendarioState =

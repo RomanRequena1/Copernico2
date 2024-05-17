@@ -1,16 +1,16 @@
 package readside.proyectionists.no_registrales.obligacion
 import akka.entity.ShardedEntity.MonitoringAndCassandraWrite
-
-import scala.concurrent.Future
 import api.actor_transaction.ActorTransaction
 import cassandra.write.CassandraWriteProduction
 import com.fasterxml.jackson.annotation.JsonIgnore
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionAddedExencion
-import design_principles.actor_model.Response.SuccessProcessing
-import design_principles.actor_model.Response
-import org.slf4j.LoggerFactory
-import io.circe.parser.decode
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
+import design_principles.actor_model.Response
+import design_principles.actor_model.Response.SuccessProcessing
+import io.circe.parser.decode
+import org.slf4j.LoggerFactory
+
+import scala.concurrent.Future
 class ObligacionAddedExencionHandler(
     implicit
     r: MonitoringAndCassandraWrite

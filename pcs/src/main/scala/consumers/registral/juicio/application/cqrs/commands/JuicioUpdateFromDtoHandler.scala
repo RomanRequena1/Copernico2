@@ -6,12 +6,11 @@ import akka.persistence.typed.scaladsl.{Effect, ReplyEffect}
 import consumers.registral.juicio.application.entities.JuicioCommands.JuicioUpdateFromDto
 import consumers.registral.juicio.domain.JuicioEvents.JuicioUpdatedFromDto
 import consumers.registral.juicio.domain.JuicioState
+import consumers.registral.juicio.infrastructure.json._
 import design_principles.actor_model.Response
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-import consumers.registral.juicio.infrastructure.json._
-import consumers.registral.juicio_tri.domain.JuicioDosState
-import io.circe.syntax.EncoderOps
 class JuicioUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
   def handle(
       command: JuicioUpdateFromDto

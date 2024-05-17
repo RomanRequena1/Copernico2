@@ -1,7 +1,5 @@
 package consumers.registral.tramite.infrastructure.http
 
-import java.time.LocalDateTime
-
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.registral.tramite.application.entities.TramiteQueries.GetStateTramite
@@ -9,6 +7,8 @@ import consumers.registral.tramite.infrastructure.dependency_injection.TramiteAc
 import consumers.registral.tramite.infrastructure.json.GetTramiteResponseEncoder
 import design_principles.actor_model.mechanism.QueryStateAPI
 import monitoring.Monitoring
+
+import java.time.LocalDateTime
 
 case class TramiteStateAPI(actor: TramiteActor, monitoring: Monitoring)(implicit
                                                                         system: akka.actor.typed.ActorSystem[_])

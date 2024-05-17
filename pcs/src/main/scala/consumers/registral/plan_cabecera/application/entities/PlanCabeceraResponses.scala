@@ -1,7 +1,8 @@
 package consumers.registral.plan_cabecera.application.entities
 
-import java.time.LocalDateTime
 import serialization.CbroSerialization
+
+import java.time.LocalDateTime
 
 sealed trait PlanCabeceraResponses extends CbroSerialization
 

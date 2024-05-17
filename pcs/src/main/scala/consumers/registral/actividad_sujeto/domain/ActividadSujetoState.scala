@@ -1,9 +1,10 @@
 package consumers.registral.actividad_sujeto.domain
 
-import java.time.LocalDateTime
 import consumers.registral.actividad_sujeto.application.entities.{ActividadSujeto, ActividadSujetoMessage}
 import cqrs.base_actor.typed.AbstractStateWithCQRS
 import serialization.CbroSerialization
+
+import java.time.LocalDateTime
 
 case class ActividadSujetoState(
     registro: Option[ActividadSujeto] = None,

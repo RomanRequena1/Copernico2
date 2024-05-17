@@ -1,8 +1,8 @@
 package consumers.registral.declaracion_jurada.application.entities
 
-import java.time.LocalDateTime
-import play.api.libs.json.JsObject
 import serialization.CbroSerialization
+
+import java.time.LocalDateTime
 
 
   case class DeclaracionJurada(EV_ID: String,

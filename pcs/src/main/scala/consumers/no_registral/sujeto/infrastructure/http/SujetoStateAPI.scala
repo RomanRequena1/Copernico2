@@ -1,6 +1,5 @@
 package consumers.no_registral.sujeto.infrastructure.http
 
-import java.time.LocalDateTime
 import akka.actor.{ActorRef, ActorSystem, PoisonPill}
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes.OK
@@ -14,6 +13,7 @@ import design_principles.actor_model.mechanism.QueryStateAPI
 import design_principles.actor_model.mechanism.QueryStateAPI.QueryStateApiRequirements
 import monitoring.Monitoring
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext
 case class SujetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
     implicit
