@@ -1,20 +1,20 @@
- {
-  "EV_ID" : "5",
-  "SOJ_SUJ_IDENTIFICADOR" : "rrrrr1234",
-  "SOJ_TIPO_OBJETO" : "A",
-  "SOJ_IDENTIFICADOR" : "r1234",
-  "SOJ_CAT_SOJ_ID" : "TRI",
-  "SOJ_DESCRIPCION" : "Des",
+{
+  "EV_ID" : "25",
+  "SOJ_SUJ_IDENTIFICADOR" : "Luquitas",
+  "SOJ_TIPO_OBJETO" : "I",
+  "SOJ_IDENTIFICADOR" : "Casa123",
+  "SOJ_DESCRIPCION" : "null",
   "SOJ_ESTADO" : null,
   "SOJ_ID_EXTERNO" : "436786342579",
-  "SOJ_CANAL_ORIGEN" : "PSRM",
-  "SOJ_SUBTIPO" : "AUTOMOTOR - Dueño Tipo de Vehículo 10",
+  "SOJ_SUBTIPO" : "La mansion del peluk",
   "SOJ_TITULARIDAD": null,
   "SOJ_OTROS_ATRIBUTOS" : {
     "SOJ_DETALLES" : [ {
-      "RESPONSABLE_OTROS_ATRIBUTOS" : "N",
+      "RESPONSABLE_OTROS_ATRIBUTOS" : "S",
       "PORCENTAJE_OTROS_ATRIBUTOS" : "100",
       "SOJ_OWNER" : "Kripke, Barry"
     } ]
   }
 }
+
+

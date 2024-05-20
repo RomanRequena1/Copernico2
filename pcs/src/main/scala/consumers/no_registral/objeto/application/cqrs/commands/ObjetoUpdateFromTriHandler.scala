@@ -84,8 +84,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
 //      a + (f.getName -> f.get(cc))
 //    }
 
-    def getCCParams(eventoA: ObjetoExternalDto, estado: ObjetoExternalDto.ObjetosTri) = {
-      val evento = eventoA.asInstanceOf[ObjetoExternalDto.ObjetosTri]
+    def getCCParams(evento: ObjetoExternalDto, estado: ObjetoExternalDto) = {
       val declaredFields = evento.getClass.getDeclaredFields
       var objetoNuevoTest = evento
 
@@ -103,11 +102,11 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       }
       objetoNuevoTest
     }
-
+    //TODO Validate the first event, with no state, enters in the case None.
     def getObjetoFFF() = {
-      val objetoFFF: ObjetoExternalDto.ObjetosTri = actor.state.registro match {
-        case Some(value) => getCCParams(command.registro, actor.state.registro.get.asInstanceOf[ObjetoExternalDto.ObjetosTri])
-        case None => command.registro.asInstanceOf[ObjetoExternalDto.ObjetosTri]
+      val objetoFFF = actor.state.registro match {
+        case None => command.registro
+        case Some(value) => getCCParams(command.registro, value)
       }
       objetoFFF
     }
