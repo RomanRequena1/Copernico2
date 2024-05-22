@@ -32,7 +32,8 @@ case class ObjetoState(
                         resulDmn: Option[Int] = None,
                         obnVencidas: Map[String, Boolean] = Map.empty,
                         deuda30Objeto: Boolean = true,
-                        tipoExclusion: String = ""
+                        tipoExclusion: String = "",
+                        exclusionObjeto: String = ""
                       ) extends AbstractState[ObjetoEvents] with CbroSerialization{
 
   override def +(event: ObjetoEvents): ObjetoState = {
@@ -105,6 +106,7 @@ case class ObjetoState(
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
         copy(tiene30Sujeto = Some(evt.tiene30Sujeto),
         )
+      // TODO: check when an object with multiple owners changes its exclusions.
       case evt: ObjetoEvents.UpdatedState30ObjetoFromObjVinculo =>
         val _tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo
         copy(tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
@@ -124,6 +126,7 @@ case class ObjetoState(
           isBaja = false,
           clasificacionObjeto = evt.clasificacionObjeto.getOrElse("2"),
           resulDmn = evt.resultDmn,
+          exclusionObjeto = registro.get.SOJ_TIPO_EXCLUSION.getOrElse("")
         )
       //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
       //        copy(
