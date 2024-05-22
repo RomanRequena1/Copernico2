@@ -126,7 +126,7 @@ case class ObjetoState(
           isBaja = false,
           clasificacionObjeto = evt.clasificacionObjeto.getOrElse("2"),
           resulDmn = evt.resultDmn,
-          exclusionObjeto = registro.get.SOJ_TIPO_EXCLUSION.getOrElse("")
+          exclusionObjeto = evt.registro.SOJ_TIPO_EXCLUSION.getOrElse("")
         )
       //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
       //        copy(

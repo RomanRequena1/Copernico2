@@ -1,8 +1,8 @@
  {
-  "EV_ID" : "5",
-  "SOJ_SUJ_IDENTIFICADOR" : "rrrrr1234",
+  "EV_ID" : "11",
+  "SOJ_SUJ_IDENTIFICADOR" : "LUQUITAS",
   "SOJ_TIPO_OBJETO" : "A",
-  "SOJ_IDENTIFICADOR" : "r1234",
+  "SOJ_IDENTIFICADOR" : "LUQ123",
   "SOJ_CAT_SOJ_ID" : "TRI",
   "SOJ_DESCRIPCION" : "Des",
   "SOJ_ESTADO" : null,
@@ -10,6 +10,7 @@
   "SOJ_CANAL_ORIGEN" : "PSRM",
   "SOJ_SUBTIPO" : "AUTOMOTOR - Dueño Tipo de Vehículo 10",
   "SOJ_TITULARIDAD": null,
+  "SOJ_TIPO_EXCLUSION": "NE",
   "SOJ_OTROS_ATRIBUTOS" : {
     "SOJ_DETALLES" : [ {
       "RESPONSABLE_OTROS_ATRIBUTOS" : "N",
