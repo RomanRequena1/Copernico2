@@ -12,7 +12,6 @@ object SendToObjeto {
             sujetoId: String,
             objetoId: String,
             tipoObjeto: String): Unit = {
-    //val isExclusionSujeto = QueryExclusionSujeto(sujetoId)
     if (currentState.diffStates) {
       actorContext
         .child(s"Sujeto-$sujetoId-Objeto-$objetoId-$tipoObjeto")
@@ -46,5 +45,25 @@ object SendToObjeto {
       })
     }
   }
+}
 
+object SendToObjetoFromSujeto {
+  def apply(currentState: SujetoState, sender: ActorRef, actorContext: ActorContext, sujetoId: String, exclusionSujeto: String): Unit = {
+
+    actorContext.children.foreach(actor => {
+      actor.ask[Response.SuccessProcessing](
+        ObjetoUpdateFromSujeto(
+          currentState.lastDeliveryIdByEvents,
+          sujetoId,
+          """Objeto-(.*?)-""".r.findFirstMatchIn(actor.path.toString) match {
+            case Some(matched) => matched.group(1)
+            case None => ""
+          },
+          actor.path.toString.last.toString,
+          currentState.tiene30Sujeto,
+          exclusionSujeto
+        )
+      )
+    })
+  }
 }

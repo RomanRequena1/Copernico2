@@ -270,6 +270,12 @@ curl 0.0.0.0:8081/state/sujeto/23-21656009-4
 curl 0.0.0.0:8081/state/sujeto/30/objeto/1/tipo/I
 curl 0.0.0.0:8081/state/sujeto/30/objeto/1/tipo/I/obligacion/1
 
+##Snapshots Persisted
+kafkacat -b localhost:9092 -t ObjetoSnapshotPersistedReadside -C
+
+
+
+
 ## readside
 docker exec cassandra cqlsh -u cassandra -p cassandra -e "EXPAND ON; SELECT * from read_side.buc_obligaciones;"
 docker exec cassandra cqlsh -u cassandra -p cassandra -e "EXPAND ON; SELECT * from read_side.buc_sujeto WHERE suj_identificador = '23-21656009-4';"
@@ -329,6 +335,8 @@ curl 0.0.0.0:8081/state/sujeto/23-21656009-4/objeto/JUICIO:501000652021/tipo/M/o
 
 
 }
+
+kafkacat -b localhost:9092 -t ObjetoSnapshotPersistedReadside -C
 
 
 
