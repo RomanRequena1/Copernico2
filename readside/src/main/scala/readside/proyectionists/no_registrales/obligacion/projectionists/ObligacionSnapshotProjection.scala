@@ -20,6 +20,7 @@ final case class ObligacionSnapshotProjection(
 
   val fromRegistro = registro map { registro =>
     List(
+      "bob_suj_identificador" -> event.sujetoId,
       "bob_adherido_debito" -> registro.BOB_ADHERIDO_DEBITO,
       "bob_canal_origen" -> registro.BOB_CANAL_ORIGEN,
       "bob_capital" -> registro.BOB_CAPITAL,

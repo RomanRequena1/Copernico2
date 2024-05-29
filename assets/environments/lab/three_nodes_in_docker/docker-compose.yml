@@ -26,6 +26,7 @@ services:
       NAME_TABLE3: 'table_pcs_to_kafka'
       NAME_TABLE4: 'table_readsie_to_cass'
       CASSANDRA_CONTACT_POINTS: '172.22.0.6:9042'
+      CASSANDRA_CONTACT_POINTS_UNO: '172.22.0.6:9042'
       PROJECTIONIST_PARALELLISM: 3
       LOGSTASH: '172.22.5.3:5000'
       MAX_CONCURRENT_REQUESTS: "512"

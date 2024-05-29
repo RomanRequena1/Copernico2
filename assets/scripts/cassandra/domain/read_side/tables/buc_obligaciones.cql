@@ -1,9 +1,9 @@
 CREATE TABLE read_side.buc_obligaciones (
-       bob_suj_identificador text,
-       bob_soj_tipo_objeto text,
        bob_soj_identificador text,
+       bob_soj_tipo_objeto text,
        bob_obn_id text,
        bob_capital float,
+       bob_suj_identificador text,
        bob_cuota text,
        bob_estado text,
        bob_fiscalizada text,
@@ -32,9 +32,8 @@ CREATE TABLE read_side.buc_obligaciones (
        bob_vencimiento_2 date,
        bob_tiene30Obligacion boolean,
        bob_resultDmn text,
-       PRIMARY KEY (bob_suj_identificador, bob_soj_tipo_objeto, bob_soj_identificador, bob_obn_id)
-      ) WITH CLUSTERING ORDER BY (bob_soj_tipo_objeto ASC, bob_soj_identificador ASC, bob_obn_id ASC)
-          AND bloom_filter_fp_chance = 0.01
+       PRIMARY KEY (bob_soj_identificador, bob_soj_tipo_objeto, bob_obn_id)
+      ) WITH bloom_filter_fp_chance = 0.01
           AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
           AND comment = ''
           AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
