@@ -30,8 +30,6 @@ sealed trait SujetoExternalDto extends ExternalDto with CbroSerialization{
   def SUJ_CANAL_ORIGEN: Option[String]
   def EV_ID: BigInt
   def SUJ_TIPO_EXCLUSION: Option[String]
-
-
 }
 
 object SujetoExternalDto {

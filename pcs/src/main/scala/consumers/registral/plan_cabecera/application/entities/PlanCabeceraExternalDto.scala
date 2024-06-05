@@ -42,7 +42,7 @@ sealed trait PlanCabeceraExternalDto extends ddd.ExternalDto with CbroSerializat
 
   def BPL_MODELO_DESCRIPCION: Option[String]
 
-  def BPL_MODELO_DECRETO: Option[BigDecimal]
+  def BPL_MODELO_DECRETO: Option[String]
 
   def BPL_DECRETO_DESCRIPCION: Option[String]
 
@@ -77,7 +77,7 @@ object PlanCabeceraExternalDto {
                              BPL_FECHA_EMISION: Option[LocalDateTime],
                              BPL_MODELO_CODIGO: Option[String],
                              BPL_MODELO_DESCRIPCION: Option[String],
-                             BPL_MODELO_DECRETO: Option[BigDecimal],
+                             BPL_MODELO_DECRETO: Option[String],
                              BPL_DECRETO_DESCRIPCION: Option[String],
                              BPL_TIPO_PLAN: Option[String],
                              BPL_CANAL_ORIGEN: Option[String],
@@ -101,7 +101,7 @@ object PlanCabeceraExternalDto {
                              BPL_FECHA_EMISION: Option[LocalDateTime],
                              BPL_MODELO_CODIGO: Option[String],
                              BPL_MODELO_DESCRIPCION: Option[String],
-                             BPL_MODELO_DECRETO: Option[BigDecimal],
+                             BPL_MODELO_DECRETO: Option[String],
                              BPL_DECRETO_DESCRIPCION: Option[String],
                              BPL_TIPO_PLAN: Option[String],
                              BPL_CANAL_ORIGEN: Option[String],

@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS read_side.buc_plan_cabecera  (
     bpl_fecha_emision date,
     bpl_modelo_codigo text,
     bpl_modelo_descripcion text,
-    bpl_modelo_decreto float,
+    bpl_modelo_decreto text,
     bpl_decreto_descripcion text,
     bpl_tipo_plan text,
     bpl_canal_origen text,

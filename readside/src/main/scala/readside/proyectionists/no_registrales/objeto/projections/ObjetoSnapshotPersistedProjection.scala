@@ -21,35 +21,40 @@ case class ObjetoSnapshotPersistedProjection(
         case Some(value) => Map("SOJ_DETALLES" -> value.get("SOJ_DETALLES").asJson.noSpaces)
         case None => None
       }
-      Some(List(
-      "soj_identificador_2" -> r.SOJ_IDENTIFICADOR_2,
-      "soj_subtipo" -> r.SOJ_SUBTIPO,
-      "soj_canal_origen" -> r.SOJ_CANAL_ORIGEN,
-      "soj_cat_soj_id" -> r.SOJ_CAT_SOJ_ID,
-      "soj_descripcion" -> r.SOJ_DESCRIPCION,
-      "soj_estado" -> r.SOJ_ESTADO,
-      "soj_fecha_fin" -> r.SOJ_FECHA_FIN,
-      "soj_fecha_inicio" -> r.SOJ_FECHA_INICIO,
-      "soj_id_externo" -> r.SOJ_ID_EXTERNO,
-      "soj_otros_atributos" -> Some(mao),
-      "soj_base_imponible" -> r.SOJ_BASE_IMPONIBLE,
-      "soj_adherido_debito" -> r.SOJ_ADHERIDO_DEBITO,
-      "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[",",","]")),
-      "soj_titularidad" -> r.SOJ_TITULARIDAD,
-      "soj_tiene30Objeto" -> event.tiene30Objeto,
-      "soj_aplicarDescuento" -> event.aplicarDescuento,
-      "soj_resultDmn" -> Some(event.bandTipo.toInt),
-      "soj_exclusionObjeto" -> r.SOJ_TIPO_EXCLUSION
-  ))
-    case None => Some(List(
-      "soj_descripcion" -> Some("Sin descripción"),
-      "soj_id_externo" -> event.idExterno,
-      "soj_identificador_2" -> event.objetoId2,
-      "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[",",","]")),
-      "soj_tiene30Objeto" -> event.tiene30Objeto,
-      "soj_aplicarDescuento" -> event.aplicarDescuento,
-      "soj_resultDmn" -> Some(event.bandTipo.toInt)
-    ))
+      Some(
+        List(
+          "soj_identificador_2" -> r.SOJ_IDENTIFICADOR_2,
+          "soj_subtipo" -> r.SOJ_SUBTIPO,
+          "soj_canal_origen" -> r.SOJ_CANAL_ORIGEN,
+          "soj_cat_soj_id" -> r.SOJ_CAT_SOJ_ID,
+          "soj_descripcion" -> r.SOJ_DESCRIPCION,
+          "soj_estado" -> r.SOJ_ESTADO,
+          "soj_fecha_fin" -> r.SOJ_FECHA_FIN,
+          "soj_fecha_inicio" -> r.SOJ_FECHA_INICIO,
+          "soj_id_externo" -> r.SOJ_ID_EXTERNO,
+          "soj_otros_atributos" -> Some(mao),
+          "soj_base_imponible" -> r.SOJ_BASE_IMPONIBLE,
+          "soj_adherido_debito" -> r.SOJ_ADHERIDO_DEBITO,
+          "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[", ",", "]")),
+          "soj_tipo_exclusion" -> Some(r.SOJ_TIPO_EXCLUSION),
+          "soj_titularidad" -> r.SOJ_TITULARIDAD,
+          "soj_tiene30Objeto" -> event.tiene30Objeto,
+          "soj_aplicarDescuento" -> event.aplicarDescuento,
+          "soj_resultDmn" -> Some(event.bandTipo.toInt)
+        )
+      )
+    case None =>
+      Some(
+        List(
+          "soj_descripcion" -> Some("Sin descripción"),
+          "soj_id_externo" -> event.idExterno,
+          "soj_identificador_2" -> event.objetoId2,
+          "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[", ",", "]")),
+          "soj_tiene30Objeto" -> event.tiene30Objeto,
+          "soj_aplicarDescuento" -> event.aplicarDescuento,
+          "soj_resultDmn" -> Some(event.bandTipo.toInt)
+        )
+      )
   }
 
   val others: List[(String, BigDecimal)] = List(
