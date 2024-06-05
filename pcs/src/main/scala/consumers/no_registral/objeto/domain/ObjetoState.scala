@@ -56,6 +56,13 @@ case class ObjetoState(
     )*/
   }
 
+  /** En el array de ObnVencidas
+   *
+   * Las obligaciones en true son no deuda ( tiene30obligaciones = true )
+   * Las Obligaciones en false son deuda ( tiene30obligaciones = false )
+   * @param obligacionId
+   * @return
+   */
   private def validExitsObnVencidas(obligacionId: String) = {
     obnVencidas match {
       case x if x.contains(obligacionId) => x updated(obligacionId, true) //la modifico si existe
@@ -83,6 +90,16 @@ case class ObjetoState(
     }
   }
 
+  /** En el array de ObnVencidas
+   *
+   * Las obligaciones en true son no deuda ( tiene30obligaciones = true )
+   *
+   * Las Obligaciones en false son deuda ( tiene30obligaciones = false )
+   *
+   * Agrega la obligacion con deuda al array de ObnVencidas (Obn NoDeuda?)
+   * @param obligacionId
+   * @return
+   */
   private def validExitsObnVencidasTreinta(obligacionId: String) = {
     obnVencidas match {
       case x if x.contains(obligacionId) => x updated(obligacionId, false) //la modifico si existe

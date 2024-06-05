@@ -14,9 +14,8 @@ object SendToObjeto {
             tipoObjeto: String): Unit = {
     if (currentState.diffStates) {
       actorContext
-        .child(s"Sujeto-$sujetoId-Objeto-$objetoId-$tipoObjeto")
-        .get
-        .ask[Response.SuccessProcessing](
+        .child(s"Sujeto-$sujetoId-Objeto-$objetoId-$tipoObjeto") match {
+        case Some(objChild) => objChild.ask[Response.SuccessProcessing](
           ObjetoUpdateFromSujeto(
             deliveryId = currentState.lastDeliveryIdByEvents,
             sujetoId = sujetoId,
@@ -26,6 +25,8 @@ object SendToObjeto {
             exclusionSUjeto = currentState.exclusionSujeto
           )
         )
+        case _ => "_"
+      }
     } else {
 
       actorContext.children.foreach(actor => {

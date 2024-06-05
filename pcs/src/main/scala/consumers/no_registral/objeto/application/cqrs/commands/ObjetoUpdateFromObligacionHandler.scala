@@ -43,7 +43,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: Monitor
     //val eventCounterMax = Try(System.getenv("EVENT-COUNTER-MAX")).getOrElse(9)
 
     implicit val ac: ActorSystem = actor.context.system
-    val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
+    val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
 
     actor.persistEvent(event) { () =>
       actor.state += event
@@ -54,7 +54,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: Monitor
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
 
-      SendObjetoToObjetoVinculo(Obje,actor, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state.registro.getOrElse(obj_default).SOJ_ESTADO, requeriment)
+      SendObjetoToObjetoVinculo(vinculoActor, actor, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state.registro.getOrElse(obj_default).SOJ_ESTADO, requeriment)
 //      actor.persistSnapshot(event, actor.state){ () =>
 //        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 //

@@ -22,11 +22,11 @@ object SendObjetoToObjetoVinculo {
    * Si estado no es TRANSF se envia el mensaje UpdateVinculoObjetoFromObj
    */
 
-  def apply(Obje: ActorRef,actor: ObjetoActor, sujetoId: String, objetoId: String, tipoObjeto: String, estado: Option[String], requeriment: MonitoringAndMessageProducer): Unit = {
+  def apply(vinculoActor: ActorRef,actor: ObjetoActor, sujetoId: String, objetoId: String, tipoObjeto: String, estado: Option[String], requeriment: MonitoringAndMessageProducer): Unit = {
     //implicit val system: ActorSystem = actor.context.system
 
 
-    val actorPath = s"akka://PersonClassificationService/system/sharding/SujetoActor/*/${sujetoId}/Sujeto-${sujetoId}-Objeto-${objetoId}-${tipoObjeto}/ObjetoVinculo-${objetoId}"
+//    val actorPath = s"akka://PersonClassificationService/system/sharding/SujetoActor/*/${sujetoId}/Sujeto-${sujetoId}-Objeto-${objetoId}-${tipoObjeto}/ObjetoVinculo-${objetoId}"
     // s"akka://PersonClassificationService/user/ObjetoVinculo-${objetoId}"
 
 
@@ -38,13 +38,13 @@ object SendObjetoToObjetoVinculo {
 
 
     // akka://PersonClassificationService/system/sharding/ObjetoVinculoActor
-    if(Obje.path.toString.equals("akka://PersonClassificationService/system/sharding/ObjetoVinculoActor")){
+    if(vinculoActor.path.toString.equals("akka://PersonClassificationService/system/sharding/ObjetoVinculoActor")){
 
-      testIfObjVinculo(Obje, actor, sujetoId, objetoId, tipoObjeto, estado, requeriment)
+      testIfObjVinculo(vinculoActor, actor, sujetoId, objetoId, tipoObjeto, estado, requeriment)
     } else {
       implicit val ac: ActorSystem = actor.context.system
-      val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
-      testIfObjVinculo(Obje, actor, sujetoId, objetoId, tipoObjeto, estado, requeriment)
+      val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
+      testIfObjVinculo(vinculoActor, actor, sujetoId, objetoId, tipoObjeto, estado, requeriment)
 
     }
   }
@@ -52,14 +52,14 @@ object SendObjetoToObjetoVinculo {
 
 object testIfObjVinculo {
 
-  def apply(Obje: ActorRef,actor: ObjetoActor, sujetoId: String, objetoId: String, tipoObjeto: String, estado: Option[String], requeriment: MonitoringAndMessageProducer): Unit = {
+  def apply(vinculoActor: ActorRef, actor: ObjetoActor, sujetoId: String, objetoId: String, tipoObjeto: String, estado: Option[String], requeriment: MonitoringAndMessageProducer): Unit = {
     val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"))
     val log: Logger = LoggerFactory.getLogger(this.getClass)
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
 
     estado match {
       case x if x.getOrElse("").equals("TRANSF") =>
-        val res = Obje.ask[Response.SuccessProcessing](CreateTransfVinculoObjetoFromObj(objetoId = objetoId,
+        val res = vinculoActor.ask[Response.SuccessProcessing](CreateTransfVinculoObjetoFromObj(objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = 0,
           tipoObj = tipoObjeto,
@@ -79,7 +79,7 @@ object testIfObjVinculo {
           actor.informParent(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
 
       case x if x.getOrElse("").equals("BAJA") =>
-        val res = Obje.ask[Response.SuccessProcessing](RemoveObjetoVinculo(
+        val res = vinculoActor.ask[Response.SuccessProcessing](RemoveObjetoVinculo(
           objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = 0,
@@ -94,7 +94,7 @@ object testIfObjVinculo {
         }
 
       case _ =>
-        val res = Obje.ask[Response.SuccessProcessing](UpdateVinculoObjetoFromObj(objetoId = objetoId,
+        val res = vinculoActor.ask[Response.SuccessProcessing](UpdateVinculoObjetoFromObj(objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = 0,
           tipoObj = tipoObjeto,

@@ -4,12 +4,9 @@ import akka.actor.{ActorRef, ActorSystem, Props}
 import akka.cluster.sharding.{ClusterSharding, ClusterShardingSettings, ShardRegion}
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import cassandra.write.{CassandraWrite, CassandraWriteProduction}
-import design_principles.actor_model.{Command, Query}
 import design_principles.actor_model.mechanism.local_processing.LocalizedProcessingMessageExtractor
 import kafka.{KafkaMessageProducer, MessageProducer}
 import monitoring.{KamonMonitoring, Monitoring}
-
-import scala.util.Try
 
 trait ShardedEntity[Requirements] extends ClusterEntity[Requirements] {
 
@@ -17,27 +14,14 @@ trait ShardedEntity[Requirements] extends ClusterEntity[Requirements] {
 
   def props(requirements: Requirements): Props
 
-  val NR_PARTITIONS: Int = Try(System.getenv("NR_PARTITIONS")).map(_.toInt).getOrElse(90)
-
   val extractEntityId: ShardRegion.ExtractEntityId = {
     case s: Sharded => (s.entityId, s)
   }
 
-  val numberOfShards = 9
+  val numberOfShards = 3
   def extractShardId: ShardRegion.ExtractShardId = {
-    case s: Command => {
-      s.aggregateRoot match {
-        case s"Sujeto-$sujetoId-Objeto-$objetoId-$tipoObjeto-Obligacion-$obligacionId" => {
-          val idParaShardear: String = sujetoId + "-" + objetoId
-          new LocalizedProcessingMessageExtractor(NR_PARTITIONS).shardId(idParaShardear)
-        }
-        case _ => new LocalizedProcessingMessageExtractor(NR_PARTITIONS).shardId(s.shardedId)
-      }
-    }
-    case q: Query => {
-      new LocalizedProcessingMessageExtractor(NR_PARTITIONS).shardId(q.shardedId)
-    }
-
+    case s: Sharded =>
+      new LocalizedProcessingMessageExtractor(numberOfShards * 10).shardId(s.shardedId)
   }
 
   def clusterShardingSettings(
@@ -77,6 +61,7 @@ object ShardedEntity {
     val monitoring: Monitoring
     val messageProducer: MessageProducer
   }
+
   trait MonitoringAndMessageProducerTranf {
     val monitoring: Monitoring
   }
@@ -84,10 +69,10 @@ object ShardedEntity {
                                                      monitoring: KamonMonitoring,
                                                      messageProducer: KafkaMessageProducer
                                                    ) extends MonitoringAndMessageProducer
+
   case class ProductionMonitoringAndMessageProducerTransf(
                                                            monitoring: KamonMonitoring
                                                          ) extends MonitoringAndMessageProducerTranf
-
   case class ShardedEntityRequirements(
                                         system: ActorSystem
                                       )
