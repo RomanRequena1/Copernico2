@@ -52,7 +52,7 @@ sealed trait ObjetoExternalDto extends ExternalDto with CbroSerialization{
   def SOJ_IDENTIFICADOR_2: Option[String]
 
   def SOJ_TITULARIDAD: Option[String]
-
+  
   def SOJ_TIPO_EXCLUSION: Option[String]
 
 }

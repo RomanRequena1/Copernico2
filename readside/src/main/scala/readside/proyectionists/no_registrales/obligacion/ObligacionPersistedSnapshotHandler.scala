@@ -43,7 +43,7 @@ class ObligacionPersistedSnapshotHandler(
           case Failure(exception) => log.error("Dont persist obligacion" + exception )
           case Success(value) => {
             //log.error("ERROR - 1 " + registro.deliveryId)
-            log.debug("Persist obligacion" + value)
+//            log.debug("Persist obligacion" + value)
           }
         }
       }

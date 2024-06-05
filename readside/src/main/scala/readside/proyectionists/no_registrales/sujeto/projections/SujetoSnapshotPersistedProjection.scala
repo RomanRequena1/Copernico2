@@ -21,7 +21,8 @@ final case class SujetoSnapshotPersistedProjection(
       "suj_riesgo_fiscal" -> registro.SUJ_RIESGO_FISCAL,
       "suj_situacion_fiscal" -> registro.SUJ_SITUACION_FISCAL,
       "suj_telefono" -> registro.SUJ_TELEFONO,
-      "suj_tipo" -> registro.SUJ_TIPO
+      "suj_tipo" -> registro.SUJ_TIPO,
+      "suj_tipo_exclusion" -> registro.SUJ_TIPO_EXCLUSION
     )
   }
 
