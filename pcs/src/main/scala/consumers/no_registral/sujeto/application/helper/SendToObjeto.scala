@@ -25,7 +25,7 @@ object SendToObjeto {
             exclusionSUjeto = currentState.exclusionSujeto
           )
         )
-        case _ => "_"
+        case _ => ()
       }
     } else {
 
