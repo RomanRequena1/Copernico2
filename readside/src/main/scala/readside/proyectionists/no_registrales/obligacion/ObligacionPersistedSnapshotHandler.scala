@@ -16,11 +16,9 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 class ObligacionPersistedSnapshotHandler(
-                                          implicit
-                                          r: MonitoringAndCassandraWrite
-
-
-                                        ) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
+    implicit
+    r: MonitoringAndCassandraWrite
+) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
 
   @JsonIgnore
   private val log = LoggerFactory.getLogger(this.getClass)
@@ -40,14 +38,13 @@ class ObligacionPersistedSnapshotHandler(
 
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
-          case Failure(exception) => log.error("Dont persist obligacion" + exception )
+          case Failure(exception) => log.error("Dont persist obligacion" + exception)
           case Success(value) => {
             //log.error("ERROR - 1 " + registro.deliveryId)
 //            log.debug("Persist obligacion" + value)
           }
         }
-      }
-      yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
+      } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
     } else {
 
       val cassandra = new CassandraWriteProduction()
@@ -59,24 +56,19 @@ class ObligacionPersistedSnapshotHandler(
         done <- cassandra
           .cql(
             s"""
-          DELETE FROM read_side.buc_obligaciones """ +
-              """ WHERE bob_suj_identificador = """ +
-              s""" '${registro.sujetoId}' """ +
-              s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """ +
-              s""" and bob_soj_identificador = '${registro.objetoId}' """ +
-              s""" and bob_obn_id = '${registro.obligacionId}' """
+      DELETE FROM read_side.buc_obligaciones """ +
+            s""" WHERE bob_soj_identificador = '${registro.objetoId}' """ +
+            s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """ +
+            s""" and bob_periodo = '${registro.registro.get.BOB_PERIODO}' """ +
+            s""" and bob_cuota = '${registro.registro.get.BOB_CUOTA}' """ +
+            s""" and bob_obn_id = '${registro.obligacionId}' """
           )
           .andThen {
-            case Failure(exception) => log.error("Dont persist obligacion" + exception )
-            case Success(_) => {
-              //log.error("ERROR - -1 " + registro.deliveryId)
-              log.debug("Persiste Obligacion")
-              //a ! InsertFromReadside(registro.deliveryId.toString(), a)
-              //Future(connOracleReadsideToCass(registro.deliveryId.toString()))
-
-            }
+            case Failure(exception) => log.error("Dont persist obligacion" + exception)
+            case Success(_) => ()
           }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
+
     }
   }
 
