@@ -1,4 +1,4 @@
-FROM registro.kolektor.com.ar:5000/openjdk:11
+FROM registry-sip.cba.gov.ar:5000/openjdk:11
 
 WORKDIR /opt/docker
 COPY readside/target/docker/stage/opt /opt
