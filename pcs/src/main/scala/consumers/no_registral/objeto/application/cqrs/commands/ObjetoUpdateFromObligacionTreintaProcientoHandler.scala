@@ -21,7 +21,7 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
                        command: ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento
                      ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    val obj_default: ObjetosTri = ObjetosTri(Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"))
+    val obj_default: ObjetosTri = ObjetosTri(Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"),Some("None"))
 
     val event = ObjetoUpdatedFromObnTreintaProciento(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
@@ -41,8 +41,10 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
     }
 
     //val eventCounterMax = Try(System.getenv("EVENT-COUNTER-MAX")).getOrElse(9)
+
     implicit val ac: ActorSystem = actor.context.system
-    val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
+    val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
+
     actor.persistEvent(event) { () =>
       actor.state += event
       //if (initialization != "true")
@@ -52,7 +54,7 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
 
-      SendObjetoToObjetoVinculo(Obje, actor, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state.registro.getOrElse(obj_default).SOJ_ESTADO, requeriment)
+      SendObjetoToObjetoVinculo(vinculoActor, actor, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state.registro.getOrElse(obj_default).SOJ_ESTADO, requeriment)
 
     }
 

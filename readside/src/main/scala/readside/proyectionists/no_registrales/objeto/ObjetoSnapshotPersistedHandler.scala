@@ -39,7 +39,7 @@ class ObjetoSnapshotPersistedHandler(
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
           case Failure(exception) => println("Dont persist objeto" + exception )
-          case Success(value) => println("Persist objeto" + value )
+          case Success(value) => ()
           //connOracleReadsideToCass(registro.deliveryId.toString(),"objeto", registro.registro.get.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
         }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
@@ -67,11 +67,9 @@ class ObjetoSnapshotPersistedHandler(
         done <- cassandra
           .cql(
             s"""
-          DELETE FROM read_side.buc_obligaciones """ +
-              """ WHERE bob_suj_identificador = """ +
-              s""" '${registro.sujetoId}' """ +
-              s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """ +
-              s""" and bob_soj_identificador = '${registro.objetoId}' """
+      DELETE FROM read_side.buc_obligaciones """ +
+              s""" WHERE bob_soj_identificador = '${registro.objetoId}' """ +
+              s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """
           )
           .recover { ex: Throwable =>
             println(ex.getMessage)

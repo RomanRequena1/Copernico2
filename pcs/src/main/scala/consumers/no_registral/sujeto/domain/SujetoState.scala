@@ -19,7 +19,8 @@ final case class SujetoState(
                               tiene30Sujeto: Boolean = true,
                               objVencidas: Map[String, (Boolean, String)] = Map.empty, //todo este ("idObjeto" -> (valor30%, "tipoObjeto(sale del alta objeto) "))
                               diffStates: Boolean = false,                             //todo este ("IBG456" -> (true, "2")
-                              lastInternalDeliveryId:BigInt = 0
+                              lastInternalDeliveryId:BigInt = 0,
+                              exclusionSujeto: String = ""
                             ) extends AbstractState[SujetoEvents] with CbroSerialization{
   def +(event: SujetoEvents): SujetoState = {
     eventCounter match {
@@ -76,7 +77,8 @@ final case class SujetoState(
     event match {
       case SujetoEvents.SujetoUpdatedFromTri(_, _, registro) =>
         copy(
-          registro = Some(registro)
+          registro = Some(registro),
+          exclusionSujeto = registro.SUJ_TIPO_EXCLUSION.getOrElse("")
         )
       case SujetoEvents.SujetoUpdatedFromAnt(_, _, registro) =>
         copy(

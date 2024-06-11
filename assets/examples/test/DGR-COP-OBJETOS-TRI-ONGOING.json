@@ -1,9 +1,10 @@
-{
-  "EV_ID" : "25",
-  "SOJ_SUJ_IDENTIFICADOR" : "Luquitas",
-  "SOJ_TIPO_OBJETO" : "I",
-  "SOJ_IDENTIFICADOR" : "Casa123",
-  "SOJ_DESCRIPCION" : "null",
+ {
+  "EV_ID" : "21",
+  "SOJ_SUJ_IDENTIFICADOR" : "LUQUITAS",
+  "SOJ_TIPO_OBJETO" : "A",
+  "SOJ_IDENTIFICADOR" : "LUQ123",
+  "SOJ_CAT_SOJ_ID" : "TRI",
+  "SOJ_DESCRIPCION" : "Des",
   "SOJ_ESTADO" : null,
   "SOJ_ID_EXTERNO" : "436786342579",
   "SOJ_SUBTIPO" : "La mansion del peluk",

@@ -32,7 +32,8 @@ case class ObjetoState(
                         resulDmn: Option[Int] = None,
                         obnVencidas: Map[String, Boolean] = Map.empty,
                         deuda30Objeto: Boolean = true,
-                        tipoExclusion: String = ""
+                        tipoExclusion: String = "",
+                        exclusionObjeto: String = ""
                       ) extends AbstractState[ObjetoEvents] with CbroSerialization{
 
   override def +(event: ObjetoEvents): ObjetoState = {
@@ -55,6 +56,13 @@ case class ObjetoState(
     )*/
   }
 
+  /** En el array de ObnVencidas
+   *
+   * Las obligaciones en true son no deuda ( tiene30obligaciones = true )
+   * Las Obligaciones en false son deuda ( tiene30obligaciones = false )
+   * @param obligacionId
+   * @return
+   */
   private def validExitsObnVencidas(obligacionId: String) = {
     obnVencidas match {
       case x if x.contains(obligacionId) => x updated(obligacionId, true) //la modifico si existe
@@ -82,6 +90,16 @@ case class ObjetoState(
     }
   }
 
+  /** En el array de ObnVencidas
+   *
+   * Las obligaciones en true son no deuda ( tiene30obligaciones = true )
+   *
+   * Las Obligaciones en false son deuda ( tiene30obligaciones = false )
+   *
+   * Agrega la obligacion con deuda al array de ObnVencidas (Obn NoDeuda?)
+   * @param obligacionId
+   * @return
+   */
   private def validExitsObnVencidasTreinta(obligacionId: String) = {
     obnVencidas match {
       case x if x.contains(obligacionId) => x updated(obligacionId, false) //la modifico si existe
@@ -105,6 +123,7 @@ case class ObjetoState(
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
         copy(tiene30Sujeto = Some(evt.tiene30Sujeto),
         )
+      // TODO: check when an object with multiple owners changes its exclusions.
       case evt: ObjetoEvents.UpdatedState30ObjetoFromObjVinculo =>
         val _tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo
         copy(tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
@@ -124,6 +143,7 @@ case class ObjetoState(
           isBaja = false,
           clasificacionObjeto = evt.clasificacionObjeto.getOrElse("2"),
           resulDmn = evt.resultDmn,
+          exclusionObjeto = evt.registro.SOJ_TIPO_EXCLUSION.getOrElse("")
         )
       //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
       //        copy(

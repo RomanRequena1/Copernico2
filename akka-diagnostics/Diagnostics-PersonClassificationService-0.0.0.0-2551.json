@@ -1037,8 +1037,8 @@
         "advanced" : {
             "auth-provider" : {
                 "class" : "PlainTextAuthProvider",
-                "password" : "cassandra",
-                "username" : "cassandra"
+                "password" : "inicial",
+                "username" : "oper_drivera"
             },
             "connection" : {
                 "max-requests-per-connection" : "4096",

@@ -16,11 +16,13 @@ final case class SujetoSnapshotPersistedProjection(
       "suj_direccion" -> registro.SUJ_DIRECCION,
       "suj_email" -> registro.SUJ_EMAIL,
       "suj_id_externo" -> registro.SUJ_ID_EXTERNO,
+      "suj_tipo_exclusion" -> registro.SUJ_TIPO_EXCLUSION,
       "suj_otros_atributos" -> registro.SUJ_OTROS_ATRIBUTOS,
       "suj_riesgo_fiscal" -> registro.SUJ_RIESGO_FISCAL,
       "suj_situacion_fiscal" -> registro.SUJ_SITUACION_FISCAL,
       "suj_telefono" -> registro.SUJ_TELEFONO,
-      "suj_tipo" -> registro.SUJ_TIPO
+      "suj_tipo" -> registro.SUJ_TIPO,
+      "suj_tipo_exclusion" -> registro.SUJ_TIPO_EXCLUSION
     )
   }
 

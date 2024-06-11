@@ -61,16 +61,18 @@ object ShardedEntity {
     val monitoring: Monitoring
     val messageProducer: MessageProducer
   }
+
   trait MonitoringAndMessageProducerTranf {
-    val monitoring: Monitoring}
+    val monitoring: Monitoring
+  }
   case class ProductionMonitoringAndMessageProducer(
                                                      monitoring: KamonMonitoring,
                                                      messageProducer: KafkaMessageProducer
                                                    ) extends MonitoringAndMessageProducer
+
   case class ProductionMonitoringAndMessageProducerTransf(
                                                            monitoring: KamonMonitoring
                                                          ) extends MonitoringAndMessageProducerTranf
-
   case class ShardedEntityRequirements(
                                         system: ActorSystem
                                       )

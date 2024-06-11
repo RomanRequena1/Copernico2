@@ -55,7 +55,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
           cmd.registro.SOJ_ESTADO.getOrElse(""),
           cmd.registro.SOJ_TITULARIDAD.getOrElse(""),
           semaforo_color.getOrElse(""),
-          "",
+          cmd.registro.SOJ_TIPO_EXCLUSION.getOrElse(""),
           ""
         )
       )
