@@ -20,7 +20,9 @@ CREATE TABLE read_side.buc_sujeto_objeto (
     soj_tiene30Objeto boolean,
     soj_aplicarDescuento boolean,
     soj_resultDmn int,
-    soj_exclusionObjeto text,
+    soj_tipo_exclusion text,
+    soj_fecha_vta_subasta date,
+    soj_fecha_adq_subasta date,
     PRIMARY KEY (soj_suj_identificador, soj_tipo_objeto, soj_identificador)
 ) WITH CLUSTERING ORDER BY (soj_tipo_objeto ASC, soj_identificador ASC)
     AND bloom_filter_fp_chance = 0.01

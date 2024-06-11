@@ -27,7 +27,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
 
     actor.state += event
    // val exclusionObjeto = QueryExclusionObjeto(command.objetoId)
-    val obj_default = new ObjetosTri(Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"),Some("None"))
+    val obj_default = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
     val result = DMNTreintaPorcientoFinal.calcularDmnFinal(DmnFinal(command.exclusionSUjeto,
       actor.state.exclusionObjeto,
       actor.state.clasificacionObjeto,
