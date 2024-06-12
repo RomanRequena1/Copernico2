@@ -40,7 +40,9 @@ case class ObjetoSnapshotPersistedProjection(
           "soj_titularidad" -> r.SOJ_TITULARIDAD,
           "soj_tiene30Objeto" -> event.tiene30Objeto,
           "soj_aplicarDescuento" -> event.aplicarDescuento,
-          "soj_resultDmn" -> Some(event.bandTipo.toInt)
+          "soj_resultDmn" -> Some(event.bandTipo.toInt),
+          "soj_fecha_vta_subasta" -> r.SOJ_FECHA_VTA_SUBASTA,
+          "soj_fecha_adq_subasta" -> r.SOJ_FECHA_ADQ_SUBASTA
         )
       )
     case None =>

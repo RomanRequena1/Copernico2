@@ -55,6 +55,10 @@ sealed trait ObjetoExternalDto extends ExternalDto with CbroSerialization{
   
   def SOJ_TIPO_EXCLUSION: Option[String]
 
+  def SOJ_FECHA_VTA_SUBASTA: Option[LocalDateTime]
+
+  def SOJ_FECHA_ADQ_SUBASTA: Option[LocalDateTime]
+
 }
 
 
@@ -79,7 +83,9 @@ object ObjetoExternalDto{
                          SOJ_SUBTIPO: Option[String],
                          SOJ_IDENTIFICADOR_2: Option[String],
                          SOJ_TITULARIDAD: Option[String],
-                         SOJ_TIPO_EXCLUSION: Option[String]
+                         SOJ_TIPO_EXCLUSION: Option[String],
+                         SOJ_FECHA_VTA_SUBASTA: Option[LocalDateTime],
+                         SOJ_FECHA_ADQ_SUBASTA: Option[LocalDateTime]
                        ) extends ObjetoExternalDto with CbroSerialization
 
   case class ObjetosTri(
@@ -102,7 +108,9 @@ object ObjetoExternalDto{
                          SOJ_SUBTIPO: Option[String],
                          SOJ_IDENTIFICADOR_2: Option[String],
                          SOJ_TITULARIDAD: Option[String],
-                         SOJ_TIPO_EXCLUSION: Option[String]
+                         SOJ_TIPO_EXCLUSION: Option[String],
+                         SOJ_FECHA_VTA_SUBASTA: Option[LocalDateTime],
+                         SOJ_FECHA_ADQ_SUBASTA: Option[LocalDateTime]
                        ) extends ObjetoExternalDto with CbroSerialization
 
   case class ListDetallesObjeto(SOJ_DETALLES: List[DetallesObjeto]) extends CbroSerialization
