@@ -23,7 +23,7 @@ project/plugins/project/
 \.bloop/
 
 target
-
+akka-diagnostics
 .DS_Store
 
 *.pyc
