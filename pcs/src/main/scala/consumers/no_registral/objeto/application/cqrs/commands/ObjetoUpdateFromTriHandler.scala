@@ -22,8 +22,6 @@ import ddd.eventCounterMax
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import org.slf4j.{Logger, LoggerFactory}
-
-import java.lang.reflect.Field
 import scala.util.{Failure, Success, Try}
 
 class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
@@ -44,7 +42,11 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       case Some(d) => d.SOJ_DETALLES.head.SOJ_SEMAFORO_MARCA
       case None => None
     }
-    val semaforo_color = command.registro.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES.head.SOJ_SEMAFORO_COLOR
+
+    val semaforo_color = command.registro.SOJ_OTROS_ATRIBUTOS match {
+      case Some(r) => r.SOJ_DETALLES.head.SOJ_SEMAFORO_COLOR.getOrElse("")
+      case None => ""
+    }
 
     def isTipo(cmd: ObjetoUpdateFromTri) = {
 
@@ -54,7 +56,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
           cmd.registro.SOJ_ADHERIDO_DEBITO.getOrElse(""),
           cmd.registro.SOJ_ESTADO.getOrElse(""),
           cmd.registro.SOJ_TITULARIDAD.getOrElse(""),
-          semaforo_color.getOrElse(""),
+          semaforo_color,
           cmd.registro.SOJ_TIPO_EXCLUSION.getOrElse(""),
           ""
         )
@@ -74,15 +76,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
 
     val dmn = isTipo(command)
 
-    //      val eventoNuevo = declaredFields.map {
-    //        case campo if campo.get(cc) == null => campo.set(cc, estado.getClass.getField(campo.toString).get(estado))
-    //        case campo if campo.get(cc) == "null" => campo.set(cc, None)
-    //      }
-
-//    val declaredFolded = declaredFields.foldLeft(Map.empty[String, Any]) { (a, f) =>
-//      f.setAccessible(true)
-//      a + (f.getName -> f.get(cc))
-//    }
 
     def getCCParams(evento: ObjetoExternalDto, estado: ObjetoExternalDto) = {
       val declaredFields = evento.getClass.getDeclaredFields
@@ -93,7 +86,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
         val campoEstado = estado.getClass.getDeclaredField(campo.getName)
         campoEvento.setAccessible(true)
         campoEstado.setAccessible(true)
-
+        // explicar esta logica
         if (campoEvento.get(evento) == None) {
           campoEvento.set(objetoNuevoTest, campoEstado.get(estado))
         } else if (campoEvento.get(evento).equals(Some("null"))) {
@@ -102,6 +95,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       }
       objetoNuevoTest
     }
+
     //TODO Validate the first event, with no state, enters in the case None.
     def getObjetoFFF() = {
       val objetoFFF = actor.state.registro match {
@@ -137,30 +131,10 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
   }
 }
 
+
+
 object test {
   def actualizarObjeto(evento: ObjetoExternalDto.ObjetosTri, estado: ObjetoExternalDto.ObjetosTri) = {
-    /*RULE_NUMBER: Option[String],
-    EV_ID: BigInt,
-    SOJ_SUJ_IDENTIFICADOR: String,
-    SOJ_TIPO_OBJETO: String,
-    SOJ_IDENTIFICADOR: String,
-    SOJ_CAT_SOJ_ID: Option[String],
-    SOJ_DESCRIPCION: Option[String],
-    SOJ_ESTADO: Option[String],
-    SOJ_FECHA_INICIO: Option[LocalDateTime],
-    SOJ_FECHA_FIN: Option[LocalDateTime],
-    SOJ_ID_EXTERNO: Option[String],
-    SOJ_OTROS_ATRIBUTOS: Option[ListDetallesObjeto],
-    SOJ_BASE_IMPONIBLE: Option[BigDecimal],
-    SOJ_ADHERIDO_DEBITO: Option[String],
-    SOJ_CANT_CUOTAS_PAGADAS: Option[BigInt],
-    SOJ_CANAL_ORIGEN: Option[String],
-    SOJ_SUBTIPO: Option[String], VACIO
-    SOJ_IDENTIFICADOR_2: Option[String],
-    SOJ_TITULARIDAD: Option[String]*/
-
-    // estado: SOJ_SUBTIPO: "TIPO uno"
-    // null
     var objetoFinal = evento
 
     if (evento.SOJ_SUBTIPO.isDefined) {
@@ -178,6 +152,7 @@ object test {
     objetoFinal
   }
 
+
   def persistSnapshotEvent(event: ObjetoUpdatedFromTri,
                            actor: ObjetoActor,
                            command: ObjetoUpdateFromTri,
@@ -189,69 +164,11 @@ object test {
     implicit val ac: ActorSystem = actor.context.system
     val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+
+
     actor.persistEvent(event) { () =>
-      val a = actor.state.registro
-      val evento = event.registro
-
-      //      evento match {
-      //        case ObjetoExternalDto.ObjetosTri(RULE_NUMBER, EV_ID, SOJ_SUJ_IDENTIFICADOR, SOJ_TIPO_OBJETO,
-      //          SOJ_IDENTIFICADOR, SOJ_CAT_SOJ_ID, SOJ_DESCRIPCION, SOJ_ESTADO, SOJ_FECHA_INICIO, SOJ_FECHA_FIN,
-      //          SOJ_ID_EXTERNO, SOJ_OTROS_ATRIBUTOS, SOJ_BASE_IMPONIBLE, SOJ_ADHERIDO_DEBITO, SOJ_CANT_CUOTAS_PAGADAS, SOJ_CANAL_ORIGEN,
-      //          SOJ_SUBTIPO, SOJ_IDENTIFICADOR_2, SOJ_TITULARIDAD) => ???
-      //        case o: ObjetoExternalDto.ObjetosTri => o.copy()
-      //      }
-
-      /*val miNuevoRegistro = actor.state.registro match {
-        case Some(estado) => estado match {
-          case objetoEstado: ObjetoExternalDto.ObjetosTri => {
-            evento match {
-              case x: ObjetoExternalDto.ObjetosTri =>
-                  var nuevoObjeto: ObjetoExternalDto.ObjetosTri = ObjetoExternalDto.ObjetosTri(RULE_NUMBER = (objetoEstado || x.RULE_NUMBER))
-//                x.RULE_NUMBER
-//                x.EV_ID
-//                x.SOJ_SUJ_IDENTIFICADOR
-//                x.SOJ_TIPO_OBJETO
-//                x.SOJ_IDENTIFICADOR
-//                x.SOJ_OTROS_ATRIBUTOS
-                if (x.SOJ_CAT_SOJ_ID.isDefined) {
-              a
-                }
-                x.SOJ_DESCRIPCION
-                x.SOJ_ESTADO
-                x.SOJ_FECHA_INICIO
-                x.SOJ_FECHA_FIN
-                x.SOJ_ID_EXTERNO
-                x.SOJ_BASE_IMPONIBLE
-                x.SOJ_ADHERIDO_DEBITO
-                x.SOJ_CANT_CUOTAS_PAGADAS
-                x.SOJ_CANAL_ORIGEN
-                x.SOJ_SUBTIPO
-                x.SOJ_IDENTIFICADOR_2
-                x.SOJ_TITULARIDAD
-                x
-
-                val dddd = x.productIterator.collect {
-                  case field: Option[_] if field.exists(_.toString.nonEmpty) => field
-                  // Recoge solo los campos Option que no son vacíos
-                }.toList
-
-            }
-            objetoEstado.copy(SOJ_DESCRIPCION = evento.SOJ_DESCRIPCION)
-          }
-        }
-        case None => "El registro del evento"
-      }*/
-
-      //      val olapa: List[Option[_]] = evento match {
-      //        case miObjeto: ObjetoExternalDto.ObjetosTri =>
-      //          val dddd = miObjeto.productIterator.collect {
-      //            case field: Option[_] if field.exists(_.toString.nonEmpty) => field
-      //            // Recoge solo los campos Option que no son vacíos
-      //          }.toList
-      //          dddd
-      //        case _ => null
-      //      }
       actor.state += event
+
       //todo juicio persiste, pero no se us apara el calculo del 30%?
 
       if (actor.state.registro.get.SOJ_TIPO_OBJETO

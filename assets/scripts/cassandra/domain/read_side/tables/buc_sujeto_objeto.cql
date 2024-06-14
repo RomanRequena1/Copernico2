@@ -16,6 +16,7 @@ CREATE TABLE read_side.buc_sujeto_objeto (
     soj_canal_origen text,
     soj_subtipo text,
     soj_identificador_2 text,
+    soj_tipo_exclusion text,
     soj_titularidad text,
     soj_tiene30Objeto boolean,
     soj_aplicarDescuento boolean,
