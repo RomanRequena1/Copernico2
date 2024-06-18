@@ -2,6 +2,7 @@ package consumers.no_registral.sujeto.application.cqrs.commands
 
 import akka.actor.{ActorContext, ActorRef}
 import consumers.no_registral.sujeto.application.entity.SujetoCommands.SujetoUpdateFromTri
+import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
 import consumers.no_registral.sujeto.application.helper.{SendToObjeto, SendToObjetoFromSujeto}
 import consumers.no_registral.sujeto.domain.SujetoEvents.SujetoUpdatedFromTri
 import consumers.no_registral.sujeto.domain.SujetoState
@@ -17,7 +18,33 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
   override def handle(command: SujetoUpdateFromTri): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
-    val event = SujetoUpdatedFromTri(command.deliveryId, command.sujetoId, command.registro)
+    def getCCParams(evento: SujetoExternalDto, estado: SujetoExternalDto) = {
+      val declaredFields = evento.getClass.getDeclaredFields
+      var sujetoNuevoTest = evento
+
+      declaredFields.foreach { campo =>
+        val campoEvento = sujetoNuevoTest.getClass.getDeclaredField(campo.getName)
+        val campoEstado = estado.getClass.getDeclaredField(campo.getName)
+        campoEvento.setAccessible(true)
+        campoEstado.setAccessible(true)
+        if (campoEvento.get(evento) == None) {
+          campoEvento.set(sujetoNuevoTest, campoEstado.get(estado))
+        } else if (campoEvento.get(evento).equals(Some("null"))) {
+          campoEvento.set(sujetoNuevoTest, None)
+        }
+      }
+      sujetoNuevoTest
+    }
+
+    def registroNuevo() = {
+      val registroFFF = actor.state.registro match {
+        case None => command.registro
+        case Some(value) => getCCParams(command.registro, value)
+      }
+      registroFFF
+    }
+
+    val event = SujetoUpdatedFromTri(command.deliveryId, command.sujetoId, registroNuevo())
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
       log.error(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
@@ -27,7 +54,11 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
 //      Sujeto: estado.exclusionSujeto = E , evento.exclusionSujeto = "". Cambio, informa al objeto
 //      Sujeto: estado.exclusionSujeto = "", evento.exclusionSujeto = "E". Cambio, informa al objeto
       if (command.registro.SUJ_TIPO_EXCLUSION.getOrElse("") != actor.state.exclusionSujeto) {
-        SendToObjetoFromSujeto(actor.state, sender, actor.context, command.sujetoId, command.registro.SUJ_TIPO_EXCLUSION.getOrElse(""))
+        SendToObjetoFromSujeto(actor.state,
+                               sender,
+                               actor.context,
+                               command.sujetoId,
+                               command.registro.SUJ_TIPO_EXCLUSION.getOrElse(""))
       }
 
       actor.persistEvent(event) { () =>

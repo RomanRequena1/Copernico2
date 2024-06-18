@@ -81,12 +81,11 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       val declaredFields = evento.getClass.getDeclaredFields
       var objetoNuevoTest = evento
 
-      val test2 = declaredFields.map { campo =>
+      declaredFields.foreach { campo =>
         val campoEvento = objetoNuevoTest.getClass.getDeclaredField(campo.getName)
         val campoEstado = estado.getClass.getDeclaredField(campo.getName)
         campoEvento.setAccessible(true)
         campoEstado.setAccessible(true)
-        // explicar esta logica
         if (campoEvento.get(evento) == None) {
           campoEvento.set(objetoNuevoTest, campoEstado.get(estado))
         } else if (campoEvento.get(evento).equals(Some("null"))) {
@@ -131,8 +130,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
   }
 }
 
-
-
 object test {
   def actualizarObjeto(evento: ObjetoExternalDto.ObjetosTri, estado: ObjetoExternalDto.ObjetosTri) = {
     var objetoFinal = evento
@@ -152,7 +149,6 @@ object test {
     objetoFinal
   }
 
-
   def persistSnapshotEvent(event: ObjetoUpdatedFromTri,
                            actor: ObjetoActor,
                            command: ObjetoUpdateFromTri,
@@ -164,7 +160,6 @@ object test {
     implicit val ac: ActorSystem = actor.context.system
     val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
-
 
     actor.persistEvent(event) { () =>
       actor.state += event

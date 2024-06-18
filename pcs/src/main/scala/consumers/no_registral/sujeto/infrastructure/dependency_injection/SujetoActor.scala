@@ -20,7 +20,6 @@ import cqrs.base_actor.untyped.PersistentBaseActor
 import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 
-
 class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[SujetoEvents, SujetoState](requirements.monitoring) {
 
@@ -43,7 +42,9 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
   }
 
   override def setupHandlers(): Unit = {
-    commandBus.subscribe[SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento](new SujetoUpdateFromObjetoTreintaProcientoHandler(this).handle)
+    commandBus.subscribe[SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento](
+      new SujetoUpdateFromObjetoTreintaProcientoHandler(this).handle
+    )
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromAnt](new SujetoUpdateFromAntHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromTri](new SujetoUpdateFromTriHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromObjeto](new SujetoUpdateFromObjetoHandler(this).handle)
@@ -69,11 +70,14 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
   }
   def persistSnapshot()(handler: Seq[KafkaKeyValue] => Unit): Unit = {
     val sujetoId = SujetoMessageRoots.extractor(persistenceId).sujetoId
-    val event = SujetoSnapshotPersisted(state.registro.map(_.EV_ID).getOrElse(state.lastInternalDeliveryId),
+    val event = SujetoSnapshotPersisted(
+      state.registro.map(_.EV_ID).getOrElse(state.lastInternalDeliveryId),
       sujetoId,
       state.registro,
       state.saldo,
-      Some(state.tiene30Sujeto)).asJson.toString()
+      Some(state.tiene30Sujeto),
+      Some(state.exclusionSujeto)
+    ).asJson.toString()
     requirements.messageProducer.produce(
       data = Seq(KafkaKeyValue(persistenceId, event)),
       topic = "SujetoSnapshotPersisted"

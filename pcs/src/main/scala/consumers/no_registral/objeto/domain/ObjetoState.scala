@@ -150,7 +150,7 @@ case class ObjetoState(
             case x if x.contains("E") => "E"
             case x if x.contains("NE") => "NE"
             case x if x.contains("C") => "C"
-            case _ => "NR"
+            case _ => ""
           }
         )
       //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
