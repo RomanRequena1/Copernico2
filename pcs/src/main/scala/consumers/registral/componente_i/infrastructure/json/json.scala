@@ -23,7 +23,7 @@ object json {
   implicit val ListDetallesComponenteIEncoder: Encoder[ListDetallesComponenteI] =
     (detallesObligaciones: ListDetallesComponenteI) =>
       Json.obj(
-        "BOB_DETALLES" -> detallesObligaciones.BOB_DETALLES.asJson
+        "BCI_DETALLES" -> detallesObligaciones.BCI_DETALLES.asJson
       )
 
   implicit val DetallesComponenteIDecoder: Decoder[DetallesComponenteI] = deriveDecoder
