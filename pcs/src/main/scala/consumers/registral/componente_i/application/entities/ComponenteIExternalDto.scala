@@ -21,7 +21,7 @@ import serialization.CbroSerialization
                                  distributionId:Option[String],
                                  codigo: Option[String],
                                  concepto: Option[String],
-                                 monto: Option[BigInt]
+                                 monto: Option[BigDecimal]
                                ) extends CbroSerialization
 
 case class ListDetallesComponenteI(BCI_DETALLES: List[DetallesComponenteI]) extends CbroSerialization
