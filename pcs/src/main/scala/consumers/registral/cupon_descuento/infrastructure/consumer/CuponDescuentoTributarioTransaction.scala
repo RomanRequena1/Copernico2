@@ -32,7 +32,7 @@ case class CuponDescuentoTributarioTransaction(actor: CuponDescuentoActor, monit
         sujetoId = registro.BCD_SUJ_IDENTIFICADOR,
         objetoId = registro.BCD_SOJ_IDENTIFICADOR,
         tipoObjeto = registro.BCD_SOJ_TIPO_OBJETO,
-        obligacionId = registro.BCD_OBN_ID,
+        obligacionId = registro.BCD_OBN_IDENTIFICADOR,
         registro = registro,
         detallesCuponDescuento = registro.BCD_OTROS_ATRIBUTOS.get.BCD_DETALLES.get
       )

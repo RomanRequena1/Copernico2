@@ -9,7 +9,7 @@ import serialization.CbroSerialization
                               BCI_SOJ_IDENTIFICADOR_2: Option[String],
                               BCI_SOJ_TIPO_OBJETO: String,
                               BCI_SOJ_IDENTIFICADOR: String,
-                              BCI_OBN_ID: String,
+                              BCI_OBN_IDENTIFICADOR: String,
                               BCI_CANAL_ORIGEN: Option[String],
                               BCI_OTROS_ATRIBUTOS: Option[ListDetallesComponenteI]
 

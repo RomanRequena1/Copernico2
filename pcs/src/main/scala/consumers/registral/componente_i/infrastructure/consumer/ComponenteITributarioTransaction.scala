@@ -34,7 +34,7 @@ case class ComponenteITributarioTransaction(actor: ComponenteIActor, monitoring:
         sujetoId = registro.BCI_SUJ_IDENTIFICADOR,
         objetoId = registro.BCI_SOJ_IDENTIFICADOR,
         tipoObjeto = registro.BCI_SOJ_TIPO_OBJETO,
-        obligacionId = registro.BCI_OBN_ID,
+        obligacionId = registro.BCI_OBN_IDENTIFICADOR,
         registro = registro,
         detallesComponenteI = registro.BCI_OTROS_ATRIBUTOS.get.BCI_DETALLES
       )

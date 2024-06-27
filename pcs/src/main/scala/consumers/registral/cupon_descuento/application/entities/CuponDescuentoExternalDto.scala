@@ -11,7 +11,7 @@ import java.time.LocalDateTime
                               BCD_SOJ_IDENTIFICADOR_2: Option[String],
                               BCD_SOJ_TIPO_OBJETO: String,
                               BCD_SOJ_IDENTIFICADOR: String,
-                              BCD_OBN_ID: String,
+                              BCD_OBN_IDENTIFICADOR: String,
                               BCD_CANAL_ORIGEN: Option[String],
                               BCD_OTROS_ATRIBUTOS: Option[ListDetalleCuponDescuenta],
                             ) extends CbroSerialization
