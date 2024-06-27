@@ -31,12 +31,12 @@ case class ComponenteITributarioTransaction(actor: ComponenteIActor, monitoring:
     val command: ComponenteICommands.ComponenteIUpdateFromDto =
       ComponenteICommands.ComponenteIUpdateFromDto(
         deliveryId = BigInt(registro.EV_ID.bigInteger),
-        sujetoId = registro.BOB_SUJ_IDENTIFICADOR,
-        objetoId = registro.BOB_SOJ_IDENTIFICADOR,
-        tipoObjeto = registro.BOB_SOJ_TIPO_OBJETO,
-        obligacionId = registro.BOB_OBN_ID,
+        sujetoId = registro.BCI_SUJ_IDENTIFICADOR,
+        objetoId = registro.BCI_SOJ_IDENTIFICADOR,
+        tipoObjeto = registro.BCI_SOJ_TIPO_OBJETO,
+        obligacionId = registro.BCI_OBN_IDENTIFICADOR,
         registro = registro,
-        detallesComponenteI = registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES
+        detallesComponenteI = registro.BCI_OTROS_ATRIBUTOS.get.BCI_DETALLES
       )
 
     actor.ask(command)

@@ -16,7 +16,8 @@ object SujetoEvents {
       sujetoId: String,
       registro: Option[SujetoExternalDto],
       saldo: BigDecimal,
-      tiene30Sujeto: Option[Boolean]
+      tiene30Sujeto: Option[Boolean],
+      exclusionSujeto: Option[String]
   ) extends SujetoEvents
 
 

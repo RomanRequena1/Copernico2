@@ -5,9 +5,10 @@ import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import akka.persistence.SnapshotSelectionCriteria
 import com.fasterxml.jackson.annotation.JsonIgnore
 import consumers.no_registral.objeto.application.cqrs.commands.test.persistSnapshotEvent
+import consumers.no_registral.objeto.application.cqrs.commands.test.actualizarObjeto
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo.DmnObjeto
-import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoExternalDto}
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateFromTri
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
 import consumers.no_registral.objeto.application.helper.{testIfObjVinculo, SendObjetoToObjetoVinculo}
@@ -21,7 +22,6 @@ import ddd.eventCounterMax
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import org.slf4j.{Logger, LoggerFactory}
-
 import scala.util.{Failure, Success, Try}
 
 class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
@@ -42,7 +42,11 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       case Some(d) => d.SOJ_DETALLES.head.SOJ_SEMAFORO_MARCA
       case None => None
     }
-    val semaforo_color = command.registro.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES.head.SOJ_SEMAFORO_COLOR
+
+    val semaforo_color = command.registro.SOJ_OTROS_ATRIBUTOS match {
+      case Some(r) => r.SOJ_DETALLES.head.SOJ_SEMAFORO_COLOR.getOrElse("")
+      case None => ""
+    }
 
     def isTipo(cmd: ObjetoUpdateFromTri) = {
 
@@ -52,7 +56,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
           cmd.registro.SOJ_ADHERIDO_DEBITO.getOrElse(""),
           cmd.registro.SOJ_ESTADO.getOrElse(""),
           cmd.registro.SOJ_TITULARIDAD.getOrElse(""),
-          semaforo_color.getOrElse(""),
+          semaforo_color,
           cmd.registro.SOJ_TIPO_EXCLUSION.getOrElse(""),
           ""
         )
@@ -68,25 +72,44 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
           ("1", 1)
 
       }
-//      DMNTreintaPorcientoTipo.dmn(cmd) match {
-//        case f if f.equals(2) =>
-//          ("2", 2)
-//        case f if f.equals(-1) =>
-//          ("1", -1)
-//
-//        case f if f.equals(1) =>
-//          ("1", 1)
-//
-//      }
     }
+
     val dmn = isTipo(command)
+
+
+    def getCCParams(evento: ObjetoExternalDto, estado: ObjetoExternalDto) = {
+      val declaredFields = evento.getClass.getDeclaredFields
+      var objetoNuevoTest = evento
+
+      declaredFields.foreach { campo =>
+        val campoEvento = objetoNuevoTest.getClass.getDeclaredField(campo.getName)
+        val campoEstado = estado.getClass.getDeclaredField(campo.getName)
+        campoEvento.setAccessible(true)
+        campoEstado.setAccessible(true)
+        if (campoEvento.get(evento) == None) {
+          campoEvento.set(objetoNuevoTest, campoEstado.get(estado))
+        } else if (campoEvento.get(evento).equals(Some(""))) {
+          campoEvento.set(objetoNuevoTest, None)
+        }
+      }
+      objetoNuevoTest
+    }
+
+    //TODO Validate the first event, with no state, enters in the case None.
+    def getObjetoFFF() = {
+      val objetoFFF = actor.state.registro match {
+        case None => command.registro
+        case Some(value) => getCCParams(command.registro, value)
+      }
+      objetoFFF
+    }
 
     val event = ObjetoEvents.ObjetoUpdatedFromTri(
       if (command.deliveryId.signum < 0) actor.state.lastDeliveryIdByEvents else command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
-      command.registro,
+      getObjetoFFF(),
       command.isResponsable,
       command.sujetoResponsable,
       command.isAdheridoDebito,
@@ -108,6 +131,24 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
 }
 
 object test {
+  def actualizarObjeto(evento: ObjetoExternalDto.ObjetosTri, estado: ObjetoExternalDto.ObjetosTri) = {
+    var objetoFinal = evento
+
+    if (evento.SOJ_SUBTIPO.isDefined) {
+      objetoFinal = objetoFinal.copy(SOJ_SUBTIPO = evento.SOJ_SUBTIPO)
+    } else {
+      objetoFinal = objetoFinal.copy(SOJ_SUBTIPO = estado.SOJ_SUBTIPO)
+    }
+
+    if (evento.SOJ_ADHERIDO_DEBITO.isDefined) {
+      objetoFinal = objetoFinal.copy(SOJ_ADHERIDO_DEBITO = evento.SOJ_ADHERIDO_DEBITO)
+    } else {
+      objetoFinal = objetoFinal.copy(SOJ_ADHERIDO_DEBITO = estado.SOJ_ADHERIDO_DEBITO)
+    }
+
+    objetoFinal
+  }
+
   def persistSnapshotEvent(event: ObjetoUpdatedFromTri,
                            actor: ObjetoActor,
                            command: ObjetoUpdateFromTri,
@@ -119,8 +160,10 @@ object test {
     implicit val ac: ActorSystem = actor.context.system
     val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+
     actor.persistEvent(event) { () =>
       actor.state += event
+
       //todo juicio persiste, pero no se us apara el calculo del 30%?
 
       if (actor.state.registro.get.SOJ_TIPO_OBJETO

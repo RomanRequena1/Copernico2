@@ -12,15 +12,18 @@ final case class ComponenteISnapshotProjection(
 
   val registro: Option[ComponenteITri] = event.registro
   val bobDetailsResult: Option[Map[String, List[DetallesComponenteI]]] = {
-    decode[Map[String, List[DetallesComponenteI]]](registro.get.BOB_OTROS_ATRIBUTOS.asJson.toString()).toOption
+    decode[Map[String, List[DetallesComponenteI]]](registro.get.BCI_OTROS_ATRIBUTOS.asJson.toString()).toOption
   }
-  val mao: Map[String, String] = Map("BOB_DETALLES" -> bobDetailsResult.get("BOB_DETALLES").asJson.noSpaces)
+  val mao: Map[String, String] = Map("BCI_DETALLES" -> bobDetailsResult.get("BCI_DETALLES").asJson.noSpaces)
 
-  val fromRegistro: Option[List[(String, Option[Object])]] = registro map { registro =>
+  val fromRegistro: Option[List[(String, Object)]] = registro map { registro =>
     List(
-      "bci_canal_origen" -> registro.BOB_CANAL_ORIGEN,
+      "bci_suj_identificador" -> event.sujetoId,
+      "bci_soj_tipo_objeto" -> event.tipoObjeto,
+      "bci_soj_identificador" -> event.objetoId,
+      "bci_canal_origen" -> registro.BCI_CANAL_ORIGEN,
       "bci_otros_atributos" -> Some(mao),
-      "bci_soj_identificador_2" -> registro.BOB_SOJ_IDENTIFICADOR_2,
+      "bci_soj_identificador_2" -> registro.BCI_SOJ_IDENTIFICADOR_2,
     )
   }
 

@@ -1,21 +1,19 @@
  {
-  "EV_ID" : "20230803103654651464488618310",
-  "BOB_SUJ_IDENTIFICADOR" : "20-14921826-3",
-  "BOB_OBN_ID" : "4644886183",
-  "BOB_SOJ_IDENTIFICADOR" : "9115",
-  "BOB_SOJ_TIPO_OBJETO" : "N",
-  "BOB_CANAL_ORIGEN" : "PSRM",
-  "BOB_OTROS_ATRIBUTOS" : {
-    "BOB_DETALLES" : [ {
-      "sequence" : "1",
-      "ruleDescription" : "Crédito por Cota Mensual - Provincial",
-      "amountCalculated" : "-9647.4600000",
-      "distributionId" : "EMBACOTA"
+  "EV_ID" : "202308031036546514644886183126",
+  "BCI_SUJ_IDENTIFICADOR" : "20-14921826-3",
+  "BCI_OBN_IDENTIFICADOR" : "4644886183",
+  "BCI_SOJ_IDENTIFICADOR" : "9115",
+  "BCI_SOJ_TIPO_OBJETO" : "N",
+  "BCI_CANAL_ORIGEN" : "PSRM",
+  "BCI_OTROS_ATRIBUTOS" : {
+    "BCI_DETALLES" : [ {
+      "codigo" : "1",
+      "concepto" : "Crédito por Cota Mensual - Provincial",
+      "monto" : 1767.040
     }, {
-      "sequence" : "2",
-      "ruleDescription" : "Impuesto Básico - Provincial Mensual",
-      "amountCalculated" : "10261.5900000",
-      "distributionId" : "EMBASMT"
+      "codigo" : "2",
+      "concepto" : "Impuesto Básico - Provincial Mensual",
+      "monto" : 17.67040
     } ]
   }
 }

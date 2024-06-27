@@ -1,14 +1,13 @@
 CREATE TABLE IF NOT EXISTS read_side.buc_componente_i (
+       bci_obn_identificador text,
        bci_suj_identificador text,
        bci_soj_tipo_objeto text,
        bci_soj_identificador text,
-       bci_obn_identificador text,
        bci_otros_atributos map<text, text>,
        bci_canal_origen text,
        bci_soj_identificador_2 text,
-       PRIMARY KEY (bci_suj_identificador, bci_soj_tipo_objeto, bci_soj_identificador, bci_obn_identificador)
-      ) WITH CLUSTERING ORDER BY (bci_soj_tipo_objeto ASC, bci_soj_identificador ASC, bci_obn_identificador ASC)
-          AND bloom_filter_fp_chance = 0.01
+       PRIMARY KEY (bci_obn_identificador)
+      ) WITH bloom_filter_fp_chance = 0.01
           AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
           AND comment = ''
           AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}

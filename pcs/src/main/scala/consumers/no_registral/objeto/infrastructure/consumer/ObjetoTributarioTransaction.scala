@@ -42,6 +42,7 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
         }
         case None => List(Some("N"))
       }
+    
     val isAdheridoDebito = Some(registro.SOJ_ADHERIDO_DEBITO.contains("S"))
 
     val command: ObjetoCommands =

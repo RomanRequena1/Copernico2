@@ -7,9 +7,9 @@ CREATE TABLE IF NOT EXISTS read_side.buc_cupon_descuento (
        bcd_otros_atributos map<text, text>,
        bcd_canal_origen text,
        bcd_soj_identificador_2 text,
-       PRIMARY KEY (bcd_suj_identificador, bcd_soj_tipo_objeto, bcd_soj_identificador, bcd_obn_identificador)
-      ) WITH CLUSTERING ORDER BY (bcd_soj_tipo_objeto ASC, bcd_soj_identificador ASC, bcd_obn_identificador ASC)
-          AND bloom_filter_fp_chance = 0.01
+       PRIMARY KEY (bcd_obn_identificador)
+      ) WITH
+           bloom_filter_fp_chance = 0.01
           AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
           AND comment = ''
           AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}

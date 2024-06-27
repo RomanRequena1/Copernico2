@@ -1,39 +1,43 @@
 package consumers.no_registral.sujeto.domain
 
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
-import ddd.{AbstractState, eventCounterMax}
+import ddd.{eventCounterMax, AbstractState}
 import serialization.CbroSerialization
 
 import java.time.LocalDateTime
 
 final case class SujetoState(
-                              saldo: BigDecimal = 0,
-                              saldoObjetos: Map[String, BigDecimal] = Map.empty,
-                              saldoObligaciones: Map[String, BigDecimal] = Map.empty,
-                              objetos: Set[(String, String)] = Set.empty,
-                              fechaUltMod: LocalDateTime = LocalDateTime.MIN,
-                              registro: Option[SujetoExternalDto] = None,
-                              lastDeliveryIdByEvents:  BigInt = 0,
-                              eventCounter:Int = 0,
-                              cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
-                              tiene30Sujeto: Boolean = true,
-                              objVencidas: Map[String, (Boolean, String)] = Map.empty, //todo este ("idObjeto" -> (valor30%, "tipoObjeto(sale del alta objeto) "))
-                              diffStates: Boolean = false,                             //todo este ("IBG456" -> (true, "2")
-                              lastInternalDeliveryId:BigInt = 0,
-                              exclusionSujeto: String = ""
-                            ) extends AbstractState[SujetoEvents] with CbroSerialization{
+    saldo: BigDecimal = 0,
+    saldoObjetos: Map[String, BigDecimal] = Map.empty,
+    saldoObligaciones: Map[String, BigDecimal] = Map.empty,
+    objetos: Set[(String, String)] = Set.empty,
+    fechaUltMod: LocalDateTime = LocalDateTime.MIN,
+    registro: Option[SujetoExternalDto] = None,
+    lastDeliveryIdByEvents: BigInt = 0,
+    eventCounter: Int = 0,
+    cuotas: List[Boolean] =
+      List(false, false, false, false, false, false, false, false, false, false, false, false, false),
+    tiene30Sujeto: Boolean = true,
+    objVencidas: Map[String, (Boolean, String)] = Map.empty, //todo este ("idObjeto" -> (valor30%, "tipoObjeto(sale del alta objeto) "))
+    diffStates: Boolean = false, //todo este ("IBG456" -> (true, "2")
+    lastInternalDeliveryId: BigInt = 0,
+    exclusionSujeto: String = ""
+) extends AbstractState[SujetoEvents]
+    with CbroSerialization {
   def +(event: SujetoEvents): SujetoState = {
     eventCounter match {
-      case n if (n > (eventCounterMax)) => changeState(event).copy(
-        fechaUltMod = LocalDateTime.now,
-        lastDeliveryIdByEvents = event.deliveryId,
-        eventCounter = 0
-      )
-      case n => changeState(event).copy(
-        fechaUltMod = LocalDateTime.now,
-        lastDeliveryIdByEvents = event.deliveryId,
-        eventCounter = n + 1
-      )
+      case n if (n > (eventCounterMax)) =>
+        changeState(event).copy(
+          fechaUltMod = LocalDateTime.now,
+          lastDeliveryIdByEvents = event.deliveryId,
+          eventCounter = 0
+        )
+      case n =>
+        changeState(event).copy(
+          fechaUltMod = LocalDateTime.now,
+          lastDeliveryIdByEvents = event.deliveryId,
+          eventCounter = n + 1
+        )
     }
     /*changeState(event).copy(
       fechaUltMod = LocalDateTime.now,
@@ -52,19 +56,20 @@ final case class SujetoState(
 
     //if (objVencidas.contains(objetoId)) objVencidas else objVencidas + (objetoId -> (true, clasificacionObjeto))
   }
-  private def diffCurrentStateAndNewState(currentObjVnecidad: Map[String, (Boolean, String)], newObjVnecidad: Map[String, (Boolean, String)], deuda30Sujeto: Boolean) = {
+  private def diffCurrentStateAndNewState(currentObjVnecidad: Map[String, (Boolean, String)],
+                                          newObjVnecidad: Map[String, (Boolean, String)],
+                                          deuda30Sujeto: Boolean) = {
     val map = newObjVnecidad.filter(obj => !obj._2._2.equals("1"))
     if (map.values.forall(_._1)) {
 
       val newTupla = (true, tiene30Sujeto.equals(true))
       newTupla
-    }
-    else {
+    } else {
       val newTupla = (false, tiene30Sujeto.equals(false))
       newTupla
     }
   }
-  private def validExitsObjVencidasTreinta(objetoId: String,clasificacionObjeto: String) = {
+  private def validExitsObjVencidasTreinta(objetoId: String, clasificacionObjeto: String) = {
     objVencidas match {
       //case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (false, clasificacionObjeto))
       case x if x.contains(objetoId) => x updated (objetoId, (false, clasificacionObjeto))
@@ -78,13 +83,24 @@ final case class SujetoState(
       case SujetoEvents.SujetoUpdatedFromTri(_, _, registro) =>
         copy(
           registro = Some(registro),
-          exclusionSujeto = registro.SUJ_TIPO_EXCLUSION.getOrElse("")
+          exclusionSujeto = registro.SUJ_TIPO_EXCLUSION match {
+            case x if x.contains("E") => "E"
+            case x if x.contains("NE") => "NE"
+            case _ => ""
+          }
         )
+
       case SujetoEvents.SujetoUpdatedFromAnt(_, _, registro) =>
         copy(
           registro = Some(registro)
         )
-      case SujetoEvents.SujetoUpdatedFromObjeto(deliveryId, _, objetoId, tipoObjeto, saldoObjeto, _saldoObligaciones, clasificacionObjeto) =>
+      case SujetoEvents.SujetoUpdatedFromObjeto(deliveryId,
+                                                _,
+                                                objetoId,
+                                                tipoObjeto,
+                                                saldoObjeto,
+                                                _saldoObligaciones,
+                                                clasificacionObjeto) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
         val _objVencidas = validExitsObjVencidas(objetoId, clasificacionObjeto)
@@ -100,7 +116,13 @@ final case class SujetoState(
           tiene30Sujeto = diff._1,
           diffStates = diff._2
         )
-      case SujetoEvents.SujetoUpdatedFromObjetoTreintaPorciento(deliveryId, _, objetoId, tipoObjeto, saldoObjeto, _saldoObligaciones, clasificacionObjeto) =>
+      case SujetoEvents.SujetoUpdatedFromObjetoTreintaPorciento(deliveryId,
+                                                                _,
+                                                                objetoId,
+                                                                tipoObjeto,
+                                                                saldoObjeto,
+                                                                _saldoObligaciones,
+                                                                clasificacionObjeto) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
         val _objVencidas = validExitsObjVencidasTreinta(objetoId, clasificacionObjeto)

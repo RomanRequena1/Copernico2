@@ -29,12 +29,12 @@ case class CuponDescuentoTributarioTransaction(actor: CuponDescuentoActor, monit
     val command: CuponDescuentoCommands.CuponDescuentoUpdateFromDto =
       CuponDescuentoCommands.CuponDescuentoUpdateFromDto(
         deliveryId = BigInt(registro.EV_ID.bigInteger),
-        sujetoId = registro.BOB_SUJ_IDENTIFICADOR,
-        objetoId = registro.BOB_SOJ_IDENTIFICADOR,
-        tipoObjeto = registro.BOB_SOJ_TIPO_OBJETO,
-        obligacionId = registro.BOB_OBN_ID,
+        sujetoId = registro.BCD_SUJ_IDENTIFICADOR,
+        objetoId = registro.BCD_SOJ_IDENTIFICADOR,
+        tipoObjeto = registro.BCD_SOJ_TIPO_OBJETO,
+        obligacionId = registro.BCD_OBN_IDENTIFICADOR,
         registro = registro,
-        detallesCuponDescuento = registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.get
+        detallesCuponDescuento = registro.BCD_OTROS_ATRIBUTOS.get.BCD_DETALLES.get
       )
 
     actor.ask(command)

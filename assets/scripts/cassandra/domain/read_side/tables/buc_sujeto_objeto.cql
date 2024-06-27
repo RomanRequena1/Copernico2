@@ -16,11 +16,11 @@ CREATE TABLE read_side.buc_sujeto_objeto (
     soj_canal_origen text,
     soj_subtipo text,
     soj_identificador_2 text,
+    soj_tipo_exclusion text,
     soj_titularidad text,
     soj_tiene30Objeto boolean,
     soj_aplicarDescuento boolean,
     soj_resultDmn int,
-    soj_tipo_exclusion text,
     soj_fecha_vta_subasta date,
     soj_fecha_adq_subasta date,
     PRIMARY KEY (soj_suj_identificador, soj_tipo_objeto, soj_identificador)

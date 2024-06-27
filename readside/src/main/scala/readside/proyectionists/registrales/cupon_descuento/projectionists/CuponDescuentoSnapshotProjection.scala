@@ -11,14 +11,19 @@ final case class CuponDescuentoSnapshotProjection(
 
   val registro: Option[CuponDescuentoTri] = event.registro
   val bobDetailsResult: Option[Map[String, List[DetallesCuponDescuento]]] = {
-    decode[Map[String, List[DetallesCuponDescuento]]](registro.get.BOB_OTROS_ATRIBUTOS.asJson.toString()).toOption
+
+    println("SUENA "+decode[Map[String, List[DetallesCuponDescuento]]](registro.get.BCD_OTROS_ATRIBUTOS.asJson.toString()).toOption)
+    decode[Map[String, List[DetallesCuponDescuento]]](registro.get.BCD_OTROS_ATRIBUTOS.asJson.toString()).toOption
   }
-  val mao: Map[String, String] = Map("BOB_DETALLES" -> bobDetailsResult.get("BOB_DETALLES").asJson.noSpaces)
-  val fromRegistro: Option[List[(String, Option[Object])]] = registro map { registro =>
+  val mao: Map[String, String] = Map("BCD_DETALLES" -> bobDetailsResult.get("BCD_DETALLES").asJson.noSpaces)
+  val fromRegistro: Option[List[(String, Object)]] = registro map { registro =>
     List(
-      "bcd_canal_origen" -> registro.BOB_CANAL_ORIGEN,
+      "bcd_suj_identificador" -> event.sujetoId,
+      "bcd_soj_tipo_objeto" -> event.tipoObjeto,
+      "bcd_soj_identificador" -> event.objetoId,
+      "bcd_canal_origen" -> registro.BCD_CANAL_ORIGEN,
       "bcd_otros_atributos" -> Some(mao),
-      "bcd_soj_identificador_2" -> registro.BOB_SOJ_IDENTIFICADOR_2,
+      "bcd_soj_identificador_2" -> registro.BCD_SOJ_IDENTIFICADOR_2,
     )
   }
 
