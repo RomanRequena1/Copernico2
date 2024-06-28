@@ -12,7 +12,6 @@ import serialization.CbroSerialization
                               BCI_OBN_IDENTIFICADOR: String,
                               BCI_CANAL_ORIGEN: Option[String],
                               BCI_OTROS_ATRIBUTOS: Option[ListDetallesComponenteI]
-
                             ) extends CbroSerialization
   case class DetallesComponenteI(
                                  codigo: Option[String],
