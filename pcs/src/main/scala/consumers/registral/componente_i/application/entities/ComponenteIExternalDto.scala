@@ -15,10 +15,6 @@ import serialization.CbroSerialization
 
                             ) extends CbroSerialization
   case class DetallesComponenteI(
-                                 sequence: Option[String],
-                                 ruleDescription: Option[String],
-                                 amountCalculated:Option[String],
-                                 distributionId:Option[String],
                                  codigo: Option[String],
                                  concepto: Option[String],
                                  monto: Option[BigDecimal]
