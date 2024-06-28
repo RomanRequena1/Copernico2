@@ -1,26 +1,34 @@
 package consumers.no_registral.obligacion.infrastructure.consumer
- import akka.actor.ActorRef
- import api.actor_transaction.ActorTransaction
- import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
- import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento
- import consumers.no_registral.obligacion.application.entities
- import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
- import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionCommands, ObligacionesAnt}
- import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
- import design_principles.actor_model.Response
- import io.circe.parser.decode
- import io.circe.syntax.EncoderOps
- import monitoring.Monitoring
- import org.camunda.dmn.DmnEngine
- import org.camunda.dmn.parser.ParsedDmn
- import scalaz.\/
+import akka.actor.ActorRef
+import api.actor_transaction.ActorTransaction
+import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
+import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento
+import consumers.no_registral.obligacion.application.entities
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{
+  ObligacionRemove,
+  ObligacionUpdateFromDto
+}
+import consumers.no_registral.obligacion.application.entities.{
+  DetallesObligacion,
+  ListDetallesObligaciones,
+  ObligacionCommands,
+  ObligacionesAnt
+}
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
+import design_principles.actor_model.Response
+import io.circe.parser.decode
+import io.circe.syntax.EncoderOps
+import monitoring.Monitoring
+import org.camunda.dmn.DmnEngine
+import org.camunda.dmn.parser.ParsedDmn
+import scalaz.\/
 
- import java.io.FileInputStream
- import scala.concurrent.Future
+import java.io.FileInputStream
+import scala.concurrent.Future
 
 case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Monitoring)(
-  implicit
-  actorTransactionRequirements: ActorTransactionRequirements
+    implicit
+    actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesAnt](monitoring) {
 
   def topic = "DGR-COP-OBLIGACIONES-ANT"
@@ -34,23 +42,31 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
   }
 
   def processMessage(obligacion: ObligacionesAnt): Future[Response.SuccessProcessing] = {
-
-    val isNotDeuda: List[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES map {
-      d => d.RULE_NUMBER.contains("-1")
+    val isNotDeuda: Option[ListDetallesObligaciones] => List[Boolean] = {
+      case Some(d) =>
+        d.BOB_DETALLES map { d =>
+          d.RULE_NUMBER.contains("-1")
+        }
+      case None => List(false)
     }
+    val isCancelada: Option[ListDetallesObligaciones] => List[Boolean] = {
+      case Some(d) =>
+        d.BOB_DETALLES map { d =>
+          d.RULE_NUMBER.contains("-2")
+        }
+      case None => List(false)
+    }
+
     val detallesObligacion: Seq[DetallesObligacion] = obligacion.BOB_OTROS_ATRIBUTOS match {
       case Some(r) => r.BOB_DETALLES
       case None => null
     }
 
-    val isCancelada: Seq[Boolean] = obligacion.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map {
-      d => d.RULE_NUMBER.contains("-2")
-    }
-
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
+
     val command: ObligacionCommands =
-      if (isNotDeuda.head) {
-        ObligacionRemove(
+      if (isCancelada(obligacion.BOB_OTROS_ATRIBUTOS).head) {
+        ObligacionCommands.ObligacionRemove(
           deliveryId = obligacion.EV_ID,
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
           objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
@@ -59,8 +75,8 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
           registro = obligacion,
           cuota = obligacion.BOB_CUOTA
         )
-      } else if (isCancelada.head) {
-        ObligacionRemove(
+      } else if (isNotDeuda(obligacion.BOB_OTROS_ATRIBUTOS).head) {
+        ObligacionCommands.ObligacionRemove(
           deliveryId = obligacion.EV_ID,
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
           objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
@@ -91,14 +107,30 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
     //todo set deuda30Obligacion en state
     Some(DMNTreintaPorciento.dmn(obn)) match {
       case f if f.get.equals(1) => { //case 0
-        val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(tiene30Obligaciones = Some(true), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
-        val newDetails = decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
+        val detalles: Option[List[DetallesObligacion]] = Some(
+          obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m =>
+            m.copy(tiene30Obligaciones = Some(true),
+                   BAND_BATCH = Some(false),
+                   EV_ID = Some(obn.EV_ID),
+                   SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)
+          )
+        )
+        val newDetails =
+          decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: entities.ObligacionesAnt = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
         (newO, f.get)
       }
       case n => {
-        val detalles: Option[List[DetallesObligacion]] = Some(obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.copy(tiene30Obligaciones = Some(false), BAND_BATCH = Some(false), EV_ID = Some(obn.EV_ID), SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)))
-        val newDetails = decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
+        val detalles: Option[List[DetallesObligacion]] = Some(
+          obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m =>
+            m.copy(tiene30Obligaciones = Some(false),
+                   BAND_BATCH = Some(false),
+                   EV_ID = Some(obn.EV_ID),
+                   SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)
+          )
+        )
+        val newDetails =
+          decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesAnt = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
         (newO, n.get)
       }
@@ -106,4 +138,3 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
     }
   }
 }
-
