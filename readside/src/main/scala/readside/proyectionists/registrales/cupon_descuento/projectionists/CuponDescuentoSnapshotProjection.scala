@@ -12,7 +12,6 @@ final case class CuponDescuentoSnapshotProjection(
   val registro: Option[CuponDescuentoTri] = event.registro
   val bobDetailsResult: Option[Map[String, List[DetallesCuponDescuento]]] = {
 
-    println("SUENA "+decode[Map[String, List[DetallesCuponDescuento]]](registro.get.BCD_OTROS_ATRIBUTOS.asJson.toString()).toOption)
     decode[Map[String, List[DetallesCuponDescuento]]](registro.get.BCD_OTROS_ATRIBUTOS.asJson.toString()).toOption
   }
   val mao: Map[String, String] = Map("BCD_DETALLES" -> bobDetailsResult.get("BCD_DETALLES").asJson.noSpaces)
