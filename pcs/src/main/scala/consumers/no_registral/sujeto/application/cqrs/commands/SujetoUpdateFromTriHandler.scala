@@ -29,7 +29,7 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
         campoEstado.setAccessible(true)
         if (campoEvento.get(evento) == None) {
           campoEvento.set(sujetoNuevoTest, campoEstado.get(estado))
-        } else if (campoEvento.get(evento).equals(Some(""))) {
+        } else if (campoEvento.get(evento).equals(Some("null"))) {
           campoEvento.set(sujetoNuevoTest, None)
         }
       }
