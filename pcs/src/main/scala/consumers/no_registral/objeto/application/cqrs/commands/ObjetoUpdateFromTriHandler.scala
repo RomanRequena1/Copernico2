@@ -88,7 +88,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
         campoEstado.setAccessible(true)
         if (campoEvento.get(evento) == None) {
           campoEvento.set(objetoNuevoTest, campoEstado.get(estado))
-        } else if (campoEvento.get(evento).equals(Some(""))) {
+        } else if (campoEvento.get(evento).equals(Some("null"))) {
           campoEvento.set(objetoNuevoTest, None)
         }
       }
