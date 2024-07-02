@@ -16,7 +16,8 @@ object ObjetoVinculoCommands {
                                   tiene30Objeto: Boolean,
                                   isResponsable: Option[Boolean],
                                   estadoObj: Option[String],
-                                  titularidad: Option[String]
+                                  titularidad: Option[String],
+                                  exclusionObjeto: Option[String]
                                 ) extends ObjetoVinculoCommands
 
   case class RemoveObjetoVinculo(
@@ -27,7 +28,8 @@ object ObjetoVinculoCommands {
                                   tiene30Objeto: Boolean,
                                   isResponsable: Option[Boolean],
                                   estadoObj: Option[String],
-                                  titularidad: Option[String]
+                                  titularidad: Option[String],
+                                  exclusionObjeto: Option[String]
                                 ) extends ObjetoVinculoCommands
 
 
@@ -39,6 +41,7 @@ object ObjetoVinculoCommands {
                                           tiene30Objeto: Boolean,
                                           isResponsable: Option[Boolean],
                                           estadoObj: Option[String],
-                                          titularidad: Option[String]
-                                        ) extends ObjetoVinculoCommands
+                                          titularidad: Option[String],
+                                          exclusionObjeto: Option[String]
+                                             ) extends ObjetoVinculoCommands
 }

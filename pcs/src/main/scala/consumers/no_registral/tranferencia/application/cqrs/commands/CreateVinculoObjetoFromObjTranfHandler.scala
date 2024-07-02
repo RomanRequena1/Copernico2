@@ -12,7 +12,7 @@ import design_principles.actor_model.Response
 
 import scala.util.{Success, Try}
 
-class UpdateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[CreateTransfVinculoObjetoFromObj] {
+class CreateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[CreateTransfVinculoObjetoFromObj] {
   override def handle(command: CreateTransfVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
@@ -23,7 +23,8 @@ class UpdateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranfere
       command.tiene30Objeto,
       command.isResponsable,
       command.estadoObj,
-      command.titularidad
+      command.titularidad,
+      command.exclusionObjeto
     )
 
     implicit val system: ActorSystem = actor.context.system
@@ -32,12 +33,11 @@ class UpdateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranfere
     actor.persistEvent(event) { () =>
       actor.state += event
 
-
       //Recorre el map de vinculos y manda mensaje a los objetos
       actor.state.mapVinculo.foreach {
         e => {
 
-          actorSujetoGeneral.ask[Response.SuccessProcessing](UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo))
+          actorSujetoGeneral.ask[Response.SuccessProcessing](UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo, command.exclusionObjeto.get))
         }
       }
       actor.persistSnapshot(event, actor.state) { () =>

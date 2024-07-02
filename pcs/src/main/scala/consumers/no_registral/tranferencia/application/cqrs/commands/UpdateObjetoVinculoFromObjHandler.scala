@@ -23,7 +23,8 @@ class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaA
       command.tiene30Objeto,
       command.isResponsable,
       command.estadoObj,
-      command.titularidad
+      command.titularidad,
+      command.exclusionObjeto
     )
 
     implicit val ssytem: ActorSystem = actor.context.system
@@ -35,7 +36,7 @@ class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaA
       actor.state += event
       actor.state.mapVinculo.foreach {
         e => {
-            actorSujetoGeneral.ask[Response.SuccessProcessing](UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo))
+            actorSujetoGeneral.ask[Response.SuccessProcessing](UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo, command.exclusionObjeto.get))
         }
       }
       actor.persistSnapshot(event, actor.state) { () =>

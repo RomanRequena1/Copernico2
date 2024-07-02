@@ -16,7 +16,8 @@ object ObjetoVinculoEvent {
                                              tipoObj: String,
                                              tiene30ObjetoVinculo: Boolean,
                                              mapTransf: Map[Vinculo, VinculoCotitular],
-                                             mapVinculo: Map[Vinculo, VinculoCotitular]
+                                             mapVinculo: Map[Vinculo, VinculoCotitular],
+                                             exclusionObjetoVinculo: String
                                            ) extends ObjetoVinculoEvent
 
 
@@ -27,7 +28,8 @@ object ObjetoVinculoEvent {
                                         tiene30Objeto: Boolean,
                                         isResponsable: Option[Boolean],
                                         estadoObj: Option[String],
-                                        titularidad: Option[String]
+                                        titularidad: Option[String],
+                                        exclusionObjeto: Option[String]
                                       ) extends ObjetoVinculoEvent
 
   case class RemovedVinculoObjetoFromObj(
@@ -37,7 +39,8 @@ object ObjetoVinculoEvent {
                                           tiene30Objeto: Boolean,
                                           isResponsable: Option[Boolean],
                                           estadoObj: Option[String],
-                                          titularidad: Option[String]
+                                          titularidad: Option[String],
+                                          excusionObjeto: Option[String]
                                         ) extends ObjetoVinculoEvent
 
   case class CreatedTransfVinculoObjetoFromObj(
@@ -47,8 +50,9 @@ object ObjetoVinculoEvent {
                                            tiene30Objeto: Boolean,
                                            isResponsable: Option[Boolean],
                                            estadoObj: Option[String],
-                                           titularidad: Option[String]
-                                         ) extends ObjetoVinculoEvent{
+                                           titularidad: Option[String],
+                                           exclusionObjeto: Option[String]
+                                           ) extends ObjetoVinculoEvent{
 
   case class ObjetoVinculoSnapshotPersisted(
                                              objetoId: String,

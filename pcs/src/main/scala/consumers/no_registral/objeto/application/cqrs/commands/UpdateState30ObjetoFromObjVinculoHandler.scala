@@ -24,10 +24,9 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor,requeriment: M
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
-      command.tiene30ObjetoVinculo
+      command.tiene30ObjetoVinculo,
+      command.exclusionObjetoVinculo
     )
-
-
 
     actor.persistEvent(event) { () =>
       actor.state += event
@@ -41,9 +40,6 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor,requeriment: M
       } else {
         SendToSujeto1(actor, requeriment, event)
       }
-
-
-
 
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

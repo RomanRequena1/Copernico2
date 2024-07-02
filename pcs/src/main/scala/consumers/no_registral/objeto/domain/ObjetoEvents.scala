@@ -97,7 +97,8 @@ object ObjetoEvents {
                                                 sujetoId: String,
                                                 objetoId: String,
                                                 tipoObjeto: String,
-                                                tiene30ObjetoVinculo: Boolean
+                                                tiene30ObjetoVinculo: Boolean,
+                                                exclusionObjetoVinculo: String
                                               ) extends ObjetoEvents
   case class ObjetoUpdatedFromObligacion(
       deliveryId: BigInt,
