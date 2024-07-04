@@ -1,6 +1,6 @@
  {
-  "EV_ID" : "6",
-  "SOJ_SUJ_IDENTIFICADOR" : "Roman",
+  "EV_ID" : "21",
+  "SOJ_SUJ_IDENTIFICADOR" : "Diego",
   "SOJ_TIPO_OBJETO" : "A",
   "SOJ_IDENTIFICADOR" : "Roman123",
   "SOJ_CAT_SOJ_ID" : "TRI",
@@ -15,7 +15,7 @@
   "SOJ_TIPO_EXCLUSION": "null",
   "SOJ_OTROS_ATRIBUTOS" : {
     "SOJ_DETALLES" : [ {
-      "RESPONSABLE_OTROS_ATRIBUTOS" : "S",
+      "RESPONSABLE_OTROS_ATRIBUTOS" : "N",
       "PORCENTAJE_OTROS_ATRIBUTOS" : "100",
       "SOJ_OWNER" : "Kripke, Barry"
     } ]

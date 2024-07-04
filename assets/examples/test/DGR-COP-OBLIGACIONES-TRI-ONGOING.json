@@ -1,5 +1,5 @@
 {
- "EV_ID": "14",
+ "EV_ID": "4",
  "BOB_SUJ_IDENTIFICADOR": "Roman",
  "BOB_SOJ_TIPO_OBJETO": "A",
  "BOB_SOJ_IDENTIFICADOR": "Roman123",
@@ -36,7 +36,7 @@
     "BOB_MUNICIPIO": null,
     "BOB_INTERES_FINANCIACION": null,
     "JUICIO_MULTIOBJETO": "N",
-    "RULE_NUMBER": "-1",
+    "RULE_NUMBER": "1",
     "EVO_OBN_PEO_ID_FORMAL": "NC",
     "PLAN_MULTIOBJETO": "N",
     "BAND_30": true

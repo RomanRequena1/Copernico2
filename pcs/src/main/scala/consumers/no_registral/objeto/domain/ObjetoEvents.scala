@@ -52,7 +52,8 @@ object ObjetoEvents {
       tiene30Objeto: Option[Boolean],
       aplicarDescuento: Option[Boolean],
       resultDmn: Int,
-      exclusionObjeto: String
+      exclusionObjeto: String,
+      tiene30ObjetoVinculo: Option[Boolean]
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromTri(

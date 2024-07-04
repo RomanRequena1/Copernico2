@@ -132,7 +132,8 @@ case class ObjetoState(
       case evt: ObjetoEvents.UpdatedState30ObjetoFromObjVinculo =>
         val _tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo
         copy(tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
-          tiene30Objeto = diffCurrentStateAndNewStateTest(obnVencidas, _tiene30ObjetoVinculo),
+          // Este pisaba a todos los tiene30objeto de los VSO, deberia guardarse solo en tiene30ObjVinculo
+          //          tiene30Objeto = diffCurrentStateAndNewStateTest(obnVencidas, _tiene30ObjetoVinculo),
           exclusionObjeto = evt.exclusionObjetoVinculo
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>

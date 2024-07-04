@@ -15,7 +15,7 @@ object DMNTreintaPorcientoTipo {
                       soj_exclusionObjeto: String,
                       clasificacionObjeto: String)
 
-
+// FIXME: Analizar casos de condominio con 1 solo poseedor, llega en soj_estado = null y soj_titularidad = null
   def calcularDmn(dmn: DmnObjeto): Int = {
     dmn match {
       //case x if x.soj_tipo_objeto.equals("M") => 2 // todo en caso de que el tipo de objeto sea M  debe inpactar en el 30

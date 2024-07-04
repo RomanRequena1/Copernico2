@@ -32,7 +32,8 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
       actor.state.exclusionObjeto,
       actor.state.clasificacionObjeto,
       actor.state.tiene30Objeto,
-      actor.state.tiene30Sujeto.get)
+      actor.state.tiene30Sujeto.get,
+      actor.state.tiene30ObjetoVinculo)
     )
 
     result match {
