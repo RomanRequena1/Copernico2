@@ -1,0 +1,10 @@
+#1- Alta VSO 1
+#2- Alva VSO 2
+#3- Alta VSO 3 (Responsable)
+#4- Alta Obn Vencida VSO 3
+#5- Alta ExclusionObjeto E VSO 2
+#6- Vencimiento ExclusionObjeto VSO 2
+#7- Alta ExclusionObjeto NE VSO 1
+#8- Pago de Obn Vencida VSO 3
+#9- Vencimiento ExclusionObjeto NE VSO 1
+#10- Alta Exclusion Sujeto NE
