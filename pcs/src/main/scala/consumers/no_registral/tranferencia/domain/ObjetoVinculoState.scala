@@ -108,7 +108,7 @@ final case class ObjetoVinculoState(
     event match {
       case evt: ObjetoVinculoEvent.UpdatedVinculoObjetoFromObj =>
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj) // se arma la clave del map
-        val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj, evt.exclusionObjeto) // se arma el valor del map
+        val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj) // se arma el valor del map
         val _mapVinculo = UpdateObjVinculo(_vinculo, _vinculoCotitular)
         val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(_mapVinculo, mapTransf)
         copy(
@@ -119,7 +119,7 @@ final case class ObjetoVinculoState(
 
       case evt: ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj =>
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
-        val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj, evt.exclusionObjeto)
+        val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj)
         val _mapVinculo = mapVinculo.filterNot(x => x._1.sujetoId.equals(evt.sujetoId)) //todo por ahora lo vamos a eliminar
         val _mapTransf = updateMapTransf(_vinculo, _vinculoCotitular)
         val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(_mapVinculo, _mapTransf)

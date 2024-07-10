@@ -33,7 +33,8 @@ class ObjetoSnapshotHandler(actor: ObjetoActor) extends SyncCommandHandler[Objet
       Some(actor.state.tiene30Objeto),
       actor.state.aplicarDescuento,
       actor.state.resulDmn.getOrElse(0),
-      actor.state.exclusionObjeto
+      actor.state.exclusionObjeto,
+      Some(actor.state.tiene30ObjetoVinculo)
     )
     val consolidatedState = actor.state + event
     val sender = actor.context.sender()
