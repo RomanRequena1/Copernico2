@@ -33,7 +33,8 @@ case class ObjetoState(
                         obnVencidas: Map[String, Boolean] = Map.empty,
                         deuda30Objeto: Boolean = true,
                         tipoExclusion: String = "",
-                        exclusionObjeto: String = ""
+                        exclusionObjeto: String = "",
+                        exclusionObjetoVinculo: String = ""
                       ) extends AbstractState[ObjetoEvents] with CbroSerialization {
 
   override def +(event: ObjetoEvents): ObjetoState = {
@@ -131,8 +132,10 @@ case class ObjetoState(
       case evt: ObjetoEvents.UpdatedState30ObjetoFromObjVinculo =>
         val _tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo
         copy(tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
-          tiene30Objeto = diffCurrentStateAndNewStateTest(obnVencidas, _tiene30ObjetoVinculo),
-        ) //todo
+          // Este pisaba a todos los tiene30objeto de los VSO, deberia guardarse solo en tiene30ObjVinculo
+          //          tiene30Objeto = diffCurrentStateAndNewStateTest(obnVencidas, _tiene30ObjetoVinculo),
+          exclusionObjeto = evt.exclusionObjetoVinculo
+        )
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
         copy(
           sujetoResponsable = evt.sujetoResponsable match {
@@ -217,7 +220,7 @@ case class ObjetoState(
             obligacionesSaldo = obligacionesSaldo_,
             obnVencidas = _obnVencidas,
             tiene30Objeto = diff
-          )
+          )                       //todo ver aca como es para cuando pago la obligacion se cambie el state de los objetos
         } else {
           val cuotaIndex_ = evt.cuota.get.toInt
           val cuotasPagadas_ = cuotas.updated(cuotaIndex_, true)

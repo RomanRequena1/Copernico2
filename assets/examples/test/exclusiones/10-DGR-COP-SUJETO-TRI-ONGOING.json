@@ -1,0 +1,18 @@
+{
+    "EV_ID": "10",
+    "SUJ_IDENTIFICADOR": "Roman",
+    "SUJ_CAT_SUJ_ID": "3",
+    "SUJ_DENOMINACION": "-",
+    "SUJ_DFE": null,
+    "SUJ_DIRECCION": null,
+    "SUJ_EMAIL": "ROMAN@HOTMAIL.COM",
+    "SUJ_ID_EXTERNO": "7834365",
+    "SUJ_OTROS_ATRIBUTOS": null,
+    "SUJ_RIESGO_FISCAL": null,
+    "SUJ_SITUACION_FISCAL": null,
+    "SUJ_TELEFONO": "03472-482924",
+    "SUJ_TIPO": "A",
+    "FECHA_BAJA": "2006-07-21 11:41:25.0",
+    "SUJ_CANAL_ORIGEN": "LOCAL",
+    "SUJ_TIPO_EXCLUSION": "NE"
+}

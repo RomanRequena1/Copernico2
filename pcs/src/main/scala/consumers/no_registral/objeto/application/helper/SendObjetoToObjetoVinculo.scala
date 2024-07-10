@@ -22,22 +22,8 @@ object SendObjetoToObjetoVinculo {
    * Si estado no es TRANSF se envia el mensaje UpdateVinculoObjetoFromObj
    */
 
-  def apply(vinculoActor: ActorRef,actor: ObjetoActor, sujetoId: String, objetoId: String, tipoObjeto: String, estado: Option[String], requeriment: MonitoringAndMessageProducer): Unit = {
-    //implicit val system: ActorSystem = actor.context.system
+  def apply(vinculoActor: ActorRef, actor: ObjetoActor, sujetoId: String, objetoId: String, tipoObjeto: String, estado: Option[String], requeriment: MonitoringAndMessageProducer): Unit = {
 
-
-//    val actorPath = s"akka://PersonClassificationService/system/sharding/SujetoActor/*/${sujetoId}/Sujeto-${sujetoId}-Objeto-${objetoId}-${tipoObjeto}/ObjetoVinculo-${objetoId}"
-    // s"akka://PersonClassificationService/user/ObjetoVinculo-${objetoId}"
-
-
-
-    //          implicit val actorObjetoVinculo: ActorRef = actor.context.actorOf(actorProp, objetoVinculoMessageRoots)
-    //          println("CUMBIAAAA ::::::::::::::::: actor::::::::::::::::::::: " + actorObjetoVinculo.path + " - ")
-    //          actorObjetoVinculo
-
-
-
-    // akka://PersonClassificationService/system/sharding/ObjetoVinculoActor
     if(vinculoActor.path.toString.equals("akka://PersonClassificationService/system/sharding/ObjetoVinculoActor")){
 
       testIfObjVinculo(vinculoActor, actor, sujetoId, objetoId, tipoObjeto, estado, requeriment)
@@ -66,7 +52,8 @@ object testIfObjVinculo {
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
-          titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD
+          titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
+          exclusionObjeto = Some(actor.state.exclusionObjeto)
         ))
         res.onComplete {
           case Failure(exception) => log.error("Error to send event to objeto_vinculo (TRANSF)" + exception + "objID: "+ objetoId + "sujID: "+sujetoId)
@@ -87,7 +74,8 @@ object testIfObjVinculo {
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
-          titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD))
+          titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
+          exclusionObjeto = Some(actor.state.exclusionObjeto)))
         res.onComplete {
           case Failure(exception) => log.error("Error to send event to objeto_vinculo (BAJA) " + exception + " objID: "+ objetoId + "sujID: "+sujetoId)
           case Success(value) => log.debug("Sent event to objet_vinculo " + " objID: "+ objetoId + " sujID: "+ sujetoId)
@@ -101,7 +89,8 @@ object testIfObjVinculo {
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
-          titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD))
+          titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
+          exclusionObjeto = Some(actor.state.exclusionObjeto)))
         res.onComplete {
           case Failure(exception) => log.error("Error to send event to objeto_vinculo " + exception + " objID: "+ objetoId + " sujID: "+sujetoId)
           case Success(value) => log.debug("Sent event to objet_vinculo " + " objID: "+ objetoId + " sujID: "+ sujetoId)

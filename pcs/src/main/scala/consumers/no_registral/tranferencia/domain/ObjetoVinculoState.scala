@@ -7,15 +7,16 @@ import java.time.LocalDateTime
 
 
 final case class ObjetoVinculoState(
-    objetoId: String = "",
-    tipoObj: String = "",
-    sujetoIdActual: Option[Vinculo] = None, //todo vinculo actual cuando el objeto tiene transferencia, si no hay esta en None
-    fechaUltMod: LocalDateTime = LocalDateTime.MIN,
-    eventCounter: Int = 0,
-    mapTransf: Map[Vinculo, VinculoCotitular] = Map.empty, //todo contiene todos los vinculos responsables que son transf  junto con el tiene30Objeto
-    mapVinculo: Map[Vinculo, VinculoCotitular] = Map.empty, //todo contiene todos los vinculos que no son transf junto con el tiene30Objeto
-    tiene30ObjetoVinculo: Boolean = false //todo si ese objeto tiene 30 que depende de todos los vinculos, depende el caso
-                                   ) extends AbstractState[ObjetoVinculoEvent] with CbroSerialization{
+                                  objetoId: String = "",
+                                  tipoObj: String = "",
+                                  sujetoIdActual: Option[Vinculo] = None, //todo vinculo actual cuando el objeto tiene transferencia, si no hay esta en None
+                                  fechaUltMod: LocalDateTime = LocalDateTime.MIN,
+                                  eventCounter: Int = 0,
+                                  mapTransf: Map[Vinculo, VinculoCotitular] = Map.empty, //todo contiene todos los vinculos responsables que son transf  junto con el tiene30Objeto
+                                  mapVinculo: Map[Vinculo, VinculoCotitular] = Map.empty, //todo contiene todos los vinculos que no son transf junto con el tiene30Objeto
+                                  tiene30ObjetoVinculo: Boolean = false, //todo si ese objeto tiene 30 que depende de todos los vinculos, depende el caso
+                                  exclusionObjetoVinculo: String = ""
+                                  ) extends AbstractState[ObjetoVinculoEvent] with CbroSerialization{
 
   def +(event: ObjetoVinculoEvent): ObjetoVinculoState  = {
     eventCounter match {
@@ -65,7 +66,6 @@ final case class ObjetoVinculoState(
    */
   private def UpdateObjVinculo(_vinculo: Vinculo, _vinculoCotitular: VinculoCotitular) = {
 
-
     mapVinculo match {
       //case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (true, clasificacionObjeto))
       case x if x.contains(_vinculo) => {
@@ -75,8 +75,6 @@ final case class ObjetoVinculoState(
       }
     }
   }
-
-
 
   /**
    * Si mapTransf no contiene el vinculo, se agrega el vinculo al map solo si el vinculo es responsable y tiene 30 es false
@@ -113,11 +111,12 @@ final case class ObjetoVinculoState(
         val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj) // se arma el valor del map
         val _mapVinculo = UpdateObjVinculo(_vinculo, _vinculoCotitular)
         val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(_mapVinculo, mapTransf)
-
         copy(
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
-          mapVinculo = _mapVinculo
+          mapVinculo = _mapVinculo,
+          exclusionObjetoVinculo = evt.exclusionObjeto.get
         )
+
       case evt: ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj =>
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
         val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj)

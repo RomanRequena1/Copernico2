@@ -60,7 +60,8 @@ object ObjetoVinculoImplicits {
         tiene30ObjetoVinculo <- c.downField("tiene30ObjetoVinculo").as[Boolean]
         mapTransf <- c.downField("mapTransf").as[Map[Vinculo, VinculoCotitular]](Decoder.decodeMap[Vinculo, VinculoCotitular])
         mapVinculo <- c.downField("mapVinculo").as[Map[Vinculo, VinculoCotitular]](Decoder.decodeMap[Vinculo, VinculoCotitular])
-      } yield ObjetoVinculoSnapshotPersisted(objetoId, tipoObj, tiene30ObjetoVinculo, mapTransf, mapVinculo)
+        exclusionObjetoVinculo <- c.downField("exclusionObjetoVinculo").as[String]
+      } yield ObjetoVinculoSnapshotPersisted(objetoId, tipoObj, tiene30ObjetoVinculo, mapTransf, mapVinculo, exclusionObjetoVinculo)
     }
   }
 }

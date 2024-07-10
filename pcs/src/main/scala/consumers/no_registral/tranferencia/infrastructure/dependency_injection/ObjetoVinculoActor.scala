@@ -3,7 +3,7 @@ package consumers.no_registral.tranferencia.infrastructure.dependency_injection
 import akka.actor.Props
 import akka.entity.ShardedEntity
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
-import consumers.no_registral.tranferencia.application.cqrs.commands.{RemoveObjetoVinculoFromObjHandler, UpdateObjetoVinculoFromObjHandler, UpdateVinculoObjetoFromObjTranfHandler}
+import consumers.no_registral.tranferencia.application.cqrs.commands.{RemoveObjetoVinculoFromObjHandler, UpdateObjetoVinculoFromObjHandler, CreateVinculoObjetoFromObjTranfHandler}
 import consumers.no_registral.tranferencia.application.cqrs.queries.GetStateObjetoVinculoHandler
 import consumers.no_registral.tranferencia.application.entity.{ObjetoVinculoCommands, ObjetoVinculoQueries}
 import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent.ObjetoVinculoSnapshotPersisted
@@ -24,7 +24,7 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
 
   override def setupHandlers(): Unit = {
     commandBus.subscribe[ObjetoVinculoCommands.UpdateVinculoObjetoFromObj](new UpdateObjetoVinculoFromObjHandler(this, requirements).handle)
-    commandBus.subscribe[ObjetoVinculoCommands.CreateTransfVinculoObjetoFromObj](new UpdateVinculoObjetoFromObjTranfHandler(this, requirements).handle)
+    commandBus.subscribe[ObjetoVinculoCommands.CreateTransfVinculoObjetoFromObj](new CreateVinculoObjetoFromObjTranfHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoVinculoCommands.RemoveObjetoVinculo](new RemoveObjetoVinculoFromObjHandler(this, requirements).handle)
     queryBus.subscribe[ObjetoVinculoQueries.GetStateObjetoVinculo](new GetStateObjetoVinculoHandler(this).handle)
   }
@@ -37,7 +37,8 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
         evt.tipoObj,
         consolidatedState.tiene30ObjetoVinculo,
         consolidatedState.mapTransf,
-        consolidatedState.mapVinculo)
+        consolidatedState.mapVinculo,
+        consolidatedState.exclusionObjetoVinculo)
 
     requirements.messageProducer.produce(
       data = Seq(

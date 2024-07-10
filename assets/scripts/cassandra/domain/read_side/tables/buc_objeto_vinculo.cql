@@ -4,6 +4,7 @@ CREATE TABLE read_side.buc_objeto_vinculo (
     soj_tiene30objetovinculo boolean,
     soj_map_transf text,
     soj_map_vinculo text,
+    soj_exclusion_objeto_vinculo text,
     PRIMARY KEY (soj_identificador)
 ) WITH  bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
