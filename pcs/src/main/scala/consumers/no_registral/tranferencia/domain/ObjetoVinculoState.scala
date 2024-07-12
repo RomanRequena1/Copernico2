@@ -114,7 +114,7 @@ final case class ObjetoVinculoState(
         copy(
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
           mapVinculo = _mapVinculo,
-          exclusionObjetoVinculo = evt.exclusionObjeto.get
+          exclusionObjetoVinculo = evt.exclusionObjeto.getOrElse("")
         )
 
       case evt: ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj =>
