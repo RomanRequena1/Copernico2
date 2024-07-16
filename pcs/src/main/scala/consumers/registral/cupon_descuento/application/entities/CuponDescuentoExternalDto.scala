@@ -16,7 +16,6 @@ import java.time.LocalDateTime
                               BCD_OTROS_ATRIBUTOS: Option[ListDetalleCuponDescuenta],
                             ) extends CbroSerialization
 
-
   case class DetallesCuponDescuento(
 
                                  bcd_tipo: Option[String],

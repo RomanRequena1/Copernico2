@@ -78,7 +78,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     )
   }
 
-
   def informRemoveToParent(cmd: ObligacionRemove): Unit = {
     context.parent ! ObjetoCommands.ObjetoRemoveObligacion(
       cmd.deliveryId,
@@ -89,17 +88,15 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       cmd.cuota
     )
   }
-  def persistSnapshot()(handler: () => Unit): Unit = {
-    val ids = ObligacionMessageRoots.extractor(persistenceId)
-
+  def persistSnapshot(evt: ObligacionEvents)(handler: () => Unit): Unit = {
     val kafkaTopic = "ObligacionPersistedSnapshot"
     //logger.error("V2 = " + state.registro.get.BOB_VENCIMIENTO_2.getOrElse("no esta"))
     val event = ObligacionPersistedSnapshot(
       deliveryId = lastDeliveryId,
-      sujetoId = ids.sujetoId,
-      objetoId = ids.objetoId,
-      tipoObjeto = ids.tipoObjeto,
-      obligacionId = ids.obligacionId,
+      sujetoId = evt.sujetoId,
+      objetoId = evt.objetoId,
+      tipoObjeto = evt.tipoObjeto,
+      obligacionId = evt.obligacionId,
       registro = state.registro,
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),

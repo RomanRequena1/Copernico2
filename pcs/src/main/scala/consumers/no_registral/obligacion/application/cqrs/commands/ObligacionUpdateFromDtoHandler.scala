@@ -62,7 +62,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
         actor.lastDeliveryId = command.registro.EV_ID
-        actor.persistSnapshot() { () =>
+        actor.persistSnapshot(event) { () =>
           //println("CUMBIA path sender" + sender.path)
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 

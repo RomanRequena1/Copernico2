@@ -263,6 +263,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
 
   def withCotitulares(sujetos: Set[String]): Boolean =
     sujetos.size > 1*/
+
   def informParentTreintaPorciento(deliveryId: BigInt, sujetoId: String ,objetoId : String,tipoObjeto: String, state: ObjetoState): Unit = {
     context.parent ! SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
       deliveryId,
