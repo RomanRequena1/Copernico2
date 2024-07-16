@@ -126,17 +126,16 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     }
   }
 
-  def deleteSnapshot()(handler: () => Unit): Unit = {
-    val ids = ObligacionMessageRoots.extractor(persistenceId)
+  def deleteSnapshot(evt: ObligacionEvents)(handler: () => Unit): Unit = {
     import io.circe.syntax.EncoderOps
     val kafkaTopic = "ObligacionPersistedSnapshot"
 
     val event = ObligacionPersistedSnapshot(
       deliveryId = lastDeliveryId,
-      sujetoId = ids.sujetoId,
-      objetoId = ids.objetoId,
-      tipoObjeto = ids.tipoObjeto,
-      obligacionId = ids.obligacionId,
+      sujetoId = evt.sujetoId,
+      objetoId = evt.objetoId,
+      tipoObjeto = evt.tipoObjeto,
+      obligacionId = evt.obligacionId,
       registro = state.registro,
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
