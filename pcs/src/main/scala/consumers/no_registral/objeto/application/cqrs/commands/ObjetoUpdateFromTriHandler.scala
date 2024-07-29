@@ -11,7 +11,7 @@ import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo.Dmn
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoExternalDto}
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateFromTri
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
-import consumers.no_registral.objeto.application.helper.{testIfObjVinculo, SendObjetoToObjetoVinculo}
+import consumers.no_registral.objeto.application.helper.{SendObjetoToObjetoVinculo, testIfObjVinculo}
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromTri
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -22,6 +22,8 @@ import ddd.eventCounterMax
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import org.slf4j.{Logger, LoggerFactory}
+
+import java.time.LocalDateTime
 import scala.util.{Failure, Success, Try}
 
 class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
@@ -109,7 +111,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
-      getObjetoFFF(),
+      command.registro,
       command.isResponsable,
       command.sujetoResponsable,
       command.isAdheridoDebito,
