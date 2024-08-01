@@ -31,6 +31,10 @@ class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaA
     //todo para mandar mensajes a todos los objetos de los distintos vinculos
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
 
+    command.exclusionObjeto match {
+      case Some(t) => t
+      case None => println(s"${command.sujetoId} - ${command.objetoId} is excl objeto None")
+    }
     actor.persistEvent(event) { () =>
 
       actor.state += event
