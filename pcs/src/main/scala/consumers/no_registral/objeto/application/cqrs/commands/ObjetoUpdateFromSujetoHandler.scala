@@ -28,14 +28,14 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
     actor.state += event
    // val exclusionObjeto = QueryExclusionObjeto(command.objetoId)
     val obj_default = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
-    println(
-      " | command.exclusionSUjeto,: " + command.exclusionSUjeto +
-      " | actor.state.exclusionObjeto: " + actor.state.exclusionObjeto +
-      " | actor.state.clasificacionObjeto: " + actor.state.clasificacionObjeto +
-      " | actor.state.tiene30Objeto: " + actor.state.tiene30Objeto +
-      " | actor.state.tiene30Sujeto.get: " + actor.state.tiene30Sujeto.get +
-      " | actor.state.tiene30ObjetoVinculo: " + actor.state.tiene30ObjetoVinculo
-    )
+//    println(
+//      " | command.exclusionSUjeto,: " + command.exclusionSUjeto +
+//      " | actor.state.exclusionObjeto: " + actor.state.exclusionObjeto +
+//      " | actor.state.clasificacionObjeto: " + actor.state.clasificacionObjeto +
+//      " | actor.state.tiene30Objeto: " + actor.state.tiene30Objeto +
+//      " | actor.state.tiene30Sujeto.get: " + actor.state.tiene30Sujeto.get +
+//      " | actor.state.tiene30ObjetoVinculo: " + actor.state.tiene30ObjetoVinculo
+//    )
 
 //    var exclusionSujeto2 = ""
 //    if (command.exclusionSUjeto == null) {
