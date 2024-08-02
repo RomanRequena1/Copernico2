@@ -37,24 +37,24 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
       " | actor.state.tiene30ObjetoVinculo: " + actor.state.tiene30ObjetoVinculo
     )
 
-    var exclusionSujeto2 = ""
-    if (command.exclusionSUjeto == null) {
-      exclusionSujeto2 = ""
-    } else {
-      exclusionSujeto2 = command.exclusionSUjeto
-    }
-
-    var exclusionObjeto2 = ""
-    if (actor.state.exclusionObjeto == null) {
-      exclusionObjeto2 = ""
-    } else {
-      exclusionObjeto2 = actor.state.exclusionObjeto
-    }
+//    var exclusionSujeto2 = ""
+//    if (command.exclusionSUjeto == null) {
+//      exclusionSujeto2 = ""
+//    } else {
+//      exclusionSujeto2 = command.exclusionSUjeto
+//    }
+//
+//    var exclusionObjeto2 = ""
+//    if (actor.state.exclusionObjeto == null) {
+//      exclusionObjeto2 = ""
+//    } else {
+//      exclusionObjeto2 = actor.state.exclusionObjeto
+//    }
 
 
     val result = DMNTreintaPorcientoFinal.calcularDmnFinal(DmnFinal(
-      exclusionSujeto2,
-      exclusionObjeto2,
+      command.exclusionSUjeto,
+      actor.state.exclusionObjeto,
       actor.state.clasificacionObjeto,
       actor.state.tiene30Objeto,
       actor.state.tiene30Sujeto.get,

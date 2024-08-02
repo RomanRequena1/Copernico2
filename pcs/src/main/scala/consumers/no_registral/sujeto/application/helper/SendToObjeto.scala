@@ -49,7 +49,7 @@ object SendToObjeto {
 }
 
 object SendToObjetoFromSujeto {
-  def apply(currentState: SujetoState, sender: ActorRef, actorContext: ActorContext, sujetoId: String, exclusionSujeto: String): Unit = {
+  def apply(currentState: SujetoState, sender: ActorRef, actorContext: ActorContext, sujetoId: String, exclusionSujeto: Option[String]): Unit = {
 
     actorContext.children.foreach(actor => {
       actor.ask[Response.SuccessProcessing](
