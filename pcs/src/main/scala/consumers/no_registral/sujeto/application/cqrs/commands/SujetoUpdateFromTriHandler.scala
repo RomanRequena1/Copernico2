@@ -60,7 +60,7 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
                                sender,
                                actor.context,
                                command.sujetoId,
-                               command.registro.SUJ_TIPO_EXCLUSION.getOrElse(""))
+                               command.registro.SUJ_TIPO_EXCLUSION)
       }
 
       actor.persistEvent(event) { () =>

@@ -10,7 +10,7 @@ case class TransferenciaSnapshotPersistedProjection(
     "soj_tiene30ObjetoVinculo" -> Some(event.tiene30ObjetoVinculo),
     "soj_map_transf" -> Some(event.mapTransf.toString()),
     "soj_map_vinculo" -> Some(event.mapVinculo.toString()),
-    "soj_exclusion_objeto_vinculo" -> Some(event.exclusionObjetoVinculo)
+    "soj_exclusion_objeto_vinculo" -> event.exclusionObjetoVinculo
   )
 }
 

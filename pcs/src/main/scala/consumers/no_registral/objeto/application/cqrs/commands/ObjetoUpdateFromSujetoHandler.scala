@@ -28,33 +28,33 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
     actor.state += event
    // val exclusionObjeto = QueryExclusionObjeto(command.objetoId)
     val obj_default = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
-    println(
-      " | command.exclusionSUjeto,: " + command.exclusionSUjeto +
-      " | actor.state.exclusionObjeto: " + actor.state.exclusionObjeto +
-      " | actor.state.clasificacionObjeto: " + actor.state.clasificacionObjeto +
-      " | actor.state.tiene30Objeto: " + actor.state.tiene30Objeto +
-      " | actor.state.tiene30Sujeto.get: " + actor.state.tiene30Sujeto.get +
-      " | actor.state.tiene30ObjetoVinculo: " + actor.state.tiene30ObjetoVinculo
-    )
+//    println(
+//      " | command.exclusionSUjeto,: " + command.exclusionSUjeto +
+//      " | actor.state.exclusionObjeto: " + actor.state.exclusionObjeto +
+//      " | actor.state.clasificacionObjeto: " + actor.state.clasificacionObjeto +
+//      " | actor.state.tiene30Objeto: " + actor.state.tiene30Objeto +
+//      " | actor.state.tiene30Sujeto.get: " + actor.state.tiene30Sujeto.get +
+//      " | actor.state.tiene30ObjetoVinculo: " + actor.state.tiene30ObjetoVinculo
+//    )
 
-    var exclusionSujeto2 = ""
-    if (command.exclusionSUjeto == null) {
-      exclusionSujeto2 = ""
-    } else {
-      exclusionSujeto2 = command.exclusionSUjeto
-    }
-
-    var exclusionObjeto2 = ""
-    if (actor.state.exclusionObjeto == null) {
-      exclusionObjeto2 = ""
-    } else {
-      exclusionObjeto2 = actor.state.exclusionObjeto
-    }
+//    var exclusionSujeto2 = ""
+//    if (command.exclusionSUjeto == null) {
+//      exclusionSujeto2 = ""
+//    } else {
+//      exclusionSujeto2 = command.exclusionSUjeto
+//    }
+//
+//    var exclusionObjeto2 = ""
+//    if (actor.state.exclusionObjeto == null) {
+//      exclusionObjeto2 = ""
+//    } else {
+//      exclusionObjeto2 = actor.state.exclusionObjeto
+//    }
 
 
     val result = DMNTreintaPorcientoFinal.calcularDmnFinal(DmnFinal(
-      exclusionSujeto2,
-      exclusionObjeto2,
+      command.exclusionSUjeto,
+      actor.state.exclusionObjeto,
       actor.state.clasificacionObjeto,
       actor.state.tiene30Objeto,
       actor.state.tiene30Sujeto.get,

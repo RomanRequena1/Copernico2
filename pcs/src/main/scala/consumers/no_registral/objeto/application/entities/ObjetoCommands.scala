@@ -31,7 +31,7 @@ object ObjetoCommands {
                                       objetoId: String,
                                       tipoObjeto: String,
                                       tiene30ObjetoVinculo: Boolean,
-                                      exclusionObjetoVinculo: String
+                                      exclusionObjetoVinculo: Option[String]
                                     ) extends ObjetoCommands
 
   case class ObjetoUpdateFromSujeto(
@@ -40,7 +40,7 @@ object ObjetoCommands {
                                objetoId: String,
                                tipoObjeto: String,
                                tiene30Sujeto: Boolean,
-                               exclusionSUjeto: String
+                               exclusionSUjeto: Option[String]
                              ) extends ObjetoCommands
 
   case class ObjetoSnapshot(
