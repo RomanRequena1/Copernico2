@@ -92,6 +92,8 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
           campoEvento.set(objetoNuevoTest, campoEstado.get(estado))
         } else if (campoEvento.get(evento).equals(Some("null"))) {
           campoEvento.set(objetoNuevoTest, None)
+        } else if (campoEvento.get(evento).equals(Some(LocalDateTime.of(1000,1,1,0,0,0)))){
+          campoEvento.set(objetoNuevoTest,None)
         }
       }
       objetoNuevoTest
@@ -111,7 +113,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
-      command.registro,
+      getObjetoFFF(),
       command.isResponsable,
       command.sujetoResponsable,
       command.isAdheridoDebito,

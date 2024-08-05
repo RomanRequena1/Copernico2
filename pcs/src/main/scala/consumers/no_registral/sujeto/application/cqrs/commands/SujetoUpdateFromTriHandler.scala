@@ -44,9 +44,7 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
       registroFFF
     }
 
-    val event = SujetoUpdatedFromTri(command.deliveryId,
-                                     command.sujetoId,
-                                     command.registro)
+    val event = SujetoUpdatedFromTri(command.deliveryId, command.sujetoId, registroNuevo())
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
       log.error(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
