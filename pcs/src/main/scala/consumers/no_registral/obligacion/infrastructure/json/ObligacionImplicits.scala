@@ -1,10 +1,19 @@
 package consumers.no_registral.obligacion.infrastructure.json
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateExencion, ObligacionUpdateFromDto}
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{
+  ObligacionRemove,
+  ObligacionUpdateExencion,
+  ObligacionUpdateFromDto
+}
 import consumers.no_registral.obligacion.application.entities.ObligacionResponses.GetObligacionResponse
 import consumers.no_registral.obligacion.application.entities._
-import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionAddedExencion, ObligacionPersistedSnapshot, ObligacionRemoved, ObligacionUpdatedFromDto}
+import consumers.no_registral.obligacion.domain.ObligacionEvents.{
+  ObligacionAddedExencion,
+  ObligacionPersistedSnapshot,
+  ObligacionRemoved,
+  ObligacionUpdatedFromDto
+}
 import io.circe._
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax.EncoderOps
@@ -36,6 +45,9 @@ object ObligacionImplicits {
   implicit val DetallesObligacionDecoder: Decoder[DetallesObligacion] = deriveDecoder
   implicit val DetallesObligacionEncoder: Encoder[DetallesObligacion] = deriveEncoder
 
+  implicit val DetallesSupresionesDecoder: Decoder[DetallesSupresiones] = deriveDecoder
+  implicit val DetallesSupresionesEncoder: Encoder[DetallesSupresiones] = deriveEncoder
+
   implicit val ObligacionExternalDtoDecoder: Decoder[ObligacionExternalDto] = deriveDecoder
   implicit val ObligacionExternalDtoEncoder: Encoder[ObligacionExternalDto] = deriveEncoder
 
@@ -46,6 +58,14 @@ object ObligacionImplicits {
         "BOB_DETALLES" -> detallesObligaciones.BOB_DETALLES.asJson
       )
 
+  implicit val ListDetallesSupresionesDecoder: Decoder[ListDetallesSupresiones] = deriveDecoder
+  implicit val ListDetallesSupresionesEncoder: Encoder[ListDetallesSupresiones] =
+    (detallesSupresiones: ListDetallesSupresiones) =>
+      Json.obj(
+        "BOB_DETALLES_SUPRESIONES" -> detallesSupresiones.BOB_DETALLES_SUPRESIONES.asJson
+      )
+
+  // FIXME: Check si se puede validar o no fecha desde el decode para consumir el evento igual pero colocarle fecha default
   implicit val localDateTimeDecoder: Decoder[LocalDateTime] = Decoder.decodeString.emapTry { str =>
     Try(LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
   }
@@ -53,28 +73,21 @@ object ObligacionImplicits {
     dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
   }
 
-
   // RESPONSES
   implicit val GetObligacionResponseDecoder: Decoder[GetObligacionResponse] = deriveDecoder
   implicit val GetObligacionResponseEncoder: Encoder[GetObligacionResponse] = deriveEncoder
-
-
 
   //EVENTS
   implicit val ObligacionPersistedSnapshotDecoder: Decoder[ObligacionPersistedSnapshot] = deriveDecoder
   implicit val ObligacionPersistedSnapshotEncoder: Encoder[ObligacionPersistedSnapshot] = deriveEncoder
 
-
   implicit val ObligacionUpdatedFromDtoDecoder: Decoder[ObligacionUpdatedFromDto] = deriveDecoder
   implicit val ObligacionUpdatedFromDtoEncoder: Encoder[ObligacionUpdatedFromDto] = deriveEncoder
-
 
   implicit val ObligacionRemovedDecoder: Decoder[ObligacionRemoved] = deriveDecoder
   implicit val ObligacionRemovedEncoder: Encoder[ObligacionRemoved] = deriveEncoder
 
-
   implicit val ObligacionAddedExencionDecoder: Decoder[ObligacionAddedExencion] = deriveDecoder
   implicit val ObligacionAddedExencionEncoder: Encoder[ObligacionAddedExencion] = deriveEncoder
-
 
 }

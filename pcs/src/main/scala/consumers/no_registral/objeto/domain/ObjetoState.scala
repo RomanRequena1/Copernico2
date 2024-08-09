@@ -33,8 +33,8 @@ case class ObjetoState(
                         obnVencidas: Map[String, Boolean] = Map.empty,
                         deuda30Objeto: Boolean = true,
                         tipoExclusion: String = "",
-                        exclusionObjeto: Option[String] = None,
-                        exclusionObjetoVinculo: Option[String] = None
+                        exclusionObjeto: String = "",
+                        exclusionObjetoVinculo: String = ""
                       ) extends AbstractState[ObjetoEvents] with CbroSerialization {
 
   override def +(event: ObjetoEvents): ObjetoState = {
@@ -150,10 +150,10 @@ case class ObjetoState(
           clasificacionObjeto = evt.clasificacionObjeto.getOrElse("2"),
           resulDmn = evt.resultDmn,
           exclusionObjeto = evt.registro.SOJ_TIPO_EXCLUSION match {
-            case x if x.contains("E") => Some("E")
-            case x if x.contains("NE") => Some("NE")
-            case x if x.contains("C") => Some("C")
-            case _ => None
+            case x if x.contains("E") => "E"
+            case x if x.contains("NE") => "NE"
+            case x if x.contains("C") => "C"
+            case _ => ""
           }
         )
       //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>

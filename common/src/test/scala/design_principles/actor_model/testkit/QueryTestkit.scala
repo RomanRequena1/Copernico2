@@ -31,15 +31,14 @@ object QueryTestkit {
   }
 
   trait AgainstHTTP extends QueryTestkit with ScalaFutures {
-    val http = new HttpClient()
-
-    override final type QueryTypeUpperBound = String
-
-    override def ask[QueryType <: QueryTypeUpperBound, ReturnType: ClassTag](
-        query: QueryType
-    )(implicit system: ActorSystem, format: Format[ReturnType]): ReturnType = {
-      implicit val ec: ExecutionContextExecutor = system.dispatcher
-      http.GET[ReturnType](query).futureValue
-    }
+//    val http = new HttpClient()
+//
+//    override final type QueryTypeUpperBound = String
+//
+//    override def ask[QueryType <: QueryTypeUpperBound, ReturnType: ClassTag](
+//        query: QueryType
+//    )(implicit system: ActorSystem, format: Format[ReturnType]): ReturnType = {
+//      implicit val ec: ExecutionContextExecutor = system.dispatcher
+//    }
   }
 }

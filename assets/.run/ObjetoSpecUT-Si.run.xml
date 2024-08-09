@@ -1,0 +1,64 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ObjetoSpecUT-Si" type="ScalaTestRunConfiguration" factoryName="ScalaTest" singleton="false" show_console_on_std_err="false" show_console_on_std_out="false">
+    <module name="pcs" />
+    <option name="allowRunningInParallel" value="true" />
+    <option name="projectPathOnTarget" />
+    <option name="selectedOptions">
+      <list />
+    </option>
+    <option name="testKind" value="Class" />
+    <option name="envs">
+      <map>
+        <entry key="AKKA_DEBUG_MODE" value="INFO" />
+        <entry key="AKKA_KAFKA_DEBUG_MODE" value="OFF" />
+        <entry key="APACHE_KAFKA_APP_INFO_PARSER_DEBUG_MODE" value="OFF" />
+        <entry key="APACHE_KAFKA_CLIENTS_NETWORK_CLIENT_DEBUG_MODE" value="OFF" />
+        <entry key="APACHE_KAFKA_DEBUG_MODE" value="OFF" />
+        <entry key="APACHE_ZOOKEEPER_DEBUG_MODE" value="OFF" />
+        <entry key="CASSANDRA_CONTACT_POINTS" value="0.0.0.0:9042" />
+        <entry key="CASSANDRA_CONTACT_POINTS_DOS" value="" />
+        <entry key="CASSANDRA_CONTACT_POINTS_TRES" value="" />
+        <entry key="CASSANDRA_CONTACT_POINTS_UNO" value="0.0.0.0:9042" />
+        <entry key="CASSANDRA_PASSWORD" value="cassandra" />
+        <entry key="CASSANDRA_USERNAME" value="cassandra" />
+        <entry key="CLUSTER_IP" value="0.0.0.0" />
+        <entry key="CLUSTER_PORT" value="2551" />
+        <entry key="CONSUMER_PARALLELISM" value="4" />
+        <entry key="DATASTAX_DEBUG_MODE" value="ERROR" />
+        <entry key="DMN_ID_CLASIF_OBJETO" value="Decision_Clasificacion_Objeto" />
+        <entry key="DMN_ID_DECISION_30" value="Decision_descuento" />
+        <entry key="DMN_ID_OBJETO_CUPON" value="Decision_0tsof3f" />
+        <entry key="HTTP_IP" value="0.0.0.0" />
+        <entry key="HTTP_PORT" value="8081" />
+        <entry key="I0ITEC_ZKCLIENT_DEBUG_MODE" value="OFF" />
+        <entry key="IO_NETTY_DEBUG_MODE" value="OFF" />
+        <entry key="JAEGER_HOST" value="localhost" />
+        <entry key="JAEGER_PORT" value="5775" />
+        <entry key="KAFKA_BROKERS_LIST" value="localhost:9092" />
+        <entry key="KAFKA_DEBUG_MODE" value="ERROR" />
+        <entry key="KAMON_STATUS_PAGE" value="5266" />
+        <entry key="LOG_ROOT_LEVEL_DEBUG_MODE" value="OFF" />
+        <entry key="MANAGEMENT_PORT" value="8551" />
+        <entry key="MAX_CONCURRENT_REQUESTS" value="1024" />
+        <entry key="MAX_REQUESTS_PER_CONNECTION" value="4096" />
+        <entry key="METRICS_JMX_REPORTER_DEBUG_MODE" value="OFF" />
+        <entry key="NET_LOGSTASH_DEBUG_MODE" value="OFF" />
+        <entry key="PASSIVATE" value="50000s" />
+        <entry key="PATH_DMN_CLASIF_OBJETO" value="$PROJECT_DIR$/clasificacion_objeto.dmn" />
+        <entry key="PATH_DMN_DECISION_30" value="$PROJECT_DIR$/decision_30_descuento.dmn" />
+        <entry key="PATH_DMN_OBJETO_CUPON" value="$PROJECT_DIR$/objetoCupon.dmn" />
+        <entry key="POOL_LOCAL_SIZE" value="4" />
+        <entry key="POOL_REMOTE_SIZE" value="1" />
+        <entry key="PROMETHEUS_PORT" value="5001" />
+        <entry key="REFLECTION_DEBUG_MODE" value="OFF" />
+        <entry key="SEED_NODES" value="akka://PersonClassificationService@0.0.0.0:2551" />
+        <entry key="TIMEOUT" value="50" />
+      </map>
+    </option>
+    <option name="shortenClasspath" value="NONE" />
+    <option name="testClassPath" value="consumers_spec.no_registrales.objeto.unit_test.ObjetoSpecUT" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -1,9 +1,9 @@
 package consumers_spec.no_registrales.obligacion.acceptance
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorRef, ActorSystem}
 import akka.entity.ShardedEntity.ShardedEntityRequirements
-import consumers.no_registral.cotitularidad.infrastructure.dependency_injection.CotitularidadActor
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
+import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import consumers_spec.no_registrales.obligacion.ObligacionSpec
 import consumers_spec.no_registrales.testkit.query.NoRegistralesQueryWithActorRef
 import consumers_spec.no_registrales.testkit.{MessageTestkitUtils, MonitoringAndMessageProducerMock}
@@ -12,6 +12,8 @@ import org.scalatest.Ignore
 
 object ObligacionSpecAcceptance {
   def getContext(system: ActorSystem): ObligacionSpec.TestContext = {
+    val vinculoActor: ActorRef =
+      ObjetoVinculoActor.startWithRequirements(MonitoringAndMessageProducerMock.production(system))(system)
     val ObligacionSpecMessageBroker = new KafkaMock()
     val ObligacionSpecQuery = {
       val sujetoActor =
@@ -19,16 +21,11 @@ object ObligacionSpecAcceptance {
           .startWithRequirements(
             MonitoringAndMessageProducerMock.production(system)
           )(system)
-      val cotitularidadActor =
-        CotitularidadActor
-          .startWithRequirements(
-            MonitoringAndMessageProducerMock.production(system)
-          )(system)
-      new MessageTestkitUtils(sujetoActor, cotitularidadActor)
+      new MessageTestkitUtils(sujetoActor)
         .StartMessageProcessor(ObligacionSpecMessageBroker)
         .startProcessing()
       new NoRegistralesQueryWithActorRef(
-        sujetoActor
+        sujetoActor, vinculoActor
       )
     }
     ObligacionSpec TestContext (

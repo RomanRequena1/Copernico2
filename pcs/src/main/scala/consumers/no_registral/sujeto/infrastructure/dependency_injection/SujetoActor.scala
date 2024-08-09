@@ -76,7 +76,7 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
       state.registro,
       state.saldo,
       Some(state.tiene30Sujeto),
-      state.exclusionSujeto
+      Some(state.exclusionSujeto)
     ).asJson.toString()
     requirements.messageProducer.produce(
       data = Seq(KafkaKeyValue(persistenceId, event)),

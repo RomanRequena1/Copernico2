@@ -30,7 +30,7 @@ object ObjetoEvents {
                                objetoId: String,
                                tipoObjeto: String,
                                tiene30Sujeto:Boolean,
-                               exclusionSUjeto: Option[String]
+                               exclusionSUjeto: String
                              ) extends ObjetoEvents
   case class ObjetoSnapshotPersisted(
       deliveryId: BigInt,
@@ -52,7 +52,7 @@ object ObjetoEvents {
       tiene30Objeto: Option[Boolean],
       aplicarDescuento: Option[Boolean],
       resultDmn: Int,
-      exclusionObjeto: Option[String],
+      exclusionObjeto: String,
       tiene30ObjetoVinculo: Option[Boolean]
   ) extends ObjetoEvents
 
@@ -99,7 +99,7 @@ object ObjetoEvents {
                                                 objetoId: String,
                                                 tipoObjeto: String,
                                                 tiene30ObjetoVinculo: Boolean,
-                                                exclusionObjetoVinculo: Option[String]
+                                                exclusionObjetoVinculo: String
                                               ) extends ObjetoEvents
   case class ObjetoUpdatedFromObligacion(
       deliveryId: BigInt,

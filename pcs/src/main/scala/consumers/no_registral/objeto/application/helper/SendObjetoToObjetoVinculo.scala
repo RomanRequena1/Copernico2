@@ -53,7 +53,7 @@ object testIfObjVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
-          exclusionObjeto = actor.state.exclusionObjeto
+          exclusionObjeto = Some(actor.state.exclusionObjeto)
         ))
         res.onComplete {
           case Failure(exception) => log.error("Error to send event to objeto_vinculo (TRANSF)" + exception + "objID: "+ objetoId + "sujID: "+sujetoId)
@@ -75,7 +75,7 @@ object testIfObjVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
-          exclusionObjeto = actor.state.exclusionObjeto))
+          exclusionObjeto = Some(actor.state.exclusionObjeto)))
         res.onComplete {
           case Failure(exception) => log.error("Error to send event to objeto_vinculo (BAJA) " + exception + " objID: "+ objetoId + "sujID: "+sujetoId)
           case Success(value) => log.debug("Sent event to objet_vinculo " + " objID: "+ objetoId + " sujID: "+ sujetoId)
@@ -90,7 +90,7 @@ object testIfObjVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
-          exclusionObjeto = actor.state.exclusionObjeto))
+          exclusionObjeto = Some(actor.state.exclusionObjeto)))
         res.onComplete {
           case Failure(exception) => log.error("Error to send event to objeto_vinculo " + exception + " objID: "+ objetoId + " sujID: "+sujetoId)
           case Success(value) => log.debug("Sent event to objet_vinculo " + " objID: "+ objetoId + " sujID: "+ sujetoId)

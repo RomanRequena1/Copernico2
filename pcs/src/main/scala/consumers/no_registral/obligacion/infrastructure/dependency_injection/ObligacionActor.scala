@@ -57,6 +57,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   }
 
   def informParentTreintaProciento(evt: ObligacionUpdatedFromDto): Unit = {
+    println("ENTRO INFORM parent")
     context.parent ! ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento(
       evt.deliveryId,
       evt.sujetoId,

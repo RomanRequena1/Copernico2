@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ObjSpecUTJulian" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
+  <configuration default="false" name="ObjetoSpecUT-1" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
     <module name="Copernico.pcs" />
     <option name="VMParameters" value="" />
     <option name="allowRunningInParallel" value="false" />

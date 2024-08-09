@@ -37,7 +37,7 @@ class CreateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor, tranfere
       actor.state.mapVinculo.foreach {
         e => {
 
-          actorSujetoGeneral.ask[Response.SuccessProcessing](UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo, command.exclusionObjeto))
+          actorSujetoGeneral.ask[Response.SuccessProcessing](UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo, command.exclusionObjeto.get))
         }
       }
       actor.persistSnapshot(event, actor.state) { () =>

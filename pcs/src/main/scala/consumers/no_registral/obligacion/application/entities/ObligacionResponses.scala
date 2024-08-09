@@ -10,11 +10,17 @@ sealed trait ObligacionResponses extends CbroSerialization
 object ObligacionResponses {
 
   case class GetObligacionResponse(
-      saldo: BigDecimal = 0,
-      fechaUltMod: LocalDateTime = LocalDateTime.MIN,
-      registro: Option[ObligacionExternalDto] = None,
-      exenta: Boolean = false,
-      porcentajeExencion: BigDecimal = 0,
-      juicioId: Option[BigInt] = None
+                                    saldo: BigDecimal = 0,
+                                    fechaUltMod: LocalDateTime = LocalDateTime.MIN,
+                                    exenta: Boolean = false,
+                                    porcentajeExencion: Option[BigDecimal] = None,
+                                    registro: Option[ObligacionExternalDto] = None,
+                                    lastDeliveryIdByEvents: BigInt = 0,
+                                    detallesObligacion: Seq[DetallesObligacion] = Seq.empty,
+                                    juicioId: Option[BigInt] = None,
+                                    isAdheridoDebito: Boolean = false,
+                                    eventCounter: Int = 0,
+                                    idExterno: Option[String] = None,
+                                    resultDmn: Option[String] = None
   ) extends Response with CbroSerialization
 }

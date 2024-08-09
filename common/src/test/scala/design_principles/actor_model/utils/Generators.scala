@@ -3,7 +3,6 @@ package design_principles.actor_model.utils
 import akka.actor.ActorSystem
 import com.typesafe.config.{Config, ConfigFactory}
 import config.StaticConfig
-import serialization.EventSerializer
 
 object Generators {
   def actorSystem(port: Int = 2559,
@@ -11,7 +10,7 @@ object Generators {
                   extraConfig: Config = ConfigFactory.empty()): ActorSystem = {
     val customConf =
       ConfigFactory.parseString(s"""
-      akka.loglevel = INFO
+      akka.loglevel = ERROR
       #akka.persistence.typed.log-stashing = on
       akka.actor.provider = cluster
       akka.persistence.journal.plugin = "akka.persistence.journal.inmem"

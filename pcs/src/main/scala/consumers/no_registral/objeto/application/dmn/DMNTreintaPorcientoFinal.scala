@@ -1,18 +1,18 @@
 package consumers.no_registral.objeto.application.dmn
 
 object DMNTreintaPorcientoFinal {
-  case class DmnFinal(suj_exclusionSujeto: Option[String],
-                      soj_exclusionObjeto: Option[String],
+  case class DmnFinal(suj_exclusionSujeto: String,
+                      soj_exclusionObjeto: String,
                       soj_clasificacionObjeto: String,
                       soj_deuda30Objeto: Boolean,
                       suj_deuda30Sujeto: Boolean,
                       tiene30ObjetoVinculo: Boolean)
   def calcularDmnFinal(dmn:DmnFinal): Boolean = {
     dmn match {
-      case x if x.suj_exclusionSujeto.contains("E") => true
-      case x if x.suj_exclusionSujeto.contains("NE") => false
-      case x if x.soj_exclusionObjeto.contains("E") => true
-      case x if x.soj_exclusionObjeto.contains("NE") => false
+      case x if x.suj_exclusionSujeto.equals("E") => true
+      case x if x.suj_exclusionSujeto.equals("NE") => false
+      case x if x.soj_exclusionObjeto.equals("E") => true
+      case x if x.soj_exclusionObjeto.equals("NE") => false
       case x if x.soj_clasificacionObjeto.equals("1") && x.soj_deuda30Objeto && x.tiene30ObjetoVinculo => true
       case x if x.soj_clasificacionObjeto.equals("1") && x.soj_deuda30Objeto && !x.tiene30ObjetoVinculo => false
       case x if x.soj_clasificacionObjeto.equals("1") && !x.soj_deuda30Objeto => false

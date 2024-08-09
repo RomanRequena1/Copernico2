@@ -1,15 +1,18 @@
 package design_principles.external_pub_sub.kafka
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 import akka.Done
 import akka.actor.ActorSystem
+import akka.kafka.scaladsl.Producer
 import akka.stream.{OverflowStrategy, UniqueKillSwitch}
 import akka.stream.scaladsl.{Sink, Source, SourceQueue}
 import api.actor_transaction.ActorTransaction
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.{KafkaTransactionalMessageProcessor, MessageProcessor, MessageProducer}
+import org.apache.kafka.clients.producer.ProducerRecord
 
 import scala.collection.mutable
+import scala.util.{Failure, Success}
 
 class KafkaMock() extends MessageProducer with MessageProcessor with MessageProcessorLogging {
 
@@ -23,24 +26,24 @@ class KafkaMock() extends MessageProducer with MessageProcessor with MessageProc
   def receive(message: Any): Any = message match {
     case m: Message if !(topics contains m.topic) =>
       println(
-        s"""
-           |${Console.YELLOW} [MessageProducer] ${m.topic} ${Console.RESET}
-           |  Not sending message because the topic has not been created.
-           |""".stripMargin
+//        s"""
+//           |${Console.YELLOW} [MessageProducer] ${m.topic} ${Console.RESET}
+//           |  Not sending message because the topic has not been created.
+//           |""".stripMargin
       )
     case m: Message if topics contains m.topic =>
       messageHistory = messageHistory :+ ((m.topic, m.message.json))
-      println(
-        s"""
-           |${Console.YELLOW} [MessageProducer] ${Console.RESET}
-           |Sending message to: ${subscriptors
-             .filter(_.topic == m.topic)
-             .map(_.topic)
-             .map(Console.YELLOW + _ + Console.RESET)
-             .mkString(",")}
-           |${Console.CYAN} $message ${Console.RESET}
-           |""".stripMargin
-      )
+//      println(
+//        s"""
+//           |${Console.YELLOW} [MessageProducer] ${Console.RESET}
+//           |Sending message to: ${subscriptors
+//             .filter(_.topic == m.topic)
+//             .map(_.topic)
+//             .map(Console.YELLOW + _ + Console.RESET)
+//             .mkString(",")}
+//           |${Console.CYAN} $message ${Console.RESET}
+//           |""".stripMargin
+//      )
       subscriptors.filter(_.topic == m.topic).foreach {
         _.algorithm(m.message.json)
       }

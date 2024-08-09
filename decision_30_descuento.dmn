@@ -98,7 +98,7 @@
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0osnlsw">
-        <description>Cuotas de planes de pagos vencidas (Planes debito y no debito).
+        <description>Cuotas de planes de pagos vencidas (Planes debito y no debito). 
 Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <inputEntry id="UnaryTests_184oact">
           <text>"tributaria"</text>
@@ -216,7 +216,7 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_15bd89v">
-        <description>Multas vencidas del Impuesto sobre los Ingresos Brutos,  Régimen local y Convenio Multilateral en instancia administrativa o prejudicial</description>
+        <description>Multas vencidas del Impuesto sobre los Ingresos Brutos,  Régimen local y Convenio Multilateral en instancia administrativa o prejudicial</description>
         <inputEntry id="UnaryTests_1549t3l">
           <text>"tributaria"</text>
         </inputEntry>
@@ -255,7 +255,7 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1xsfv4o">
-        <description>Obligaciones vencidas del Impuesto sobre los Ingresos Brutos,  Régimen Simplificado, en instancia de gestión administrativa o prejudicial (MUC)</description>
+        <description>Obligaciones vencidas del Impuesto sobre los Ingresos Brutos,  Régimen Simplificado, en instancia de gestión administrativa o prejudicial (MUC)</description>
         <inputEntry id="UnaryTests_1537a6t">
           <text>"tributaria"</text>
         </inputEntry>
@@ -489,7 +489,7 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1nbw1s9">
-        <description>Obligaciones vencidas de Agentes de Retención de Tarjetas  de Credito Regimen SIRTAC en instancia de gestión administrativa o prejudicial</description>
+        <description>Obligaciones vencidas de Agentes de Retención de Tarjetas  de Credito Regimen SIRTAC en instancia de gestión administrativa o prejudicial</description>
         <inputEntry id="UnaryTests_1ib0fbo">
           <text>"tributaria"</text>
         </inputEntry>
@@ -528,7 +528,7 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_03g459n">
-        <description>Falta de presentación de declaraciones juradas de Agentes de Retención de Tarjetas de Credito y Regimen SIRTAC</description>
+        <description>Falta de presentación de declaraciones juradas de Agentes de Retención de Tarjetas de Credito y Regimen SIRTAC</description>
         <inputEntry id="UnaryTests_0ryrju5">
           <text>"tributaria"</text>
         </inputEntry>
@@ -645,7 +645,7 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1wtsvwq">
-        <description>Obligaciones vencidas de Agentes de Retención de Tarjetas  de Credito Regimen SIRCUPA en instancia de gestión administrativa o prejudicial</description>
+        <description>Obligaciones vencidas de Agentes de Retención de Tarjetas  de Credito Regimen SIRCUPA en instancia de gestión administrativa o prejudicial</description>
         <inputEntry id="UnaryTests_1sv4shl">
           <text>"tributaria"</text>
         </inputEntry>
@@ -684,7 +684,7 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0z422dv">
-        <description>Falta de presentación de declaraciones juradas de Agentes de Retención de Tarjetas de Credito Regimen SIRCUPA</description>
+        <description>Falta de presentación de declaraciones juradas de Agentes de Retención de Tarjetas de Credito Regimen SIRCUPA</description>
         <inputEntry id="UnaryTests_0m5k9dn">
           <text>"tributaria"</text>
         </inputEntry>
