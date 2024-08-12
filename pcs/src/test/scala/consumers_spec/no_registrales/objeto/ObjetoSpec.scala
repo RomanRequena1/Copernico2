@@ -7,7 +7,7 @@ import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.Objetos
 import consumers.no_registral.tranferencia.domain.{Vinculo, VinculoCotitular}
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import consumers_spec.no_registrales.testkit.{
-  Examples,
+
   MonitoringAndMessageProducerMock,
   NoRegistralesImplicitConversions
 }
@@ -38,7 +38,7 @@ abstract class ObjetoSpec(
     }
    */
 
-  val examples = new Examples("ObjetoSpec")
+//  val examples = new Examples("ObjetoSpec")
 
   val jsonDiego = s"""{
         "EV_ID" : "${deliveryIdAct}",

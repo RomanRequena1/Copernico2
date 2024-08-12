@@ -1,8 +1,16 @@
 package consumers_spec.no_registrales.testkit
 
 import java.time.LocalDateTime
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{DetallesObjeto, ListDetallesObjeto, ObjetosTri}
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionesTri}
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{
+  DetallesObjeto,
+  ListDetallesObjeto,
+  ObjetosTri
+}
+import consumers.no_registral.obligacion.application.entities.{
+  DetallesObligacion,
+  ListDetallesObligaciones,
+  ObligacionesTri
+}
 import utils.generators.Model.{deliveryId, deliveryIdAct}
 
 class Examples(testName: String) {
@@ -17,70 +25,105 @@ class Examples(testName: String) {
   val objetoEmbarcacion1: (String, String) = ("1", "N")
   val objetoEmbarcacion2: (String, String) = ("2", "N")
 
+  val detallesObligacionPago = Some(
+    ListDetallesObligaciones(
+      List(
+        DetallesObligacion(
+          EV_ID = Some(deliveryIdAct),
+          EVO_OBN_PEO_ID_MATERIAL = None,
+          BOB_MUNICIPIO = None,
+          BOB_INTERES_FINANCIACION = None,
+          JUICIO_MULTIOBJETO = None,
+          RULE_NUMBER = Some("1"),
+          EVO_OBN_PEO_ID_FORMAL = None,
+          PLAN_MULTIOBJETO = None,
+          tiene30Obligaciones = None,
+          BAND_BATCH = None,
+          SOJ_ID_EXTERNO = None
+        )
+      )
+    )
+  )
 
-val detallesObligacionPago = Some(ListDetallesObligaciones(List(DetallesObligacion(
-  EV_ID = Some(deliveryIdAct),
-  EVO_OBN_PEO_ID_MATERIAL = None,
-  BOB_MUNICIPIO = None,
-  BOB_INTERES_FINANCIACION = None,
-  JUICIO_MULTIOBJETO = None,
-  RULE_NUMBER = Some("1"),
-  EVO_OBN_PEO_ID_FORMAL = None,
-  PLAN_MULTIOBJETO = None,
-  tiene30Obligaciones = None,
-  BAND_BATCH = None,
-  SOJ_ID_EXTERNO = None))))
+  val otrosAtrib = Some(
+    ListDetallesObligaciones(
+      List(
+        DetallesObligacion(
+          BOB_MUNICIPIO = None,
+          RULE_NUMBER = Some("1"),
+          tiene30Obligaciones = None,
+          BAND_BATCH = Some(true),
+          EV_ID = None,
+          SOJ_ID_EXTERNO = None,
+          EVO_OBN_PEO_ID_MATERIAL = None,
+          JUICIO_MULTIOBJETO = None,
+          BOB_INTERES_FINANCIACION = None,
+          EVO_OBN_PEO_ID_FORMAL = None,
+          PLAN_MULTIOBJETO = None
+        )
+      )
+    )
+  )
 
-  val otrosAtrib = Some(ListDetallesObligaciones(List(DetallesObligacion(BOB_MUNICIPIO = None,
-    RULE_NUMBER = Some("1"),
-    tiene30Obligaciones = None,
-    BAND_BATCH = Some(true),
-    EV_ID = None,
-    SOJ_ID_EXTERNO = None,
-    EVO_OBN_PEO_ID_MATERIAL = None,
-    JUICIO_MULTIOBJETO = None,
-    BOB_INTERES_FINANCIACION = None,
-    EVO_OBN_PEO_ID_FORMAL = None,
-    PLAN_MULTIOBJETO = None))))
+  val detallesObligacion: Some[ListDetallesObligaciones] = Some(
+    ListDetallesObligaciones(
+      List(
+        DetallesObligacion(
+          EV_ID = Some(deliveryIdAct),
+          EVO_OBN_PEO_ID_MATERIAL = None,
+          BOB_MUNICIPIO = None,
+          BOB_INTERES_FINANCIACION = None,
+          JUICIO_MULTIOBJETO = None,
+          RULE_NUMBER = Some("1"),
+          EVO_OBN_PEO_ID_FORMAL = None,
+          PLAN_MULTIOBJETO = None,
+          tiene30Obligaciones = None,
+          BAND_BATCH = None,
+          SOJ_ID_EXTERNO = None
+        )
+      )
+    )
+  )
 
-  val detallesObligacion: Some[ListDetallesObligaciones] = Some(ListDetallesObligaciones(List(DetallesObligacion(
-    EV_ID = Some(deliveryIdAct),
-    EVO_OBN_PEO_ID_MATERIAL = None,
-    BOB_MUNICIPIO = None,
-    BOB_INTERES_FINANCIACION = None,
-    JUICIO_MULTIOBJETO = None,
-    RULE_NUMBER = Some("1"),
-    EVO_OBN_PEO_ID_FORMAL = None,
-    PLAN_MULTIOBJETO = None,
-    tiene30Obligaciones = None,
-    BAND_BATCH = None,
-    SOJ_ID_EXTERNO = None))))
+  val detallesObjetoNoResponsable = Some(
+    ListDetallesObjeto(
+      List(
+        DetallesObjeto(
+          RESPONSABLE_OTROS_ATRIBUTOS = Some("N"),
+          PORCENTAJE_OTROS_ATRIBUTOS = None,
+          CUENTA_SOJ_OTROS_ATRIBUTOS = None,
+          OTROS_ATRIBUTOS_ADHERIDO_DEBITO = None,
+          PERIODO_SOJ_OTROS_ATRIBUTOS = None,
+          IMPORTE_SOJ_OTROS_ATRIBUTOS = None,
+          SOJ_SEMAFORO_COLOR = None,
+          SOJ_SEMAFORO_MARCA = None,
+          SOJ_ADQUIRIDO_SUBASTA = None,
+          FECHA_SUBASTA = None,
+          SOJ_OWNER = None
+        )
+      )
+    )
+  )
 
-  val detallesObjetoNoResponsable = Some(ListDetallesObjeto(List(DetallesObjeto(
-    RESPONSABLE_OTROS_ATRIBUTOS = Some("N"),
-    PORCENTAJE_OTROS_ATRIBUTOS = None,
-    CUENTA_SOJ_OTROS_ATRIBUTOS = None,
-    OTROS_ATRIBUTOS_ADHERIDO_DEBITO = None,
-    PERIODO_SOJ_OTROS_ATRIBUTOS = None,
-    IMPORTE_SOJ_OTROS_ATRIBUTOS = None,
-    SOJ_SEMAFORO_COLOR = None,
-    SOJ_SEMAFORO_MARCA = None,
-    SOJ_ADQUIRIDO_SUBASTA = None,
-    FECHA_SUBASTA = None,
-    SOJ_OWNER = None))))
-
-  val detallesObjetoResponsable = Some(ListDetallesObjeto(List(DetallesObjeto(
-    RESPONSABLE_OTROS_ATRIBUTOS = Some("S"),
-    PORCENTAJE_OTROS_ATRIBUTOS = None,
-    CUENTA_SOJ_OTROS_ATRIBUTOS = None,
-    OTROS_ATRIBUTOS_ADHERIDO_DEBITO = None,
-    PERIODO_SOJ_OTROS_ATRIBUTOS = None,
-    IMPORTE_SOJ_OTROS_ATRIBUTOS = None,
-    SOJ_SEMAFORO_COLOR = None,
-    SOJ_SEMAFORO_MARCA = None,
-    SOJ_ADQUIRIDO_SUBASTA = None,
-    FECHA_SUBASTA = None,
-    SOJ_OWNER = None))))
+  val detallesObjetoResponsable = Some(
+    ListDetallesObjeto(
+      List(
+        DetallesObjeto(
+          RESPONSABLE_OTROS_ATRIBUTOS = Some("S"),
+          PORCENTAJE_OTROS_ATRIBUTOS = None,
+          CUENTA_SOJ_OTROS_ATRIBUTOS = None,
+          OTROS_ATRIBUTOS_ADHERIDO_DEBITO = None,
+          PERIODO_SOJ_OTROS_ATRIBUTOS = None,
+          IMPORTE_SOJ_OTROS_ATRIBUTOS = None,
+          SOJ_SEMAFORO_COLOR = None,
+          SOJ_SEMAFORO_MARCA = None,
+          SOJ_ADQUIRIDO_SUBASTA = None,
+          FECHA_SUBASTA = None,
+          SOJ_OWNER = None
+        )
+      )
+    )
+  )
 
   val objetoExample = ObjetosTri(
     RULE_NUMBER = None,
@@ -104,7 +147,8 @@ val detallesObligacionPago = Some(ListDetallesObligaciones(List(DetallesObligaci
     SOJ_TITULARIDAD = Some("CONDOMINIO"),
     SOJ_TIPO_EXCLUSION = None,
     SOJ_FECHA_VTA_SUBASTA = None,
-    SOJ_FECHA_ADQ_SUBASTA = None)
+    SOJ_FECHA_ADQ_SUBASTA = None
+  )
 
   val obligacionExampleVencida = ObligacionesTri(
     RULE_NUMBER = None,
@@ -114,9 +158,9 @@ val detallesObligacionPago = Some(ListDetallesObligaciones(List(DetallesObligaci
     BOB_SOJ_IDENTIFICADOR = "ABC123",
     BOB_OBN_ID = "None",
     BOB_ESTADO = Some("ADMINISTRATIVA"),
-    BOB_PRORROGA =  Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
+    BOB_PRORROGA = Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
     BOB_VENCIMIENTO = Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
-    BOB_VENCIMIENTO_2 =  Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
+    BOB_VENCIMIENTO_2 = Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
     BOB_CAPITAL = Some(0),
     BOB_CONCEPTO = Some("901"),
     BOB_IMPUESTO = Some("2"),
@@ -140,7 +184,8 @@ val detallesObligacionPago = Some(ListDetallesObligaciones(List(DetallesObligaci
     BOB_TIPO = Some("tributaria"),
     BOB_TOTAL = None,
     BOB_OGA_ID = None,
-    SOJ_ID_EXTERNO = None
+    SOJ_ID_EXTERNO = None,
+    BOB_SUPRESIONES = None
   )
 
   val obligacionExamplePaga = ObligacionesTri(
@@ -151,9 +196,9 @@ val detallesObligacionPago = Some(ListDetallesObligaciones(List(DetallesObligaci
     BOB_SOJ_IDENTIFICADOR = "ABC123",
     BOB_OBN_ID = "None",
     BOB_ESTADO = Some("ADMINISTRATIVA"),
-    BOB_PRORROGA =  Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
+    BOB_PRORROGA = Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
     BOB_VENCIMIENTO = Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
-    BOB_VENCIMIENTO_2 =  Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
+    BOB_VENCIMIENTO_2 = Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
     BOB_CAPITAL = None,
     BOB_CONCEPTO = None,
     BOB_IMPUESTO = None,
@@ -177,10 +222,9 @@ val detallesObligacionPago = Some(ListDetallesObligaciones(List(DetallesObligaci
     BOB_TIPO = None,
     BOB_TOTAL = None,
     BOB_OGA_ID = None,
-    SOJ_ID_EXTERNO = None
+    SOJ_ID_EXTERNO = None,
+    BOB_SUPRESIONES = None
   )
-
-
 
   val objetoExampleConExclusion = ObjetosTri(
     RULE_NUMBER = None,
@@ -204,7 +248,8 @@ val detallesObligacionPago = Some(ListDetallesObligaciones(List(DetallesObligaci
     SOJ_TITULARIDAD = Some("CONDOMINIO"),
     SOJ_TIPO_EXCLUSION = Some("E"),
     SOJ_FECHA_VTA_SUBASTA = None,
-    SOJ_FECHA_ADQ_SUBASTA = None)
+    SOJ_FECHA_ADQ_SUBASTA = None
+  )
 
   val objetoExampleConExclusionVencida = ObjetosTri(
     RULE_NUMBER = None,
@@ -228,23 +273,30 @@ val detallesObligacionPago = Some(ListDetallesObligaciones(List(DetallesObligaci
     SOJ_TITULARIDAD = Some("CONDOMINIO"),
     SOJ_TIPO_EXCLUSION = Some("NE"),
     SOJ_FECHA_VTA_SUBASTA = None,
-    SOJ_FECHA_ADQ_SUBASTA = None)
+    SOJ_FECHA_ADQ_SUBASTA = None
+  )
 
   def objetoExampleLucas = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-43271253-3")
   def objetoExampleRoman = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-45678910-2")
   def objetoExampleDiego = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-40123456-1")
 
-  def obligacionExampleVencidaLucas = obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "20-43271253-3")
-  def obligacionExampleVencidaRoman = obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "20-45678910-2")
-  def obligacionExampleVencidaDiego = obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "20-40123456-1")
+  def obligacionExampleVencidaLucas =
+    obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "20-43271253-3")
+  def obligacionExampleVencidaRoman =
+    obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "20-45678910-2")
+  def obligacionExampleVencidaDiego =
+    obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "20-40123456-1")
 
-  def ObjetoExampleConExclusionRoman = objetoExampleConExclusion.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-45678910-2")
-  def ObjetoExampleConExclusionDiego = objetoExampleConExclusion.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-40123456-1")
+  def ObjetoExampleConExclusionRoman =
+    objetoExampleConExclusion.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-45678910-2")
+  def ObjetoExampleConExclusionDiego =
+    objetoExampleConExclusion.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-40123456-1")
 
-  def ObjetoExampleConExclusionVencidaRoman = objetoExampleConExclusionVencida.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-45678910-2")
+  def ObjetoExampleConExclusionVencidaRoman =
+    objetoExampleConExclusionVencida.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-45678910-2")
 
-  def obligacionExamplePagaLucas = obligacionExamplePaga.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "20-43271253-3")
-
+  def obligacionExamplePagaLucas =
+    obligacionExamplePaga.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "20-43271253-3")
 
   def objetoResponsable(objetoExample: ObjetosTri) = {
     objetoExample.copy(SOJ_OTROS_ATRIBUTOS = detallesObjetoResponsable)
@@ -252,7 +304,7 @@ val detallesObligacionPago = Some(ListDetallesObligaciones(List(DetallesObligaci
 
   val fechaVencimientoObligacion5: LocalDateTime = LocalDateTime.now.plusMinutes(5)
   val obligacionId = "1"
-/*  private def obligacionExample2: ObligacionesTri =
+  /*  private def obligacionExample2: ObligacionesTri =
     stubs.consumers.no_registrales.obligacion.ObligacionExternalDtoStub.obligacionesTri.copy(
       EV_ID = deliveryIdAct,
       BOB_SUJ_IDENTIFICADOR = sujetoId1,
@@ -263,17 +315,25 @@ val detallesObligacionPago = Some(ListDetallesObligaciones(List(DetallesObligaci
       BOB_VENCIMIENTO = Some(fechaVencimientoObligacion5)
     )*/
   private def obligacionExample: ObligacionesTri = {
-    val otrosAtrib = Some(ListDetallesObligaciones(List(DetallesObligacion(BOB_MUNICIPIO = None,
-      RULE_NUMBER = Some("1"),
-      tiene30Obligaciones = None,
-      BAND_BATCH = Some(true),
-      EV_ID = None,
-      SOJ_ID_EXTERNO = None,
-      EVO_OBN_PEO_ID_MATERIAL = None,
-      JUICIO_MULTIOBJETO = None,
-      BOB_INTERES_FINANCIACION = None,
-      EVO_OBN_PEO_ID_FORMAL = None,
-      PLAN_MULTIOBJETO = None))))
+    val otrosAtrib = Some(
+      ListDetallesObligaciones(
+        List(
+          DetallesObligacion(
+            BOB_MUNICIPIO = None,
+            RULE_NUMBER = Some("1"),
+            tiene30Obligaciones = None,
+            BAND_BATCH = Some(true),
+            EV_ID = None,
+            SOJ_ID_EXTERNO = None,
+            EVO_OBN_PEO_ID_MATERIAL = None,
+            JUICIO_MULTIOBJETO = None,
+            BOB_INTERES_FINANCIACION = None,
+            EVO_OBN_PEO_ID_FORMAL = None,
+            PLAN_MULTIOBJETO = None
+          )
+        )
+      )
+    )
 
     val obnTest = ObligacionesTri(
       BOB_SALDO = 100.00,
@@ -309,11 +369,11 @@ val detallesObligacionPago = Some(ListDetallesObligaciones(List(DetallesObligaci
       BOB_OGA_ID = None,
       EV_ID = deliveryIdAct,
       RULE_NUMBER = None,
-      SOJ_ID_EXTERNO = Some("1234")
+      SOJ_ID_EXTERNO = Some("1234"),
+      BOB_SUPRESIONES = None
     )
     obnTest
   }
-
 
   def obligacionWithSaldo200 =
     obligacionExample

@@ -24,6 +24,7 @@ class ObligacionSnapshotHandler(actor: ObligacionActor)
       actor.state.registro,
       actor.state.lastDeliveryIdByEvents,
       actor.state.detallesObligacion,
+      actor.state.detallesSupresiones,
       actor.state.juicioId,
       actor.state.isAdheridoDebito,
       actor.state.eventCounter,

@@ -29,6 +29,7 @@ class NoRegistralesQueryWithActorRef(sujeto: ActorRef, vinculoActor: ActorRef)
   val actor: ActorRef = sujeto
 
   def getStateObligacion(obligacionExample: ObligacionExternalDto): GetObligacionResponse = {
+    println("Consultando a :" + obligacionExample.BOB_OBN_ID)
     sujeto
       .ask[GetObligacionResponse](
         GetStateObligacion(
@@ -42,7 +43,7 @@ class NoRegistralesQueryWithActorRef(sujeto: ActorRef, vinculoActor: ActorRef)
   }
 
   def getStateObjeto(objetoExample: ObjetoExternalDto): GetObjetoResponse = {
-    println("Consultando a " + objetoExample.SOJ_IDENTIFICADOR)
+    println("Consultando a :" + objetoExample.SOJ_IDENTIFICADOR)
     sujeto
       .ask[GetObjetoResponse](
         GetStateObjeto(
