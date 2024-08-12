@@ -12,6 +12,8 @@ import kafka.{MessageProcessor, MessageProducer}
 import consumers_spec.no_registrales.testkit.MessageTestkitUtils._
 import io.circe.parser.decode
 import utils.generators.Model.deliveryIdAct
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 object ObligacionSpec {
   case class TestContext(messageProducer: MessageProducer,
@@ -24,7 +26,24 @@ abstract class ObligacionSpec(
     with NoRegistralesImplicitConversions {
   type AggregateRoot = String
 
-//  val examples = new Examples("ObligacionSpec")
+  val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
+
+  val fechaVigente = LocalDateTime.now().format(formatter)
+  val fechaVigenteParsed = LocalDateTime.parse(fechaVigente, formatter)
+  val periodoVigente = fechaVigenteParsed.getYear
+
+
+  val fechaVencida = LocalDateTime.now().minusYears(1).format(formatter)
+  val fechaVencidaParsed = LocalDateTime.parse(fechaVencida, formatter)
+  val periodoVencida = fechaVencidaParsed.minusYears(1).getYear
+
+  val fechaPlazoDeGracia = LocalDateTime.now().plusDays(9).format(formatter)
+
+  val fechaFutura = LocalDateTime.now().plusYears(1).format(formatter)
+  val fechaFuturaParsed = LocalDateTime.parse(fechaFutura, formatter)
+  val periodoFutura = fechaFuturaParsed.minusYears(1).getYear
+
+
 
   val jsonAltaObligacionAntVigenteDiego2001 = s"""{
  "EV_ID": "${deliveryIdAct}",
@@ -43,19 +62,19 @@ abstract class ObligacionSpec(
  "BOB_INTERES_PUNIT": null,
  "BOB_INTERES_RESAR": null,
  "BOB_JUI_ID": null,
- "BOB_PERIODO": "2024",
+ "BOB_PERIODO": "$periodoVigente",
  "BOB_PLN_ID": null,
- "BOB_PRORROGA": "2024-12-21 00:00:00.0",
+ "BOB_PRORROGA": null,
  "BOB_TIPO": "ANT",
  "BOB_TOTAL": "1000",
- "BOB_VENCIMIENTO": "2024-12-21 00:00:00.0",
+ "BOB_VENCIMIENTO": "$fechaVigente",
  "BOB_CAPITAL": "1000",
  "BOB_CONCEPTO": "601",
  "BOB_IMPUESTO": "600",
  "FECHA_BAJA": null,
  "BOB_ADHERIDO_DEBITO": "N",
  "BOB_OGA_ID": "11800",
- "BOB_VENCIMIENTO_2": "2024-12-21 00:00:00.0",
+ "BOB_VENCIMIENTO_2": null,
  "SOJ_ID_EXTERNO": "1601876",
  "BOB_OTROS_ATRIBUTOS": {
  "BOB_DETALLES": [
@@ -76,8 +95,8 @@ abstract class ObligacionSpec(
    {
     "BOB_TIPO_SUP": "Tipo Supresion",
     "BOB_ESTADO_SUP": "Estado Supresion",
-    "BOB_FECHA_INICIO_SUP": "2024-12-01 01:02:03.4",
-    "BOB_FECHA_FIN_SUP": "2025-12-01 01:02:03.4"
+    "BOB_FECHA_INICIO_SUP": "$fechaVencida",
+    "BOB_FECHA_FIN_SUP": "$fechaFutura"
    }
   ]
  }
@@ -99,19 +118,19 @@ abstract class ObligacionSpec(
  "BOB_INTERES_PUNIT": null,
  "BOB_INTERES_RESAR": null,
  "BOB_JUI_ID": null,
- "BOB_PERIODO": "2024",
+ "BOB_PERIODO": "$periodoVigente",
  "BOB_PLN_ID": null,
- "BOB_PRORROGA": "2024-12-21 00:00:00.0",
- "BOB_TIPO": "tributaria",
+ "BOB_PRORROGA": null,
+ "BOB_TIPO": "ANT",
  "BOB_TOTAL": "1000",
- "BOB_VENCIMIENTO": "2024-12-21 00:00:00.0",
+ "BOB_VENCIMIENTO": "$fechaVigente",
  "BOB_CAPITAL": "1000",
  "BOB_CONCEPTO": "601",
  "BOB_IMPUESTO": "600",
  "FECHA_BAJA": null,
  "BOB_ADHERIDO_DEBITO": "N",
  "BOB_OGA_ID": "11800",
- "BOB_VENCIMIENTO_2": "2024-12-21 00:00:00.0",
+ "BOB_VENCIMIENTO_2": null,
  "SOJ_ID_EXTERNO": "1601876",
  "BOB_OTROS_ATRIBUTOS": {
  "BOB_DETALLES": [
@@ -125,14 +144,15 @@ abstract class ObligacionSpec(
     "PLAN_MULTIOBJETO": "N",
     "BAND_30": true
    }
-  ],
+  ]
+ },
  "BOB_SUPRESIONES": {
  "BOB_DETALLES_SUPRESIONES": [
    {
     "BOB_TIPO_SUP": "Tipo Supresion",
     "BOB_ESTADO_SUP": "Estado Supresion",
-    "BOB_FECHA_INICIO_SUP": "2024-12-01 01:02:03.4",
-    "BOB_FECHA_FIN_SUP": "2025-12-01 01:02:03.4"
+    "BOB_FECHA_INICIO_SUP": "$fechaVencida",
+    "BOB_FECHA_FIN_SUP": "$fechaFutura"
    }
   ]
  }
@@ -143,9 +163,9 @@ abstract class ObligacionSpec(
  "BOB_SUJ_IDENTIFICADOR": "Diego",
  "BOB_SOJ_TIPO_OBJETO": "A",
  "BOB_SOJ_IDENTIFICADOR": "AutoDiego",
- "BOB_OBN_ID": "801",
- "BOB_SALDO": "999",
- "BOB_CUOTA": "2",
+ "BOB_OBN_ID": "2001",
+ "BOB_SALDO": "1000",
+ "BOB_CUOTA": "1",
  "BOB_ESTADO": "ADMINISTRATIVA",
  "BOB_SUB_ESTADO": null,
  "BOB_CANAL_ORIGEN": "LOCAL",
@@ -155,19 +175,19 @@ abstract class ObligacionSpec(
  "BOB_INTERES_PUNIT": null,
  "BOB_INTERES_RESAR": null,
  "BOB_JUI_ID": null,
- "BOB_PERIODO": "2023",
+ "BOB_PERIODO": "$periodoVencida",
  "BOB_PLN_ID": null,
- "BOB_PRORROGA": "2023-12-21 00:00:00.0",
- "BOB_TIPO": "tributaria",
- "BOB_TOTAL": "999",
- "BOB_VENCIMIENTO": "2023-12-21 00:00:00.0",
- "BOB_CAPITAL": "999",
+ "BOB_PRORROGA": null,
+ "BOB_TIPO": "ANT",
+ "BOB_TOTAL": "1000",
+ "BOB_VENCIMIENTO": "$fechaVencida",
+ "BOB_CAPITAL": "1000",
  "BOB_CONCEPTO": "601",
  "BOB_IMPUESTO": "600",
  "FECHA_BAJA": null,
  "BOB_ADHERIDO_DEBITO": "N",
  "BOB_OGA_ID": "11800",
- "BOB_VENCIMIENTO_2": "2023-12-21 00:00:00.0",
+ "BOB_VENCIMIENTO_2": null,
  "SOJ_ID_EXTERNO": "1601876",
  "BOB_OTROS_ATRIBUTOS": {
  "BOB_DETALLES": [
@@ -182,26 +202,26 @@ abstract class ObligacionSpec(
     "BAND_30": true
    }
   ]
- }
+ },
  "BOB_SUPRESIONES": {
  "BOB_DETALLES_SUPRESIONES": [
    {
     "BOB_TIPO_SUP": "Tipo Supresion",
     "BOB_ESTADO_SUP": "Estado Supresion",
-    "BOB_FECHA_INICIO_SUP": "2024-12-01 01:02:03.4",
-    "BOB_FECHA_FIN_SUP": "2025-12-01 01:02:03.4"
+    "BOB_FECHA_INICIO_SUP": null,
+    "BOB_FECHA_FIN_SUP": null
    }
   ]
  }
 }"""
-  val jsonPagoObligacionAntVencidaDiego801 = s""" {
+  val jsonPagoObligacionAntVencidaDiego801 = s"""{
  "EV_ID": "${deliveryIdAct}",
  "BOB_SUJ_IDENTIFICADOR": "Diego",
  "BOB_SOJ_TIPO_OBJETO": "A",
  "BOB_SOJ_IDENTIFICADOR": "AutoDiego",
- "BOB_OBN_ID": "801",
- "BOB_SALDO": "999",
- "BOB_CUOTA": "2",
+ "BOB_OBN_ID": "2001",
+ "BOB_SALDO": "1000",
+ "BOB_CUOTA": "1",
  "BOB_ESTADO": "ADMINISTRATIVA",
  "BOB_SUB_ESTADO": null,
  "BOB_CANAL_ORIGEN": "LOCAL",
@@ -211,19 +231,19 @@ abstract class ObligacionSpec(
  "BOB_INTERES_PUNIT": null,
  "BOB_INTERES_RESAR": null,
  "BOB_JUI_ID": null,
- "BOB_PERIODO": "2023",
+ "BOB_PERIODO": "$periodoVencida",
  "BOB_PLN_ID": null,
- "BOB_PRORROGA": "2023-12-21 00:00:00.0",
- "BOB_TIPO": "tributaria",
- "BOB_TOTAL": "999",
- "BOB_VENCIMIENTO": "2023-12-21 00:00:00.0",
- "BOB_CAPITAL": "999",
+ "BOB_PRORROGA": null,
+ "BOB_TIPO": "ANT",
+ "BOB_TOTAL": "1000",
+ "BOB_VENCIMIENTO": "$fechaVencida",
+ "BOB_CAPITAL": "1000",
  "BOB_CONCEPTO": "601",
  "BOB_IMPUESTO": "600",
  "FECHA_BAJA": null,
  "BOB_ADHERIDO_DEBITO": "N",
  "BOB_OGA_ID": "11800",
- "BOB_VENCIMIENTO_2": "2023-12-21 00:00:00.0",
+ "BOB_VENCIMIENTO_2": null,
  "SOJ_ID_EXTERNO": "1601876",
  "BOB_OTROS_ATRIBUTOS": {
  "BOB_DETALLES": [
@@ -238,19 +258,20 @@ abstract class ObligacionSpec(
     "BAND_30": true
    }
   ]
- }
+ },
  "BOB_SUPRESIONES": {
  "BOB_DETALLES_SUPRESIONES": [
    {
     "BOB_TIPO_SUP": "Tipo Supresion",
     "BOB_ESTADO_SUP": "Estado Supresion",
-    "BOB_FECHA_INICIO_SUP": "2024-12-01 01:02:03.4",
-    "BOB_FECHA_FIN_SUP": "2025-12-01 01:02:03.4"
+    "BOB_FECHA_INICIO_SUP": null,
+    "BOB_FECHA_FIN_SUP": null
    }
   ]
  }
 }"""
 
+  //FIXME: corregir json de obligaciones tri
   val jsonAltaObligacionVigenteDiego1001 = s"""{
  "EV_ID": "${deliveryIdAct}",
  "BOB_SUJ_IDENTIFICADOR": "Diego",
@@ -506,10 +527,12 @@ abstract class ObligacionSpec(
 //      Thread.sleep(200)
 //  }
 
-  "una obligacion ANT" should "dar de alta una obligacion ANT" in parallelActorSystemRunner { implicit s =>
+  "una obligacion ANT vigente" should "dar de alta una obligacion ANT vigente" in parallelActorSystemRunner { implicit s =>
     val context = getContext(s)
     val messageProducer = context.messageProducer
     val Query = context.Query
+//    println("Json Ant Diego: " + jsonAltaObligacionAntVigenteDiego2001)
+
     decode[ObligacionesAnt](jsonAltaObligacionAntVigenteDiego2001) match {
       case Left(err) => println("Error decoding Json Diego" + err)
       case Right(event) =>
@@ -522,6 +545,25 @@ abstract class ObligacionSpec(
         }
     }
 
+  }
+
+  "una obligacion ANT vencida" should "dar de alta una obligacion ANT vencida" in parallelActorSystemRunner { implicit s =>
+    val context = getContext(s)
+    val messageProducer = context.messageProducer
+    val Query = context.Query
+    //    println("Json Ant Diego: " + jsonAltaObligacionAntVigenteDiego2001)
+
+    decode[ObligacionesAnt](jsonAltaObligacionAntVencidaDiego801) match {
+      case Left(err) => println("Error decoding Json Diego" + err)
+      case Right(event) =>
+        messageProducer.produceObligacion(event)
+        println("Evento Ant Diego: " + event)
+        eventually {
+          val response: ObligacionResponses.GetObligacionResponse = Query.getStateObligacion(event)
+          println("Query Obn: " + response)
+          response.registro.get should be(event)
+        }
+    }
   }
 
 }

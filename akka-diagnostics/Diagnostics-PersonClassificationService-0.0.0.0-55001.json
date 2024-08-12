@@ -1,5 +1,5 @@
 {
-  "start-time" : "2024-08-12T14:40:53.181",
+  "start-time" : "2024-08-12T19:07:29.893",
   "akka-version" : "2.6.15",
   "akka-diagnostics-version" : "1.1.16",
   "akka-http-version" : "10.2.0",
@@ -34,15 +34,15 @@
   "system-metrics" : {
     "heap-init" : 257949696,
     "heap-max" : 4112515072,
-    "heap-used" : 52874432,
-    "heap-committed" : 505413632,
+    "heap-used" : 45734944,
+    "heap-committed" : 510656512,
     "os-processors" : 8,
     "mem-pool-0" : {
       "name" : "CodeHeap 'non-nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 5836800,
-      "used" : 1595136,
+      "used" : 1640576,
       "committed" : 2555904
     },
     "mem-pool-1" : {
@@ -50,56 +50,56 @@
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 79848368,
-      "committed" : 84062208
+      "used" : 80095008,
+      "committed" : 84402176
     },
     "mem-pool-2" : {
       "name" : "CodeHeap 'profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122908672,
-      "used" : 12681472,
-      "committed" : 12713984
+      "used" : 12553088,
+      "committed" : 12582912
     },
     "mem-pool-3" : {
       "name" : "Compressed Class Space",
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : 1073741824,
-      "used" : 10799496,
-      "committed" : 12845056
+      "used" : 10799680,
+      "committed" : 12922880
     },
     "mem-pool-4" : {
       "name" : "G1 Eden Space",
       "type" : "Heap memory",
       "init" : 27262976,
       "max" : -1,
-      "used" : 18874368,
-      "committed" : 298844160
+      "used" : 11534336,
+      "committed" : 261095424
     },
     "mem-pool-5" : {
       "name" : "G1 Old Gen",
       "type" : "Heap memory",
       "init" : 230686720,
       "max" : 4112515072,
-      "used" : 14077120,
-      "committed" : 186646528
+      "used" : 13229088,
+      "committed" : 228589568
     },
     "mem-pool-6" : {
       "name" : "G1 Survivor Space",
       "type" : "Heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 19922944,
-      "committed" : 19922944
+      "used" : 20971520,
+      "committed" : 20971520
     },
     "mem-pool-7" : {
       "name" : "CodeHeap 'non-profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122912768,
-      "used" : 4627328,
-      "committed" : 4653056
+      "used" : 4556160,
+      "committed" : 4587520
     }
   },
   "configuration" : {
@@ -1406,7 +1406,7 @@
             }
         },
         "java" : {
-            "command" : "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner -s consumers_spec.no_registrales.obligacion.unit_test.ObligacionSpecUT -testName una obligacion ANT should dar de alta una obligacion ANT -showProgressMessages true",
+            "command" : "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner -s consumers_spec.no_registrales.obligacion.unit_test.ObligacionSpecUT -showProgressMessages true",
             "launcher" : "SUN_STANDARD"
         },
         "jnu" : {
