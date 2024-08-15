@@ -10,8 +10,8 @@ import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoTipo.DmnObjeto
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoExternalDto}
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateFromTri
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ListDetallesObjeto
-import consumers.no_registral.objeto.application.helper.{SendObjetoToObjetoVinculo, testIfObjVinculo}
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{DetallesObjeto, ListDetallesObjeto}
+import consumers.no_registral.objeto.application.helper.{testIfObjVinculo, SendObjetoToObjetoVinculo}
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromTri
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -23,6 +23,7 @@ import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import org.slf4j.{Logger, LoggerFactory}
 
+import java.lang.reflect.Field
 import java.time.LocalDateTime
 import scala.util.{Failure, Success, Try}
 
@@ -78,7 +79,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
 
     val dmn = isTipo(command)
 
-
     def getCCParams(evento: ObjetoExternalDto, estado: ObjetoExternalDto) = {
       val declaredFields = evento.getClass.getDeclaredFields
       var objetoNuevoTest = evento
@@ -92,18 +92,67 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
           campoEvento.set(objetoNuevoTest, campoEstado.get(estado))
         } else if (campoEvento.get(evento).equals(Some("null"))) {
           campoEvento.set(objetoNuevoTest, None)
-        } else if (campoEvento.get(evento).equals(Some(LocalDateTime.of(1000,1,1,0,0,0)))){
-          campoEvento.set(objetoNuevoTest,None)
+        } else if (campoEvento.get(evento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
+          campoEvento.set(objetoNuevoTest, None)
+        } else if (campoEvento.get(evento).equals(Some(999))) {
+          campoEvento.set(objetoNuevoTest, None)
+        } else if (campoEvento.getName == "SOJ_OTROS_ATRIBUTOS") {
+          println("Estado SOJ_OTROS_ATRIBUTOS: " + estado.SOJ_OTROS_ATRIBUTOS)
+          estado.SOJ_OTROS_ATRIBUTOS match {
+            // FIXME: si el none _ continua la funcion
+            case None => ()
+            case Some(value) if value.SOJ_DETALLES.nonEmpty => {
+              val otros_atributos_evento =
+                evento.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES.head
+
+              val otros_atributos_estado =
+                value.SOJ_DETALLES.head
+
+              //Option[ListDetallesObjeto]
+              val otros_atributos_updated =
+                actualizarSojDetalles(otros_atributos_evento, otros_atributos_estado)
+
+              campoEvento.set(objetoNuevoTest, Some(ListDetallesObjeto(List(otros_atributos_updated))))
+            }
+          }
         }
       }
       objetoNuevoTest
+    }
+    def actualizarSojDetalles(atributosEvento: DetallesObjeto, atributosEstado: DetallesObjeto) = {
+
+      val declaredFields = atributosEvento.getClass.getDeclaredFields
+      println("DeclaredFieldsEv: " + declaredFields.mkString("Array(", ", ", ")"))
+      var atributosNuevo = atributosEvento
+
+      declaredFields.foreach { campo =>
+        val campoEvento = atributosNuevo.getClass.getDeclaredField(campo.getName)
+        val campoEstado = atributosEstado.getClass.getDeclaredField(campo.getName)
+        campoEvento.setAccessible(true)
+        campoEstado.setAccessible(true)
+
+        if (campoEvento.get(atributosEvento) == None) {
+          campoEvento.set(atributosNuevo, campoEstado.get(atributosEstado))
+          // FIXME: validar q no rompe si el campo no estaba en el state
+        } else if (campoEvento.get(atributosEvento).equals(Some("null"))) {
+          campoEvento.set(atributosNuevo, None)
+        } else if (campoEvento.get(atributosEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
+          campoEvento.set(atributosNuevo, None)
+        } else if (campoEvento.get(atributosEvento).equals(Some(999))) {
+          campoEvento.set(atributosNuevo, None)
+        }
+      }
+      atributosNuevo
     }
 
     //TODO Validate the first event, with no state, enters in the case None.
     def getObjetoFFF() = {
       val objetoFFF = actor.state.registro match {
         case None => command.registro
-        case Some(value) => getCCParams(command.registro, value)
+        case Some(value) => {
+          println("Value: " + value.SOJ_OTROS_ATRIBUTOS)
+          getCCParams(command.registro, value)
+        }
       }
       objetoFFF
     }
