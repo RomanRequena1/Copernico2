@@ -1,0 +1,20 @@
+package proyectionists.no_registrales.testkit.query
+
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
+import consumers.no_registral.objeto.application.entities.ObjetoMessage.ObjetoMessageRoots
+import consumers.no_registral.objeto.application.entities.ObjetoResponses.GetObjetoResponse
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
+import consumers.no_registral.obligacion.application.entities.ObligacionMessage.ObligacionMessageRoots
+import consumers.no_registral.obligacion.application.entities.ObligacionResponses.GetObligacionResponse
+import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
+import consumers.no_registral.sujeto.application.entity.SujetoMessage.SujetoMessageRoots
+import consumers.no_registral.sujeto.application.entity.SujetoResponses.GetSujetoResponse
+import design_principles.actor_model.testkit.QueryTestkit
+
+trait NoRegistralesQueryTestKit extends QueryTestkit {
+
+  def getStateObligacion(obligacionExample: ObligacionExternalDto): GetObligacionResponse
+  def getStateObjeto(objetoExample: ObjetoExternalDto): GetObjetoResponse
+  def getStateSujeto(sujetoExample: SujetoExternalDto): GetSujetoResponse
+
+}

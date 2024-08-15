@@ -7,10 +7,8 @@ docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scri
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/infrastructure/akka/tables/tag_scanning.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/infrastructure/akka/tables/tag_views.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/infrastructure/akka/tables/tag_write_progress.cql
-
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/infrastructure/cqrs/keyspaces/akka_projection.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/infrastructure/cqrs/tables/offset_store.cql
-
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/keyspaces/read_side.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_actividades_sujeto.cql
 docker exec -i cassandra bash -c 'cqlsh -u cassandra -p cassandra' < assets/scripts/cassandra/domain/read_side/tables/buc_contactos.cql
