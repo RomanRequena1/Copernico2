@@ -23,26 +23,27 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
   def processInput(input: String): Either[Throwable, ObjetosTri] =
     decode[ObjetosTri](input)
 
-
   def processMessage(registro: ObjetosTri): Future[Response.SuccessProcessing] = {
     val isResponsable: Option[ListDetallesObjeto] => List[Boolean] = {
-      case Some(d) => d.SOJ_DETALLES map {
-        d => d.RESPONSABLE_OTROS_ATRIBUTOS contains "S"
-      }
+      case Some(d) =>
+        d.SOJ_DETALLES map { d =>
+          d.RESPONSABLE_OTROS_ATRIBUTOS contains "S"
+        }
       case None => List(false)
     }
     val sujetoResponsable: List[Option[String]] = registro.SOJ_OTROS_ATRIBUTOS match {
-        case Some(r) => {
-          r.SOJ_DETALLES map { d =>
-            d.RESPONSABLE_OTROS_ATRIBUTOS.getOrElse("N") match {
-              case "S" => Some(registro.SOJ_SUJ_IDENTIFICADOR)
-              case "N" => None
-            }
+      case Some(r) => {
+        r.SOJ_DETALLES map { d =>
+          d.RESPONSABLE_OTROS_ATRIBUTOS.getOrElse("N") match {
+            case "S" => Some(registro.SOJ_SUJ_IDENTIFICADOR)
+            case "N" => None
+            case _ => None
           }
         }
-        case None => List(Some("N"))
       }
-    
+      case None => List(Some("N"))
+    }
+
     val isAdheridoDebito = Some(registro.SOJ_ADHERIDO_DEBITO.contains("S"))
 
     val command: ObjetoCommands =

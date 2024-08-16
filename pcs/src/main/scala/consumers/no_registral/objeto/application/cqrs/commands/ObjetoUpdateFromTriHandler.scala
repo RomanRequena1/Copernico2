@@ -79,6 +79,52 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
 
     val dmn = isTipo(command)
 
+    def getBBParams(evento: ObjetoExternalDto) = {
+      val declaredFields = evento.getClass.getDeclaredFields
+      var objetoNuevoTest = evento
+
+      declaredFields.foreach { campo =>
+        val campoEvento = objetoNuevoTest.getClass.getDeclaredField(campo.getName)
+        campoEvento.setAccessible(true)
+        if (campoEvento.get(evento).equals(Some("null"))) {
+          campoEvento.set(objetoNuevoTest, None)
+        } else if (campoEvento.get(evento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
+          campoEvento.set(objetoNuevoTest, None)
+        } else if (campoEvento.get(evento).equals(Some(999))) {
+          campoEvento.set(objetoNuevoTest, None)
+        } else if (campoEvento.getName == "SOJ_OTROS_ATRIBUTOS") {
+          val otros_atributos_evento =
+            evento.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES.head
+
+          val otros_atributos_updated =
+            actualizarBBSojDetalles(otros_atributos_evento)
+
+          campoEvento.set(objetoNuevoTest, Some(ListDetallesObjeto(List(otros_atributos_updated))))
+        }
+      }
+      objetoNuevoTest
+    }
+    def actualizarBBSojDetalles(atributosEvento: DetallesObjeto) = {
+
+      val declaredFields = atributosEvento.getClass.getDeclaredFields
+      println("DeclaredFieldsEvBB: " + declaredFields.mkString("Array(", ", ", ")"))
+      var atributosNuevo = atributosEvento
+
+      declaredFields.foreach { campo =>
+        val campoEvento = atributosNuevo.getClass.getDeclaredField(campo.getName)
+        campoEvento.setAccessible(true)
+
+        if (campoEvento.get(atributosEvento).equals(Some("null"))) {
+          campoEvento.set(atributosNuevo, None)
+        } else if (campoEvento.get(atributosEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
+          campoEvento.set(atributosNuevo, None)
+        } else if (campoEvento.get(atributosEvento).equals(Some(999))) {
+          campoEvento.set(atributosNuevo, None)
+        }
+      }
+      atributosNuevo
+    }
+
     def getCCParams(evento: ObjetoExternalDto, estado: ObjetoExternalDto) = {
       val declaredFields = evento.getClass.getDeclaredFields
       var objetoNuevoTest = evento
@@ -110,7 +156,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
 
               //Option[ListDetallesObjeto]
               val otros_atributos_updated =
-                actualizarSojDetalles(otros_atributos_evento, otros_atributos_estado)
+                actualizarCCSojDetalles(otros_atributos_evento, otros_atributos_estado)
 
               campoEvento.set(objetoNuevoTest, Some(ListDetallesObjeto(List(otros_atributos_updated))))
             }
@@ -119,10 +165,10 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       }
       objetoNuevoTest
     }
-    def actualizarSojDetalles(atributosEvento: DetallesObjeto, atributosEstado: DetallesObjeto) = {
+    def actualizarCCSojDetalles(atributosEvento: DetallesObjeto, atributosEstado: DetallesObjeto) = {
 
       val declaredFields = atributosEvento.getClass.getDeclaredFields
-      println("DeclaredFieldsEv: " + declaredFields.mkString("Array(", ", ", ")"))
+      println("DeclaredFieldsEvCC: " + declaredFields.mkString("Array(", ", ", ")"))
       var atributosNuevo = atributosEvento
 
       declaredFields.foreach { campo =>
@@ -148,7 +194,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
     //TODO Validate the first event, with no state, enters in the case None.
     def getObjetoFFF() = {
       val objetoFFF = actor.state.registro match {
-        case None => command.registro
+        case None => getBBParams(command.registro)
         case Some(value) => {
           println("Value: " + value.SOJ_OTROS_ATRIBUTOS)
           getCCParams(command.registro, value)
