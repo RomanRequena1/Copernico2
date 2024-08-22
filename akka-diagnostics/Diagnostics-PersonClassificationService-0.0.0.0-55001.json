@@ -1,5 +1,5 @@
 {
-  "start-time" : "2024-08-14T14:27:54.960",
+  "start-time" : "2024-08-22T15:29:49.258",
   "akka-version" : "2.6.15",
   "akka-diagnostics-version" : "1.1.16",
   "akka-http-version" : "10.2.0",
@@ -24,25 +24,19 @@
       "message" : "akka.persistence.journal.event-adapters.default is not an Akka configuration setting. Did you mean one of 'akka.http.parsing.header-cache.default', 'akka.persistence.journal-plugin-fallback.replay-filter.debug', 'akka.remote.classic.gremlin.debug'? Is it a typo or is it placed in the wrong section? Application specific properties should be placed outside the 'akka' config tree.",
       "properties" : "akka.persistence.journal.event-adapters.default",
       "defaults" : ""
-    },
-    {
-      "checker-key" : "power-user-settings",
-      "message" : "akka.persistence.journal.inmem.test-serialization is an advanced configuration setting. Make sure that you fully understand the implications of changing the default value. You can confirm that you know the meaning of this configuration setting by adding [akka.persistence.journal.inmem.test-serialization] to configuration string list akka.diagnostics.checker.confirmed-power-user-settings.",
-      "properties" : "akka.persistence.journal.inmem.test-serialization = on",
-      "defaults" : "akka.persistence.journal.inmem.test-serialization = off"
     }],
   "system-metrics" : {
     "heap-init" : 257949696,
-    "heap-max" : 4112515072,
-    "heap-used" : 174833152,
-    "heap-committed" : 470810624,
+    "heap-max" : 4114612224,
+    "heap-used" : 144764536,
+    "heap-committed" : 437256192,
     "os-processors" : 8,
     "mem-pool-0" : {
       "name" : "CodeHeap 'non-nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 5836800,
-      "used" : 1546368,
+      "used" : 1522048,
       "committed" : 2555904
     },
     "mem-pool-1" : {
@@ -50,56 +44,56 @@
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 70137984,
-      "committed" : 73400320
+      "used" : 65096800,
+      "committed" : 68026368
     },
     "mem-pool-2" : {
       "name" : "CodeHeap 'profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122908672,
-      "used" : 11871744,
-      "committed" : 11927552
+      "used" : 11859072,
+      "committed" : 11862016
     },
     "mem-pool-3" : {
       "name" : "Compressed Class Space",
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : 1073741824,
-      "used" : 9122440,
-      "committed" : 10747904
+      "used" : 8655384,
+      "committed" : 10092544
     },
     "mem-pool-4" : {
       "name" : "G1 Eden Space",
       "type" : "Heap memory",
       "init" : 27262976,
       "max" : -1,
-      "used" : 145752064,
-      "committed" : 278921216
+      "used" : 115343360,
+      "committed" : 255852544
     },
     "mem-pool-5" : {
       "name" : "G1 Old Gen",
       "type" : "Heap memory",
       "init" : 230686720,
-      "max" : 4112515072,
-      "used" : 11255296,
-      "committed" : 174063616
+      "max" : 4114612224,
+      "used" : 9498232,
+      "committed" : 161480704
     },
     "mem-pool-6" : {
       "name" : "G1 Survivor Space",
       "type" : "Heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 17825792,
-      "committed" : 17825792
+      "used" : 19922944,
+      "committed" : 19922944
     },
     "mem-pool-7" : {
       "name" : "CodeHeap 'non-profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122912768,
-      "used" : 4524416,
-      "committed" : 4587520
+      "used" : 4324480,
+      "committed" : 4325376
     }
   },
   "configuration" : {
@@ -622,6 +616,21 @@
             "akka.stream.SystemMaterializer$",
             "akka.stream.SystemMaterializer$",
             "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
             "akka.stream.SystemMaterializer$"
         ],
         "log-config-on-start" : "on",
@@ -665,10 +674,7 @@
                 "event-adapters" : {
                     "default" : "serialization.DefaultEventAdapter$"
                 },
-                "inmem" : {
-                    "test-serialization" : "on"
-                },
-                "plugin" : "akka.persistence.journal.inmem"
+                "plugin" : "akka.persistence.cassandra.journal"
             },
             "max-concurrent-recoveries" : 50,
             "snapshot-store" : {
@@ -1073,6 +1079,8 @@
                 "http-server",
                 "http-server",
                 "http-server",
+                "http-server",
+                "http-server",
                 "http-server"
             ],
             "http-server" : {
@@ -1389,7 +1397,7 @@
     "os" : {
         "arch" : "amd64",
         "name" : "Linux",
-        "version" : "6.5.0-44-generic"
+        "version" : "6.8.0-40-generic"
     },
     "path" : {
         "separator" : ":"
@@ -1466,7 +1474,7 @@
             }
         },
         "java" : {
-            "command" : "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner -s proyectionists.no_registrales.obligacion.unit_test.ObligacionRSpecUT -testName Una obligacion ANT should 1: existir en cassandra readside -showProgressMessages true",
+            "command" : "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner -s proyectionists.no_registrales.base_Tri.acceptance.BaseTri -testName un objeto Tri should End to end, PCS a Readside -showProgressMessages true",
             "launcher" : "SUN_STANDARD"
         },
         "jnu" : {

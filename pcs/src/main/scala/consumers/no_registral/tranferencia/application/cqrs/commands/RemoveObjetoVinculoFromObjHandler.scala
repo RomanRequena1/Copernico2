@@ -38,7 +38,7 @@ class RemoveObjetoVinculoFromObjHandler (actor: ObjetoVinculoActor, tranferencia
       actor.state += event
       actor.state.mapVinculo.foreach {
         e => {
-          actorSujetoGeneral.ask[Response.SuccessProcessing](UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo, command.exclusionObjeto.get))
+          actorSujetoGeneral.ask[Response.SuccessProcessing](UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo, command.exclusionObjeto))
         }
       }
       actor.persistSnapshot(event, actor.state) { () =>

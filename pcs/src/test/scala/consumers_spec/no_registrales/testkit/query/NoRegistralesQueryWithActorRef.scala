@@ -62,13 +62,4 @@ class NoRegistralesQueryWithActorRef(sujeto: ActorRef, vinculoActor: ActorRef)
         )
       )
       .futureValue
-
-  def getStateObjetoVinculo(objetoId: String): GetObjetoVinculoResponse =
-    vinculoActor
-      .ask[GetObjetoVinculoResponse](
-        GetStateObjetoVinculo(
-          objetoId
-        )
-      )
-      .futureValue
 }

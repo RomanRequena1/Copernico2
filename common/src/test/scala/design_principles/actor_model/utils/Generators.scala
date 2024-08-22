@@ -13,8 +13,8 @@ object Generators {
       akka.loglevel = ERROR
       #akka.persistence.typed.log-stashing = on
       akka.actor.provider = cluster
-      akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-      akka.persistence.journal.inmem.test-serialization = on
+      #akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
+      #akka.persistence.journal.inmem.test-serialization = on
       akka.actor.allow-java-serialization = true
       akka.cluster.jmx.multi-mbeans-in-same-jvm = on
 

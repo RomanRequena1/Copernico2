@@ -21,7 +21,7 @@ final case class SujetoState(
     objVencidas: Map[String, (Boolean, String)] = Map.empty, //todo este ("idObjeto" -> (valor30%, "tipoObjeto(sale del alta objeto) "))
     diffStates: Boolean = false, //todo este ("IBG456" -> (true, "2")
     lastInternalDeliveryId: BigInt = 0,
-    exclusionSujeto: String = ""
+    exclusionSujeto: Option[String] = None
 ) extends AbstractState[SujetoEvents]
     with CbroSerialization {
   def +(event: SujetoEvents): SujetoState = {
@@ -84,9 +84,9 @@ final case class SujetoState(
         copy(
           registro = Some(registro),
           exclusionSujeto = registro.SUJ_TIPO_EXCLUSION match {
-            case x if x.contains("E") => "E"
-            case x if x.contains("NE") => "NE"
-            case _ => ""
+            case x if x.contains("E") => Some("E")
+            case x if x.contains("NE") => Some("NE")
+            case _ => Some("")
           }
         )
 

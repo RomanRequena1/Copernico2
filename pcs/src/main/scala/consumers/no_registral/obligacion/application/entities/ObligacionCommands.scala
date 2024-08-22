@@ -20,13 +20,14 @@ object ObligacionCommands {
       resultDmn: Option[String]
   ) extends ObligacionCommands
 
+
   case class ObligacionRemoveInfoFromObjeto(
-      deliveryId: BigInt,
-      sujetoId: String,
-      objetoId: String,
-      tipoObjeto: String,
-      obligacionId: String
-  ) extends ObligacionCommands
+                               deliveryId: BigInt,
+                               sujetoId: String,
+                               objetoId: String,
+                               tipoObjeto: String,
+                               obligacionId: String
+                             ) extends ObligacionCommands
   case class ObligacionRemove(
       deliveryId: BigInt,
       sujetoId: String,
@@ -34,7 +35,7 @@ object ObligacionCommands {
       tipoObjeto: String,
       obligacionId: String,
       registro: ObligacionExternalDto,
-      cuota: Option[String]
+      cuota:Option[String]
   ) extends ObligacionCommands
 
   case class ObligacionUpdateExencion(

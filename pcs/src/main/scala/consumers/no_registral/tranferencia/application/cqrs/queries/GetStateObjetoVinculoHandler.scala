@@ -12,11 +12,11 @@ class GetStateObjetoVinculoHandler(actor: ObjetoVinculoActor) extends SyncQueryH
     val sender = actor.context.sender()
     val response = GetObjetoVinculoResponse(
 
-      objetoId = actor.state.objetoId,
-      fechaUltMod = actor.state.fechaUltMod,
-      mapTransf = actor.state.mapTransf,
-      mapVinculo = actor.state.mapVinculo,
-      tiene30ObjetoVinculo = actor.state.tiene30ObjetoVinculo
+      actor.state.objetoId,
+      actor.state.fechaUltMod,
+      actor.state.mapVinculo,
+      actor.state.mapTransf,
+      actor.state.tiene30ObjetoVinculo
 
     )
 //    log.error(s"[${actor.persistenceId}] GetState | $response")

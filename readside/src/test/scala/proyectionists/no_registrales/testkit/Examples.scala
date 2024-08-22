@@ -15,10 +15,8 @@ import consumers.no_registral.obligacion.application.entities.{
   ObligacionesAnt,
   ObligacionesTri
 }
-import consumers.no_registral.obligacion.domain.ObligacionEvents
-import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionPersistedSnapshot
-import io.circe.syntax.EncoderOps
-import utils.generators.Model.{deliveryId, deliveryIdAct}
+import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.SujetoTri
+import utils.generators.Model.deliveryIdAct
 
 class Examples(testName: String) {
   val sujetoId1 = s"${testName}Sujeto1"
@@ -41,7 +39,7 @@ class Examples(testName: String) {
           BOB_MUNICIPIO = None,
           BOB_INTERES_FINANCIACION = None,
           JUICIO_MULTIOBJETO = None,
-          RULE_NUMBER = Some("1"),
+          RULE_NUMBER = Some("-1"),
           EVO_OBN_PEO_ID_FORMAL = None,
           PLAN_MULTIOBJETO = None,
           tiene30Obligaciones = None,
@@ -92,6 +90,20 @@ class Examples(testName: String) {
     )
   )
 
+  val detallesSupresiones =
+    Some(
+      ListDetallesSupresiones(
+        List(
+          DetallesSupresiones(
+            BOB_TIPO_SUP = Some("Tipo Supresion Prueba"),
+            BOB_ESTADO_SUP = Some("Estado Supresion Prueba"),
+            BOB_FECHA_INICIO_SUP = Some(LocalDateTime.of(2023, 8, 14, 0, 0)),
+            BOB_FECHA_FIN_SUP = Some(LocalDateTime.of(2025, 8, 14, 0, 0))
+          )
+        )
+      )
+    )
+
   val detallesObjetoNoResponsable = Some(
     ListDetallesObjeto(
       List(
@@ -135,13 +147,13 @@ class Examples(testName: String) {
   val objetoExample = ObjetosTri(
     RULE_NUMBER = None,
     EV_ID = deliveryIdAct,
-    SOJ_SUJ_IDENTIFICADOR = "20-43271253-3",
+    SOJ_SUJ_IDENTIFICADOR = "CuitLucas",
     SOJ_TIPO_OBJETO = "A",
     SOJ_IDENTIFICADOR = "ABC123",
     SOJ_CAT_SOJ_ID = None,
     SOJ_DESCRIPCION = Some("Auto"),
     SOJ_ESTADO = None,
-    SOJ_FECHA_INICIO = None,
+    SOJ_FECHA_INICIO = Some(LocalDateTime.of(2000, 1, 1, 0, 0)),
     SOJ_FECHA_FIN = None,
     SOJ_ID_EXTERNO = Some("1234"),
     SOJ_OTROS_ATRIBUTOS = detallesObjetoNoResponsable,
@@ -159,8 +171,8 @@ class Examples(testName: String) {
 
   val objetoReadside = ObjetoSnapshotPersisted(
     deliveryId = 1234,
-    sujetoId = "String",
-    objetoId = "String",
+    sujetoId = "20432712533",
+    objetoId = "ABC123",
     objetoId2 = None,
     tipoObjeto = "String",
     saldo = 500.50,
@@ -177,17 +189,17 @@ class Examples(testName: String) {
     tiene30Objeto = Some(true),
     aplicarDescuento = Some(true),
     resultDmn = 1,
-    exclusionObjeto = "",
+    exclusionObjeto = Some(""),
     tiene30ObjetoVinculo = Some(true)
   )
 
   val obligacionExampleVencida = ObligacionesTri(
     RULE_NUMBER = None,
     EV_ID = deliveryIdAct,
-    BOB_SUJ_IDENTIFICADOR = "20-45678910-2",
+    BOB_SUJ_IDENTIFICADOR = "CuitRoman",
     BOB_SOJ_TIPO_OBJETO = "A",
     BOB_SOJ_IDENTIFICADOR = "ABC123",
-    BOB_OBN_ID = "None",
+    BOB_OBN_ID = "1234",
     BOB_ESTADO = Some("ADMINISTRATIVA"),
     BOB_PRORROGA = Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
     BOB_VENCIMIENTO = Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
@@ -201,7 +213,7 @@ class Examples(testName: String) {
     BOB_ADHERIDO_DEBITO = None,
     BOB_CANAL_ORIGEN = None,
     BOB_TPBID = None,
-    BOB_CUOTA = None,
+    BOB_CUOTA = Some("1"),
     BOB_FECHASANCION = None,
     BOB_FISCALIZADA = None,
     BOB_SUB_ESTADO = None,
@@ -219,39 +231,25 @@ class Examples(testName: String) {
     BOB_SUPRESIONES = None
   )
 
-  val detallesSupresiones =
-    Some(
-      ListDetallesSupresiones(
-        List(
-          DetallesSupresiones(
-            BOB_TIPO_SUP = Some("Tipo Supresion"),
-            BOB_ESTADO_SUP = Some("Estado Supresion"),
-            BOB_FECHA_INICIO_SUP = Some(LocalDateTime.of(2023, 8, 14, 0, 0)),
-            BOB_FECHA_FIN_SUP = Some(LocalDateTime.of(2025, 8, 14, 0, 0))
-          )
-        )
-      )
-    )
-
-  val obligacionExampleAntVencida = ObligacionesAnt(
+  val obligacionAntExampleVencida = ObligacionesAnt(
     RULE_NUMBER = None,
     EV_ID = deliveryIdAct,
-    BOB_SUJ_IDENTIFICADOR = "Diego",
+    BOB_SUJ_IDENTIFICADOR = "CuitRoman",
     BOB_SOJ_TIPO_OBJETO = "A",
-    BOB_SOJ_IDENTIFICADOR = "AutoDiego",
-    BOB_OBN_ID = "2001",
+    BOB_SOJ_IDENTIFICADOR = "ABC123",
+    BOB_OBN_ID = "1234",
     BOB_ESTADO = Some("ADMINISTRATIVA"),
-    BOB_PRORROGA = None,
-    BOB_VENCIMIENTO = Some(LocalDateTime.of(2023, 8, 14, 0, 0)),
-    BOB_VENCIMIENTO_2 = None,
-    BOB_CAPITAL = Some(1000),
-    BOB_CONCEPTO = Some("601"),
-    BOB_IMPUESTO = Some("600"),
+    BOB_PRORROGA = Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
+    BOB_VENCIMIENTO = Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
+    BOB_VENCIMIENTO_2 = Some(LocalDateTime.of(2021, 12, 12, 0, 0)),
+    BOB_CAPITAL = None,
+    BOB_CONCEPTO = None,
+    BOB_IMPUESTO = None,
     BOB_OTROS_ATRIBUTOS = detallesObligacion,
-    BOB_SALDO = 1000,
+    BOB_SALDO = 200,
     BOB_SOJ_IDENTIFICADOR_2 = None,
     BOB_ADHERIDO_DEBITO = None,
-    BOB_CANAL_ORIGEN = Some("LOCAL"),
+    BOB_CANAL_ORIGEN = None,
     BOB_TPBID = None,
     BOB_CUOTA = Some("1"),
     BOB_FECHASANCION = None,
@@ -271,25 +269,10 @@ class Examples(testName: String) {
     BOB_SUPRESIONES = detallesSupresiones
   )
 
-  val obligacionExampleAntProjection =
-    ObligacionPersistedSnapshot(
-      deliveryId = deliveryIdAct,
-      sujetoId = obligacionExampleAntVencida.BOB_SUJ_IDENTIFICADOR,
-      objetoId = obligacionExampleAntVencida.BOB_SOJ_IDENTIFICADOR,
-      tipoObjeto = obligacionExampleAntVencida.BOB_SOJ_TIPO_OBJETO,
-      obligacionId = obligacionExampleAntVencida.BOB_OBN_ID,
-      registro = Some(obligacionExampleAntVencida),
-      exenta = true,
-      porcentajeExencion = 0,
-      saldo = obligacionExampleAntVencida.BOB_SALDO,
-      operacion = ObligacionEvents.operaciones("Upsert"),
-      resultDmn = Some("-1")
-    )
-
   val obligacionExamplePaga = ObligacionesTri(
     RULE_NUMBER = None,
     EV_ID = deliveryIdAct,
-    BOB_SUJ_IDENTIFICADOR = "20-45678910-2",
+    BOB_SUJ_IDENTIFICADOR = "CuitRoman",
     BOB_SOJ_TIPO_OBJETO = "A",
     BOB_SOJ_IDENTIFICADOR = "ABC123",
     BOB_OBN_ID = "None",
@@ -327,7 +310,7 @@ class Examples(testName: String) {
   val objetoExampleConExclusion = ObjetosTri(
     RULE_NUMBER = None,
     EV_ID = deliveryIdAct,
-    SOJ_SUJ_IDENTIFICADOR = "20-43271253-3",
+    SOJ_SUJ_IDENTIFICADOR = "CuitLucas",
     SOJ_TIPO_OBJETO = "A",
     SOJ_IDENTIFICADOR = "ABC123",
     SOJ_CAT_SOJ_ID = None,
@@ -352,7 +335,7 @@ class Examples(testName: String) {
   val objetoExampleConExclusionVencida = ObjetosTri(
     RULE_NUMBER = None,
     EV_ID = deliveryIdAct,
-    SOJ_SUJ_IDENTIFICADOR = "20-43271253-3",
+    SOJ_SUJ_IDENTIFICADOR = "CuitLucas",
     SOJ_TIPO_OBJETO = "A",
     SOJ_IDENTIFICADOR = "ABC123",
     SOJ_CAT_SOJ_ID = None,
@@ -374,27 +357,51 @@ class Examples(testName: String) {
     SOJ_FECHA_ADQ_SUBASTA = None
   )
 
-  def objetoExampleLucas = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-43271253-3")
-  def objetoExampleRoman = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-45678910-2")
-  def objetoExampleDiego = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-40123456-1")
+  val sujetoExample = SujetoTri(
+    EV_ID = deliveryIdAct,
+    SUJ_IDENTIFICADOR = "CuitDiego",
+    SUJ_CAT_SUJ_ID = None,
+    SUJ_DENOMINACION = Some("Patroclo"),
+    SUJ_DFE = None,
+    SUJ_DIRECCION = Some("Casa"),
+    SUJ_EMAIL = Some("diego@mail.com"),
+    SUJ_ID_EXTERNO = Some("123456"),
+    SUJ_OTROS_ATRIBUTOS = None,
+    SUJ_RIESGO_FISCAL = None,
+    SUJ_SITUACION_FISCAL = None,
+    SUJ_TELEFONO = Some("3512345678"),
+    SUJ_TIPO = None,
+    SUJ_CANAL_ORIGEN = Some("Otax"),
+    SUJ_TIPO_EXCLUSION = None
+  )
+
+  def objetoExampleLucas = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "CuitLucas")
+  def objetoExampleRoman = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "CuitRoman")
+  def objetoExampleDiego = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "CuitDiego")
 
   def obligacionExampleVencidaLucas =
-    obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "20-43271253-3")
+    obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "CuitLucas")
+  def obligacionExampleAntVencidaLucas =
+    obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "CuitLucas")
   def obligacionExampleVencidaRoman =
-    obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "20-45678910-2")
-  def obligacionExampleVencidaDiego =
-    obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "20-40123456-1")
+    obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "CuitRoman")
+  def obligacionExampleDiego = obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "CuitDiego")
+
+  def obligacionExampleDiegoPaga =
+    obligacionExamplePaga.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "CuitDiego")
+
+  def sujetoExampleRoman = sujetoExample.copy(EV_ID = deliveryIdAct, SUJ_IDENTIFICADOR = "CuitRoman")
 
   def ObjetoExampleConExclusionRoman =
-    objetoExampleConExclusion.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-45678910-2")
+    objetoExampleConExclusion.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "CuitRoman")
   def ObjetoExampleConExclusionDiego =
-    objetoExampleConExclusion.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-40123456-1")
+    objetoExampleConExclusion.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "CuitDiego")
 
   def ObjetoExampleConExclusionVencidaRoman =
-    objetoExampleConExclusionVencida.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "20-45678910-2")
+    objetoExampleConExclusionVencida.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "CuitRoman")
 
   def obligacionExamplePagaLucas =
-    obligacionExamplePaga.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "20-43271253-3")
+    obligacionExamplePaga.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "CuitLucas")
 
   def objetoResponsable(objetoExample: ObjetosTri) = {
     objetoExample.copy(SOJ_OTROS_ATRIBUTOS = detallesObjetoResponsable)
@@ -435,11 +442,11 @@ class Examples(testName: String) {
 
     val obnTest = ObligacionesTri(
       BOB_SALDO = 100.00,
-      BOB_SUJ_IDENTIFICADOR = "20-43271253-3",
+      BOB_SUJ_IDENTIFICADOR = "CuitLucas",
       BOB_SOJ_TIPO_OBJETO = "A",
       BOB_SOJ_IDENTIFICADOR = "ABC123",
       BOB_OBN_ID = "1",
-      BOB_SOJ_IDENTIFICADOR_2 = Some("20-43271253-3"),
+      BOB_SOJ_IDENTIFICADOR_2 = Some("CuitLucas"),
       BOB_ADHERIDO_DEBITO = Some("N"),
       BOB_CANAL_ORIGEN = Some("OTAX"),
       BOB_TPBID = None,
@@ -489,98 +496,6 @@ class Examples(testName: String) {
   def obligacionWithJuicio =
     obligacionWithSaldo50
       .copy(BOB_JUI_ID = Some(juicioId))
-      .copy(EV_ID = deliveryIdAct)
-
-  private def obligacionAntExample: ObligacionesAnt = {
-    val otrosAtrib = Some(
-      ListDetallesObligaciones(
-        List(
-          DetallesObligacion(
-            BOB_MUNICIPIO = None,
-            RULE_NUMBER = Some("1"),
-            tiene30Obligaciones = None,
-            BAND_BATCH = Some(true),
-            EV_ID = None,
-            SOJ_ID_EXTERNO = None,
-            EVO_OBN_PEO_ID_MATERIAL = None,
-            JUICIO_MULTIOBJETO = None,
-            BOB_INTERES_FINANCIACION = None,
-            EVO_OBN_PEO_ID_FORMAL = None,
-            PLAN_MULTIOBJETO = None
-          )
-        )
-      )
-    )
-
-    val supresiones = Some(
-      ListDetallesSupresiones(
-        List(
-          DetallesSupresiones(
-            BOB_TIPO_SUP = Some("Tipo Supresion"),
-            BOB_ESTADO_SUP = Some("Estado Supresion"),
-            BOB_FECHA_INICIO_SUP = Some(LocalDateTime.of(2023, 12, 12, 0, 0)),
-            BOB_FECHA_FIN_SUP = Some(LocalDateTime.of(2025, 12, 12, 0, 0))
-          )
-        )
-      )
-    )
-
-    val obnAntTest = ObligacionesAnt(
-      BOB_SALDO = 1000,
-      BOB_SUJ_IDENTIFICADOR = "Diego",
-      BOB_SOJ_TIPO_OBJETO = "A",
-      BOB_SOJ_IDENTIFICADOR = "AutoDiego",
-      BOB_OBN_ID = "2001",
-      BOB_SOJ_IDENTIFICADOR_2 = None,
-      BOB_ADHERIDO_DEBITO = Some("N"),
-      BOB_CANAL_ORIGEN = Some("LOCAL"),
-      BOB_TPBID = None,
-      BOB_CAPITAL = Some(1000),
-      BOB_CUOTA = Some("1"),
-      BOB_ESTADO = Some("ADMINISTRATIVA"),
-      BOB_CONCEPTO = Some("601"),
-      BOB_FECHASANCION = None,
-      BOB_FISCALIZADA = Some("N"),
-      BOB_IMPUESTO = Some("600"),
-      BOB_SUB_ESTADO = None,
-      BOB_INDICE_INT_PUNIT = None,
-      BOB_INDICE_INT_RESAR = None,
-      BOB_INTERES_PUNIT = None,
-      BOB_INTERES_RESAR = None,
-      BOB_JUI_ID = None,
-      BOB_OTROS_ATRIBUTOS = otrosAtrib,
-      BOB_PERIODO = Some("2024"),
-      BOB_PLN_ID = None,
-      BOB_PRORROGA = Some(LocalDateTime.of(2024, 12, 12, 0, 0)),
-      BOB_TIPO = Some("ANT"),
-      BOB_TOTAL = Some(100.0),
-      BOB_VENCIMIENTO = Some(LocalDateTime.of(2024, 12, 12, 0, 0)),
-      BOB_VENCIMIENTO_2 = None,
-      BOB_OGA_ID = None,
-      EV_ID = deliveryIdAct,
-      RULE_NUMBER = None,
-      SOJ_ID_EXTERNO = Some("1234"),
-      BOB_SUPRESIONES = supresiones
-    )
-    obnAntTest
-  }
-
-  def obligacionAntWithSaldo200 =
-    obligacionAntExample
-      .copy(BOB_SALDO = 200)
-      .copy(EV_ID = deliveryIdAct)
-  def obligacionAntWithSaldo50 =
-    obligacionAntWithSaldo200
-      .copy(BOB_SALDO = 50)
-      .copy(EV_ID = deliveryIdAct)
-  def obligacionAntVencida =
-    obligacionAntWithSaldo50
-      .copy(BOB_VENCIMIENTO = Some(LocalDateTime.now.minusDays(1)))
-      .copy(EV_ID = deliveryIdAct)
-  val juicioAntId = 1
-  def obligacionAntWithJuicio =
-    obligacionAntWithSaldo50
-      .copy(BOB_JUI_ID = Some(juicioAntId))
       .copy(EV_ID = deliveryIdAct)
 
 }

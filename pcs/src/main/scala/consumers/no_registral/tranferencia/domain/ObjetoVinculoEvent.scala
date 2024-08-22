@@ -17,7 +17,7 @@ object ObjetoVinculoEvent {
                                              tiene30ObjetoVinculo: Boolean,
                                              mapTransf: Map[Vinculo, VinculoCotitular],
                                              mapVinculo: Map[Vinculo, VinculoCotitular],
-                                             exclusionObjetoVinculo: String
+                                             exclusionObjetoVinculo: Option[String]
                                            ) extends ObjetoVinculoEvent
 
 

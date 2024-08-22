@@ -60,7 +60,9 @@ object Model {
 
   def deliveryId: Int = utils.generators.Numbers.positiveNumber
   def fec: LocalDateTime = LocalDateTime.now()
-  def deliveryIdAct = BigInt(s"${fec.getYear}${fec.getMonthValue}${fec.getDayOfMonth}${fec.getHour}${fec.getMinute}${fec.getSecond}${fec.getNano}")
+  def deliveryIdAct: BigInt = BigInt(
+    f"${fec.getYear}%04d${fec.getMonthValue}%02d${fec.getDayOfMonth}%02d${fec.getHour}%02d${fec.getMinute}%02d${fec.getSecond}%02d${fec.getNano / 1000}%06d"
+  )
 //  def obligacionTri(offset: Int,
 //                    obligacionId: String,
 //                    objetoId: String,

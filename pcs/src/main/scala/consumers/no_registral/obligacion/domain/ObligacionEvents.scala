@@ -18,21 +18,22 @@ sealed trait ObligacionEvents extends Event with ObligacionMessage with CbroSeri
 }
 
 object ObligacionEvents {
-  val operaciones: Map[String, String] = Map(("Upsert" -> "U"), ("Delete" -> "D"), ("FullDelete" -> "FD"))
+  val operaciones: Map[String, String] = Map(("Upsert" -> "U"), ("Delete" -> "D"),("FullDelete" -> "FD"))
 
   case class ObligacionPersistedSnapshot(
-      deliveryId: BigInt,
-      sujetoId: String,
-      objetoId: String,
-      tipoObjeto: String,
-      obligacionId: String,
-      registro: Option[ObligacionExternalDto],
-      exenta: Boolean,
-      porcentajeExencion: BigDecimal,
-      saldo: BigDecimal,
-      operacion: String,
-      resultDmn: Option[String]
+                                          deliveryId: BigInt,
+                                          sujetoId: String,
+                                          objetoId: String,
+                                          tipoObjeto: String,
+                                          obligacionId: String,
+                                          registro: Option[ObligacionExternalDto],
+                                          exenta: Boolean,
+                                          porcentajeExencion: BigDecimal,
+                                          saldo: BigDecimal,
+                                          operacion: String,
+                                          resultDmn: Option[String]
   ) extends ObligacionEvents
+
 
   case class ObligacionUpdatedFromDto(
       deliveryId: BigInt,
@@ -48,14 +49,14 @@ object ObligacionEvents {
   ) extends ObligacionEvents
 
   case class ObligacionRemovedInfoFromObjeto(
-      deliveryId: BigInt,
-      sujetoId: String,
-      objetoId: String,
-      tipoObjeto: String,
-      obligacionId: String,
-      registro: ObligacionExternalDto,
-      cuota: Option[String]
-  ) extends ObligacionEvents
+                                deliveryId: BigInt,
+                                sujetoId: String,
+                                objetoId: String,
+                                tipoObjeto: String,
+                                obligacionId: String,
+                                registro: ObligacionExternalDto,
+                                cuota: Option[String]
+                              ) extends ObligacionEvents
   case class ObligacionRemoved(
       deliveryId: BigInt,
       sujetoId: String,
@@ -63,8 +64,8 @@ object ObligacionEvents {
       tipoObjeto: String,
       obligacionId: String,
       registro: ObligacionExternalDto,
-      cuota: Option[String]
-  ) extends ObligacionEvents
+      cuota:Option[String]
+                              ) extends ObligacionEvents
 
   case class ObligacionAddedExencion(
       deliveryId: BigInt,

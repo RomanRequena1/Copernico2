@@ -44,9 +44,7 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
       registroFFF
     }
 
-    val event = SujetoUpdatedFromTri(command.deliveryId,
-                                     command.sujetoId,
-                                     registroNuevo())
+    val event = SujetoUpdatedFromTri(command.deliveryId, command.sujetoId, registroNuevo())
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
       log.error(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
@@ -55,12 +53,12 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
 
 //      Sujeto: estado.exclusionSujeto = E , evento.exclusionSujeto = "". Cambio, informa al objeto
 //      Sujeto: estado.exclusionSujeto = "", evento.exclusionSujeto = "E". Cambio, informa al objeto
-      if (command.registro.SUJ_TIPO_EXCLUSION.getOrElse("") != actor.state.exclusionSujeto) {
+      if (command.registro.SUJ_TIPO_EXCLUSION != actor.state.exclusionSujeto) {
         SendToObjetoFromSujeto(actor.state,
                                sender,
                                actor.context,
                                command.sujetoId,
-                               command.registro.SUJ_TIPO_EXCLUSION.getOrElse(""))
+                               command.registro.SUJ_TIPO_EXCLUSION)
       }
 
       actor.persistEvent(event) { () =>

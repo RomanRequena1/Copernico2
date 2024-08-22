@@ -8,30 +8,33 @@ import design_principles.actor_model.mechanism.local_processing.LocalizedProcess
 import kafka.{KafkaMessageProducer, MessageProducer}
 import monitoring.{KamonMonitoring, Monitoring}
 
+import scala.util.Try
+
 trait ShardedEntity[Requirements] extends ClusterEntity[Requirements] {
 
   import ShardedEntity._
 
   def props(requirements: Requirements): Props
 
+  val NR_PARTITIONS: Int = Try(System.getenv("NR_PARTITIONS")).map(_.toInt).getOrElse(90)
+
   val extractEntityId: ShardRegion.ExtractEntityId = {
     case s: Sharded => (s.entityId, s)
   }
 
-  val numberOfShards = 3
   def extractShardId: ShardRegion.ExtractShardId = {
     case s: Sharded =>
-      new LocalizedProcessingMessageExtractor(numberOfShards * 10).shardId(s.shardedId)
+      new LocalizedProcessingMessageExtractor(NR_PARTITIONS).shardId(s.shardedId)
   }
 
   def clusterShardingSettings(
-                               implicit
-                               system: ActorSystem
-                             ) = ClusterShardingSettings(system)
+      implicit
+      system: ActorSystem
+  ) = ClusterShardingSettings(system)
 
   def startWithRequirements(requirements: Requirements)(
-    implicit
-    system: ActorSystem
+      implicit
+      system: ActorSystem
   ): ActorRef = ClusterSharding(system).start(
     typeName = typeName,
     entityProps = props(requirements), //TODO .withDispatcher("my-dispatcher"),
@@ -52,10 +55,10 @@ object ShardedEntity {
   }
 
   case class ProductionMonitoringAndCassandraWrite(
-                                                    monitoring: KamonMonitoring,
-                                                    cassandraWrite: CassandraWriteProduction,
-                                                    actorTransactionRequirements: ActorTransactionRequirements
-                                                  ) extends MonitoringAndCassandraWrite
+      monitoring: KamonMonitoring,
+      cassandraWrite: CassandraWriteProduction,
+      actorTransactionRequirements: ActorTransactionRequirements
+  ) extends MonitoringAndCassandraWrite
 
   trait MonitoringAndMessageProducer {
     val monitoring: Monitoring
@@ -66,23 +69,23 @@ object ShardedEntity {
     val monitoring: Monitoring
   }
   case class ProductionMonitoringAndMessageProducer(
-                                                     monitoring: KamonMonitoring,
-                                                     messageProducer: KafkaMessageProducer
-                                                   ) extends MonitoringAndMessageProducer
+      monitoring: KamonMonitoring,
+      messageProducer: KafkaMessageProducer
+  ) extends MonitoringAndMessageProducer
 
   case class ProductionMonitoringAndMessageProducerTransf(
-                                                           monitoring: KamonMonitoring
-                                                         ) extends MonitoringAndMessageProducerTranf
+      monitoring: KamonMonitoring
+  ) extends MonitoringAndMessageProducerTranf
   case class ShardedEntityRequirements(
-                                        system: ActorSystem
-                                      )
+      system: ActorSystem
+  )
 
   trait ShardedEntityNoRequirements extends ShardedEntity[ShardedEntity.NoRequirements] {
 
     def start(
-               implicit
-               system: ActorSystem
-             ): ActorRef = this.startWithRequirements(NoRequirements())
+        implicit
+        system: ActorSystem
+    ): ActorRef = this.startWithRequirements(NoRequirements())
   }
 
   case class NoRequirements()

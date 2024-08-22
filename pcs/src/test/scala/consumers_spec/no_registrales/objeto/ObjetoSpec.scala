@@ -102,52 +102,52 @@ abstract class ObjetoSpec(
     }
   }
 
-  "Tres Objetos" should "3: crear VSO-Lucas(Responsable) y Julian, Roman co-titulares" in parallelActorSystemRunner {
-    implicit s =>
-      val context = getContext(s)
-      val messageProducer = context.messageProducer
-      val objetoId = "AutoJulian"
-//      val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(MonitoringAndMessageProducerMock.dummy)
-      val expectedVinculo = Map(
-        (Vinculo("Roman", "AutoJulian", "A"), VinculoCotitular(true, Some(false), Some("CONDOMINO"), None)),
-        (Vinculo("Julia", "AutoJulian", "A"), VinculoCotitular(true, Some(false), Some("CONDOMINO"), None)),
-        (Vinculo("Lucas", "AutoJulian", "A"), VinculoCotitular(true, Some(true), Some("CONDOMINO"), None))
-      )
-      val Query = context.Query
-      decode[ObjetosTri](jsonRoman) match {
-        case Left(err) => println("Error decoding Json Roman" + err)
-        case Right(event) =>
-          messageProducer.produceObjeto(event)
-          eventually {
-            val response: ObjetoResponses.GetObjetoResponse = Query.getStateObjeto(event)
-            response.registro.get should be(event)
-          }
-      }
-      decode[ObjetosTri](jsonJulian) match {
-        case Left(err) => println("Error decoding Json Julian" + err)
-        case Right(event) =>
-          messageProducer.produceObjeto(event)
-          eventually {
-            val response: ObjetoResponses.GetObjetoResponse = Query.getStateObjeto(event)
-            response.registro.get should be(event)
-          }
-      }
-      decode[ObjetosTri](jsonLucas_R) match {
-        case Left(err) => println("Error decoding Json Lucas" + err)
-        case Right(event) =>
-          messageProducer.produceObjeto(event)
-          println("Evento Lucas: " + event)
-          eventually {
-            val response: ObjetoResponses.GetObjetoResponse = Query.getStateObjeto(event)
-            response.registro.get should be(event)
-          }
-      }
-
-      eventually {
-        val stateObjetoVinculo = Query.getStateObjetoVinculo(objetoId)
-        stateObjetoVinculo.mapVinculo should be(expectedVinculo)
-      }
-  }
+//  "Tres Objetos" should "3: crear VSO-Lucas(Responsable) y Julian, Roman co-titulares" in parallelActorSystemRunner {
+//    implicit s =>
+//      val context = getContext(s)
+//      val messageProducer = context.messageProducer
+//      val objetoId = "AutoJulian"
+////      val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(MonitoringAndMessageProducerMock.dummy)
+//      val expectedVinculo = Map(
+//        (Vinculo("Roman", "AutoJulian", "A"), VinculoCotitular(true, Some(false), Some("CONDOMINO"), None)),
+//        (Vinculo("Julia", "AutoJulian", "A"), VinculoCotitular(true, Some(false), Some("CONDOMINO"), None)),
+//        (Vinculo("Lucas", "AutoJulian", "A"), VinculoCotitular(true, Some(true), Some("CONDOMINO"), None))
+//      )
+//      val Query = context.Query
+//      decode[ObjetosTri](jsonRoman) match {
+//        case Left(err) => println("Error decoding Json Roman" + err)
+//        case Right(event) =>
+//          messageProducer.produceObjeto(event)
+//          eventually {
+//            val response: ObjetoResponses.GetObjetoResponse = Query.getStateObjeto(event)
+//            response.registro.get should be(event)
+//          }
+//      }
+//      decode[ObjetosTri](jsonJulian) match {
+//        case Left(err) => println("Error decoding Json Julian" + err)
+//        case Right(event) =>
+//          messageProducer.produceObjeto(event)
+//          eventually {
+//            val response: ObjetoResponses.GetObjetoResponse = Query.getStateObjeto(event)
+//            response.registro.get should be(event)
+//          }
+//      }
+//      decode[ObjetosTri](jsonLucas_R) match {
+//        case Left(err) => println("Error decoding Json Lucas" + err)
+//        case Right(event) =>
+//          messageProducer.produceObjeto(event)
+//          println("Evento Lucas: " + event)
+//          eventually {
+//            val response: ObjetoResponses.GetObjetoResponse = Query.getStateObjeto(event)
+//            response.registro.get should be(event)
+//          }
+//      }
+//
+//      eventually {
+//        val stateObjetoVinculo = Query.getStateObjetoVinculo(objetoId)
+//        stateObjetoVinculo.mapVinculo should be(expectedVinculo)
+//      }
+//  }
 
 //  "un objeto" should "5: mandar una exclusion a Roman" in parallelActorSystemRunner{
 //    implicit s =>

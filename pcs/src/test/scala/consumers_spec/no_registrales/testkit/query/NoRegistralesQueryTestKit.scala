@@ -9,7 +9,6 @@ import consumers.no_registral.obligacion.application.entities.ObligacionResponse
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
 import consumers.no_registral.sujeto.application.entity.SujetoMessage.SujetoMessageRoots
 import consumers.no_registral.sujeto.application.entity.SujetoResponses.GetSujetoResponse
-import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoResponses.GetObjetoVinculoResponse
 import design_principles.actor_model.testkit.QueryTestkit
 
 trait NoRegistralesQueryTestKit extends QueryTestkit {
@@ -17,6 +16,5 @@ trait NoRegistralesQueryTestKit extends QueryTestkit {
   def getStateObligacion(obligacionExample: ObligacionExternalDto): GetObligacionResponse
   def getStateObjeto(objetoExample: ObjetoExternalDto): GetObjetoResponse
   def getStateSujeto(sujetoExample: SujetoExternalDto): GetSujetoResponse
-  def getStateObjetoVinculo(objetoVinculoExample: String): GetObjetoVinculoResponse
 
 }

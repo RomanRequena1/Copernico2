@@ -5,7 +5,7 @@ import akka.entity.ShardedEntity.{MonitoringAndMessageProducer, ProductionMonito
 import akka.kafka.ConsumerRebalanceEvent
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import com.typesafe.config.ConfigFactory
-import design_principles.external_pub_sub.kafka.KafkaMock
+import design_principles.external_pub_sub.kafka.{KafkaMock, KafkaProduction}
 import kafka.{KafkaMessageProducer, TopicListener}
 import monitoring.{DummyMonitoring, KamonMonitoring}
 
@@ -14,13 +14,20 @@ case class MonitoringAndMessageProducerMock(
     messageProducer: KafkaMock
 ) extends MonitoringAndMessageProducer
 
+case class MonitoringAndMessageProducerMockProduction(
+                                             monitoring: DummyMonitoring,
+                                             messageProducer: KafkaProduction
+                                           ) extends MonitoringAndMessageProducer
+
 object MonitoringAndMessageProducerMock {
   val dummy =
     MonitoringAndMessageProducerMock(
       new DummyMonitoring,
       new KafkaMock
     )
-  def production(s: ActorSystem) = {
+
+  def dummy2(kafkaMock: KafkaMock) = MonitoringAndMessageProducerMock(new DummyMonitoring, kafkaMock)
+  def production(s: ActorSystem, kafkaProduction: KafkaProduction) = {
     val monitoring = new KamonMonitoring
     import akka.actor.typed.scaladsl.adapter._
     val rebalancerListener: ActorRef =
@@ -32,7 +39,8 @@ object MonitoringAndMessageProducerMock {
           name = "rebalancerListener"
         )
         .toClassic
-    ProductionMonitoringAndMessageProducer.apply(monitoring, KafkaMessageProducer(monitoring, rebalancerListener)(s))
+    MonitoringAndMessageProducerMockProduction(new DummyMonitoring, kafkaProduction)
+//    ProductionMonitoringAndMessageProducer.apply(monitoring, KafkaMessageProducer(monitoring, rebalancerListener)(s))
   }
 
 }

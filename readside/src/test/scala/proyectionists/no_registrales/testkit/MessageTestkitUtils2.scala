@@ -1,7 +1,5 @@
 package proyectionists.no_registrales.testkit
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import akka.actor.{ActorRef, ActorSystem}
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
@@ -10,32 +8,56 @@ import com.typesafe.config.ConfigFactory
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import consumers.no_registral.objeto.infrastructure.consumer._
-import consumers.no_registral.obligacion.application.entities.{ObligacionesAnt, ObligacionesTri}
-import consumers.no_registral.obligacion.infrastructure.consumer.{
-  ObligacionNoTributariaTransaction,
-  ObligacionTributariaTransaction
-}
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.{ObjetoSnapshotPersistedEncoder, ObjetosTriEncoder}
+import consumers.no_registral.obligacion.application.entities.ObligacionesTri
+import consumers.no_registral.obligacion.infrastructure.consumer.ObligacionTributariaTransaction
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.ObligacionesTriEncoder
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
 import consumers.no_registral.sujeto.infrastructure.consumer.SujetoTributarioTransaction
+import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits.SujetoExternalDtoEncoder
+import design_principles.external_pub_sub.kafka.KafkaProduction
+import design_principles.projection.mock.CassandraWriteMock
+import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.{MessageProcessor, MessageProducer}
 import monitoring.DummyMonitoring
-import io.circe.syntax.EncoderOps
-import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits.SujetoTriEncoder
-import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.ObjetosTriEncoder
-import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.ObjetoSnapshotPersistedEncoder
-import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{
-  ObligacionesAntEncoder,
-  ObligacionesTriEncoder
-}
-import design_principles.external_pub_sub.kafka.{KafkaMock, KafkaProduction}
-import design_principles.projection.mock.{CassandraTestkitMock, CassandraWriteMock}
 import readside.proyectionists.no_registrales.objeto.ObjetoSnapshotPersistedHandler
 import readside.proyectionists.no_registrales.obligacion.ObligacionPersistedSnapshotHandler
 import readside.proyectionists.no_registrales.sujeto.SujetoSnapshotPersistedHandler
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
+//import design_principles.external_pub_sub.kafka.KafkaMock.MessageProcessorImplicits
 import design_principles.external_pub_sub.kafka.KafkaProduction.MessageProcessorImplicits
 
-class MessageTestkitUtils(s: ActorSystem, sujeto: ActorRef) {
+class MessageTestkitUtils2(s: ActorSystem) {
+//  implicit val actorTransactionRequirements: ActorTransactionRequirements = ActorTransactionRequirements(
+//    executionContext = scala.concurrent.ExecutionContext.Implicits.global,
+//    config = ConfigFactory.empty
+//  )
+//  val monitoring = new KamonMonitoring
+//  val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+//  val rebalancerListener: ActorRef =
+//    s.actorOf(
+//      Props(
+//        new TopicListener(
+//          typeKeyName = "rebalancerListener",
+//          monitoring
+//        )
+//      )
+//    )
+//
+//  implicit val kafkaConsumerMicroserviceRequirements = KafkaConsumerMicroserviceRequirements(
+//    monitoring = monitoring,
+//    ctx = s,
+//    queryStateApiRequirements = QueryStateApiRequirements(s, scala.concurrent.ExecutionContext.Implicits.global),
+//    actorTransactionRequirements = actorTransactionRequirements,
+//    kafkaMessageProcessorRequirements = KafkaMessageProcessorRequirements.productionSettings(rebalancerListener, monitoring, s, executionContext),
+//    config = ConfigFactory.empty(),
+//    cassandraWrite = new CassandraWriteProduction(),
+//  )
+  //implicit val mockMonitoringAndCassandraWrite = MockMonitoringAndCassandraWrite.apply(new CassandraWriteMock())
 
   implicit class StartMessageProcessor(messageBroker: MessageProcessor with MessageProducer) {
     val monitoring = new DummyMonitoring
@@ -44,19 +66,15 @@ class MessageTestkitUtils(s: ActorSystem, sujeto: ActorRef) {
         executionContext = s.getDispatcher,
         config = ConfigFactory.empty
       )
-      implicit val mockMonitoringAndCassandraWrite =
-        MockMonitoringAndCassandraWrite(monitoring, new CassandraWriteMock(), actorTransactionRequirements)
+      implicit val mockMonitoringAndCassandraWrite = MockMonitoringAndCassandraWrite(monitoring, new CassandraWriteMock(), actorTransactionRequirements)
+
       (if (topics.isEmpty) {
-         Set(
-           new ObjetoSnapshotPersistedHandler,
-           new SujetoSnapshotPersistedHandler,
-           new ObligacionPersistedSnapshotHandler,
-           ObjetoTributarioTransaction(sujeto, monitoring),
-           ObligacionTributariaTransaction(sujeto, monitoring),
-           ObligacionNoTributariaTransaction(sujeto, monitoring),
-           SujetoTributarioTransaction(sujeto, monitoring)
-         )
-       } // if no filter is set, then allow passthrough
+        Set(
+          new ObjetoSnapshotPersistedHandler,
+          new SujetoSnapshotPersistedHandler,
+          new ObligacionPersistedSnapshotHandler
+        )
+      } // if no filter is set, then allow passthrough
        else topics)
         .foreach { transaction =>
           messageBroker.createTopic(transaction.topic)
@@ -71,9 +89,8 @@ class MessageTestkitUtils(s: ActorSystem, sujeto: ActorRef) {
 
 }
 
-object MessageTestkitUtils {
+object MessageTestkitUtils2 {
   implicit class MessageProducerNoRegistrales(messageProducer: MessageProducer) {
-    import consumers_spec.no_registrales.testsuite.ToJson._
 
     def produceObjetoReadside(objeto: ObjetoSnapshotPersisted): Future[akka.Done] = {
       def topic = "ObjetoSnapshotPersistedReadside"
@@ -103,8 +120,10 @@ object MessageTestkitUtils {
 
     }
 
+
     def produceObligacion(obligacion: ObligacionesTri): Future[akka.Done] = {
       def topic = "DGR-COP-OBLIGACIONES-TRI"
+      println("Pr OBN : " + obligacion.asJson)
       messageProducer.produce(
         Seq(
           KafkaKeyValue(
@@ -117,19 +136,6 @@ object MessageTestkitUtils {
       )(_ => ())
     }
 
-    def produceObligacion(obligacion: ObligacionesAnt): Future[akka.Done] = {
-      def topic = "DGR-COP-OBLIGACIONES-ANT"
-      messageProducer.produce(
-        Seq(
-          KafkaKeyValue(
-            aggregateRoot =
-              s"Sujeto-${obligacion.BOB_SUJ_IDENTIFICADOR}-Objeto-${obligacion.BOB_SOJ_IDENTIFICADOR}-Tipo-I-Obligacion-${obligacion.BOB_OBN_ID}",
-            json = obligacion.asJson.toString()
-          )
-        ),
-        topic
-      )(_ => ())
-    }
     def produceObjeto(objeto: ObjetoExternalDto.ObjetosTri): Future[akka.Done] = {
       val topic = "DGR-COP-OBJETOS-TRI"
 
@@ -144,8 +150,11 @@ object MessageTestkitUtils {
       )(_ => ())
     }
 
-    def produceSujeto(sujeto: SujetoExternalDto.SujetoTri): Future[akka.Done] = {
-      def topic = "DGR-COP-SUJETO-TRI"
+    def produceSujeto(sujeto: SujetoExternalDto): Future[akka.Done] = {
+      def topic = sujeto match {
+        case _: SujetoExternalDto.SujetoAnt => "DGR-COP-SUJETO-ANT"
+        case _: SujetoExternalDto.SujetoTri => "DGR-COP-SUJETO-TRI"
+      }
       messageProducer.produce(Seq(
                                 KafkaKeyValue(
                                   aggregateRoot = s"Sujeto-${sujeto.SUJ_IDENTIFICADOR}",
