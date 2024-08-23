@@ -4,8 +4,10 @@ import java.time.LocalDateTime
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{
   DetallesObjeto,
   ListDetallesObjeto,
+  ObjetosAnt,
   ObjetosTri
 }
+import consumers.no_registral.objeto.application.helper.SendObjetoToObjetoVinculo.obj_default.SOJ_CAT_SOJ_ID
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import consumers.no_registral.obligacion.application.entities.{
   DetallesObligacion,
@@ -148,6 +150,31 @@ class Examples(testName: String) {
     RULE_NUMBER = None,
     EV_ID = deliveryIdAct,
     SOJ_SUJ_IDENTIFICADOR = "CuitLucas",
+    SOJ_TIPO_OBJETO = "A",
+    SOJ_IDENTIFICADOR = "ABC123",
+    SOJ_CAT_SOJ_ID = None,
+    SOJ_DESCRIPCION = Some("Auto"),
+    SOJ_ESTADO = None,
+    SOJ_FECHA_INICIO = Some(LocalDateTime.of(2000, 1, 1, 0, 0)),
+    SOJ_FECHA_FIN = None,
+    SOJ_ID_EXTERNO = Some("1234"),
+    SOJ_OTROS_ATRIBUTOS = detallesObjetoNoResponsable,
+    SOJ_BASE_IMPONIBLE = None,
+    SOJ_ADHERIDO_DEBITO = Some("N"),
+    SOJ_CANT_CUOTAS_PAGADAS = None,
+    SOJ_CANAL_ORIGEN = Some("OTAX"),
+    SOJ_SUBTIPO = None,
+    SOJ_IDENTIFICADOR_2 = None,
+    SOJ_TITULARIDAD = Some("CONDOMINIO"),
+    SOJ_TIPO_EXCLUSION = None,
+    SOJ_FECHA_VTA_SUBASTA = None,
+    SOJ_FECHA_ADQ_SUBASTA = None
+  )
+
+  val objetoAntExample = ObjetosAnt(
+    RULE_NUMBER = None,
+    EV_ID = deliveryIdAct,
+    SOJ_SUJ_IDENTIFICADOR = "CuitLucasAnt",
     SOJ_TIPO_OBJETO = "A",
     SOJ_IDENTIFICADOR = "ABC123",
     SOJ_CAT_SOJ_ID = None,
@@ -375,14 +402,17 @@ class Examples(testName: String) {
     SUJ_TIPO_EXCLUSION = None
   )
 
-  def objetoExampleLucas = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "CuitLucas")
   def objetoExampleRoman = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "CuitRoman")
+  def objetoExampleAntRoman = objetoAntExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "CuitRoman")
+
+  def objetoExampleLucas = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "CuitLucas")
   def objetoExampleDiego = objetoExample.copy(EV_ID = deliveryIdAct, SOJ_SUJ_IDENTIFICADOR = "CuitDiego")
 
   def obligacionExampleVencidaLucas =
     obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "CuitLucas")
   def obligacionExampleAntVencidaLucas =
     obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "CuitLucas")
+
   def obligacionExampleVencidaRoman =
     obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "CuitRoman")
   def obligacionExampleDiego = obligacionExampleVencida.copy(EV_ID = deliveryIdAct, BOB_SUJ_IDENTIFICADOR = "CuitDiego")

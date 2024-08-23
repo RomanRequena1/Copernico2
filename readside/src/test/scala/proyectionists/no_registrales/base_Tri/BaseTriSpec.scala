@@ -141,10 +141,9 @@ abstract class BaseTriSpec(
     implicit val dispatcher = s.dispatcher
     val context = getContext(s)
     val messageProducer = context.messageProducer
-    val eventoRoman = examples.objetoExampleRoman.copy(SOJ_IDENTIFICADOR = "Objeto1")
+    val eventoRoman = examples.objetoExampleRoman.copy(EV_ID = deliveryIdAct, SOJ_IDENTIFICADOR = "Objeto1")
 
     messageProducer.produceObjeto(eventoRoman)
-
     val cassandra = context.cassandra
 
     eventually {
@@ -158,7 +157,7 @@ abstract class BaseTriSpec(
       case Succeeded => {
         val eventoRomanModificado = eventoRoman.copy(
           EV_ID = deliveryIdAct,
-          SOJ_DESCRIPCION = Some("Tester"),
+          SOJ_DESCRIPCION = Some("Nueva Descripcion"),
           SOJ_FECHA_INICIO = Some(LocalDateTime.of(2020, 12, 12, 0, 0)),
           SOJ_BASE_IMPONIBLE = Some(12345.5)
         )

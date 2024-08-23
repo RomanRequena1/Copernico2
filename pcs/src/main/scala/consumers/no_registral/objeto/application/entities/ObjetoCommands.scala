@@ -16,32 +16,31 @@ object ObjetoCommands {
       cotitulares: Set[String]
   ) extends ObjetoCommands
   case class RemoveObjetoFromObligacion(
-                                         deliveryId: BigInt,
-                                         sujetoId: String,
-                                         objetoId: String,
-                                         tipoObjeto: String,
-                                         obligacionId: String,
-                                         cuota: Option[String]
-                                       ) extends ObjetoCommands
-
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      tipoObjeto: String,
+      obligacionId: String,
+      cuota: Option[String]
+  ) extends ObjetoCommands
 
   case class UpdateState30ObjetoFromObjVinculo(
-                                      deliveryId: BigInt,
-                                      sujetoId: String,
-                                      objetoId: String,
-                                      tipoObjeto: String,
-                                      tiene30ObjetoVinculo: Boolean,
-                                      exclusionObjetoVinculo: Option[String]
-                                    ) extends ObjetoCommands
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      tipoObjeto: String,
+      tiene30ObjetoVinculo: Boolean,
+      exclusionObjetoVinculo: Option[String]
+  ) extends ObjetoCommands
 
   case class ObjetoUpdateFromSujeto(
-                               deliveryId: BigInt,
-                               sujetoId: String,
-                               objetoId: String,
-                               tipoObjeto: String,
-                               tiene30Sujeto: Boolean,
-                               exclusionSUjeto: Option[String]
-                             ) extends ObjetoCommands
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      tipoObjeto: String,
+      tiene30Sujeto: Boolean,
+      exclusionSUjeto: Option[String]
+  ) extends ObjetoCommands
 
   case class ObjetoSnapshot(
       deliveryId: BigInt,
@@ -65,7 +64,7 @@ object ObjetoCommands {
       registro: ObjetoExternalDto,
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String],
-      isAdheridoDebito: Option[Boolean],
+      isAdheridoDebito: Option[Boolean]
   ) extends ObjetoCommands
 
   case class ObjetoUpdateFromAnt(
@@ -73,7 +72,10 @@ object ObjetoCommands {
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      registro: ObjetoExternalDto
+      registro: ObjetoExternalDto,
+      isResponsable: Option[Boolean],
+      sujetoResponsable: Option[String],
+      isAdheridoDebito: Option[Boolean]
   ) extends ObjetoCommands
 
   case class ObjetoUpdateFromObligacion(
@@ -153,6 +155,5 @@ object ObjetoCommands {
       idExterno: Option[String],
       cuota: Option[String]
   ) extends ObjetoCommands
-
 
 }

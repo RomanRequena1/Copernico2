@@ -69,11 +69,6 @@ abstract class BaseAntSpec(
     }
   }
 
-  //Controlar persistencia de la obn
-  //TODO Controlar que se modifiquen datos de la obn
-  //TODO Controlar que se modifiquen mas datos de la obn
-  //Controlar baja de la obn
-
   "un obligacion Ant con cambios" should "End to end, PCS a Readside " in parallelActorSystemRunner { implicit s =>
     implicit val dispatcher = s.dispatcher
 
@@ -82,7 +77,7 @@ abstract class BaseAntSpec(
     val cassandra = context.cassandra
 
     val eventoDiego =
-      examples.obligacionAntExampleVencida.copy(BOB_SOJ_IDENTIFICADOR = "ObjetoAnt2", BOB_OBN_ID = "ObnAnt2-2")
+      examples.obligacionAntExampleVencida.copy(BOB_SOJ_IDENTIFICADOR = "ObjetoAntDiego2", BOB_OBN_ID = "ObnAnt2-2")
     messageProducer.produceObligacion(eventoDiego)
 
     val eventoDiegoModificado = eventoDiego.copy(
@@ -120,7 +115,6 @@ abstract class BaseAntSpec(
         }
       } match {
         case Succeeded => {
-          println("EventoBaja: ")
 
           val eventoDiegoBaja = eventoDiegoModificado.copy(
             EV_ID = deliveryIdAct,
@@ -149,4 +143,90 @@ abstract class BaseAntSpec(
     }
   }
 
+  "un objeto Ant" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
+    implicit val dispatcher = s.dispatcher
+    val context = getContext(s)
+    val cassandra = context.cassandra
+    val messageProducer = context.messageProducer
+
+    val eventoRoman = examples.objetoExampleAntRoman.copy(SOJ_IDENTIFICADOR = "ObjetoAntPersisteRoman")
+    messageProducer.produceObjetoAnt(eventoRoman)
+
+    println("Evento: " + eventoRoman)
+    eventually {
+      println("LLEGA?")
+      val resultado: AsyncResultSet = cassandra.cassandraWrite
+        .cqlSelect(
+          s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${eventoRoman.SOJ_SUJ_IDENTIFICADOR}';"
+        )
+        .futureValue
+
+      println("Valida?")
+      resultado.one().getString("SOJ_SUJ_IDENTIFICADOR") should be(eventoRoman.SOJ_SUJ_IDENTIFICADOR)
+    }
+  }
+
+  "un objeto Ant con cambios" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
+    implicit val dispatcher = s.dispatcher
+    val context = getContext(s)
+    val messageProducer = context.messageProducer
+    val cassandra = context.cassandra
+
+    val eventoRoman = examples.objetoAntExample.copy(SOJ_IDENTIFICADOR = "ObjetoAntRoman3")
+    messageProducer.produceObjetoAnt(eventoRoman)
+
+    eventually {
+      val resultado: AsyncResultSet = cassandra.cassandraWrite
+        .cqlSelect(
+          s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${eventoRoman.SOJ_SUJ_IDENTIFICADOR}';"
+        )
+        .futureValue
+      resultado.one().getString("SOJ_SUJ_IDENTIFICADOR") should be(eventoRoman.SOJ_SUJ_IDENTIFICADOR)
+    } match {
+      case Succeeded => {
+
+        val eventoRomanModificado = eventoRoman.copy(
+          EV_ID = deliveryIdAct,
+          SOJ_DESCRIPCION = Some("Nueva Descripcion"),
+          SOJ_FECHA_INICIO = Some(LocalDateTime.of(2020, 12, 12, 0, 0)),
+          SOJ_BASE_IMPONIBLE = Some(12345.5)
+        )
+        messageProducer.produceObjetoAnt(eventoRomanModificado)
+        eventually {
+          val resultado: AsyncResultSet = cassandra.cassandraWrite
+            .cqlSelect(
+              s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${eventoRoman.SOJ_SUJ_IDENTIFICADOR}';"
+            )
+            .futureValue
+          val objeto = resultado.one()
+
+          objeto.getString("SOJ_DESCRIPCION") should be(eventoRomanModificado.SOJ_DESCRIPCION.get)
+          objeto.getLocalDate("SOJ_FECHA_INICIO").atStartOfDay() should be(eventoRomanModificado.SOJ_FECHA_INICIO.get)
+          objeto.getFloat("SOJ_BASE_IMPONIBLE") should be(eventoRomanModificado.SOJ_BASE_IMPONIBLE.get)
+
+        } match {
+          case Succeeded => {
+
+            val eventoRomanEliminado = eventoRomanModificado.copy(
+              EV_ID = deliveryIdAct,
+              SOJ_ESTADO = Some("BAJA")
+            )
+            messageProducer.produceObjetoAnt(eventoRomanEliminado)
+
+            eventually {
+              val resultado: AsyncResultSet = cassandra.cassandraWrite
+                .cqlSelect(
+                  s"SELECT count(*) FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${eventoRoman.SOJ_SUJ_IDENTIFICADOR}';"
+                )
+                .futureValue
+              val objeto = resultado.one()
+              objeto.getLong("count") should be(0)
+            }
+          }
+          case _ => println("Fallo Delete")
+        }
+      }
+      case _ => println("FALLO")
+    }
+  }
 }

@@ -34,8 +34,8 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
    * En el caso del else, se envía el objeto a objeto vinculo.
    */
   override def handle(
-                       command: ObjetoCommands.ObjetoUpdateFromTri
-                     ): Try[Response.SuccessProcessing] = {
+      command: ObjetoCommands.ObjetoUpdateFromTri
+  ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
     val log: Logger = LoggerFactory.getLogger(this.getClass)
 
@@ -77,53 +77,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
 
     val dmn = isTipo(command)
 
-//    def getCCParams(evento: ObjetoExternalDto, estado: ObjetoExternalDto) = {
-//      val declaredFields = evento.getClass.getDeclaredFields
-//      var objetoNuevoTest = evento
-//
-//      declaredFields.foreach { campo =>
-//        val campoEvento = objetoNuevoTest.getClass.getDeclaredField(campo.getName)
-//        val campoEstado = estado.getClass.getDeclaredField(campo.getName)
-//        campoEvento.setAccessible(true)
-//        campoEstado.setAccessible(true)
-//
-//        if (campoEvento.getName == "SOJ_OTROS_ATRIBUTOS") {
-//          val otrosAtributosEventoOpt = campoEvento.get(objetoNuevoTest).asInstanceOf[DetallesObjeto]
-//          val otrosAtributosEstadoOpt = campoEstado.get(estado).asInstanceOf[DetallesObjeto]
-//
-//          val atributosActualizados: DetallesObjeto = actualizarDetalles(otrosAtributosEventoOpt, otrosAtributosEstadoOpt)
-//          val otrosAtributosActualizados: Some[ListDetallesObjeto] = Some(ListDetallesObjeto(List(atributosActualizados)))
-//          campoEvento.set(objetoNuevoTest, otrosAtributosActualizados)
-//        }
-//
-//        if (campoEvento.get(evento) == None) {
-//          campoEvento.set(objetoNuevoTest, campoEstado.get(estado))
-//        } else if (campoEvento.get(evento).equals(Some("null"))) {
-//          campoEvento.set(objetoNuevoTest, None)
-//        }
-//      }
-//      objetoNuevoTest
-//    }
-//
-//    def actualizarDetalles(atributosEvento: DetallesObjeto, atributosEstado: DetallesObjeto) = {
-//      val declaredFields = atributosEvento.getClass.getDeclaredFields
-//      var atributosNuevo = atributosEvento
-//
-//      declaredFields.foreach{ campo =>
-//        val campoEvento = atributosNuevo.getClass.getDeclaredField(campo.getName)
-//        val campoEstado = atributosEstado.getClass.getDeclaredField(campo.getName)
-//        campoEvento.setAccessible(true)
-//        campoEstado.setAccessible(true)
-//
-//        if(campoEvento.get(atributosEvento) == None){
-//          campoEvento.set(atributosNuevo, campoEstado.get(atributosEstado))
-//        } else if(campoEvento.get(atributosEvento).equals(Some("null"))){
-//          campoEvento.set(atributosNuevo, None)
-//        }
-//      }
-//      atributosNuevo
-//    }
-
     def getCCParams(evento: ObjetoExternalDto, estado: ObjetoExternalDto) = {
       val declaredFields = evento.getClass.getDeclaredFields
       var objetoNuevoTest = evento
@@ -149,16 +102,19 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       objetoNuevoTest
     }
 
-    def actualizarOtrosAtributos(atributosEvento: Option[ListDetallesObjeto], atributosEstado: Option[ListDetallesObjeto]): Option[ListDetallesObjeto] = {
+    def actualizarOtrosAtributos(atributosEvento: Option[ListDetallesObjeto],
+                                 atributosEstado: Option[ListDetallesObjeto]): Option[ListDetallesObjeto] = {
       (atributosEvento, atributosEstado) match {
         case (None, estado) => estado
         case (Some(ListDetallesObjeto(Nil)), _) => None
         case (Some(ListDetallesObjeto(detallesEvento)), Some(ListDetallesObjeto(detallesEstado))) =>
-          Some(ListDetallesObjeto(
-            detallesEvento.map { detalleEvento =>
-              actualizarDetalle(detalleEvento, detallesEstado.headOption.getOrElse(detalleEvento))
-            }
-          ))
+          Some(
+            ListDetallesObjeto(
+              detallesEvento.map { detalleEvento =>
+                actualizarDetalle(detalleEvento, detallesEstado.headOption.getOrElse(detalleEvento))
+              }
+            )
+          )
         case (evento, _) => evento
       }
     }
@@ -181,8 +137,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       detalleNuevo
     }
 
-
-        //TODO Validate the first event, with no state, enters in the case None.
+    //TODO Validate the first event, with no state, enters in the case None.
     def getObjetoFFF() = {
       val objetoFFF = actor.state.registro match {
         case None => command.registro
@@ -237,7 +192,7 @@ object test {
       //todo juicio persiste, pero no se us apara el calculo del 30%?
 
       if (actor.state.registro.get.SOJ_TIPO_OBJETO
-        .equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
+            .equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
         if (actor.state.tiene30Objeto.equals(false)) {
           val res = actor.context.parent.ask[Response.SuccessProcessing](
             SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
@@ -290,12 +245,12 @@ object test {
         }
       } else {
         SendObjetoToObjetoVinculo(Obje,
-          actor,
-          command.sujetoId,
-          command.objetoId,
-          command.tipoObjeto,
-          command.registro.SOJ_ESTADO,
-          requeriment)
+                                  actor,
+                                  command.sujetoId,
+                                  command.objetoId,
+                                  command.tipoObjeto,
+                                  command.registro.SOJ_ESTADO,
+                                  requeriment)
       }
       //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler
       if (actor.state.eventCounter == eventCounterMax) {

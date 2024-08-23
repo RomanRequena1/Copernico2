@@ -28,26 +28,26 @@ class KafkaProduction(implicit system: ActorSystem) extends MessageProducer with
   def receive(message: Any): Any = {
     message match {
       case m: Message if !(topics contains m.topic) =>
-//        println("1 - No Topic" + this.toString)
+        println("1 - No Topic" + this.toString)
       case m: Message if topics contains m.topic =>
-//        println("5 --- " + this.toString)
+        println("5 --- " + this.toString)
         messageHistory = messageHistory :+ ((m.topic, m.message.json))
-//        println(
-//          s"""
-//             |${Console.YELLOW} [MessageProducer] ${Console.RESET}
-//             |Sending message to: ${subscriptors
-//               .filter(_.topic == m.topic)
-//               .map(_.topic)
-//               .map(Console.YELLOW + _ + Console.RESET)
-//               .mkString(",")}
-//             |${Console.CYAN} $message ${Console.RESET}
-//             |""".stripMargin
-//        )
+        println(
+          s"""
+             |${Console.YELLOW} [MessageProducer] ${Console.RESET}
+             |Sending message to: ${subscriptors
+               .filter(_.topic == m.topic)
+               .map(_.topic)
+               .map(Console.YELLOW + _ + Console.RESET)
+               .mkString(",")}
+             |${Console.CYAN} $message ${Console.RESET}
+             |""".stripMargin
+        )
         subscriptors.filter(_.topic == m.topic).foreach {
           _.algorithm(m.message.json)
         }
       case s: SubscribeMe =>
-//        println("6 ---")
+        println("6 ---")
         subscriptors = subscriptors + s
     }
   }
