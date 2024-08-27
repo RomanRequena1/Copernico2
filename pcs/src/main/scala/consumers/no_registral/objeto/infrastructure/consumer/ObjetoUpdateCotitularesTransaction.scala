@@ -23,6 +23,7 @@ case class ObjetoUpdateCotitularesTransaction(actorRef: ActorRef, monitoring: Mo
     decode[ObjetoUpdateCotitulares](input)
 
   def processMessage(cmd: ObjetoUpdateCotitulares): Future[Response.SuccessProcessing] = {
+    println("ObjetoUpdateCotitularesTransaction")
     actorRef.ask[Response.SuccessProcessing](cmd)
   }
 }

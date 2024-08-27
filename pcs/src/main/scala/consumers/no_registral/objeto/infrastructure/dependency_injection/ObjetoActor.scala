@@ -87,7 +87,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
         case _ =>
       }
   }
-
+// TODO: Validar que es lo q esta haciendo, para Objetos ANT?
   def processObligacionMessages: Receive = {
     case childMessage: ObligacionMessage =>
       val obligacion = obligaciones(

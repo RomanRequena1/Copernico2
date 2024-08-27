@@ -32,7 +32,7 @@ case class ObjetoExencionTransaction(actorRef: ActorRef, monitoring: Monitoring)
       tipoObjeto = exencion.BEX_SOJ_TIPO_OBJETO,
       exencion = exencion
     )
-
+    println("ObjetoExencion")
     actorRef.ask[Response.SuccessProcessing](command)
   }
 }

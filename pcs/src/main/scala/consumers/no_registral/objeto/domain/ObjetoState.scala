@@ -198,16 +198,16 @@ case class ObjetoState(
           tiene30Objeto = diff
         )
 
-      case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
-        copy(
-          saldo = evt.saldo,
-          sujetos = evt.cotitulares,
-          sujetoResponsable = evt.sujetoResponsable,
-          obligacionesSaldo = evt.obligacionesSaldo,
-          tags = evt.tags,
-          isBaja = false,
-          cuotas = evt.cuotas
-        )
+//      case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
+//        copy(
+//          saldo = evt.saldo,
+//          sujetos = evt.cotitulares,
+//          sujetoResponsable = evt.sujetoResponsable,
+//          obligacionesSaldo = evt.obligacionesSaldo,
+//          tags = evt.tags,
+//          isBaja = false,
+//          cuotas = evt.cuotas
+//        )
 
       case evt: ObjetoEvents.ObjetoTagAdded =>
         copy(tags = tags + evt.tagAdded, isBaja = false)

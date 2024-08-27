@@ -32,8 +32,6 @@ class ObjetoUpdateFromAntHandler(actor: ObjetoActor) extends SyncCommandHandler[
       )
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 
-      Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
-
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event
@@ -43,8 +41,10 @@ class ObjetoUpdateFromAntHandler(actor: ObjetoActor) extends SyncCommandHandler[
                            command.tipoObjeto,
                            actor.state)
       }
+      println("ObjetoUpdateFromAntHandler 1")
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     }
+    println("ObjetoUpdateFromAntHandler 2")
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }

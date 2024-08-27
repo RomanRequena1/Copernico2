@@ -14,11 +14,13 @@ object Utils {
 
   def actorInteraction[Response: ClassTag](command: Command, query: Query)(
       assertion: Response => Assertion
-  )(implicit actorRef: ActorRef, ec: ExecutionContext): Future[Assertion] =
+  )(implicit actorRef: ActorRef, ec: ExecutionContext): Future[Assertion] = {
+    println("ConsumersSpecUtils")
     for {
       _ <- actorRef.ask[Response.SuccessProcessing](command)
       response <- actorRef.ask[Response](query)
     } yield assertion(response)
+  }
 
   def uniqueActorName: String = s"MockSujeto-${deliveryId}"
 
