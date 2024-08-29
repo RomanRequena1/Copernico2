@@ -1,5 +1,6 @@
 package consumers.no_registral.objeto.application.cqrs.commands
 
+import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -9,7 +10,8 @@ import design_principles.actor_model.mechanism.DeliveryIdManagement._
 
 import scala.util.{Success, Try}
 
-class ObjetoUpdateFromAntHandler(actor: ObjetoActor) extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromAnt] {
+class ObjetoUpdateFromAntHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
+    extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromAnt] {
   override def handle(
       command: ObjetoCommands.ObjetoUpdateFromAnt
   ): Try[Response.SuccessProcessing] = {
@@ -35,16 +37,15 @@ class ObjetoUpdateFromAntHandler(actor: ObjetoActor) extends SyncCommandHandler[
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event
-        actor.informParent(actor.state.lastDeliveryIdByEvents,
-                           command.sujetoId,
-                           command.objetoId,
-                           command.tipoObjeto,
-                           actor.state)
+        actor.informParentAnt(actor.state.lastDeliveryIdByEvents,
+                              command.sujetoId,
+                              command.objetoId,
+                              command.tipoObjeto,
+                              actor.state)
+        actor.persistSnapshot(event, actor.state) { () => () }
       }
-      println("ObjetoUpdateFromAntHandler 1")
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     }
-    println("ObjetoUpdateFromAntHandler 2")
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }

@@ -1,12 +1,13 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ObjetoSpecUT.una obligacion should 4: dar de alta una obligacion vencida de Lucas" type="ScalaTestRunConfiguration" factoryName="ScalaTest" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
     <module name="pcs" />
+    <option name="VMParameters" value="" />
     <option name="allowRunningInParallel" value="false" />
-    <option name="projectPathOnTarget" />
-    <option name="selectedOptions">
+    <option name="alternativeJrePath" />
+    <option name="alternativeJrePathEnabled" value="false" />
+    <option name="classpathModifications">
       <list />
     </option>
-    <option name="testKind" value="Test name" />
     <option name="envs">
       <map>
         <entry key="AKKA_DEBUG_MODE" value="INFO" />
@@ -55,21 +56,14 @@
         <entry key="TIMEOUT" value="50" />
       </map>
     </option>
-    <option name="shortenClasspath" value="NONE" />
-    <option name="testClassPath" value="consumers_spec.no_registrales.objeto.unit_test.ObjetoSpecUT" />
-    <option name="testName" value="una obligacion should 4: dar de alta una obligacion vencida de Lucas" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
-  </configuration>
-  <configuration default="false" name="ObjetoSpecUT.una obligacion should 4: dar de alta una obligacion vencida de Lucas" type="ScalaTestRunConfiguration" factoryName="ScalaTest" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
-    <module name="pcs" />
-    <option name="allowRunningInParallel" value="false" />
+    <option name="passParentEnvs" value="true" />
+    <option name="programParameters" value="" />
     <option name="projectPathOnTarget" />
     <option name="selectedOptions">
       <list />
     </option>
     <option name="testKind" value="Test name" />
+    <option name="workingDirectory" value="$PROJECT_DIR$" />
     <option name="envs">
       <map>
         <entry key="AKKA_DEBUG_MODE" value="INFO" />

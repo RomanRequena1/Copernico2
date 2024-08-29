@@ -123,7 +123,6 @@ object MessageTestkitUtils2 {
 
     def produceObligacion(obligacion: ObligacionesTri): Future[akka.Done] = {
       def topic = "DGR-COP-OBLIGACIONES-TRI"
-      println("Pr OBN : " + obligacion.asJson)
       messageProducer.produce(
         Seq(
           KafkaKeyValue(

@@ -54,7 +54,8 @@ class NoRegistralesQueryWithActorRef(sujeto: ActorRef, vinculoActor: ActorRef)
       )
       .futureValue
   }
-  def getStateSujeto(sujetoExample: SujetoExternalDto): GetSujetoResponse =
+  def getStateSujeto(sujetoExample: SujetoExternalDto): GetSujetoResponse = {
+    println("Consultando a :" + sujetoExample.SUJ_IDENTIFICADOR)
     sujeto
       .ask[GetSujetoResponse](
         GetStateSujeto(
@@ -62,4 +63,5 @@ class NoRegistralesQueryWithActorRef(sujeto: ActorRef, vinculoActor: ActorRef)
         )
       )
       .futureValue
+  }
 }

@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ObjetoSpecUT-1" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
-    <module name="Copernico.pcs" />
+  <configuration default="false" name="BaseTri" type="ScalaTestRunConfiguration" factoryName="ScalaTest" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
+    <module name="Copernico.readside" />
     <option name="VMParameters" value="" />
     <option name="allowRunningInParallel" value="false" />
     <option name="alternativeJrePath" />
@@ -10,7 +10,7 @@
     </option>
     <option name="envs">
       <map>
-        <entry key="AKKA_DEBUG_MODE" value="INFO" />
+        <entry key="AKKA_DEBUG_MODE" value="OFF" />
         <entry key="AKKA_KAFKA_DEBUG_MODE" value="OFF" />
         <entry key="APACHE_KAFKA_APP_INFO_PARSER_DEBUG_MODE" value="OFF" />
         <entry key="APACHE_KAFKA_CLIENTS_NETWORK_CLIENT_DEBUG_MODE" value="OFF" />
@@ -66,7 +66,7 @@
     <option name="workingDirectory" value="$PROJECT_DIR$" />
     <option name="envs">
       <map>
-        <entry key="AKKA_DEBUG_MODE" value="INFO" />
+        <entry key="AKKA_DEBUG_MODE" value="OFF" />
         <entry key="AKKA_KAFKA_DEBUG_MODE" value="OFF" />
         <entry key="APACHE_KAFKA_APP_INFO_PARSER_DEBUG_MODE" value="OFF" />
         <entry key="APACHE_KAFKA_CLIENTS_NETWORK_CLIENT_DEBUG_MODE" value="OFF" />
@@ -113,7 +113,7 @@
       </map>
     </option>
     <option name="shortenClasspath" value="NONE" />
-    <option name="testClassPath" value="consumers_spec.no_registrales.objeto.unit_test.ObjetoSpecUT" />
+    <option name="testClassPath" value="proyectionists.no_registrales.base_Tri.acceptance.BaseTri" />
     <option name="workingDirectory" value="$PROJECT_DIR$" />
     <method v="2">
       <option name="Make" enabled="true" />

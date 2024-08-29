@@ -63,7 +63,6 @@ object MessageTestkitUtils {
     import consumers_spec.no_registrales.testsuite.ToJson._
     def produceObligacion(obligacion: ObligacionesAnt): Future[akka.Done] = {
       def topic = "DGR-COP-OBLIGACIONES-ANT"
-      println("TOPIC: " + topic)
       messageProducer.produce(
         Seq(
           KafkaKeyValue(
@@ -77,7 +76,6 @@ object MessageTestkitUtils {
     }
     def produceObligacion(obligacion: ObligacionesTri): Future[akka.Done] = {
       def topic = "DGR-COP-OBLIGACIONES-TRI"
-      println("TOPIC: " + topic)
       messageProducer.produce(
         Seq(
           KafkaKeyValue(

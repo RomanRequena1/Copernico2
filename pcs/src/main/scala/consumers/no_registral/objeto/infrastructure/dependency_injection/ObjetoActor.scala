@@ -5,7 +5,11 @@ import akka.actor.{ActorRef, Props}
 import akka.entity.ShardedEntity
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.cqrs.commands._
-import consumers.no_registral.objeto.application.cqrs.queries.{GetSnapshotObjetoHandler, GetStateExencionHandler, GetStateObjetoHandler}
+import consumers.no_registral.objeto.application.cqrs.queries.{
+  GetSnapshotObjetoHandler,
+  GetStateExencionHandler,
+  GetStateObjetoHandler
+}
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoQueries}
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import consumers.no_registral.objeto.domain.{ObjetoEvents, ObjetoState}
@@ -21,8 +25,7 @@ import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 
-
-class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorPropsOption: Option[Props] = None)
+class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[ObjetoEvents, ObjetoState](requirements.monitoring) {
   import ObjetoActor._
 
@@ -31,19 +34,29 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
 
   override def setupHandlers(): Unit = {
     commandBus.subscribe[ObjetoCommands.ObjetoSnapshot](new ObjetoSnapshotHandler(this).handle)
-    commandBus.subscribe[ObjetoCommands.UpdateState30ObjetoFromObjVinculo](new UpdateState30ObjetoFromObjVinculoHandler(this, requirements).handle)
+    commandBus.subscribe[ObjetoCommands.UpdateState30ObjetoFromObjVinculo](
+      new UpdateState30ObjetoFromObjVinculoHandler(this, requirements).handle
+    )
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromSujeto](new ObjetoUpdateFromSujetoHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagAdd](new ObjetoTagAddHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagRemove](new ObjetoTagRemoveHandler(this).handle)
-    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromAnt](new ObjetoUpdateFromAntHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromAnt](new ObjetoUpdateFromAntHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromTri](new ObjetoUpdateFromTriHandler(this, requirements).handle)
-    commandBus.subscribe[ObjetoCommands.RemoveObjetoFromObligacion](new ObjetoMapRemoveFromObligacionHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.RemoveObjetoFromObligacion](
+      new ObjetoMapRemoveFromObligacionHandler(this).handle
+    )
     commandBus.subscribe[ObjetoCommands.SetBajaObjeto](new SetBajaObjetoHandler(this, requirements).handle)
-    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObligacion](new ObjetoUpdateFromObligacionHandler(this, requirements).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObligacion](
+      new ObjetoUpdateFromObligacionHandler(this, requirements).handle
+    )
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateCotitulares](new ObjetoUpdateCotitularesHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoAddExencion](new ObjetoAddExencionHandler(this).handle)
-    commandBus.subscribe[ObjetoCommands.ObjetoRemoveObligacion](new ObjetoRemoveObligacionHandler(this, requirements).handle)
-    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento](new ObjetoUpdateFromObligacionTreintaProcientoHandler(this, requirements).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoRemoveObligacion](
+      new ObjetoRemoveObligacionHandler(this, requirements).handle
+    )
+    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento](
+      new ObjetoUpdateFromObligacionTreintaProcientoHandler(this, requirements).handle
+    )
     queryBus.subscribe[ObjetoQueries.GetStateObjeto](new GetStateObjetoHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetStateExencion](new GetStateExencionHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetSnapshotObjeto](new GetSnapshotObjetoHandler(this).handle)
@@ -124,7 +137,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
         objetoId2 = evt match {
           case evt: ObjetoEvents.ObjetoUpdatedFromObligacion => evt.objetoId2
           case _ => None
-         },
+        },
         evt.tipoObjeto,
         consolidatedState.saldo,
         consolidatedState.sujetos,
@@ -137,7 +150,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
         consolidatedState.clasificacionObjeto,
         operacion = ObligacionEvents.operaciones.get("Upsert").get,
         idExterno = evt match {
-          case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
+          case evt: ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
           case _ => None
         },
         Some(consolidatedState.tiene30Objeto),
@@ -182,7 +195,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
         consolidatedState.clasificacionObjeto,
         operacion = ObligacionEvents.operaciones.get("Delete").get,
         idExterno = evt match {
-          case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
+          case evt: ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
           case _ => None
         },
         Some(consolidatedState.tiene30Objeto),
@@ -227,7 +240,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
         consolidatedState.clasificacionObjeto,
         operacion = ObligacionEvents.operaciones.get("FullDelete").get,
         idExterno = evt match {
-          case  evt:ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
+          case evt: ObjetoEvents.ObjetoUpdatedFromObligacion => evt.idExterno
           case _ => None
         },
         Some(consolidatedState.tiene30Objeto),
@@ -264,7 +277,11 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
   def withCotitulares(sujetos: Set[String]): Boolean =
     sujetos.size > 1*/
 
-  def informParentTreintaPorciento(deliveryId: BigInt, sujetoId: String ,objetoId : String,tipoObjeto: String, state: ObjetoState): Unit = {
+  def informParentTreintaPorciento(deliveryId: BigInt,
+                                   sujetoId: String,
+                                   objetoId: String,
+                                   tipoObjeto: String,
+                                   state: ObjetoState): Unit = {
     context.parent ! SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
       deliveryId,
       sujetoId,
@@ -276,8 +293,28 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
     )
   }
 
-  def informParent(deliveryId: BigInt, sujetoId: String ,objetoId : String,tipoObjeto: String, state: ObjetoState): Unit = {
+  def informParent(deliveryId: BigInt,
+                   sujetoId: String,
+                   objetoId: String,
+                   tipoObjeto: String,
+                   state: ObjetoState): Unit = {
     context.parent ! SujetoCommands.SujetoUpdateFromObjeto(
+      deliveryId,
+      sujetoId,
+      objetoId,
+      tipoObjeto,
+      state.saldo,
+      state.obligacionesSaldo.values.sum,
+      state.clasificacionObjeto
+    )
+  }
+
+  def informParentAnt(deliveryId: BigInt,
+                      sujetoId: String,
+                      objetoId: String,
+                      tipoObjeto: String,
+                      state: ObjetoState): Unit = {
+    context.parent ! SujetoCommands.SujetoUpdateFromObjetoAnt(
       deliveryId,
       sujetoId,
       objetoId,
@@ -298,7 +335,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,obligacionActorProp
   }
 }
 
-object ObjetoActor extends ShardedEntity[MonitoringAndMessageProducer]{
+object ObjetoActor extends ShardedEntity[MonitoringAndMessageProducer] {
   def props(requirements: MonitoringAndMessageProducer): Props =
     Props(new ObjetoActor(requirements, None)).withDispatcher("my-dispatcher") //TODO added my-dispatcher
   type ObligacionAgregateRoot = (String, String, String, String)

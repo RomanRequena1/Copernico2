@@ -48,12 +48,15 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromAnt](new SujetoUpdateFromAntHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromTri](new SujetoUpdateFromTriHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoUpdateFromObjeto](new SujetoUpdateFromObjetoHandler(this).handle)
+    commandBus.subscribe[SujetoCommands.SujetoUpdateFromObjetoAnt](new SujetoUpdateFromObjetoAntHandler(this).handle)
     commandBus.subscribe[SujetoCommands.SujetoSetBajaFromObjeto](new SujetoSetBajaFromObjetoHandler(this).handle)
     queryBus.subscribe[SujetoQueries.GetStateSujeto](new GetStateSujetoHandler(this).handle)
     queryBus.subscribe[SujetoQueries.GetSnapshotSujeto](new GetSnapshotSujetoHandler(this).handle)
   }
 
-  override def receiveCommand: Receive = customReceiveCommand orElse super.receiveCommand
+  override def receiveCommand: Receive = {
+    customReceiveCommand orElse super.receiveCommand
+  }
 
   def customReceiveCommand: Receive = {
     case childMessage: ObligacionMessage =>

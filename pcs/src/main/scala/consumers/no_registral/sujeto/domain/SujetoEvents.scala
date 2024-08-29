@@ -5,7 +5,7 @@ import ddd.Deliverable
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
-sealed trait SujetoEvents extends Event with Deliverable with SujetoMessage with CbroSerialization{
+sealed trait SujetoEvents extends Event with Deliverable with SujetoMessage with CbroSerialization {
   def sujetoId: String
 }
 
@@ -20,16 +20,15 @@ object SujetoEvents {
       exclusionSujeto: Option[String]
   ) extends SujetoEvents
 
-
   case class SujetoUpdatedFromObjetoTreintaPorciento(
-                                                      deliveryId: BigInt,
-                                                      sujetoId: String,
-                                                      objetoId: String,
-                                                      tipoObjeto: String,
-                                                      saldoObjeto: BigDecimal,
-                                                      saldoObligaciones: BigDecimal,
-                                                      clasificacionObjeto: String
-                                                    ) extends SujetoEvents
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      tipoObjeto: String,
+      saldoObjeto: BigDecimal,
+      saldoObligaciones: BigDecimal,
+      clasificacionObjeto: String
+  ) extends SujetoEvents
 
   case class SujetoUpdatedFromTri(
       deliveryId: BigInt,
@@ -43,8 +42,17 @@ object SujetoEvents {
       registro: SujetoExternalDto
   ) extends SujetoEvents
 
-
   case class SujetoUpdatedFromObjeto(
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      tipoObjeto: String,
+      saldoObjeto: BigDecimal,
+      saldoObligaciones: BigDecimal,
+      clasificacionObjeto: String
+  ) extends SujetoEvents
+
+  case class SujetoUpdatedFromObjetoAnt(
       deliveryId: BigInt,
       sujetoId: String,
       objetoId: String,

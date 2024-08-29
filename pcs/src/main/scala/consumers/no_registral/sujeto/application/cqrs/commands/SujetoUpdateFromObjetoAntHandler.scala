@@ -1,8 +1,7 @@
 package consumers.no_registral.sujeto.application.cqrs.commands
 
 import akka.persistence.SnapshotSelectionCriteria
-import consumers.no_registral.sujeto.application.entity.SujetoCommands.SujetoUpdateFromObjeto
-import consumers.no_registral.sujeto.application.helper.SendToObjeto
+import consumers.no_registral.sujeto.application.entity.SujetoCommands.SujetoUpdateFromObjetoAnt
 import consumers.no_registral.sujeto.domain.SujetoEvents
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -11,10 +10,10 @@ import design_principles.actor_model.Response
 
 import scala.util.{Success, Try}
 
-class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandler[SujetoUpdateFromObjeto] {
-  override def handle(command: SujetoUpdateFromObjeto): Try[Response.SuccessProcessing] = {
+class SujetoUpdateFromObjetoAntHandler(actor: SujetoActor) extends SyncCommandHandler[SujetoUpdateFromObjetoAnt] {
+  override def handle(command: SujetoUpdateFromObjetoAnt): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    val event = SujetoEvents.SujetoUpdatedFromObjeto(
+    val event = SujetoEvents.SujetoUpdatedFromObjetoAnt(
       command.deliveryId,
       command.sujetoId,
       command.objetoId,
@@ -26,14 +25,12 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
 
     actor.persistEvent(event) { () =>
       actor.state += event
-      SendToObjeto(actor.state, sender, actor.context, event.sujetoId, command.objetoId, command.tipoObjeto)
 
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
       actor.persistSnapshot() { _ =>
-        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

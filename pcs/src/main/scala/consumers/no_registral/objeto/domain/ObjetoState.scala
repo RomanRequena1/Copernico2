@@ -171,12 +171,6 @@ case class ObjetoState(
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
           isBaja = false
         )
-
-      //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
-      //        copy(
-      //          registro = Some(evt.registro),
-      //          sujetos = sujetos + evt.sujetoId
-      //        )
       case ObjetoEvents.ObjetoUpdatedFromObligacion(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, _) =>
         val _obnVencidas = validExitsObnVencidas(obligacionId)
         val obligacionesSaldo_ = obligacionesSaldo + (obligacionId -> saldoObligacion)
@@ -197,18 +191,16 @@ case class ObjetoState(
           obnVencidas = _obnVencidas,
           tiene30Objeto = diff
         )
-
-//      case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
-//        copy(
-//          saldo = evt.saldo,
-//          sujetos = evt.cotitulares,
-//          sujetoResponsable = evt.sujetoResponsable,
-//          obligacionesSaldo = evt.obligacionesSaldo,
-//          tags = evt.tags,
-//          isBaja = false,
-//          cuotas = evt.cuotas
-//        )
-
+      case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
+        copy(
+          saldo = evt.saldo,
+          sujetos = evt.cotitulares,
+          sujetoResponsable = evt.sujetoResponsable,
+          obligacionesSaldo = evt.obligacionesSaldo,
+          tags = evt.tags,
+          isBaja = false,
+          cuotas = evt.cuotas
+        )
       case evt: ObjetoEvents.ObjetoTagAdded =>
         copy(tags = tags + evt.tagAdded, isBaja = false)
       case evt: ObjetoEvents.ObjetoTagRemoved =>
@@ -224,7 +216,6 @@ case class ObjetoState(
           registro = Some(evt.registro),
           isBaja = true
         )
-
       case evt: ObjetoEvents.ObjetoRemovedObligacion =>
         val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
         if (evt.cuota.isEmpty || evt.cuota.get.toInt < 0 || evt.cuota.get.toInt > 12) {
@@ -251,7 +242,6 @@ case class ObjetoState(
             tiene30Objeto = diff
           )
         }
-
       case evt: ObjetoEvents.RemovedObjetoFromObligacion =>
         val _obnVencidas =
           if (obnVencidas.contains(evt.obligacionId)) {

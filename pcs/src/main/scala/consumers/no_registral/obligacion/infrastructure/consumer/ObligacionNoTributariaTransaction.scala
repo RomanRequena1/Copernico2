@@ -73,7 +73,6 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
 
     val command: ObligacionCommands =
       if (isCancelada(obligacion.BOB_OTROS_ATRIBUTOS).head) {
-        println("CUMBIA CANCELADA")
         ObligacionCommands.ObligacionRemove(
           deliveryId = obligacion.EV_ID,
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
@@ -84,7 +83,6 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
           cuota = obligacion.BOB_CUOTA
         )
       } else if (isNotDeuda(obligacion.BOB_OTROS_ATRIBUTOS).head) {
-        println("CUMBIA NOTDEUDA")
         ObligacionCommands.ObligacionRemove(
           deliveryId = obligacion.EV_ID,
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
@@ -95,7 +93,6 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
           cuota = obligacion.BOB_CUOTA
         )
       } else {
-        println("CUMBIA ELSE")
         ObligacionAntUpdateFromDto(
           sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
           objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,

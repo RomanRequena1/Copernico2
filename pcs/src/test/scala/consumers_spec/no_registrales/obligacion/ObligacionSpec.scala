@@ -537,10 +537,8 @@ abstract class ObligacionSpec(
       case Left(err) => println("Error decoding Json Diego" + err)
       case Right(event) =>
         messageProducer.produceObligacion(event)
-        println("Evento Ant Diego: " + event)
         eventually {
           val response: ObligacionResponses.GetObligacionResponse = Query.getStateObligacion(event)
-          println("Query Obn: " + response)
           response.registro.get should be(event)
         }
     }
@@ -557,10 +555,8 @@ abstract class ObligacionSpec(
       case Left(err) => println("Error decoding Json Diego" + err)
       case Right(event) =>
         messageProducer.produceObligacion(event)
-        println("Evento Ant Diego: " + event)
         eventually {
           val response: ObligacionResponses.GetObligacionResponse = Query.getStateObligacion(event)
-          println("Query Obn: " + response)
           response.registro.get should be(event)
         }
     }

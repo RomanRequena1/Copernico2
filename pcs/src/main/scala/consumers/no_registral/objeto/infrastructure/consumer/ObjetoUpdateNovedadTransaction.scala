@@ -23,7 +23,6 @@ case class ObjetoUpdateNovedadTransaction(actorRef: ActorRef, monitoring: Monito
     decode[ObjetoSnapshot](input)
 
   def processMessage(cmd: ObjetoSnapshot): Future[Response.SuccessProcessing] = {
-    println("ObjetoUpdateNovedadTransaction")
     actorRef.ask[Response.SuccessProcessing](cmd)
   }
 

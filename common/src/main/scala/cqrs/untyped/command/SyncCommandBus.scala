@@ -24,7 +24,7 @@ class SyncCommandBus(
   override def subscribe[C <: Command: ClassTag](handler: C => Try[C#ReturnType]): Unit = {
     val classTag = implicitly[ClassTag[C]]
     if (handlers.contains(classTag.runtimeClass)) {
-      logger.error("handler already subscribed", "handler_name" -> handler.getClass.getSimpleName)
+      logger.error("handler already subscribed1" + handlers, "handler_name" -> handler.getClass.getSimpleName)
     } else {
       val transformed: Command => Try[Any] = (t: Command) => handler(t.asInstanceOf[C])
       handlers = handlers + (classTag.runtimeClass -> transformed)

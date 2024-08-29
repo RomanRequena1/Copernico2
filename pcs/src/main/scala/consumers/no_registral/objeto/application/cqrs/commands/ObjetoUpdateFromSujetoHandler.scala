@@ -35,7 +35,6 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
       actor.state.tiene30Sujeto.get,
       actor.state.tiene30ObjetoVinculo)
     )
-
     result match {
 
       case d if d.equals(true) =>
@@ -54,30 +53,6 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
           }
         }
     }
-//    DMNTreintaPorcientoFinal.dmn(actor.state, command, "")
-//      .fold(e => {
-//        log.error("ERROR DMN OBJETO: " + e)
-//      },
-//        {
-//          case d if d.value.equals(true) =>
-//            val newState = actor.state.copy(aplicarDescuento = Some(true))
-//            if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA")){
-//              actor.persistSnapshot(event, newState) { () =>
-//                sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-//              }
-//            }
-//            //.state = newState
-//          //todo solo persistir en readside
-//          case _ =>
-//            val newState = actor.state.copy(aplicarDescuento = Some(false))
-//            if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA")){
-//              actor.persistSnapshot(event, newState) { () =>
-//                sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-//              }
-//            }
-//        })
-    //todo dmn
-    //todo print campos que entran al dmn y la salida
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }

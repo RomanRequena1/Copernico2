@@ -1,7 +1,14 @@
 package cqrs.base_actor.untyped
 
 import akka.actor.ActorLogging
-import akka.persistence.{PersistentActor, Recovery, RecoveryCompleted, SaveSnapshotFailure, SaveSnapshotSuccess, SnapshotOffer}
+import akka.persistence.{
+  PersistentActor,
+  Recovery,
+  RecoveryCompleted,
+  SaveSnapshotFailure,
+  SaveSnapshotSuccess,
+  SnapshotOffer
+}
 import cqrs.untyped.event.{EventBus, SyncEventBus}
 import ddd.AbstractState
 import design_principles.actor_model.{Command, Event, Query}
@@ -24,10 +31,13 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
 
   override def receiveCommand: Receive = {
     case cmd: Command =>
+//      println("cmd" + cmd)
       commandBus.publish(cmd)
     case query: Query =>
+//      println("query" + query)
       queryBus.ask(query)
     case other =>
+//      println("other" + other + sender())
       logger.warn(s"[$persistenceId]Unexpected message $other")
   }
 
@@ -43,7 +53,6 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
           )
       }
     case s: State =>
-
     case SnapshotOffer(_, snapshot: State) =>
       state = snapshot
 
