@@ -18,10 +18,17 @@ class ObligacionGetStateHandler(actor: ObligacionActor) extends SyncQueryHandler
     val response = GetObligacionResponse(
       actor.state.saldo,
       actor.state.fechaUltMod,
-      actor.state.registro,
       actor.state.exenta,
-      actor.state.porcentajeExencion.getOrElse(0),
-      actor.state.juicioId
+      actor.state.porcentajeExencion,
+      actor.state.registro,
+      actor.state.lastDeliveryIdByEvents,
+      actor.state.detallesObligacion,
+      actor.state.detallesSupresiones,
+      actor.state.juicioId,
+      actor.state.isAdheridoDebito,
+      actor.state.eventCounter,
+      actor.state.idExterno,
+      actor.state.resultDmn
     )
     import java.time.format.DateTimeFormatter
     val time = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").format(ZonedDateTime.now())

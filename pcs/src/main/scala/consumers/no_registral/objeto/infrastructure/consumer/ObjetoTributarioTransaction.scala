@@ -68,7 +68,6 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
           sujetoResponsable = sujetoResponsable.head,
           isAdheridoDebito = isAdheridoDebito
         )
-
     actorRef.ask[Response.SuccessProcessing](command)
   }
 }

@@ -4,18 +4,13 @@ import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
-import consumers.no_registral.obligacion.application.entities.{
-  DetallesObligacion,
-  ListDetallesObligaciones,
-  ObligacionCommands,
-  ObligacionesTri
-}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionCommands, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import design_principles.actor_model.Response
 import io.circe.parser.decode
 import io.circe.syntax.EncoderOps
 import monitoring.Monitoring
-import org.camunda.dmn.DmnEngine
+import org.camunda.dmn.{DmnEngine, logger}
 import org.camunda.dmn.parser.ParsedDmn
 import scalaz.\/
 
@@ -34,6 +29,8 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
+    logger.error("HOLA 1")
+    logger.error(input)
     decode[ObligacionesTri](input)
   }
 

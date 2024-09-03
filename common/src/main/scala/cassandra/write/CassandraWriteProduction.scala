@@ -4,9 +4,11 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 import akka.Done
 import cassandra.CqlSessionSingleton
+import com.datastax.oss.driver.api.core.cql.AsyncResultSet
 import ddd.ReadSideProjection
 import design_principles.actor_model.Event
 import org.slf4j.LoggerFactory
+
 import scala.jdk.FutureConverters.CompletionStageOps
 
 class CassandraWriteProduction extends CassandraWrite {
@@ -32,4 +34,8 @@ class CassandraWriteProduction extends CassandraWrite {
     session.executeAsync(cql).asScala.map { _ =>
       akka.Done
     }
+
+  override def cqlSelect(cql: String)(implicit ec: ExecutionContext): Future[AsyncResultSet] = {
+    session.executeAsync(cql).asScala
+  }
 }

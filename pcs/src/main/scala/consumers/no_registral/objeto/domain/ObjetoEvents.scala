@@ -5,7 +5,7 @@ import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exen
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
-sealed trait ObjetoEvents extends Event  with CbroSerialization{
+sealed trait ObjetoEvents extends Event with CbroSerialization {
   def sujetoId: String
   def objetoId: String
   def tipoObjeto: String
@@ -25,13 +25,13 @@ object ObjetoEvents {
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromSujeto(
-                               deliveryId: BigInt,
-                               sujetoId: String,
-                               objetoId: String,
-                               tipoObjeto: String,
-                               tiene30Sujeto:Boolean,
-                               exclusionSUjeto: Option[String]
-                             ) extends ObjetoEvents
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      tipoObjeto: String,
+      tiene30Sujeto: Boolean,
+      exclusionSUjeto: Option[String]
+  ) extends ObjetoEvents
   case class ObjetoSnapshotPersisted(
       deliveryId: BigInt,
       sujetoId: String,
@@ -45,7 +45,7 @@ object ObjetoEvents {
       porcentajeResponsabilidad: BigDecimal,
       registro: Option[ObjetoExternalDto],
       obligacionesSaldo: Map[String, BigDecimal] = Map.empty,
-      cuotas:List[Boolean],
+      cuotas: List[Boolean],
       bandTipo: String,
       operacion: String,
       idExterno: Option[String],
@@ -67,7 +67,6 @@ object ObjetoEvents {
       isAdheridoDebito: Option[Boolean],
       clasificacionObjeto: Option[String],
       resultDmn: Option[Int]
-
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromAnt(
@@ -75,7 +74,10 @@ object ObjetoEvents {
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
-      registro: ObjetoExternalDto
+      registro: ObjetoExternalDto,
+      isResponsable: Option[Boolean],
+      sujetoResponsable: Option[String],
+      isAdheridoDebito: Option[Boolean]
   ) extends ObjetoEvents
 
   case class ObjetoTagAdded(
@@ -94,13 +96,13 @@ object ObjetoEvents {
       tagRemoved: String
   ) extends ObjetoEvents
   case class UpdatedState30ObjetoFromObjVinculo(
-                                                deliveryId: BigInt,
-                                                sujetoId: String,
-                                                objetoId: String,
-                                                tipoObjeto: String,
-                                                tiene30ObjetoVinculo: Boolean,
-                                                exclusionObjetoVinculo: Option[String]
-                                              ) extends ObjetoEvents
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      tipoObjeto: String,
+      tiene30ObjetoVinculo: Boolean,
+      exclusionObjetoVinculo: Option[String]
+  ) extends ObjetoEvents
   case class ObjetoUpdatedFromObligacion(
       deliveryId: BigInt,
       sujetoId: String,
@@ -147,17 +149,16 @@ object ObjetoEvents {
       objetoId: String,
       tipoObjeto: String,
       obligacionId: String,
-      cuota:Option[String]
+      cuota: Option[String]
   ) extends ObjetoEvents
   case class RemovedObjetoFromObligacion(
-                                          deliveryId: BigInt,
-                                          sujetoId: String,
-                                          objetoId: String,
-                                          tipoObjeto: String,
-                                          obligacionId: String,
-                                          cuota: Option[String]
-                                        ) extends ObjetoEvents
-
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      tipoObjeto: String,
+      obligacionId: String,
+      cuota: Option[String]
+  ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromObnTreintaProciento(
       deliveryId: BigInt,
@@ -172,6 +173,5 @@ object ObjetoEvents {
       idExterno: Option[String],
       cuota: Option[String]
   ) extends ObjetoEvents
-
 
 }

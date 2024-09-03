@@ -28,39 +28,13 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
     actor.state += event
    // val exclusionObjeto = QueryExclusionObjeto(command.objetoId)
     val obj_default = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
-//    println(
-//      " | command.exclusionSUjeto,: " + command.exclusionSUjeto +
-//      " | actor.state.exclusionObjeto: " + actor.state.exclusionObjeto +
-//      " | actor.state.clasificacionObjeto: " + actor.state.clasificacionObjeto +
-//      " | actor.state.tiene30Objeto: " + actor.state.tiene30Objeto +
-//      " | actor.state.tiene30Sujeto.get: " + actor.state.tiene30Sujeto.get +
-//      " | actor.state.tiene30ObjetoVinculo: " + actor.state.tiene30ObjetoVinculo
-//    )
-
-//    var exclusionSujeto2 = ""
-//    if (command.exclusionSUjeto == null) {
-//      exclusionSujeto2 = ""
-//    } else {
-//      exclusionSujeto2 = command.exclusionSUjeto
-//    }
-//
-//    var exclusionObjeto2 = ""
-//    if (actor.state.exclusionObjeto == null) {
-//      exclusionObjeto2 = ""
-//    } else {
-//      exclusionObjeto2 = actor.state.exclusionObjeto
-//    }
-
-
-    val result = DMNTreintaPorcientoFinal.calcularDmnFinal(DmnFinal(
-      command.exclusionSUjeto,
+    val result = DMNTreintaPorcientoFinal.calcularDmnFinal(DmnFinal(command.exclusionSUjeto,
       actor.state.exclusionObjeto,
       actor.state.clasificacionObjeto,
       actor.state.tiene30Objeto,
       actor.state.tiene30Sujeto.get,
       actor.state.tiene30ObjetoVinculo)
     )
-
     result match {
 
       case d if d.equals(true) =>
@@ -79,30 +53,6 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
           }
         }
     }
-//    DMNTreintaPorcientoFinal.dmn(actor.state, command, "")
-//      .fold(e => {
-//        log.error("ERROR DMN OBJETO: " + e)
-//      },
-//        {
-//          case d if d.value.equals(true) =>
-//            val newState = actor.state.copy(aplicarDescuento = Some(true))
-//            if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA")){
-//              actor.persistSnapshot(event, newState) { () =>
-//                sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-//              }
-//            }
-//            //.state = newState
-//          //todo solo persistir en readside
-//          case _ =>
-//            val newState = actor.state.copy(aplicarDescuento = Some(false))
-//            if(!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA")){
-//              actor.persistSnapshot(event, newState) { () =>
-//                sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-//              }
-//            }
-//        })
-    //todo dmn
-    //todo print campos que entran al dmn y la salida
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }

@@ -40,6 +40,16 @@ object SujetoCommands {
       clasificacionObjeto: String
   ) extends SujetoCommands
 
+  case class SujetoUpdateFromObjetoAnt(
+                                     deliveryId: BigInt,
+                                     sujetoId: String,
+                                     objetoId: String,
+                                     tipoObjeto: String,
+                                     saldoObjeto: BigDecimal,
+                                     saldoObligaciones: BigDecimal,
+                                     clasificacionObjeto: String
+                                   ) extends SujetoCommands
+
   case class SujetoSetBajaFromObjeto(
       deliveryId: BigInt,
       sujetoId: String,

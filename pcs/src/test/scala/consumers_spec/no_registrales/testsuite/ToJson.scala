@@ -8,14 +8,13 @@ import consumers.no_registral.obligacion.application.entities.ObligacionCommands
   ObligacionUpdateFromDto
 }
 import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
-import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto.{ObligacionesAnt, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json._
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.{SujetoAnt, SujetoTri}
 import consumers.no_registral.sujeto.infrastructure.json._
 
 object ToJson {
-  implicit class ObligacionesAntToJson(dto: ObligacionesAnt) {
+/*  implicit class ObligacionesAntToJson(dto: ObligacionesAnt) {
     def toJson: String =
       serialization
         .encode[ObligacionesAnt](dto)
@@ -67,5 +66,5 @@ object ToJson {
   implicit class ObligacionUpdateExencionToJson(dto: ObligacionUpdateExencion) {
     def toJson: String =
       serialization.encode[ObligacionUpdateExencion](dto)
-  }
+  }*/
 }

@@ -46,4 +46,17 @@ object ObligacionCommands {
       obligacionId: String,
       exencion: Exencion
   ) extends ObligacionCommands
+
+  case class ObligacionAntUpdateFromDto(
+      sujetoId: String,
+      objetoId: String,
+      tipoObjeto: String,
+      obligacionId: String,
+      deliveryId: BigInt,
+      registro: ObligacionExternalDto,
+      detallesObligacion: Seq[DetallesObligacion],
+      detallesSupresiones: Seq[DetallesSupresiones],
+      isAdheridoDebito: Option[Boolean],
+      cuota: Option[String]
+  ) extends ObligacionCommands
 }

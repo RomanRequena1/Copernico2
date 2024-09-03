@@ -4,6 +4,8 @@ import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoU
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromObligacion
 import consumers.no_registral.sujeto.domain.SujetoEvents.SujetoUpdatedFromObjeto
 
+import java.time.LocalDateTime
+
 object Model {
 
   var usedEntityIds: Set[String] = Set.empty
@@ -22,7 +24,7 @@ object Model {
   def tipoObjeto = randomEntityId
   def obligacionId = randomEntityId
 
-  def obligacionObjetoUpdated(
+  /*def obligacionObjetoUpdated(
       objetoId: Int,
       obligacionId: String,
       sujetoId: String,
@@ -54,25 +56,28 @@ object Model {
       tipoObjeto = "I",
       saldoObjeto = saldo,
       saldoObligaciones = 0
-    )
+    )*/
 
   def deliveryId: Int = utils.generators.Numbers.positiveNumber
-
-  def obligacionTri(offset: Int,
-                    obligacionId: String,
-                    objetoId: String,
-                    sujetoId: String,
-                    saldoObligacion: BigDecimal,
-                    vencida: Boolean = false) =
-    ObjetoUpdateFromObligacion(
-      sujetoId = sujetoId,
-      objetoId = objetoId,
-      tipoObjeto = "I",
-      deliveryId = deliveryId,
-      obligacionId = obligacionId,
-      saldoObligacion = saldoObligacion,
-      obligacionExenta = false,
-      porcentajeExencion = None
-    )
+  def fec: LocalDateTime = LocalDateTime.now()
+  def deliveryIdAct: BigInt = BigInt(
+    f"${fec.getYear}%04d${fec.getMonthValue}%02d${fec.getDayOfMonth}%02d${fec.getHour}%02d${fec.getMinute}%02d${fec.getSecond}%02d${fec.getNano / 1000}%06d"
+  )
+//  def obligacionTri(offset: Int,
+//                    obligacionId: String,
+//                    objetoId: String,
+//                    sujetoId: String,
+//                    saldoObligacion: BigDecimal,
+//                    vencida: Boolean = false) =
+//    ObjetoUpdateFromObligacion(
+//      sujetoId = sujetoId,
+//      objetoId = objetoId,
+//      tipoObjeto = "I",
+//      deliveryId = deliveryId,
+//      obligacionId = obligacionId,
+//      saldoObligacion = saldoObligacion,
+//      obligacionExenta = false,
+//      porcentajeExencion = None
+//    )
 
 }

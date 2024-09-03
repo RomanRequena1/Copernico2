@@ -12,18 +12,18 @@ class GetStateObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetStat
     val sender = actor.context.sender()
 
     val response = GetObjetoResponse(
-      actor.state.lastDeliveryIdByEvents,
-      actor.state.saldo,
-      actor.state.tags,
-      actor.state.obligaciones,
-      actor.state.sujetos,
-      actor.state.sujetoResponsable,
-      actor.state.fechaUltMod,
-      actor.state.registro,
-      actor.state.exenciones,
-      actor.state.clasificacionObjeto,
-      actor.state.tiene30Objeto,
-      actor.state.aplicarDescuento.getOrElse(true)
+      lastDeliveryIdByEvents = actor.state.lastDeliveryIdByEvents,
+      saldo = actor.state.saldo,
+      tags = actor.state.tags,
+      obligaciones = actor.state.obligaciones,
+      sujetos = actor.state.sujetos,
+      sujetoResponsable = actor.state.sujetoResponsable,
+      fechaUltMod = actor.state.fechaUltMod,
+      registro = actor.state.registro,
+      exenciones = actor.state.exenciones,
+      bandTipo = actor.state.clasificacionObjeto,
+      treinta = actor.state.tiene30Objeto,
+      treintaFinal = actor.state.aplicarDescuento.getOrElse(true)
     )
     log.info(s"[${actor.persistenceId}] GetState | $response")
     sender ! response

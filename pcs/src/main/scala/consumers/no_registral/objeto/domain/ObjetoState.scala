@@ -2,53 +2,57 @@ package consumers.no_registral.objeto.domain
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import ddd.{AbstractState, eventCounterMax}
+import ddd.{eventCounterMax, AbstractState}
 import serialization.CbroSerialization
 
 import java.time.LocalDateTime
 
 case class ObjetoState(
-                        saldo: BigDecimal = 0,
-                        obligacionesSaldo: Map[String, BigDecimal] = Map.empty,
-                        obligaciones: Set[String] = Set.empty,
-                        sujetos: Set[String] = Set.empty,
-                        sujetoResponsable: Option[String] = None,
-                        fechaUltMod: LocalDateTime = LocalDateTime.MIN,
-                        registro: Option[ObjetoExternalDto] = None,
-                        tags: Set[String] = Set.empty,
-                        isResponsable: Boolean = false,
-                        lastDeliveryIdByEvents: BigInt = 0,
-                        porcentajeResponsabilidad: BigDecimal = 0,
-                        exenciones: Set[Exencion] = Set.empty,
-                        isBaja: Boolean = false,
-                        isAdheridoDebito: Boolean = false,
-                        eventCounter: Int = 0,
-                        cuotas: List[Boolean] = List(false, false, false, false, false, false, false, false, false, false, false, false, false),
-                        tiene30Objeto: Boolean = true,
-                        tiene30ObjetoVinculo: Boolean = true,
-                        clasificacionObjeto: String = "2",
-                        tiene30Sujeto: Option[Boolean] = None,
-                        aplicarDescuento: Option[Boolean] = None,
-                        resulDmn: Option[Int] = None,
-                        obnVencidas: Map[String, Boolean] = Map.empty,
-                        deuda30Objeto: Boolean = true,
-                        tipoExclusion: String = "",
-                        exclusionObjeto: Option[String] = None,
-                        exclusionObjetoVinculo: Option[String] = None
-                      ) extends AbstractState[ObjetoEvents] with CbroSerialization {
+    saldo: BigDecimal = 0,
+    obligacionesSaldo: Map[String, BigDecimal] = Map.empty,
+    obligaciones: Set[String] = Set.empty,
+    sujetos: Set[String] = Set.empty,
+    sujetoResponsable: Option[String] = None,
+    fechaUltMod: LocalDateTime = LocalDateTime.MIN,
+    registro: Option[ObjetoExternalDto] = None,
+    tags: Set[String] = Set.empty,
+    isResponsable: Boolean = false,
+    lastDeliveryIdByEvents: BigInt = 0,
+    porcentajeResponsabilidad: BigDecimal = 0,
+    exenciones: Set[Exencion] = Set.empty,
+    isBaja: Boolean = false,
+    isAdheridoDebito: Boolean = false,
+    eventCounter: Int = 0,
+    cuotas: List[Boolean] =
+      List(false, false, false, false, false, false, false, false, false, false, false, false, false),
+    tiene30Objeto: Boolean = true,
+    tiene30ObjetoVinculo: Boolean = true,
+    clasificacionObjeto: String = "2",
+    tiene30Sujeto: Option[Boolean] = None,
+    aplicarDescuento: Option[Boolean] = None,
+    resulDmn: Option[Int] = None,
+    obnVencidas: Map[String, Boolean] = Map.empty,
+    deuda30Objeto: Boolean = true,
+    tipoExclusion: String = "",
+    exclusionObjeto: Option[String] = None,
+    exclusionObjetoVinculo: Option[String] = None
+) extends AbstractState[ObjetoEvents]
+    with CbroSerialization {
 
   override def +(event: ObjetoEvents): ObjetoState = {
     eventCounter match {
-      case n if (n > (eventCounterMax)) => changeState(event).copy(
-        fechaUltMod = LocalDateTime.now,
-        lastDeliveryIdByEvents = event.deliveryId,
-        eventCounter = 0
-      )
-      case n => changeState(event).copy(
-        fechaUltMod = LocalDateTime.now,
-        lastDeliveryIdByEvents = event.deliveryId,
-        eventCounter = n + 1
-      )
+      case n if (n > (eventCounterMax)) =>
+        changeState(event).copy(
+          fechaUltMod = LocalDateTime.now,
+          lastDeliveryIdByEvents = event.deliveryId,
+          eventCounter = 0
+        )
+      case n =>
+        changeState(event).copy(
+          fechaUltMod = LocalDateTime.now,
+          lastDeliveryIdByEvents = event.deliveryId,
+          eventCounter = n + 1
+        )
     }
     /*changeState(event).copy(
       fechaUltMod = LocalDateTime.now,
@@ -67,7 +71,7 @@ case class ObjetoState(
    */
   private def validExitsObnVencidas(obligacionId: String) = {
     obnVencidas match {
-      case x if x.contains(obligacionId) => x updated(obligacionId, true) //la modifico si existe
+      case x if x.contains(obligacionId) => x updated (obligacionId, true) //la modifico si existe
       case x => x + (obligacionId -> true) //la creo sino existe
     }
   }
@@ -75,12 +79,12 @@ case class ObjetoState(
   /**
    * 1. Si todos los valores del map son true y tiene30ObjetoVinculo es true, entonces tiene30Objeto es true y sino es false
    */
-  private def diffCurrentStateAndNewStateTest(currentObnVencidas: Map[String, Boolean], _tiene30ObjetoVinculo: Boolean) = { //todo cambiar nombre de funcion
+  private def diffCurrentStateAndNewStateTest(currentObnVencidas: Map[String, Boolean],
+                                              _tiene30ObjetoVinculo: Boolean) = { //todo cambiar nombre de funcion
 
     if (currentObnVencidas.values.forall(_ == true) && _tiene30ObjetoVinculo.equals(true)) {
       true
-    }
-    else {
+    } else {
       false
     }
   }
@@ -88,8 +92,7 @@ case class ObjetoState(
   private def diffCurrentStateAndNewState(currentObnVencidas: Map[String, Boolean], _tiene30ObjetoVinculo: Boolean) = { //todo cambiar nombre de funcion
     if (currentObnVencidas.values.forall(_ == true)) {
       true
-    }
-    else {
+    } else {
       false
     }
   }
@@ -107,11 +110,10 @@ case class ObjetoState(
    */
   private def validExitsObnVencidasTreinta(obligacionId: String) = {
     obnVencidas match {
-      case x if x.contains(obligacionId) => x updated(obligacionId, false) //la modifico si existe
+      case x if x.contains(obligacionId) => x updated (obligacionId, false) //la modifico si existe
       case x => x + (obligacionId -> false) //la creo sino existe
     }
   }
-
 
   private def changeState(event: ObjetoEvents): ObjetoState =
     event match {
@@ -126,12 +128,12 @@ case class ObjetoState(
           isBaja = false
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
-        copy(tiene30Sujeto = Some(evt.tiene30Sujeto),
-        )
+        copy(tiene30Sujeto = Some(evt.tiene30Sujeto))
       // TODO: check when an object with multiple owners changes its exclusions.
       case evt: ObjetoEvents.UpdatedState30ObjetoFromObjVinculo =>
         val _tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo
-        copy(tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
+        copy(
+          tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
           // Este pisaba a todos los tiene30objeto de los VSO, deberia guardarse solo en tiene30ObjVinculo
           //          tiene30Objeto = diffCurrentStateAndNewStateTest(obnVencidas, _tiene30ObjetoVinculo),
           exclusionObjeto = evt.exclusionObjetoVinculo
@@ -156,11 +158,19 @@ case class ObjetoState(
             case _ => None
           }
         )
-      //      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
-      //        copy(
-      //          registro = Some(evt.registro),
-      //          sujetos = sujetos + evt.sujetoId
-      //        )
+
+      case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
+        copy(
+          sujetoResponsable = evt.sujetoResponsable match {
+            case Some(value) => Some(value)
+            case None => this.sujetoResponsable
+          },
+          isResponsable = evt.isResponsable.getOrElse(false),
+          registro = Some(evt.registro),
+          sujetos = sujetos + evt.sujetoId,
+          isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
+          isBaja = false
+        )
       case ObjetoEvents.ObjetoUpdatedFromObligacion(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, _) =>
         val _obnVencidas = validExitsObnVencidas(obligacionId)
         val obligacionesSaldo_ = obligacionesSaldo + (obligacionId -> saldoObligacion)
@@ -172,16 +182,15 @@ case class ObjetoState(
           sujetos = sujetos + sujetoId,
           isBaja = false,
           obnVencidas = _obnVencidas,
-          tiene30Objeto = diff,
+          tiene30Objeto = diff
         )
       case ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento(_, _, _, _, _, obligacionId, _, _, _, _, _) =>
         val _obnVencidas = validExitsObnVencidasTreinta(obligacionId)
         val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
         copy(
           obnVencidas = _obnVencidas,
-          tiene30Objeto = diff,
+          tiene30Objeto = diff
         )
-
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
         copy(
           saldo = evt.saldo,
@@ -192,7 +201,6 @@ case class ObjetoState(
           isBaja = false,
           cuotas = evt.cuotas
         )
-
       case evt: ObjetoEvents.ObjetoTagAdded =>
         copy(tags = tags + evt.tagAdded, isBaja = false)
       case evt: ObjetoEvents.ObjetoTagRemoved =>
@@ -208,7 +216,6 @@ case class ObjetoState(
           registro = Some(evt.registro),
           isBaja = true
         )
-
       case evt: ObjetoEvents.ObjetoRemovedObligacion =>
         val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
         if (evt.cuota.isEmpty || evt.cuota.get.toInt < 0 || evt.cuota.get.toInt > 12) {
@@ -220,7 +227,7 @@ case class ObjetoState(
             obligacionesSaldo = obligacionesSaldo_,
             obnVencidas = _obnVencidas,
             tiene30Objeto = diff
-          )                       //todo ver aca como es para cuando pago la obligacion se cambie el state de los objetos
+          ) //todo ver aca como es para cuando pago la obligacion se cambie el state de los objetos
         } else {
           val cuotaIndex_ = evt.cuota.get.toInt
           val cuotasPagadas_ = cuotas.updated(cuotaIndex_, true)
@@ -235,7 +242,6 @@ case class ObjetoState(
             tiene30Objeto = diff
           )
         }
-
       case evt: ObjetoEvents.RemovedObjetoFromObligacion =>
         val _obnVencidas =
           if (obnVencidas.contains(evt.obligacionId)) {

@@ -23,7 +23,7 @@
     <logger name="com.codahale.metrics.JmxReporter" level="ERROR"/>
     <logger name="in net.logstash" level="ERROR"/>
 
-    <root level="INFO">
+    <root level="ERROR">
         <appender-ref ref="CONSOLE"/>
     </root>
 

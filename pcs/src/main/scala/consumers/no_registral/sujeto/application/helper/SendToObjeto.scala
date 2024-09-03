@@ -15,16 +15,17 @@ object SendToObjeto {
     if (currentState.diffStates) {
       actorContext
         .child(s"Sujeto-$sujetoId-Objeto-$objetoId-$tipoObjeto") match {
-        case Some(objChild) => objChild.ask[Response.SuccessProcessing](
-          ObjetoUpdateFromSujeto(
-            deliveryId = currentState.lastDeliveryIdByEvents,
-            sujetoId = sujetoId,
-            objetoId = objetoId,
-            tipoObjeto = tipoObjeto,
-            tiene30Sujeto = currentState.tiene30Sujeto,
-            exclusionSUjeto = currentState.exclusionSujeto
+        case Some(objChild) =>
+          objChild.ask[Response.SuccessProcessing](
+            ObjetoUpdateFromSujeto(
+              deliveryId = currentState.lastDeliveryIdByEvents,
+              sujetoId = sujetoId,
+              objetoId = objetoId,
+              tipoObjeto = tipoObjeto,
+              tiene30Sujeto = currentState.tiene30Sujeto,
+              exclusionSUjeto = currentState.exclusionSujeto
+            )
           )
-        )
         case _ => ()
       }
     } else {
@@ -49,7 +50,11 @@ object SendToObjeto {
 }
 
 object SendToObjetoFromSujeto {
-  def apply(currentState: SujetoState, sender: ActorRef, actorContext: ActorContext, sujetoId: String, exclusionSujeto: Option[String]): Unit = {
+  def apply(currentState: SujetoState,
+            sender: ActorRef,
+            actorContext: ActorContext,
+            sujetoId: String,
+            exclusionSujeto: Option[String]): Unit = {
 
     actorContext.children.foreach(actor => {
       actor.ask[Response.SuccessProcessing](

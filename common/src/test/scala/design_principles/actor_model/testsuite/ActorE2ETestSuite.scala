@@ -5,5 +5,5 @@ import design_principles.actor_model.testkit.QueryTestkit
 
 trait ActorE2ETestSuite extends ActorSpec with ActorSpecWriteside {
 
-  override val Query: QueryTestkit.AgainstHTTP
+//  override val Query: QueryTestkit.AgainstHTTP
 }

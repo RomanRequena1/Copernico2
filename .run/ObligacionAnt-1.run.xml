@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ObjSpecUTJulian" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
+  <configuration default="false" name="ObligacionAnt-1" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
     <module name="Copernico.pcs" />
     <option name="VMParameters" value="" />
     <option name="allowRunningInParallel" value="false" />
@@ -62,7 +62,7 @@
     <option name="selectedOptions">
       <list />
     </option>
-    <option name="testKind" value="Class" />
+    <option name="testKind" value="Test name" />
     <option name="workingDirectory" value="$PROJECT_DIR$" />
     <option name="envs">
       <map>
@@ -113,7 +113,8 @@
       </map>
     </option>
     <option name="shortenClasspath" value="NONE" />
-    <option name="testClassPath" value="consumers_spec.no_registrales.objeto.unit_test.ObjetoSpecUT" />
+    <option name="testClassPath" value="consumers_spec.no_registrales.obligacion.unit_test.ObligacionSpecUT" />
+    <option name="testName" value="una obligacion ANT should dar de alta una obligacion ANT" />
     <option name="workingDirectory" value="$PROJECT_DIR$" />
     <method v="2">
       <option name="Make" enabled="true" />

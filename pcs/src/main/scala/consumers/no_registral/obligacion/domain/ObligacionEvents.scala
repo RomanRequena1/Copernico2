@@ -1,11 +1,16 @@
 package consumers.no_registral.obligacion.domain
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionExternalDto, ObligacionMessage}
+import consumers.no_registral.obligacion.application.entities.{
+  DetallesObligacion,
+  DetallesSupresiones,
+  ObligacionExternalDto,
+  ObligacionMessage
+}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
-sealed trait ObligacionEvents extends Event with ObligacionMessage with CbroSerialization{
+sealed trait ObligacionEvents extends Event with ObligacionMessage with CbroSerialization {
   def sujetoId: String
   def objetoId: String
   def tipoObjeto: String
@@ -69,6 +74,19 @@ object ObligacionEvents {
       tipoObjeto: String,
       obligacionId: String,
       exencion: Exencion
+  ) extends ObligacionEvents
+
+  case class ObligacionAntUpdatedFromDto(
+      deliveryId: BigInt,
+      sujetoId: String,
+      objetoId: String,
+      tipoObjeto: String,
+      obligacionId: String,
+      registro: ObligacionExternalDto,
+      detallesObligacion: Seq[DetallesObligacion],
+      detallesSupresiones: Seq[DetallesSupresiones],
+      isAdheridoDebito: Option[Boolean],
+      cuota: Option[String]
   ) extends ObligacionEvents
 
 }

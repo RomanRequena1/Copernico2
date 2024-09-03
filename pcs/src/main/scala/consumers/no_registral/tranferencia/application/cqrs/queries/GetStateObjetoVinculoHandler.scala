@@ -19,7 +19,7 @@ class GetStateObjetoVinculoHandler(actor: ObjetoVinculoActor) extends SyncQueryH
       actor.state.tiene30ObjetoVinculo
 
     )
-    log.error(s"[${actor.persistenceId}] GetState | $response")
+//    log.error(s"[${actor.persistenceId}] GetState | $response")
     sender ! response
     Success(response)
   }

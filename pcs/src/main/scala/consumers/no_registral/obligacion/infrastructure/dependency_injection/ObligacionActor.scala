@@ -17,7 +17,6 @@ import kafka.KafkaMessageProducer.KafkaKeyValue
 
 import scala.util.{Failure, Success, Try}
 
-
 class ObligacionActor(requirements: MonitoringAndMessageProducer)
     extends PersistentBaseActor[ObligacionEvents, ObligacionState](requirements.monitoring) {
   //val timescaledbActorSelector: ActorSelection = context.actorSelection("akka://PersonClassificationService/user/timescaledb")
@@ -29,9 +28,12 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     queryBus.subscribe[ObligacionQueries.GetStateObligacion](new ObligacionGetStateHandler(this).handle)
     queryBus.subscribe[ObligacionQueries.GetSnapshotObligacion](new ObligacionSnapshotHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateFromDto](new ObligacionUpdateFromDtoHandler(this).handle)
+    commandBus.subscribe[ObligacionCommands.ObligacionAntUpdateFromDto](new ObligacionAntUpdateFromDtoHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateExencion](new ObligacionUpdateExencionHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionRemove](new ObligacionRemoveHandler(this).handle)
-    commandBus.subscribe[ObligacionCommands.ObligacionRemoveInfoFromObjeto](new ObligacionRemoveFromObjeto(this, requirements).handle)
+    commandBus.subscribe[ObligacionCommands.ObligacionRemoveInfoFromObjeto](
+      new ObligacionRemoveFromObjeto(this, requirements).handle
+    )
   }
 
   def informParent(cmd: ObligacionCommands): Unit = {
@@ -40,10 +42,11 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       cmd.sujetoId,
       cmd.objetoId,
       cmd match {
-        case c: ObligacionCommands.ObligacionUpdateFromDto => c.registro.BOB_SOJ_IDENTIFICADOR_2 match {
-          case Some(value) => Some(value)
-          case None => None
-        }
+        case c: ObligacionCommands.ObligacionUpdateFromDto =>
+          c.registro.BOB_SOJ_IDENTIFICADOR_2 match {
+            case Some(value) => Some(value)
+            case None => None
+          }
         case _ => None
       },
       cmd.tipoObjeto,
@@ -62,10 +65,11 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       evt.sujetoId,
       evt.objetoId,
       evt match {
-        case c: ObligacionUpdatedFromDto => c.registro.BOB_SOJ_IDENTIFICADOR_2 match {
-          case Some(value) => Some(value)
-          case None => None
-        }
+        case c: ObligacionUpdatedFromDto =>
+          c.registro.BOB_SOJ_IDENTIFICADOR_2 match {
+            case Some(value) => Some(value)
+            case None => None
+          }
         case _ => None
       },
       evt.tipoObjeto,
@@ -104,26 +108,28 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       operacion = ObligacionEvents.operaciones("Upsert"),
       resultDmn = state.resultDmn
     ).asJson.toString()
-    requirements.messageProducer.produce(
-      data = Seq(
-        KafkaKeyValue(
-          persistenceId,
-          event
-        )
-      ),
-      topic = kafkaTopic
-    )(_ => handler()).onComplete {
-      case Failure(ex) => log.error("Error when try to send to topic " + ex)
-      case Success(value) => {
-        log.debug("Success,  sent to topic")
-        //println("CUMBIA actor " + timescaledbActorSelector)
-        //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
+    requirements.messageProducer
+      .produce(
+        data = Seq(
+          KafkaKeyValue(
+            persistenceId,
+            event
+          )
+        ),
+        topic = kafkaTopic
+      )(_ => handler())
+      .onComplete {
+        case Failure(ex) => log.error("Error when try to send to topic " + ex)
+        case Success(value) => {
+          log.debug("Success,  sent to topic")
+          //println("CUMBIA actor " + timescaledbActorSelector)
+          //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
 
-        //if (enable.equals("true")) {
+          //if (enable.equals("true")) {
           //Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
-        //}
+          //}
+        }
       }
-    }
   }
 
   def deleteSnapshot(evt: ObligacionEvents)(handler: () => Unit): Unit = {
@@ -143,24 +149,26 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       operacion = ObligacionEvents.operaciones("Delete"),
       resultDmn = state.resultDmn
     ).asJson.toString()
-    requirements.messageProducer.produce(
-      data = Seq(
-        KafkaKeyValue(
-          persistenceId,
-          event
-        )
-      ),
-      topic = kafkaTopic
-    )(_ => handler()).onComplete {
-      case Failure(ex) => log.error("Error when try to send to topic " + ex)
-      case Success(value) => {
-        log.debug("Success,  sent to topic")
-        //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
-        //if (enable.equals("true")) {
+    requirements.messageProducer
+      .produce(
+        data = Seq(
+          KafkaKeyValue(
+            persistenceId,
+            event
+          )
+        ),
+        topic = kafkaTopic
+      )(_ => handler())
+      .onComplete {
+        case Failure(ex) => log.error("Error when try to send to topic " + ex)
+        case Success(value) => {
+          log.debug("Success,  sent to topic")
+          //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
+          //if (enable.equals("true")) {
           //Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
-        //}
+          //}
+        }
       }
-    }
   }
 }
 

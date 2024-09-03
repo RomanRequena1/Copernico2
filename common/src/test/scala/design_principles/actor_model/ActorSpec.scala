@@ -12,12 +12,9 @@ import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, RandomTestOrder}
-import serialization.EventSerializer
 
 object ActorSpec {
   lazy val config: Config = Seq(
-    ConfigFactory parseString EventSerializer.eventAdapterConf,
-    ConfigFactory parseString EventSerializer.serializationConf,
     ConfigFactory.load()
   ).reduce(_ withFallback _)
 
@@ -34,7 +31,6 @@ abstract class ActorSpec
     with BeforeAndAfterEach
     with Eventually
     with IntegrationPatience
-    with RandomTestOrder
     with ScalaFutures {
 
   def parallelActorSystemRunner(testContext: ActorSystem => Unit): Unit =

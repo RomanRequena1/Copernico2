@@ -17,7 +17,6 @@ object FileStreamDmn {
     val path: String = Try(System.getenv("PATH_DMN_DECISION_30")).getOrElse("/opt/docker/bin/decision_30_descuento.dmn")
     val file: FileInputStream = Try(new FileInputStream(path)).getOrElse(null)
     if(file == null) {
-      println("ERROR FileStreamDmn")
       val path: String = Try(System.getenv("PATH_DMN_DECISION_30")).getOrElse("/opt/docker/bin/decision_30_descuento.dmn")
       val file1: FileInputStream = Try(new FileInputStream(path)).getOrElse(null)
       val chequeoDmn1: Either[DmnEngine.Failure, ParsedDmn] = new DmnEngine().parse(file1)

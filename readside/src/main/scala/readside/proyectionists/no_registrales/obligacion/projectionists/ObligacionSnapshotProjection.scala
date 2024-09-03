@@ -1,5 +1,9 @@
 package readside.proyectionists.no_registrales.obligacion.projectionists
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionExternalDto}
+import consumers.no_registral.obligacion.application.entities.{
+  DetallesObligacion,
+  DetallesSupresiones,
+  ObligacionExternalDto
+}
 import consumers.no_registral.obligacion.domain.ObligacionEvents
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import io.circe.parser._
@@ -18,6 +22,14 @@ final case class ObligacionSnapshotProjection(
     case None => None
   }
 
+  val bobSupresionesResult: Option[Map[String, List[DetallesSupresiones]]] =
+    decode[Map[String, List[DetallesSupresiones]]](registro.get.BOB_SUPRESIONES.asJson.toString()).toOption
+
+  val mao2 = bobSupresionesResult match {
+    case Some(value) => Map("BOB_DETALLES_SUPRESIONES" -> value.get("BOB_DETALLES_SUPRESIONES").asJson.noSpaces)
+    case None => None
+  }
+//  println("CUMBIA mao2: " + mao2)
   val fromRegistro = registro map { registro =>
     List(
       "bob_suj_identificador" -> event.sujetoId,
@@ -35,6 +47,7 @@ final case class ObligacionSnapshotProjection(
       "bob_interes_resar" -> registro.BOB_INTERES_RESAR,
       "bob_jui_id" -> registro.BOB_JUI_ID,
       "bob_otros_atributos" -> Some(mao),
+      "bob_supresiones" -> Some(mao2),
       "bob_pln_id" -> registro.BOB_PLN_ID,
       "bob_prorroga" -> registro.BOB_PRORROGA,
       "bob_soj_identificador_2" -> registro.BOB_SOJ_IDENTIFICADOR_2,
@@ -45,7 +58,6 @@ final case class ObligacionSnapshotProjection(
       "bob_vencimiento_2" -> registro.BOB_VENCIMIENTO_2,
       "bob_tiene30Obligacion" -> registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.tiene30Obligaciones),
       "bob_resultDmn" -> event.resultDmn
-
     )
   }
   val other: List[(String, BigDecimal)] =

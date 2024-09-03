@@ -23,26 +23,19 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
       command.saldoObligaciones,
       command.clasificacionObjeto
     )
-//    val initialization: String = {
-//      Try(System.getenv("INITIALIZATION")).getOrElse(null)
-//    }
-
-//    if (initialization != "true") {
 
     actor.persistEvent(event) { () =>
-
       actor.state += event
-      SendToObjeto(actor.state, sender, actor.context, event.sujetoId,command.objetoId, command.tipoObjeto)
+      SendToObjeto(actor.state, sender, actor.context, event.sujetoId, command.objetoId, command.tipoObjeto)
 
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
-      actor.persistSnapshot(){ _ =>
+      actor.persistSnapshot() { _ =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
     }
-//    }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }
