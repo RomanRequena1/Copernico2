@@ -164,11 +164,12 @@ object Dependencies {
   }
 
   object Kamon extends Module {
-    val core = "io.kamon" %% "kamon-core" % "2.2.0"
-    val status = "io.kamon" %% "kamon-status-page" % "2.2.0"
-    val prometheus = "io.kamon" %% "kamon-prometheus" % "2.2.0"
-    // val bundle = "io.kamon" %% "kamon-bundle" % "2.1.13"
-    override def modules: Seq[sbt.ModuleID] = core :: status :: prometheus :: Nil
+    val core = "io.kamon" %% "kamon-core" % "2.7.3"
+    val status = "io.kamon" %% "kamon-status-page" % "2.7.2"
+    val prometheus = "io.kamon" %% "kamon-prometheus" % "2.7.3"
+    val akkaKamon = "io.kamon" %% "kamon-akka" % "2.7.3"
+    val bundle = "io.kamon" %% "kamon-bundle" % "2.7.3"
+    override def modules: Seq[sbt.ModuleID] = core :: status :: prometheus :: bundle :: akkaKamon :: Nil
   }
 
 
