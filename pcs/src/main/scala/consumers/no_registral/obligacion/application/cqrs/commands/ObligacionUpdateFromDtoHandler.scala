@@ -45,7 +45,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
     def actualizarBB_BOBDetalles(atributosEvento: DetallesObligacion) = {
 
       val declaredFields = atributosEvento.getClass.getDeclaredFields
-      println("DeclaredFieldsEvBB: " + declaredFields.mkString("Array(", ", ", ")"))
       var atributosNuevo = atributosEvento
 
       declaredFields.foreach { campo =>
@@ -81,7 +80,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         } else if (campoEvento.get(evento).equals(Some(999))) {
           campoEvento.set(obligacionNuevoTest, None)
         } else if (campoEvento.getName == "BOB_OTROS_ATRIBUTOS") {
-          println("Estado BOB_OTROS_ATRIBUTOS: " + estado.BOB_OTROS_ATRIBUTOS)
           estado.BOB_OTROS_ATRIBUTOS match {
             // FIXME: si el none _ continua la funcion
             case None => ()
@@ -106,7 +104,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
     def actualizarCCBOBDetalles(atributosEvento: DetallesObligacion, atributosEstado: DetallesObligacion) = {
 
       val declaredFields = atributosEvento.getClass.getDeclaredFields
-      println("DeclaredFieldsEvCC: " + declaredFields.mkString("Array(", ", ", ")"))
       var atributosNuevo = atributosEvento
 
       declaredFields.foreach { campo =>
@@ -134,7 +131,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       val obligacionFFF = actor.state.registro match {
         case None => getBBParams(command.registro)
         case Some(value) => {
-          println("Value: " + value.BOB_OTROS_ATRIBUTOS)
           getCCParams(command.registro, value)
         }
       }
@@ -174,7 +170,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       actor.persistEvent(event) { () =>
         actor.state += event
         if (!(initialization == "true" && command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {
-          //actor.informParent(command)
         }
         if (event.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.tiene30Obligaciones.get.equals(true)) {
           actor.informParent(command)
@@ -190,7 +185,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         }
         actor.lastDeliveryId = command.registro.EV_ID
         actor.persistSnapshot(event) { () =>
-          //println("CUMBIA path sender" + sender.path)
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 
         }

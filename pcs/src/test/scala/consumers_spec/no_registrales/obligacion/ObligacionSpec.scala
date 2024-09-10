@@ -455,83 +455,10 @@ abstract class ObligacionSpec(
  }
 }"""
 
-//  "una obligacion" should
-//  "pisar una obligacion con otra nueva que llegue desde Kafka para el mismo ID" in parallelActorSystemRunner {
-//    implicit s =>
-//      val context = getContext(s)
-//      val messageProducer = context.messageProducer
-//      val Query = context.Query
-//      messageProducer produceObligacion examples.obligacionWithSaldo200
-//      eventually {
-//        val response = Query getStateObligacion examples.obligacionWithSaldo200
-//        response.saldo should be(examples.obligacionWithSaldo200.BOB_SALDO)
-//
-//      }
-//
-//      messageProducer produceObligacion examples.obligacionWithSaldo50
-//      eventually {
-//        val response = Query getStateObligacion examples.obligacionWithSaldo50
-//        response.saldo should be(examples.obligacionWithSaldo50.BOB_SALDO)
-//      }
-//
-//  }
-//
-//  "una obligacion" should "4: dar de alta una obligacion vencida de Lucas" in parallelActorSystemRunner { implicit s =>
-//    val context = getContext(s)
-//    val messageProducer = context.messageProducer
-//    val Query = context.Query
-//    val evento = examples.obligacionExampleVencidaLucas
-//    messageProducer.produceObligacion(evento)
-//    eventually {
-//      val response = Query.getStateObligacion(evento)
-//      println("R" + response.registro)
-//      response.registro should be(Some(evento))
-//    }
-//  }
-//
-//  "una obligacion" should "8: pagar la obligacion que tiene Lucas" in parallelActorSystemRunner { implicit s =>
-//    val context = getContext(s)
-//    val messageProducer = context.messageProducer
-//    val Query = context.Query
-//    val evento = examples.obligacionExamplePagaLucas
-//    messageProducer.produceObligacion(evento)
-//    eventually {
-//      val response = Query.getStateObligacion(evento)
-//      println("R" + response.registro)
-//      response.registro should be(Some(evento))
-//    }
-//  }
-//
-//  "una obligacion" should
-//  "eliminar una obligacion si llega otra nueva que llegue desde Kafka para el mismo ID y con el atributo estado con BAJA (-1)" in parallelActorSystemRunner {
-//    implicit s =>
-//      val context = getContext(s)
-//      val messageProducer = context.messageProducer
-//      val Query = context.Query
-//      messageProducer produceObligacion examples.obligacionWithSaldo200
-//
-//      eventually {
-//        val response = Query getStateObligacion examples.obligacionWithSaldo200
-//        response.saldo should be(examples.obligacionWithSaldo200.BOB_SALDO)
-//      }
-//
-//      messageProducer produceObligacion examples.obligacionWithSaldo200.copy(
-//        BOB_ESTADO = Some("BAJA")
-//      )
-//
-//      Thread.sleep(200)
-//      eventually {
-//        val response = Query getStateObligacion examples.obligacionWithSaldo200
-//        response.saldo should be(0)
-//      }
-//      Thread.sleep(200)
-//  }
-
   "una obligacion ANT vigente" should "dar de alta una obligacion ANT vigente" in parallelActorSystemRunner { implicit s =>
     val context = getContext(s)
     val messageProducer = context.messageProducer
     val Query = context.Query
-//    println("Json Ant Diego: " + jsonAltaObligacionAntVigenteDiego2001)
 
     decode[ObligacionesAnt](jsonAltaObligacionAntVigenteDiego2001) match {
       case Left(err) => println("Error decoding Json Diego" + err)
@@ -549,7 +476,6 @@ abstract class ObligacionSpec(
     val context = getContext(s)
     val messageProducer = context.messageProducer
     val Query = context.Query
-    //    println("Json Ant Diego: " + jsonAltaObligacionAntVigenteDiego2001)
 
     decode[ObligacionesAnt](jsonAltaObligacionAntVencidaDiego801) match {
       case Left(err) => println("Error decoding Json Diego" + err)

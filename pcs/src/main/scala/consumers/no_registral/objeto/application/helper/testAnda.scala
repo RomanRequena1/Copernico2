@@ -27,7 +27,6 @@
 //          val Obje = ObjetoVinculoActor.startWithRequirements(requeriment)
 //          Obje
 ////          implicit val actorObjetoVinculo: ActorRef = actor.context.actorOf(actorProp, objetoVinculoMessageRoots)
-////          println("CUMBIAAAA ::::::::::::::::: actor::::::::::::::::::::: " + actorObjetoVinculo.path + " - ")
 ////          actorObjetoVinculo
 //        }
 //

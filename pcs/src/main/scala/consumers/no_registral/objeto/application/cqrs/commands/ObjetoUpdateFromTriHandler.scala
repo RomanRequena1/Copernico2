@@ -115,7 +115,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
     def actualizarBBSojDetalles(atributosEvento: DetallesObjeto) = {
 
       val declaredFields = atributosEvento.getClass.getDeclaredFields
-      println("DeclaredFieldsEvBB: " + declaredFields.mkString("Array(", ", ", ")"))
       var atributosNuevo = atributosEvento
 
       declaredFields.foreach { campo =>
@@ -151,7 +150,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
         } else if (campoEvento.get(evento).equals(Some(999))) {
           campoEvento.set(objetoNuevoTest, None)
         } else if (campoEvento.getName == "SOJ_OTROS_ATRIBUTOS") {
-          println("Estado SOJ_OTROS_ATRIBUTOS: " + estado.SOJ_OTROS_ATRIBUTOS)
           estado.SOJ_OTROS_ATRIBUTOS match {
             // FIXME: si el none _ continua la funcion
             case None => ()
@@ -177,7 +175,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
     def actualizarCCSojDetalles(atributosEvento: DetallesObjeto, atributosEstado: DetallesObjeto) = {
 
       val declaredFields = atributosEvento.getClass.getDeclaredFields
-      println("DeclaredFieldsEvCC: " + declaredFields.mkString("Array(", ", ", ")"))
       var atributosNuevo = atributosEvento
 
       declaredFields.foreach { campo =>
@@ -205,7 +202,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       val objetoFFF = actor.state.registro match {
         case None => getBBParams(command.registro)
         case Some(value) => {
-          println("Value: " + value.SOJ_OTROS_ATRIBUTOS)
           getCCParams(command.registro, value)
         }
       }

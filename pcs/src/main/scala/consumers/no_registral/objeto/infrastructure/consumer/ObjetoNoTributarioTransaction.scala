@@ -24,13 +24,10 @@ case class ObjetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
   def topicError = "DGR-COP-OBJETOS-ANT_error"
 
   def processInput(input: String): Either[Throwable, ObjetosAnt] = {
-//    println("CUMBIA Process input" + input)
     decode[ObjetosAnt](input)
   }
 
   def processMessage(registro: ObjetosAnt): Future[Response.SuccessProcessing] = {
-    //connOracleKafkaToWriteside(registro.EV_ID.toString(), "objeto", registro.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
-//    println("CUMBIA Process message" + registro)
 
     val isResponsable = registro.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES map { n =>
       n.RESPONSABLE_OTROS_ATRIBUTOS contains "S"

@@ -46,7 +46,6 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
     def actualizarBB_BOBDetalles(atributosEvento: DetallesObligacion) = {
 
       val declaredFields = atributosEvento.getClass.getDeclaredFields
-      println("DeclaredFieldsEvBB: " + declaredFields.mkString("Array(", ", ", ")"))
       var atributosNuevo = atributosEvento
 
       declaredFields.foreach { campo =>
@@ -82,7 +81,6 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
         } else if (campoEvento.get(evento).equals(Some(999))) {
           campoEvento.set(obligacionNuevoTest, None)
         } else if (campoEvento.getName == "BOB_OTROS_ATRIBUTOS") {
-          println("Estado BOB_OTROS_ATRIBUTOS: " + estado.BOB_OTROS_ATRIBUTOS)
           estado.BOB_OTROS_ATRIBUTOS match {
             // FIXME: si el none _ continua la funcion
             case None => ()
@@ -108,7 +106,6 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
     def actualizarCCBOBDetalles(atributosEvento: DetallesObligacion, atributosEstado: DetallesObligacion) = {
 
       val declaredFields = atributosEvento.getClass.getDeclaredFields
-      println("DeclaredFieldsEvCC: " + declaredFields.mkString("Array(", ", ", ")"))
       var atributosNuevo = atributosEvento
 
       declaredFields.foreach { campo =>
@@ -135,7 +132,6 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
       val obligacionFFF = actor.state.registro match {
         case None => getBBParams(command.registro)
         case Some(value) => {
-          println("Value: " + value.BOB_OTROS_ATRIBUTOS)
           getCCParams(command.registro, value)
         }
       }
@@ -181,7 +177,6 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
         }
         actor.lastDeliveryId = command.registro.EV_ID
         actor.persistSnapshot(event) { () =>
-          //println("CUMBIA path sender" + sender.path)
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 
         }

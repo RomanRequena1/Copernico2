@@ -41,7 +41,6 @@ class ActorTransactionController(
     def topicError= actorTransaction.topicError
 
     val transaction = actorTransaction.transaction _
-    println(s"Starting ${actorTransaction.topic} transaction")
     log.debug(s"Starting ${actorTransaction.topic} transaction")
 
     //TODO changed to KafkaCommittablePartitionedMessageProcessor

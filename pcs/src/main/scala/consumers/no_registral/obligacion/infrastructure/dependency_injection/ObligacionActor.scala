@@ -19,7 +19,6 @@ import scala.util.{Failure, Success, Try}
 
 class ObligacionActor(requirements: MonitoringAndMessageProducer)
     extends PersistentBaseActor[ObligacionEvents, ObligacionState](requirements.monitoring) {
-  //val timescaledbActorSelector: ActorSelection = context.actorSelection("akka://PersonClassificationService/user/timescaledb")
   val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
 
   var state = ObligacionState()
@@ -94,7 +93,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   }
   def persistSnapshot(evt: ObligacionEvents)(handler: () => Unit): Unit = {
     val kafkaTopic = "ObligacionPersistedSnapshot"
-    //logger.error("V2 = " + state.registro.get.BOB_VENCIMIENTO_2.getOrElse("no esta"))
     val event = ObligacionPersistedSnapshot(
       deliveryId = lastDeliveryId,
       sujetoId = evt.sujetoId,
@@ -122,12 +120,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         case Failure(ex) => log.error("Error when try to send to topic " + ex)
         case Success(value) => {
           log.debug("Success,  sent to topic")
-          //println("CUMBIA actor " + timescaledbActorSelector)
-          //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
 
-          //if (enable.equals("true")) {
-          //Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
-          //}
         }
       }
   }
@@ -163,10 +156,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         case Failure(ex) => log.error("Error when try to send to topic " + ex)
         case Success(value) => {
           log.debug("Success,  sent to topic")
-          //timescaledbActorSelector ! InsertFromActor(event.deliveryId.toString(), timescaledbActorSelector)
-          //if (enable.equals("true")) {
-          //Future(connOracleWriteSideToKafka(event.deliveryId.toString()))
-          //}
         }
       }
   }

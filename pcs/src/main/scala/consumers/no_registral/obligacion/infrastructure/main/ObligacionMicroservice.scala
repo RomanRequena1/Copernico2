@@ -21,16 +21,6 @@ class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) 
   implicit val actor: ActorRef = SujetoActor.startWithRequirements(monitoringAndMessageProducer)
   ObjetoVinculoActor.startWithRequirements(monitoringAndMessageProducer)
 
-  //println("HOLA UNA VEZ? CUMBIA")
-
-
-
-
-  //private val log = LoggerFactory.getLogger(this.getClass)
-  //val timescaledbActor: ActorRef = m.ctx.actorOf(Props[TimesActor](), "timescaledb")
-  //log.error("CUMBIA " + timescaledbActor.path)
-  //timescaledbActor ! Connec
-  //val obj = new Timescaledb(timescaledbActor)
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       ObligacionTributariaTransaction(actor, monitoring),

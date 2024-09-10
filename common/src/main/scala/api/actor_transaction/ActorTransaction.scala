@@ -25,12 +25,10 @@ abstract class ActorTransaction[ExternalDto](
     recordRequests()
     processInput(input) match {
       case Left(serializationError) =>
-//        println("CUMBIA Error serializacion")
         recordErrors(serializationError, input)
         Future.failed(serializationError)
 
       case Right(value) =>
-//        println("CUMBIA Actortransaction llama al process")
         val future = processMessage(value)
         future.onComplete {
           case Failure(exception) => recordErrors(exception, input)

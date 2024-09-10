@@ -6,15 +6,6 @@ case class PlanPagoUpdatedFromDtoProjection(
 ) extends PlanPagoProjection {
   val registro: PlanPagoExternalDto = event.registro
 
-/*
-  val bobDetailsResult: Option[Map[String, List[DetallePlanPago]]] =
-    decode[Map[String, List[DetallePlanPago]]](registro.BPL_OTROS_ATRIBUTOS.asJson.toString()).toOption
-  println("CUMBIA bobDetailsResult -> " + bobDetailsResult)
-
-  val mao: Map[String, String] = Map("BPL_DETALLES" -> bobDetailsResult.get("BPL_DETALLES").asJson.noSpaces)
-  println("CUMBIA -> mao" + mao)*/
-
-
   def bindings: List[(String, Serializable)] = List(
     "bpd_bob_periodo" -> registro.BPD_BOB_PERIODO,
     "bpd_bob_cuota" -> registro.BPD_BOB_CUOTA,
@@ -29,8 +20,5 @@ case class PlanPagoUpdatedFromDtoProjection(
     "bpd_bob_tipo" -> registro.BPD_BOB_TIPO,
     "bpd_bob_oga_id" -> registro.BPD_BOB_OGA_ID,
     "bpd_bju_identificador" -> registro.BPD_BJU_IDENTIFICADOR,
-
-
-    //"bpl_otros_atributos" -> registro.BPL_OTROS_ATRIBUTOS
   )
 }

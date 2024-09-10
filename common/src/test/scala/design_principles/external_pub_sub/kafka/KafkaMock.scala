@@ -24,32 +24,17 @@ class KafkaMock() extends MessageProducer with MessageProcessor with MessageProc
   var subscriptors: Set[SubscribeMe] = Set.empty
 
   def receive(message: Any): Any = {
-    //println("rec " + message)
     message match {
       case m: Message if !(topics contains m.topic) =>
-        println("1 - No Topic" + this.toString)
-        //rintln("No topic - " + topics + " ---: " + m.message)
+
       case m: Message if topics contains m.topic =>
-        //println("5 ---" + topics)
-        println("5 --- " + this.toString)
 
         messageHistory = messageHistory :+ ((m.topic, m.message.json))
-        //      println(
-        //        s"""
-        //           |${Console.YELLOW} [MessageProducer] ${Console.RESET}
-        //           |Sending message to: ${subscriptors
-        //             .filter(_.topic == m.topic)
-        //             .map(_.topic)
-        //             .map(Console.YELLOW + _ + Console.RESET)
-        //             .mkString(",")}
-        //           |${Console.CYAN} $message ${Console.RESET}
-        //           |""".stripMargin
-        //      )
+
         subscriptors.filter(_.topic == m.topic).foreach {
           _.algorithm(m.message.json)
         }
       case s: SubscribeMe =>
-        println("6 ---")
         subscriptors = subscriptors + s
     }
   }
@@ -93,8 +78,6 @@ object KafkaMock {
                         message => actorTransaction.transaction(message).map(_ => Seq("Done")))
 
         case kafkaMock: KafkaMock =>
-          //println("2")
-          //println("st: " + SOURCE_TOPIC)
           (Done, {
             kafkaMock.receive(
               kafkaMock.PubSub.SubscribeMe(SOURCE_TOPIC,
@@ -103,7 +86,6 @@ object KafkaMock {
             Future(Done)
           })
         case _ =>
-          println("44")
           (Done, Future(Done))
       }
   }

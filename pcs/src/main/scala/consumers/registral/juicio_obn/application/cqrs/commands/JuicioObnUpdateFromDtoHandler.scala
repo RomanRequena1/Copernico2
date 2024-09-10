@@ -33,12 +33,6 @@ class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
     if(isIdempotent(command, state.lastDeliveryIdByEvent)){
       log.debug(s"[ ${command.aggregateRoot}] -juicio_obn- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + state.lastDeliveryIdByEvent)
 
-      // Informs that operation has been ignored */
-      //todo check if this is desirable, why? signal the sender??
-
-      // In this case the sender is "EL OBJETO"
-      //println("CUMBIA path sender" + sender.path)
-
       Effect.reply(replyTo)(Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)))
     }
     else{

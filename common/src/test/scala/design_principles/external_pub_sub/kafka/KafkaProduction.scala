@@ -36,26 +36,13 @@ class KafkaProduction(implicit system: ActorSystem)
   def receive(message: Any): Any = {
     message match {
       case m: Message if !(topics contains m.topic) =>
-//        println("1 - No Topic" + this.toString)
       case m: Message if topics contains m.topic =>
-//        println("5 --- " + this.toString + m.toString)
         messageHistory = messageHistory :+ ((m.topic, m.message.json))
-//        println(
-//          s"""
-//             |${Console.YELLOW} [MessageProducer] ${Console.RESET}
-//             |Sending message to: ${subscriptors
-//               .filter(_.topic == m.topic)
-//               .map(_.topic)
-//               .map(Console.YELLOW + _ + Console.RESET)
-//               .mkString(",")}
-//             |${Console.CYAN} $message ${Console.RESET}
-//             |""".stripMargin
-//        )
+
         subscriptors.filter(_.topic == m.topic).foreach {
           _.algorithm(m.message.json)
         }
       case s: SubscribeMe =>
-//        println("6 ---")
         subscriptors = subscriptors + s
     }
   }
@@ -121,7 +108,6 @@ object KafkaProduction {
       messageConsumer match {
 
         case processor: KafkaCommittablePartitionedMessageProcessor =>
-//          println("1")
 
           processor.run(SOURCE_TOPIC,
                         SOURCE_TOPIC + "_done",
@@ -130,8 +116,6 @@ object KafkaProduction {
                         message => actorTransaction.transaction(message).map(_ => Seq("Done")))
 
         case kafkaProduction: KafkaProduction =>
-//          println("2 -- " + actorTransaction.toString + " -- " + SOURCE_TOPIC)
-//          println("st: " + SOURCE_TOPIC)
 
           val a: (Done.type, Future[Done.type]) = (Done, {
             kafkaProduction.receive(
@@ -154,7 +138,6 @@ object KafkaProduction {
 //              message => actorTransaction.transaction(message).map(_ => Seq("Done")))
 
         case _ =>
-          println("3")
           (Done, Future(Done))
       }
   }

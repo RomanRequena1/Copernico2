@@ -29,7 +29,6 @@ final case class ObligacionSnapshotProjection(
     case Some(value) => Map("BOB_DETALLES_SUPRESIONES" -> value.get("BOB_DETALLES_SUPRESIONES").asJson.noSpaces)
     case None => None
   }
-//  println("CUMBIA mao2: " + mao2)
   val fromRegistro = registro map { registro =>
     List(
       "bob_suj_identificador" -> event.sujetoId,

@@ -31,13 +31,10 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
 
   override def receiveCommand: Receive = {
     case cmd: Command =>
-//      println("cmd" + cmd)
       commandBus.publish(cmd)
     case query: Query =>
-//      println("query" + query)
       queryBus.ask(query)
     case other =>
-//      println("other" + other + sender())
       logger.warn(s"[$persistenceId]Unexpected message $other")
   }
 

@@ -95,7 +95,6 @@ object MessageTestkitUtils2 {
     def produceObjetoReadside(objeto: ObjetoSnapshotPersisted): Future[akka.Done] = {
       def topic = "ObjetoSnapshotPersistedReadside"
 
-//      println("Pr Obj Reads : " + objeto.asJson)
       messageProducer.produce(
         Seq(
           KafkaKeyValue(

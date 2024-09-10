@@ -126,8 +126,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
   }
 
   def persistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
-    //println(s"Objeto Persist: ${evt.objetoId} | Sujeto = ${evt.sujetoId} | aplicarDescuento = ${consolidatedState.aplicarDescuento}, Tiene30Objeto = ${consolidatedState.tiene30Objeto}")
-    //log.info(s"Objeto Persist: ${evt.objetoId} | aplicarDescuento = ${consolidatedState.aplicarDescuento}, Tiene30Objeto = ${consolidatedState.tiene30Objeto}")
     val kafkaTopic = "ObjetoSnapshotPersistedReadside"
     val snapshot =
       ObjetoSnapshotPersisted(
