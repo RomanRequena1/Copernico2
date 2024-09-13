@@ -1,26 +1,44 @@
 package consumers.no_registral.sujeto.application.cqrs.commands
 
-import akka.actor.{ActorContext, ActorRef}
 import consumers.no_registral.sujeto.application.entity.SujetoCommands.SujetoUpdateFromTri
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
 import consumers.no_registral.sujeto.application.helper.{SendToObjeto, SendToObjetoFromSujeto}
 import consumers.no_registral.sujeto.domain.SujetoEvents.SujetoUpdatedFromTri
-import consumers.no_registral.sujeto.domain.SujetoState
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
 
+import java.time.LocalDateTime
 import scala.util.{Success, Try}
 
 class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[SujetoUpdateFromTri] {
   override def handle(command: SujetoUpdateFromTri): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
+    def getBBParams(evento: SujetoExternalDto) = {
+      val declaredFields = evento.getClass.getDeclaredFields
+      val sujetoNuevoTest = evento
+
+      declaredFields.foreach { campo =>
+        val campoEvento = sujetoNuevoTest.getClass.getDeclaredField(campo.getName)
+        campoEvento.setAccessible(true)
+
+        if (campoEvento.get(evento).equals(Some("null"))) {
+          campoEvento.set(sujetoNuevoTest, None)
+        } else if (campoEvento.get(evento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
+          campoEvento.set(sujetoNuevoTest, None)
+        } else if (campoEvento.get(evento).equals(Some(999))) {
+          campoEvento.set(sujetoNuevoTest, None)
+        }
+      }
+      sujetoNuevoTest
+    }
+
     def getCCParams(evento: SujetoExternalDto, estado: SujetoExternalDto) = {
       val declaredFields = evento.getClass.getDeclaredFields
-      var sujetoNuevoTest = evento
+      val sujetoNuevoTest = evento
 
       declaredFields.foreach { campo =>
         val campoEvento = sujetoNuevoTest.getClass.getDeclaredField(campo.getName)
@@ -31,6 +49,10 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
           campoEvento.set(sujetoNuevoTest, campoEstado.get(estado))
         } else if (campoEvento.get(evento).equals(Some("null"))) {
           campoEvento.set(sujetoNuevoTest, None)
+        } else if (campoEvento.get(evento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
+          campoEvento.set(sujetoNuevoTest, None)
+        } else if (campoEvento.get(evento).equals(Some(999))) {
+          campoEvento.set(sujetoNuevoTest, None)
         }
       }
       sujetoNuevoTest
@@ -38,17 +60,13 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
 
     def registroNuevo() = {
       val registroFFF = actor.state.registro match {
-        case None => command.registro
+        case None => getBBParams(command.registro)
         case Some(value) => getCCParams(command.registro, value)
       }
       registroFFF
     }
 
-    val event = SujetoUpdatedFromTri(
-      command.deliveryId,
-      command.sujetoId,
-      registroNuevo()
-    )
+    val event = SujetoUpdatedFromTri(command.deliveryId, command.sujetoId, registroNuevo())
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
       log.error(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")

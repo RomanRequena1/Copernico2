@@ -3,16 +3,24 @@ package proyectionists.no_registrales.base_Tri
 import akka.actor.ActorSystem
 import cassandra.MockMonitoringAndCassandraWrite
 import com.datastax.oss.driver.api.core.cql.AsyncResultSet
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones}
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{DetallesObjeto, ObjetosTri}
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.{DetallesObjetoDecoder, ObjetosTriDecoder}
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{
+  DetallesObligacionDecoder,
+  ObligacionesTriDecoder
+}
+import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionesTri}
+import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.SujetoTri
 import design_principles.actor_model.ActorSpec
 import design_principles.external_pub_sub.kafka.MessageProcessorLogging
 import kafka.{MessageProcessor, MessageProducer}
-import org.scalatest.{FixtureContext, Succeeded}
 import proyectionists.no_registrales.testkit.MessageTestkitUtils._
 import proyectionists.no_registrales.testkit.{Examples, NoRegistralesImplicitConversions}
 import utils.generators.Model.deliveryIdAct
+import io.circe.parser.decode
+import org.scalatest.time.SpanSugar.convertIntToGrainOfTime
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContextExecutor
 
 object BaseTriSpec {
@@ -48,229 +56,461 @@ abstract class BaseTriSpec(
     super.beforeAll()
   }
 
-  "Test 1: un sujeto" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
+  //FIXME: Validar que el serializador pueda detectar el tipo de datos sin comillas, ejemplo: 999 vs "999"
+  //El sujeto funciona con 999 y "999"
+
+  // - Verifica que primer evento con reglas de borrado no persistan y sin campos soj_otros_atributos. Json
+  // - Verifica que el segundo evento con reglas de borrado borre y sin campos soj_otros_atributos. Json
+  // - Verifica que evento modificado cambie campos con valores, mantenga valores de state. CaseClass
+  // y borre los definidos.
+  // - Verifica la baja del objeto. CaseClass
+
+  // **Nota: validar String, LocalDateTime y BigDecimal
+
+  "Test 1: Un sujeto Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
     implicit val dispatcher = s.dispatcher
     val context = getContext(s)
     val messageProducer = context.messageProducer
-    val eventoRomanBase = examples.sujetoExampleRoman.copy(SUJ_IDENTIFICADOR = "SujetoPersiste-T1")
-
-    messageProducer.produceSujeto(eventoRomanBase)
-
     val cassandra = context.cassandra
 
-    eventually {
-      val resultado: AsyncResultSet = cassandra.cassandraWrite
-        .cqlSelect(
-          s"SELECT * FROM read_side.buc_sujeto WHERE SUJ_IDENTIFICADOR = '${eventoRomanBase.SUJ_IDENTIFICADOR}';"
-        )
-        .futureValue
-      resultado.one().getString("SUJ_IDENTIFICADOR") should be(eventoRomanBase.SUJ_IDENTIFICADOR)
-    } match {
-      case Succeeded => {
-        val eventoRomanBaseModificado = eventoRomanBase.copy(
-          EV_ID = deliveryIdAct,
-          SUJ_TELEFONO = Some("3515591844"),
-          SUJ_EMAIL = Some("roman.requena@peperina.io"),
-          SUJ_DIRECCION = Some("Av. Arturo Capdevila 959")
-        )
-        messageProducer.produceSujeto(eventoRomanBaseModificado)
+    val sujeto = "CuitTri-T1"
+    /*
+     El evento debe:
+    - Persistir el mail y denominacion
+    - No persistir direccion ni saldo
+     */
+    val sujetoJsonParcial =
+      s"""
+    {
+      "EV_ID": $deliveryIdAct,
+      "SUJ_IDENTIFICADOR": "$sujeto",
+      "SUJ_DENOMINACION": "Sujeto-Test1",
+      "SUJ_EMAIL": "test1@ejemplo.com",
+      "SUJ_DIRECCION": "null",
+      "SUJ_CAT_SUJ_ID": "999"
+    }
+    """
 
-        eventually {
+    val testSujetoInicial: Either[io.circe.Error, SujetoTri] = decode[SujetoTri](sujetoJsonParcial)
+
+    testSujetoInicial match {
+      case Right(sujetoInicial) =>
+        messageProducer.produceSujeto(sujetoInicial)
+
+        eventually(timeout(15.seconds), interval(100.milliseconds)) {
           val resultado: AsyncResultSet = cassandra.cassandraWrite
             .cqlSelect(
-              s"SELECT * FROM read_side.buc_sujeto WHERE SUJ_IDENTIFICADOR = '${eventoRomanBase.SUJ_IDENTIFICADOR}';"
+              s"SELECT * FROM read_side.buc_sujeto WHERE SUJ_IDENTIFICADOR = '${sujetoInicial.SUJ_IDENTIFICADOR}';"
             )
             .futureValue
+
           val sujeto = resultado.one()
 
-          sujeto.getString("SUJ_TELEFONO") should be(eventoRomanBaseModificado.SUJ_TELEFONO.get)
-          sujeto.getString("SUJ_EMAIL") should be(eventoRomanBaseModificado.SUJ_EMAIL.get)
-          sujeto.getString("SUJ_DIRECCION") should be(eventoRomanBaseModificado.SUJ_DIRECCION.get)
+          // Persistir el mail y denominacion
+          sujeto.getString("SUJ_IDENTIFICADOR") should be(sujetoInicial.SUJ_IDENTIFICADOR)
+          sujeto.getString("SUJ_DENOMINACION") should be(sujetoInicial.SUJ_DENOMINACION.get)
+          sujeto.getString("SUJ_EMAIL") should be(sujetoInicial.SUJ_EMAIL.get)
+
+          // No persistir direccion ni saldo
+          sujeto.getInt("SUJ_CAT_SUJ_ID") should be(0)
+          sujeto.isNull("SUJ_DIRECCION") should be(true)
         }
-      }
-      case _ => println("ERROR")
+
+        /*
+         El evento debe:
+        - Persistir nueva direccion y canal origen
+        - Eliminar el email
+        - Mantener la denominacion
+         */
+        val sujetoModificadoJson =
+          s"""
+        {
+          "EV_ID": $deliveryIdAct,
+          "SUJ_IDENTIFICADOR": "$sujeto",
+          "SUJ_DIRECCION": "Calle falsa 123",
+          "SUJ_EMAIL": "null",
+          "SUJ_CANAL_ORIGEN": "OTAX"
+        }
+        """
+
+        val testSujetoModificado: Either[io.circe.Error, SujetoTri] = decode[SujetoTri](sujetoModificadoJson)
+
+        testSujetoModificado match {
+          case Right(sujetoModificado) =>
+            messageProducer.produceSujeto(sujetoModificado)
+
+            eventually(timeout(15.seconds), interval(100.milliseconds)) {
+              val resultado: AsyncResultSet = cassandra.cassandraWrite
+                .cqlSelect(
+                  s"SELECT * FROM read_side.buc_sujeto WHERE SUJ_IDENTIFICADOR = '${sujetoModificado.SUJ_IDENTIFICADOR}';"
+                )
+                .futureValue
+
+              val sujeto = resultado.one()
+              //Mantener la denominacion
+              sujeto.getString("SUJ_DENOMINACION") should be(sujetoInicial.SUJ_DENOMINACION.get)
+
+              //Persistir nueva direccion y canal origen
+              sujeto.getString("SUJ_IDENTIFICADOR") should be(sujetoModificado.SUJ_IDENTIFICADOR)
+              sujeto.getString("SUJ_DIRECCION") should be(sujetoModificado.SUJ_DIRECCION.get)
+              sujeto.getString("SUJ_CANAL_ORIGEN") should be(sujetoModificado.SUJ_CANAL_ORIGEN.get)
+
+              // Eliminar el email
+              sujeto.isNull("SUJ_EMAIL") should be(true)
+            }
+
+          case Left(error) =>
+            println(s"Error decodificando JSON modificado: $error")
+        }
+
+      case Left(error) =>
+        println(s"Error decodificando JSON inicial: $error")
     }
   }
-
   "Test 2: un objeto Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
     implicit val dispatcher = s.dispatcher
     val context = getContext(s)
     val messageProducer = context.messageProducer
-    val eventoRomanTri = examples.objetoExampleRoman.copy(SOJ_SUJ_IDENTIFICADOR = "CuitTri-T2",SOJ_IDENTIFICADOR = "ObjetoTriPersiste-T2")
-
-    messageProducer.produceObjeto(eventoRomanTri)
-
     val cassandra = context.cassandra
 
-    eventually {
-      val resultado: AsyncResultSet = cassandra.cassandraWrite
-        .cqlSelect(
-          s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${eventoRomanTri.SOJ_SUJ_IDENTIFICADOR}';"
-        )
-        .futureValue
-      resultado.one().getString("SOJ_SUJ_IDENTIFICADOR") should be(eventoRomanTri.SOJ_SUJ_IDENTIFICADOR)
-    }
-  }
-  "Test 3: un objeto Tri con cambios" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
-    implicit val dispatcher = s.dispatcher
-    val context = getContext(s)
-    val messageProducer = context.messageProducer
-    val eventoRoman = examples.objetoExampleRoman.copy(EV_ID = deliveryIdAct,SOJ_SUJ_IDENTIFICADOR = "CuitTriCc-T3", SOJ_IDENTIFICADOR = "ObjetoTri-T3")
+    val sujeto = "CuitTri-T2"
+    val IdObjeto = "ObjetoTri-T2"
+    val tipoObjeto = "A"
 
-    messageProducer.produceObjeto(eventoRoman)
-    val cassandra = context.cassandra
+    /*
+     El evento debe:
+    - Persistir la descripcion, fecha inicio y base imponible
+    - Persistir en soj_detalle el semaforo_marca
+    - No persistir subtipo, fecha_adq_subasta
+     */
+    val objetoJsonInicial =
+      s"""
+      {
+      "EV_ID": "$deliveryIdAct",
+      "SOJ_SUJ_IDENTIFICADOR": "$sujeto",
+      "SOJ_TIPO_OBJETO": "$tipoObjeto",
+      "SOJ_IDENTIFICADOR": "$IdObjeto",
+      "SOJ_DESCRIPCION": "ObjetoPrueba_T2",
+      "SOJ_ESTADO": null,
+      "SOJ_FECHA_ADQ_SUBASTA": "1000-01-01 00:00:00.0",
+      "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0",
+      "SOJ_BASE_IMPONIBLE": "12345",
+      "SOJ_SUBTIPO": "null",
+      "SOJ_CANAL_ORIGEN": "OTAX",
+      "SOJ_OTROS_ATRIBUTOS": {
+      "SOJ_DETALLES":
+      [{"SOJ_SEMAFORO_MARCA": "P"}]}
+      }
+    """
 
-    eventually {
-      val resultado: AsyncResultSet = cassandra.cassandraWrite
-        .cqlSelect(
-          s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${eventoRoman.SOJ_SUJ_IDENTIFICADOR}';"
-        )
-        .futureValue
-      resultado.one().getString("SOJ_SUJ_IDENTIFICADOR") should be(eventoRoman.SOJ_SUJ_IDENTIFICADOR)
-    } match {
-      case Succeeded => {
-        val eventoRomanModificado = eventoRoman.copy(
-          EV_ID = deliveryIdAct,
-          SOJ_DESCRIPCION = Some("Nueva Descripcion"),
-          SOJ_FECHA_INICIO = Some(LocalDateTime.of(2020, 12, 12, 0, 0)),
-          SOJ_BASE_IMPONIBLE = Some(12345.5)
-        )
-        messageProducer.produceObjeto(eventoRomanModificado)
-        eventually {
+    val testObjetoParcial: Either[io.circe.Error, ObjetosTri] = decode[ObjetosTri](objetoJsonInicial)
+
+    testObjetoParcial match {
+      case Right(objetoInicial) =>
+        messageProducer.produceObjeto(objetoInicial)
+
+        eventually(timeout(15.seconds), interval(100.milliseconds)) {
           val resultado: AsyncResultSet = cassandra.cassandraWrite
             .cqlSelect(
-              s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${eventoRoman.SOJ_SUJ_IDENTIFICADOR}';"
+              s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${objetoInicial.SOJ_SUJ_IDENTIFICADOR}';"
             )
             .futureValue
+
           val objeto = resultado.one()
 
-          objeto.getString("SOJ_DESCRIPCION") should be(eventoRomanModificado.SOJ_DESCRIPCION.get)
-          objeto.getLocalDate("SOJ_FECHA_INICIO").atStartOfDay() should be(eventoRomanModificado.SOJ_FECHA_INICIO.get)
-          objeto.getFloat("SOJ_BASE_IMPONIBLE") should be(eventoRomanModificado.SOJ_BASE_IMPONIBLE.get)
-        } match {
-          case Succeeded => {
-            val eventoRomanEliminado = eventoRomanModificado.copy(
-              EV_ID = deliveryIdAct,
-              SOJ_ESTADO = Some("BAJA")
-            )
-            messageProducer.produceObjeto(eventoRomanEliminado)
+          // Persistir la descripcion, fecha inicio y base imponible
+          objeto.getString("SOJ_SUJ_IDENTIFICADOR") should be(objetoInicial.SOJ_SUJ_IDENTIFICADOR)
+          objeto.getString("SOJ_DESCRIPCION") should be(objetoInicial.SOJ_DESCRIPCION.get)
+          objeto.getLocalDate("SOJ_FECHA_INICIO").atStartOfDay() should be(objetoInicial.SOJ_FECHA_INICIO.get)
+          objeto.getFloat("SOJ_BASE_IMPONIBLE") should be(objetoInicial.SOJ_BASE_IMPONIBLE.get)
 
-            eventually {
-              val resultado: AsyncResultSet = cassandra.cassandraWrite
-                .cqlSelect(
-                  s"SELECT count(*) FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${eventoRoman.SOJ_SUJ_IDENTIFICADOR}';"
-                )
-                .futureValue
-              val objeto = resultado.one()
-              objeto.getLong("count") should be(0)
-            }
+          // No persistir subtipo, fecha_adq_subasta
+          objeto.isNull("SOJ_SUBTIPO") should be(true)
+          objeto.isNull("SOJ_FECHA_ADQ_SUBASTA") should be(true)
+
+          val sojOtrosAtributos = objeto.getMap("SOJ_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+          val sojDetalles: String = sojOtrosAtributos.get("SOJ_DETALLES")
+
+          decode[List[DetallesObjeto]](sojDetalles) match {
+            case Left(error) => fail(s"Error decoding SOJ_OTROS_ATRIBUTOS: $error")
+            case Right(detalles) =>
+              // Persistir en soj_detalle el semaforo_marca
+              detalles.head.SOJ_SEMAFORO_MARCA.get should be("P")
           }
-          case _ => println("Fallo Delete")
+
+          /*
+         El evento debe:
+        - Persistir nuevo sutbipo y fecha_adq_subasta
+        - Persistir soj_detalles: responsable y porcentaje.
+        - Mantener soj_detalles: semaforo_marca
+        - No persistir semaforo_color
+        - Eliminar el origen, base_imponible
+        - Mantener la descripcion y fecha_inicio
+           */
+          val objetoModificadoJson =
+            s"""
+            {
+            "EV_ID": "$deliveryIdAct",
+            "SOJ_SUJ_IDENTIFICADOR": "$sujeto",
+            "SOJ_TIPO_OBJETO": "$tipoObjeto",
+            "SOJ_IDENTIFICADOR": "$IdObjeto",
+            "SOJ_ESTADO": null,
+            "SOJ_FECHA_ADQ_SUBASTA": "2024-01-01 00:00:00.0",
+            "SOJ_BASE_IMPONIBLE": "999",
+            "SOJ_SUBTIPO": "Urbano",
+            "SOJ_CANAL_ORIGEN": "null",
+            "SOJ_OTROS_ATRIBUTOS": {
+            "SOJ_DETALLES": [
+            {
+            "RESPONSABLE_OTROS_ATRIBUTOS": "S",
+            "PORCENTAJE_OTROS_ATRIBUTOS": "100",
+            "SOJ_SEMAFORO_COLOR": "null"
+            }]}
+          }
+          """
+
+          val testObjetoModificado: Either[io.circe.Error, ObjetosTri] = decode[ObjetosTri](objetoModificadoJson)
+
+          testObjetoModificado match {
+            case Right(objetoModificado) =>
+              messageProducer.produceObjeto(objetoModificado)
+
+              eventually(timeout(15.seconds), interval(100.milliseconds)) {
+                val resultado: AsyncResultSet = cassandra.cassandraWrite
+                  .cqlSelect(
+                    s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujeto';"
+                  )
+                  .futureValue
+
+                val objeto2 = resultado.one()
+
+                // Mantener la descripcion y fecha_inicio
+                objeto2.getString("SOJ_DESCRIPCION") should be(objetoInicial.SOJ_DESCRIPCION.get)
+                objeto2.getLocalDate("SOJ_FECHA_INICIO").atStartOfDay() should be(objetoInicial.SOJ_FECHA_INICIO.get)
+
+                // Persistir nuevo sutbipo y fecha_adq_subasta
+                objeto2.getString("SOJ_SUJ_IDENTIFICADOR") should be(objetoModificado.SOJ_SUJ_IDENTIFICADOR)
+                objeto2.getString("SOJ_SUBTIPO") should be(objetoModificado.SOJ_SUBTIPO.get)
+                objeto2.getLocalDate("SOJ_FECHA_ADQ_SUBASTA").atStartOfDay() should be(
+                  objetoModificado.SOJ_FECHA_ADQ_SUBASTA.get
+                )
+
+                // Eliminar el origen, base_imponible
+                objeto2.isNull("SOJ_CANAL_ORIGEN") should be(true)
+                objeto2.getFloat("SOJ_BASE_IMPONIBLE") should be(0.0)
+
+                val sojOtrosAtributos = objeto2.getMap("SOJ_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+                val sojDetalles: String = sojOtrosAtributos.get("SOJ_DETALLES")
+
+                decode[List[DetallesObjeto]](sojDetalles) match {
+                  case Left(error) => fail(s"Error decoding SOJ_OTROS_ATRIBUTOS: $error")
+                  case Right(detalles) =>
+                    // Persistir soj_detalles: responsable y porcentaje.
+                    detalles.head.RESPONSABLE_OTROS_ATRIBUTOS.get should be("S")
+                    detalles.head.PORCENTAJE_OTROS_ATRIBUTOS.get should be(100)
+
+                    // No persistir semaforo_color
+                    detalles.head.SOJ_SEMAFORO_COLOR should be(None)
+
+                    // Mantener soj_detalles: semaforo_marca
+                    detalles.head.SOJ_SEMAFORO_MARCA.get should be("P")
+                }
+
+              }
+
+            case Left(error) =>
+              println(s"Error decodificando JSON modificado: $error")
+          }
         }
-      }
-      case _ => println("FALLO")
+      case Left(error) =>
+        println(s"Error decodificando JSON inicial: $error")
     }
   }
 
-  //Controlar persistencia de la obn
-  //TODO Controlar que se modifiquen datos de la obn
-  //TODO Controlar que se modifiquen mas datos de la obn
-  //Controlar baja de la obn
-
-  "Test 4: un obligacion" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
+  "Test 3: un obligacion" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
     implicit val dispatcher = s.dispatcher
-    val context = getContext(s)
-    val messageProducer = context.messageProducer
-    val eventoLucas =
-      examples.obligacionExampleVencidaLucas.copy(BOB_SUJ_IDENTIFICADOR = "CuitTri-T4",BOB_SOJ_IDENTIFICADOR = "ObjetoTri-T4", BOB_OBN_ID = "ObnTriPersiste-T4")
-
-    messageProducer.produceObligacion(eventoLucas)
-
-    val cassandra = context.cassandra
-
-    eventually {
-      val resultado: AsyncResultSet = cassandra.cassandraWrite
-        .cqlSelect(
-          s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${eventoLucas.BOB_SOJ_IDENTIFICADOR}' AND BOB_SOJ_TIPO_OBJETO = '${eventoLucas.BOB_SOJ_TIPO_OBJETO}';"
-        )
-        .futureValue
-      resultado.one().getString("BOB_SOJ_IDENTIFICADOR") should be(eventoLucas.BOB_SOJ_IDENTIFICADOR)
-    }
-  }
-
-  "Test 5: un obligacion con cambios" should "End to end, PCS a Readside " in parallelActorSystemRunner { implicit s =>
-    implicit val dispatcher = s.dispatcher
-
     val context = getContext(s)
     val messageProducer = context.messageProducer
     val cassandra = context.cassandra
 
-    val eventoDiego =
-      examples.obligacionExampleDiego.copy(BOB_SUJ_IDENTIFICADOR = "CuitTri-T5",BOB_SOJ_IDENTIFICADOR = "ObjetoTri-T5", BOB_OBN_ID = "ObnTri-T5")
-    //cassandra.cassandraWrite.cqlSelect(s"TRUNCATE read_side.buc_obligaciones;")
+    val sujeto = "CuitTri-T2"
+    val IdObjeto = "ObjetoTri-T2"
+    val tipoObjeto = "A"
+    val obn_id = "1234"
 
-    messageProducer.produceObligacion(eventoDiego)
+    //bob_cuota, bob_vencimiento, tipo son optional pero son requeridos por el dmn y si es asi
 
-    val eventoDiegoModificado = eventoDiego.copy(
-      EV_ID = deliveryIdAct,
-      BOB_SALDO = 40000.50,
-      BOB_VENCIMIENTO = Some(LocalDateTime.of(2027, 12, 12, 0, 0)),
-      BOB_ESTADO = Some("PREJUDICIAL")
-    )
+    val obligacionJsonInicial =
+      s"""{
+      "EV_ID": "$deliveryIdAct",
+      "BOB_SUJ_IDENTIFICADOR": "$sujeto",
+      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
+      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
+      "BOB_OBN_ID": "$obn_id",
+      "BOB_ESTADO": "ADMINISTRATIVA",
+      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
+      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+      "BOB_PERIODO": "2024",
+      "BOB_CUOTA": "6",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "601",
+      "BOB_IMPUESTO": "600",
+      "BOB_INTERES_PUNIT": "1000",
+      "BOB_INDICE_INT_PUNIT": "null",
+      "BOB_SALDO": "200",
+      "BOB_TIPO": "tributaria",
+      "BOB_OGA_ID": null,
+      "BOB_PLN_ID": "5555",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [
+      {
+      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
+      "RULE_NUMBER": "1"
+      }]}
+    }"""
 
-    eventually {
-      val resultado: AsyncResultSet = cassandra.cassandraWrite
-        .cqlSelect(
-          s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${eventoDiego.BOB_SOJ_IDENTIFICADOR}' AND BOB_SOJ_TIPO_OBJETO = '${eventoDiego.BOB_SOJ_TIPO_OBJETO}';"
-        )
-        .futureValue
+    val testObligacionParcial: Either[io.circe.Error, ObligacionesTri] = decode[ObligacionesTri](obligacionJsonInicial)
 
-      val obligacion = resultado.one()
-      obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(eventoDiego.BOB_SOJ_IDENTIFICADOR)
+    testObligacionParcial match {
+      case Right(obligacionInicial) =>
+        messageProducer.produceObligacion(obligacionInicial)
 
-    } match {
-      case Succeeded => {
-        messageProducer.produceObligacion(eventoDiegoModificado)
-
-        eventually {
+        eventually(timeout(15.seconds), interval(100.milliseconds)) {
           val resultado: AsyncResultSet = cassandra.cassandraWrite
             .cqlSelect(
-              s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${eventoDiegoModificado.BOB_SOJ_IDENTIFICADOR}' AND BOB_SOJ_TIPO_OBJETO = '${eventoDiegoModificado.BOB_SOJ_TIPO_OBJETO}';"
+              s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}';"
             )
             .futureValue
 
           val obligacion = resultado.one()
-          obligacion.getString("BOB_ESTADO") should be(eventoDiegoModificado.BOB_ESTADO.get)
-          obligacion.getLocalDate("BOB_VENCIMIENTO").atStartOfDay() should be(eventoDiegoModificado.BOB_VENCIMIENTO.get)
-          obligacion.getFloat("BOB_SALDO") should be(eventoDiegoModificado.BOB_SALDO)
-        }
-      } match {
-        case Succeeded => {
-          val eventoDiegoBaja = eventoDiegoModificado.copy(
-            EV_ID = deliveryIdAct,
-            BOB_OTROS_ATRIBUTOS = Some(
-              ListDetallesObligaciones(
-                List(eventoDiegoModificado.BOB_OTROS_ATRIBUTOS.head.BOB_DETALLES.head.copy(RULE_NUMBER = Some("-1")))
-              )
-            )
-          )
 
-          messageProducer.produceObligacion(eventoDiegoBaja)
+          // Persistir la BOB_SALDO, BOB_ESTADO y BOB_VENCIMIENTO
+          obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(obligacionInicial.BOB_SOJ_IDENTIFICADOR)
+          obligacion.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
+          obligacion.getLocalDate("BOB_VENCIMIENTO").atStartOfDay() should be(obligacionInicial.BOB_VENCIMIENTO.get)
+          obligacion.getFloat("BOB_SALDO") should be(obligacionInicial.BOB_SALDO)
+          obligacion.getString("BOB_TIPO") should be(obligacionInicial.BOB_TIPO.get)
 
-          eventually {
-            val resultado: AsyncResultSet = cassandra.cassandraWrite
-              .cqlSelect(
-                s"SELECT count(*) FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${eventoDiegoBaja.BOB_SOJ_IDENTIFICADOR}' AND BOB_SOJ_TIPO_OBJETO = '${eventoDiegoBaja.BOB_SOJ_TIPO_OBJETO}';"
-              )
-              .futureValue
+          // No persistir BOB_PRORROGA, BOB_TIPO
+          obligacion.isNull("BOB_PRORROGA") should be(true)
+          obligacion.isNull("BOB_INDICE_INT_PUNIT") should be(true)
 
-            val obligacion = resultado.one()
-            obligacion.getLong("count") should be(0)
+          val bobOtrosAtributos = obligacion.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+          val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
+
+          //          val bobSupresiones = obligacion.getMap("BOB_SUPRESIONES", classOf[String], classOf[String])
+          //          val bobDetallesSupresiones: String = bobSupresiones.get("BOB_DETALLES_SUPRESIONES")
+
+          decode[List[DetallesObligacion]](bobDetalles) match {
+            case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
+            case Right(detalles) =>
+              // Persistir en bob_detalle el PLAN_MULTIOBJETO
+              detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
           }
+
+          //          decode[List[DetallesSupresiones]](bobDetallesSupresiones) match {
+          //            case Left(error) => fail(s"Error decoding BOB_DETALLES_SUPRESIONES: $error")
+          //            case Right(detalles) =>
+          //              // Persistir en soj_detalle el BOB_TIPO_SUP
+          //              detalles.head.BOB_TIPO_SUP.get should be("R")
+          //          }
+
+          // persistir nuevo bob_tipo y fecha bob_prorroga
+          // persistir bob_detalles BOB_MUNICIPIO y JUICIO_MULTIOBJETO
+          // mantener bob_detalles PLAN_MULTIOBJETO
+          // no persistir BOB_ESTADO_SUP en supresiones
+          // mantener bob_tipo_sup en supressiones
+          // mantener bob_estado y bob_saldo
+          // eliminar impuesto y soj_id_externo
+
+          val obligacionModificadoJson =
+            s"""{
+            "EV_ID": "$deliveryIdAct",
+            "BOB_SUJ_IDENTIFICADOR": "$sujeto",
+            "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
+            "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
+            "BOB_OBN_ID": "$obn_id",
+            "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+            "BOB_PRORROGA": "2025-01-01 00:00:00.0",
+            "BOB_PERIODO": "2024",
+            "BOB_INTERES_PUNIT": "999",
+            "BOB_SALDO": "200",
+            "BOB_TIPO": "interurbano",
+            "BOB_PLN_ID": "null",
+            "BOB_OTROS_ATRIBUTOS": {
+            "BOB_DETALLES": [
+            {
+            "BOB_MUNICIPIO": "Municipio",
+            "JUICIO_MULTIOBJETO": "Multiobjeto"
+             }]}
+          }"""
+
+          val testObligacionModificado: Either[io.circe.Error, ObligacionesTri] =
+            decode[ObligacionesTri](obligacionModificadoJson)
+
+          testObligacionModificado match {
+            case Right(obligacionModificado) =>
+              messageProducer.produceObligacion(obligacionModificado)
+
+              eventually(timeout(15.seconds), interval(100.milliseconds)) {
+                val resultado: AsyncResultSet = cassandra.cassandraWrite
+                  .cqlSelect(
+                    s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}';"
+                  )
+                  .futureValue
+
+                val obligacion2 = resultado.one()
+
+                // Mantener la bob_estado y bob_saldo
+                obligacion2.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
+                obligacion2.getFloat("BOB_SALDO") should be(obligacionInicial.BOB_SALDO)
+
+                // Persistir nuevo bob_tipo y bob_prorroga
+                obligacion2.getString("BOB_TIPO") should be(obligacionModificado.BOB_TIPO.get)
+                obligacion2.getLocalDate("BOB_PRORROGA").atStartOfDay() should be(
+                  obligacionModificado.BOB_PRORROGA.get
+                )
+
+                //Eliminar el bob_interes_punit, bob_pln_id
+                obligacion2.isNull("BOB_INTERES_PUNIT") should be(true)
+                obligacion2.isNull("BOB_PLN_ID") should be(true)
+
+                val bobOtrosAtributos = obligacion2.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+                val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
+
+                decode[List[DetallesObligacion]](bobDetalles) match {
+                  case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
+                  case Right(detalles) =>
+                    // Persistir bob_detalles: BOB_MUNICIPIO y JUICIO_MULTIOBJETO.
+                    detalles.head.BOB_MUNICIPIO.get should be("Municipio")
+                    detalles.head.JUICIO_MULTIOBJETO.get should be("Multiobjeto")
+
+                    // Mantener bob_detalles: PLAN_MULTIOBJETO
+                    detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
+                }
+
+                //                val bobSupresiones = obligacion.getMap("BOB_SUPRESIONES", classOf[String], classOf[String])
+                //                val bobDetallesSupresiones: String = bobSupresiones.get("BOB_DETALLES_SUPRESIONES")
+                //
+                //                decode[List[DetallesSupresiones]](bobDetallesSupresiones) match {
+                //                  case Left(error) => fail(s"Error decoding BOB_DETALLES_SUPRESIONES: $error")
+                //                  case Right(detalles) =>
+                //                    // No persistir BOB_ESTADO_SUP
+                //                    detalles.head.BOB_ESTADO_SUP.get should be(None)
+                //
+                //                    // mantener bob_tipo_sup en supresiones
+                //                    detalles.head.BOB_TIPO_SUP.get should be("R")
+                //                }
+              }
+
+            case Left(error) =>
+              println(s"Error decodificando JSON modificado: $error")
+          }
+
         }
-        case _ => println("Fallo Evento 2")
-      }
-      case _ => println("Fallo Evento 1")
+
+      case Left(error) =>
+        println(s"Error decodificando JSON inicial: $error")
     }
   }
 }

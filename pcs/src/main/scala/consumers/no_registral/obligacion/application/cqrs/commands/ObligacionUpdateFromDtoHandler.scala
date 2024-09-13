@@ -2,7 +2,11 @@ package consumers.no_registral.obligacion.application.cqrs.commands
 
 import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionUpdateFromDto
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionExternalDto}
+import consumers.no_registral.obligacion.application.entities.{
+  DetallesObligacion,
+  ListDetallesObligaciones,
+  ObligacionExternalDto
+}
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionUpdatedFromDto
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -81,8 +85,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
           campoEvento.set(obligacionNuevoTest, None)
         } else if (campoEvento.getName == "BOB_OTROS_ATRIBUTOS") {
           estado.BOB_OTROS_ATRIBUTOS match {
-            // FIXME: si el none _ continua la funcion
-            case None => ()
+            case None => obligacionNuevoTest
             case Some(value) if value.BOB_DETALLES.nonEmpty => {
               val otros_atributos_evento =
                 evento.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head
@@ -90,7 +93,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
               val otros_atributos_estado =
                 value.BOB_DETALLES.head
 
-              //Option[ListDetallesObjeto]
               val otros_atributos_updated =
                 actualizarCCBOBDetalles(otros_atributos_evento, otros_atributos_estado)
 
@@ -114,7 +116,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
 
         if (campoEvento.get(atributosEvento) == None) {
           campoEvento.set(atributosNuevo, campoEstado.get(atributosEstado))
-          // FIXME: validar q no rompe si el campo no estaba en el state
         } else if (campoEvento.get(atributosEvento).equals(Some("null"))) {
           campoEvento.set(atributosNuevo, None)
         } else if (campoEvento.get(atributosEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
@@ -157,7 +158,9 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
     //val eventCounterMax = Try(System.getenv("EVENT-COUNTER-MAX")).getOrElse(9)
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(s"[${actor.name} | ${actor.persistenceId}] -obligacion- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
+      log.warn(
+        s"[${actor.name} | ${actor.persistenceId}] -obligacion- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
+      )
 
       // Informs that operation has been ignored */
       //todo check if this is desirable, why? signal the sender??
@@ -169,13 +172,10 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event
-        if (!(initialization == "true" && command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {
-        }
+        if (!(initialization == "true" && command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {}
         if (event.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.tiene30Obligaciones.get.equals(true)) {
           actor.informParent(command)
-        }
-
-        else {
+        } else {
           actor.informParentTreintaProciento(event)
         }
 

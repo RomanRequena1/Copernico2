@@ -2,7 +2,13 @@ package consumers.no_registral.obligacion.application.cqrs.commands
 
 import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionAntUpdateFromDto
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionExternalDto}
+import consumers.no_registral.obligacion.application.entities.{
+  DetallesObligacion,
+  DetallesSupresiones,
+  ListDetallesObligaciones,
+  ListDetallesSupresiones,
+  ObligacionExternalDto
+}
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionAntUpdatedFromDto
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -33,17 +39,40 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
         } else if (campoEvento.getName == "BOB_OTROS_ATRIBUTOS") {
           val otros_atributos_evento =
             evento.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head
-
           val otros_atributos_updated =
-            actualizarBB_BOBDetalles(otros_atributos_evento)
-
+            actualizarBBBobDetalles(otros_atributos_evento)
           campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(List(otros_atributos_updated))))
+
+        } else if (campoEvento.getName == "BOB_SUPRESIONES") {
+          val otros_atributos_evento =
+            evento.BOB_SUPRESIONES.get.BOB_DETALLES_SUPRESIONES.head
+          val otros_atributos_updated =
+            actualizarBBBobSupresiones(otros_atributos_evento)
+          campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(List(otros_atributos_updated))))
         }
       }
       obligacionNuevoTest
     }
+    def actualizarBBBobSupresiones(atributosEvento: DetallesSupresiones) = {
 
-    def actualizarBB_BOBDetalles(atributosEvento: DetallesObligacion) = {
+      val declaredFields = atributosEvento.getClass.getDeclaredFields
+      var atributosNuevo = atributosEvento
+
+      declaredFields.foreach { campo =>
+        val campoEvento = atributosNuevo.getClass.getDeclaredField(campo.getName)
+        campoEvento.setAccessible(true)
+
+        if (campoEvento.get(atributosEvento).equals(Some("null"))) {
+          campoEvento.set(atributosNuevo, None)
+        } else if (campoEvento.get(atributosEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
+          campoEvento.set(atributosNuevo, None)
+        } else if (campoEvento.get(atributosEvento).equals(Some(999))) {
+          campoEvento.set(atributosNuevo, None)
+        }
+      }
+      atributosNuevo
+    }
+    def actualizarBBBobDetalles(atributosEvento: DetallesObligacion) = {
 
       val declaredFields = atributosEvento.getClass.getDeclaredFields
       var atributosNuevo = atributosEvento
@@ -80,30 +109,39 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
           campoEvento.set(obligacionNuevoTest, None)
         } else if (campoEvento.get(evento).equals(Some(999))) {
           campoEvento.set(obligacionNuevoTest, None)
+
         } else if (campoEvento.getName == "BOB_OTROS_ATRIBUTOS") {
           estado.BOB_OTROS_ATRIBUTOS match {
-            // FIXME: si el none _ continua la funcion
-            case None => ()
+            case None => obligacionNuevoTest
             case Some(value) if value.BOB_DETALLES.nonEmpty => {
-              val otros_atributos_evento =
-                evento.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head
+              val otros_atributos_evento = evento.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head
 
-              val otros_atributos_estado =
-                value.BOB_DETALLES.head
+              val otros_atributos_estado = value.BOB_DETALLES.head
 
-              //Option[ListDetallesObjeto]
-              val otros_atributos_updated =
-                actualizarCCBOBDetalles(otros_atributos_evento, otros_atributos_estado)
+              val otros_atributos_updated = actualizarCCBobDetalles(otros_atributos_evento, otros_atributos_estado)
 
               campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(List(otros_atributos_updated))))
+            }
+          }
+        } else if (campoEvento.getName == "BOB_SUPRESIONES") {
+          estado.BOB_SUPRESIONES match {
+            case None => obligacionNuevoTest
+            case Some(value) if value.BOB_DETALLES_SUPRESIONES.nonEmpty => {
+              val otros_atributos_evento = evento.BOB_SUPRESIONES.get.BOB_DETALLES_SUPRESIONES.head
+
+              val otros_atributos_estado = value.BOB_DETALLES_SUPRESIONES.head
+
+              val otros_atributos_updated =
+                actualizarCCBobSupresiones(otros_atributos_evento, otros_atributos_estado)
+
+              campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(List(otros_atributos_updated))))
             }
           }
         }
       }
       obligacionNuevoTest
     }
-
-    def actualizarCCBOBDetalles(atributosEvento: DetallesObligacion, atributosEstado: DetallesObligacion) = {
+    def actualizarCCBobSupresiones(atributosEvento: DetallesSupresiones, atributosEstado: DetallesSupresiones) = {
 
       val declaredFields = atributosEvento.getClass.getDeclaredFields
       var atributosNuevo = atributosEvento
@@ -116,7 +154,29 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
 
         if (campoEvento.get(atributosEvento) == None) {
           campoEvento.set(atributosNuevo, campoEstado.get(atributosEstado))
-          // FIXME: validar q no rompe si el campo no estaba en el state
+        } else if (campoEvento.get(atributosEvento).equals(Some("null"))) {
+          campoEvento.set(atributosNuevo, None)
+        } else if (campoEvento.get(atributosEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
+          campoEvento.set(atributosNuevo, None)
+        } else if (campoEvento.get(atributosEvento).equals(Some(999))) {
+          campoEvento.set(atributosNuevo, None)
+        }
+      }
+      atributosNuevo
+    }
+    def actualizarCCBobDetalles(atributosEvento: DetallesObligacion, atributosEstado: DetallesObligacion) = {
+
+      val declaredFields = atributosEvento.getClass.getDeclaredFields
+      var atributosNuevo = atributosEvento
+
+      declaredFields.foreach { campo =>
+        val campoEvento = atributosNuevo.getClass.getDeclaredField(campo.getName)
+        val campoEstado = atributosEstado.getClass.getDeclaredField(campo.getName)
+        campoEvento.setAccessible(true)
+        campoEstado.setAccessible(true)
+
+        if (campoEvento.get(atributosEvento) == None) {
+          campoEvento.set(atributosNuevo, campoEstado.get(atributosEstado))
         } else if (campoEvento.get(atributosEvento).equals(Some("null"))) {
           campoEvento.set(atributosNuevo, None)
         } else if (campoEvento.get(atributosEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
@@ -128,7 +188,7 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
       atributosNuevo
     }
 
-    def getObligacionFFF() = {
+    def getObligacionAntFFF() = {
       val obligacionFFF = actor.state.registro match {
         case None => getBBParams(command.registro)
         case Some(value) => {
@@ -137,13 +197,14 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
       }
       obligacionFFF
     }
+
     val event = ObligacionAntUpdatedFromDto(
       command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
       command.obligacionId,
-      getObligacionFFF(),
+      getObligacionAntFFF(),
       command.detallesObligacion,
       command.detallesSupresiones,
       command.isAdheridoDebito,
