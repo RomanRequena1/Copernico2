@@ -32,7 +32,7 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
       case None => List(false)
     }
     val sujetoResponsable: List[Option[String]] = registro.SOJ_OTROS_ATRIBUTOS match {
-      case Some(r) => {
+      case Some(r) =>
         r.SOJ_DETALLES map { d =>
           d.RESPONSABLE_OTROS_ATRIBUTOS.getOrElse("N") match {
             case "S" => Some(registro.SOJ_SUJ_IDENTIFICADOR)
@@ -40,7 +40,6 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
             case _ => None
           }
         }
-      }
       case None => List(Some("N"))
     }
 
