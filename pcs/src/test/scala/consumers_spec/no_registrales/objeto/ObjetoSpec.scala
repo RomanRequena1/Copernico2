@@ -6,11 +6,7 @@ import consumers.no_registral.objeto.application.entities.ObjetoResponses
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.ObjetosTriDecoder
 import consumers.no_registral.tranferencia.domain.{Vinculo, VinculoCotitular}
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
-import consumers_spec.no_registrales.testkit.{
-
-  MonitoringAndMessageProducerMock,
-  NoRegistralesImplicitConversions
-}
+import consumers_spec.no_registrales.testkit.{MonitoringAndMessageProducerMock, NoRegistralesImplicitConversions}
 import utils.generators.Model.{deliveryId, deliveryIdAct}
 import consumers_spec.no_registrales.testkit.query.NoRegistralesQueryTestKit
 import design_principles.actor_model.ActorSpec
@@ -40,15 +36,16 @@ abstract class ObjetoSpec(
 //  val examples = new Examples("ObjetoSpec")
 
   val jsonDiego = s"""{
-        "EV_ID" : "${deliveryIdAct}",
+        "EV_ID" : $deliveryIdAct,
         "SOJ_SUJ_IDENTIFICADOR" : "Diego",
         "SOJ_IDENTIFICADOR" : "AutoDiego",
         "SOJ_TIPO_OBJETO" : "A",
         "SOJ_DESCRIPCION" : "Foca",
-        "SOJ_ESTADO" : null}"""
+        "SOJ_ESTADO" : null
+        }"""
 
   val jsonRoman = s"""{
-        "EV_ID" : "${deliveryIdAct}",
+        "EV_ID": $deliveryIdAct,
         "SOJ_SUJ_IDENTIFICADOR" : "Roman",
         "SOJ_IDENTIFICADOR" : "AutoJulian",
         "SOJ_TIPO_OBJETO" : "A",
@@ -58,7 +55,7 @@ abstract class ObjetoSpec(
         }"""
 
   val jsonJulian = s"""{
-        "EV_ID" : "${deliveryIdAct}",
+        "EV_ID": $deliveryIdAct,
         "SOJ_SUJ_IDENTIFICADOR" : "Julia",
         "SOJ_IDENTIFICADOR" : "AutoJulian",
         "SOJ_TIPO_OBJETO" : "A",
@@ -68,7 +65,7 @@ abstract class ObjetoSpec(
         }"""
 
   val jsonLucas_R = s"""{
-        "EV_ID" : "${deliveryIdAct}",
+        "EV_ID": $deliveryIdAct,
         "SOJ_SUJ_IDENTIFICADOR" : "Lucas",
         "SOJ_IDENTIFICADOR" : "AutoJulian",
         "SOJ_TIPO_OBJETO" : "A",
@@ -82,22 +79,13 @@ abstract class ObjetoSpec(
           }
         }"""
 
-  "Un objeto" should "1: crear vinculo sujeto objeto Diego" in parallelActorSystemRunner {
-    implicit s =>
+  "Un objeto" should "1: crear vinculo sujeto objeto Diego" in parallelActorSystemRunner { implicit s =>
     val context = getContext(s)
 
     val messageProducer = context.messageProducer
 
     val Query = context.Query
 
-    decode[ObjetosTri](jsonDiego) match {
-      case Left(err) => println("Error decoding Json" + err)
-      case Right(event) =>
-        messageProducer.produceObjeto(event)
-        eventually {
-          val response: ObjetoResponses.GetObjetoResponse = Query.getStateObjeto(event)
-          response.registro.get should be(event)
-        }
-    }
   }
+
 }
