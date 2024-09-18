@@ -21,6 +21,10 @@ final case class ObligacionSnapshotProjection(
     case Some(value) => Map("BOB_DETALLES" -> value.get("BOB_DETALLES").asJson.noSpaces)
     case None => None
   }
+  val bobOtrosAtributos: Option[Boolean] = registro.get.BOB_OTROS_ATRIBUTOS match {
+    case Some(value) => value.BOB_DETALLES.head.tiene30Obligaciones
+    case None => Some(true)
+  }
 
   val bobSupresionesResult: Option[Map[String, List[DetallesSupresiones]]] =
     decode[Map[String, List[DetallesSupresiones]]](registro.get.BOB_SUPRESIONES.asJson.toString()).toOption
@@ -55,7 +59,7 @@ final case class ObligacionSnapshotProjection(
       "bob_vencimiento" -> registro.BOB_VENCIMIENTO,
       "bob_oga_id" -> registro.BOB_OGA_ID,
       "bob_vencimiento_2" -> registro.BOB_VENCIMIENTO_2,
-      "bob_tiene30Obligacion" -> registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m => m.tiene30Obligaciones),
+      "bob_tiene30Obligacion" -> bobOtrosAtributos,
       "bob_resultDmn" -> event.resultDmn
     )
   }

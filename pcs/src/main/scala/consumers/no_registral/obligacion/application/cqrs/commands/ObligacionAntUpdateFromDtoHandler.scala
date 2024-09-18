@@ -37,18 +37,31 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
         } else if (campoEvento.get(evento).equals(Some(999))) {
           campoEvento.set(obligacionNuevoTest, None)
         } else if (campoEvento.getName == "BOB_OTROS_ATRIBUTOS") {
-          val otros_atributos_evento =
-            evento.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head
-          val otros_atributos_updated =
-            actualizarBBBobDetalles(otros_atributos_evento)
-          campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(List(otros_atributos_updated))))
+          evento.BOB_OTROS_ATRIBUTOS match {
+            case None => obligacionNuevoTest
+            case Some(value) if value.BOB_DETALLES.nonEmpty => {
+              val otros_atributos_evento =
+                evento.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head
 
+              val otros_atributos_updated =
+                actualizarBBBobDetalles(otros_atributos_evento)
+
+              campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(List(otros_atributos_updated))))
+            }
+          }
         } else if (campoEvento.getName == "BOB_SUPRESIONES") {
-          val otros_atributos_evento =
-            evento.BOB_SUPRESIONES.get.BOB_DETALLES_SUPRESIONES.head
-          val otros_atributos_updated =
-            actualizarBBBobSupresiones(otros_atributos_evento)
-          campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(List(otros_atributos_updated))))
+          evento.BOB_SUPRESIONES match {
+            case None => obligacionNuevoTest
+            case Some(value) if value.BOB_DETALLES_SUPRESIONES.nonEmpty => {
+              val otros_atributos_evento =
+                evento.BOB_SUPRESIONES.get.BOB_DETALLES_SUPRESIONES.head
+
+              val otros_atributos_updated =
+                actualizarBBBobSupresiones(otros_atributos_evento)
+
+              campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(List(otros_atributos_updated))))
+            }
+          }
         }
       }
       obligacionNuevoTest
