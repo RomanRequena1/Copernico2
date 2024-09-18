@@ -35,14 +35,18 @@ class ObjetoUpdateFromAntHandler(actor: ObjetoActor, requeriment: MonitoringAndM
         } else if (campoEvento.get(evento).equals(Some(999))) {
           campoEvento.set(objetoNuevoTest, None)
         } else if (campoEvento.getName == "SOJ_OTROS_ATRIBUTOS") {
+          evento.SOJ_OTROS_ATRIBUTOS match {
+            case None => objetoNuevoTest
+            case Some(value) if value.SOJ_DETALLES.nonEmpty => {
+              val otros_atributos_evento =
+                evento.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES.head
 
-          val otros_atributos_evento =
-            evento.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES.head
+              val otros_atributos_updated =
+                actualizarBBSojDetalles(otros_atributos_evento)
 
-          val otros_atributos_updated =
-            actualizarBBSojDetalles(otros_atributos_evento)
-
-          campoEvento.set(objetoNuevoTest, Some(ListDetallesObjeto(List(otros_atributos_updated))))
+              campoEvento.set(objetoNuevoTest, Some(ListDetallesObjeto(List(otros_atributos_updated))))
+            }
+          }
         }
       }
       objetoNuevoTest
