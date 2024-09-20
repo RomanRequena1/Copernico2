@@ -99,6 +99,7 @@ class Examples(testName: String) {
           DetallesSupresiones(
             BOB_TIPO_SUP = Some("Tipo Supresion Prueba"),
             BOB_ESTADO_SUP = Some("Estado Supresion Prueba"),
+            BOB_DESCRIPCION = Some("descripzao"),
             BOB_FECHA_INICIO_SUP = Some(LocalDateTime.of(2023, 8, 14, 0, 0)),
             BOB_FECHA_FIN_SUP = Some(LocalDateTime.of(2025, 8, 14, 0, 0))
           )

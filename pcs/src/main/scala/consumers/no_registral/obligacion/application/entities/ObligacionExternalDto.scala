@@ -167,6 +167,7 @@ case class ObligacionesAnt(
 case class ListDetallesSupresiones(BOB_DETALLES_SUPRESIONES: List[DetallesSupresiones]) extends CbroSerialization
 
 case class DetallesSupresiones(
+    BOB_DESCRIPCION: Option[String],
     BOB_TIPO_SUP: Option[String],
     BOB_ESTADO_SUP: Option[String],
     BOB_FECHA_INICIO_SUP: Option[LocalDateTime],

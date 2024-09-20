@@ -232,6 +232,7 @@ class Examples(testName: String) {
           DetallesSupresiones(
             Some("Tipo Supresion"),
             Some("Estado Supresion"),
+            Some("descripzao"),
             Some(LocalDateTime.of(2023, 8, 14, 0, 0)),
             Some(LocalDateTime.of(2025, 8, 14, 0, 0))
           )
