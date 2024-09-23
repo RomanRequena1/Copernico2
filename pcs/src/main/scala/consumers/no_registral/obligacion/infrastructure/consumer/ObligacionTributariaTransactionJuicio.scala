@@ -4,16 +4,8 @@ import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento
-import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{
-  ObligacionRemove,
-  ObligacionUpdateFromDto
-}
-import consumers.no_registral.obligacion.application.entities.{
-  DetallesObligacion,
-  ListDetallesObligaciones,
-  ObligacionCommands,
-  ObligacionesTri
-}
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesSupresiones, ListDetallesObligaciones, ObligacionCommands, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import design_principles.actor_model.Response
 import io.circe.parser.decode
@@ -66,6 +58,10 @@ case class ObligacionTributariaTransactionJuicio(actorRef: ActorRef, monitoring:
       case None => null
     }
 
+    val detallesSupresiones: Seq[DetallesSupresiones] = obligacion.BOB_SUPRESIONES match {
+      case Some(r) => r.BOB_DETALLES_SUPRESIONES
+      case None => null
+    }
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
 
     val command: ObligacionCommands =
@@ -99,6 +95,7 @@ case class ObligacionTributariaTransactionJuicio(actorRef: ActorRef, monitoring:
           deliveryId = obligacion.EV_ID,
           registro = dmn._1,
           detallesObligacion = detallesObligacion,
+          detallesSupresiones = detallesSupresiones,
           isAdheridoDebito = isAdheridoDebito,
           cuota = obligacion.BOB_CUOTA,
           resultDmn = Some(dmn._2.toString)

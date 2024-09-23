@@ -2,11 +2,7 @@ package consumers.no_registral.obligacion.application.cqrs.commands
 
 import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionUpdateFromDto
-import consumers.no_registral.obligacion.application.entities.{
-  DetallesObligacion,
-  ListDetallesObligaciones,
-  ObligacionExternalDto
-}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesSupresiones, ListDetallesObligaciones, ListDetallesSupresiones, ObligacionExternalDto}
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionUpdatedFromDto
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -35,19 +31,24 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         } else if (campoEvento.get(evento).equals(Some(999))) {
           campoEvento.set(obligacionNuevoTest, None)
         } else if (campoEvento.getName == "BOB_OTROS_ATRIBUTOS") {
-          val otros_atributos_evento =
-            evento.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head
-
-          val otros_atributos_updated =
-            actualizarBB_BOBDetalles(otros_atributos_evento)
-
-          campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(List(otros_atributos_updated))))
+          evento.BOB_OTROS_ATRIBUTOS match {
+            case None => obligacionNuevoTest
+            case Some(value) if value.BOB_DETALLES.nonEmpty =>
+              val otros_atributos_updated = value.BOB_DETALLES.map(actualizarBB_BOBDetalles)
+              campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(otros_atributos_updated)))
+          }
+        } else if (campoEvento.getName == "BOB_SUPRESIONES") {
+          evento.BOB_SUPRESIONES match {
+            case None => obligacionNuevoTest
+            case Some(value) if value.BOB_DETALLES_SUPRESIONES.nonEmpty =>
+              val supresiones_updated = value.BOB_DETALLES_SUPRESIONES.map(actualizarBB_BOBDetallesSupresiones)
+              campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(supresiones_updated)))
+          }
         }
       }
       obligacionNuevoTest
     }
     def actualizarBB_BOBDetalles(atributosEvento: DetallesObligacion) = {
-
       val declaredFields = atributosEvento.getClass.getDeclaredFields
       var atributosNuevo = atributosEvento
 
@@ -64,6 +65,24 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         }
       }
       atributosNuevo
+    }
+    def actualizarBB_BOBDetallesSupresiones(supresion: DetallesSupresiones): DetallesSupresiones = {
+      val declaredFields = supresion.getClass.getDeclaredFields
+      var supresionNueva = supresion
+
+      declaredFields.foreach { campo =>
+        val campoSupresion = supresionNueva.getClass.getDeclaredField(campo.getName)
+        campoSupresion.setAccessible(true)
+
+        if (campoSupresion.get(supresion).equals(Some("null"))) {
+          campoSupresion.set(supresionNueva, None)
+        } else if (campoSupresion.get(supresion).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
+          campoSupresion.set(supresionNueva, None)
+        } else if (campoSupresion.get(supresion).equals(Some(999))) {
+          campoSupresion.set(supresionNueva, None)
+        }
+      }
+      supresionNueva
     }
 
     def getCCParams(evento: ObligacionExternalDto, estado: ObligacionExternalDto) = {
@@ -84,27 +103,28 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         } else if (campoEvento.get(evento).equals(Some(999))) {
           campoEvento.set(obligacionNuevoTest, None)
         } else if (campoEvento.getName == "BOB_OTROS_ATRIBUTOS") {
-          estado.BOB_OTROS_ATRIBUTOS match {
-            case None => obligacionNuevoTest
-            case Some(value) if value.BOB_DETALLES.nonEmpty => {
-              val otros_atributos_evento =
-                evento.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head
-
-              val otros_atributos_estado =
-                value.BOB_DETALLES.head
-
-              val otros_atributos_updated =
-                actualizarCCBOBDetalles(otros_atributos_evento, otros_atributos_estado)
-
-              campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(List(otros_atributos_updated))))
-            }
+          (evento.BOB_OTROS_ATRIBUTOS, estado.BOB_OTROS_ATRIBUTOS) match {
+            case (Some(eventoValue), Some(estadoValue)) if eventoValue.BOB_DETALLES.nonEmpty && estadoValue.BOB_DETALLES.nonEmpty =>
+              val otros_atributos_updated = eventoValue.BOB_DETALLES.zip(estadoValue.BOB_DETALLES).map {
+                case (eventoDetalle, estadoDetalle) => actualizarCC_BOBDetalles(eventoDetalle, estadoDetalle)
+              }
+              campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(otros_atributos_updated)))
+            case _ => obligacionNuevoTest
+          }
+        } else if (campoEvento.getName == "BOB_SUPRESIONES") {
+          (evento.BOB_SUPRESIONES, estado.BOB_SUPRESIONES) match {
+            case (Some(eventoValue), Some(estadoValue)) if eventoValue.BOB_DETALLES_SUPRESIONES.nonEmpty && estadoValue.BOB_DETALLES_SUPRESIONES.nonEmpty =>
+              val supresiones_updated = eventoValue.BOB_DETALLES_SUPRESIONES.zip(estadoValue.BOB_DETALLES_SUPRESIONES).map {
+                case (eventoSupresion, estadoSupresion) => actualizarCC_BOBDetallesSupresiones(eventoSupresion, estadoSupresion)
+              }
+              campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(supresiones_updated)))
+            case _ => obligacionNuevoTest
           }
         }
       }
       obligacionNuevoTest
     }
-    def actualizarCCBOBDetalles(atributosEvento: DetallesObligacion, atributosEstado: DetallesObligacion) = {
-
+    def actualizarCC_BOBDetalles(atributosEvento: DetallesObligacion, atributosEstado: DetallesObligacion) = {
       val declaredFields = atributosEvento.getClass.getDeclaredFields
       var atributosNuevo = atributosEvento
 
@@ -127,6 +147,29 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       atributosNuevo
     }
 
+    def actualizarCC_BOBDetallesSupresiones(supresionEvento: DetallesSupresiones, supresionEstado: DetallesSupresiones): DetallesSupresiones = {
+      val declaredFields = supresionEvento.getClass.getDeclaredFields
+      var supresionNueva = supresionEvento
+
+      declaredFields.foreach { campo =>
+        val campoEvento = supresionNueva.getClass.getDeclaredField(campo.getName)
+        val campoEstado = supresionEstado.getClass.getDeclaredField(campo.getName)
+        campoEvento.setAccessible(true)
+        campoEstado.setAccessible(true)
+
+        if (campoEvento.get(supresionEvento) == None) {
+          campoEvento.set(supresionNueva, campoEstado.get(supresionEstado))
+        } else if (campoEvento.get(supresionEvento).equals(Some("null"))) {
+          campoEvento.set(supresionNueva, None)
+        } else if (campoEvento.get(supresionEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
+          campoEvento.set(supresionNueva, None)
+        } else if (campoEvento.get(supresionEvento).equals(Some(999))) {
+          campoEvento.set(supresionNueva, None)
+        }
+      }
+      supresionNueva
+    }
+
     //TODO Validate the first event, with no state, enters in the case None.
     def getObligacionFFF() = {
       val obligacionFFF = actor.state.registro match {
@@ -146,6 +189,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       command.obligacionId,
       getObligacionFFF(),
       command.detallesObligacion,
+      command.detallesSupresiones,
       command.isAdheridoDebito,
       command.cuota,
       command.resultDmn

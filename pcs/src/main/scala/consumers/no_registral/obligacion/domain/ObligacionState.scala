@@ -51,6 +51,7 @@ case class ObligacionState(
           saldo = e.registro.BOB_SALDO,
           registro = Some(e.registro),
           detallesObligacion = e.detallesObligacion,
+          detallesSupresiones = Some(e.detallesSupresiones),
           juicioId = e.registro.BOB_JUI_ID,
           lastDeliveryIdByEvents = e.deliveryId,
           isAdheridoDebito = e.isAdheridoDebito.getOrElse(false),

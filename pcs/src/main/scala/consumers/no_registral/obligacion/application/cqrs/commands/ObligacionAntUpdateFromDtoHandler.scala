@@ -39,28 +39,16 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
         } else if (campoEvento.getName == "BOB_OTROS_ATRIBUTOS") {
           evento.BOB_OTROS_ATRIBUTOS match {
             case None => obligacionNuevoTest
-            case Some(value) if value.BOB_DETALLES.nonEmpty => {
-              val otros_atributos_evento =
-                evento.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head
-
-              val otros_atributos_updated =
-                actualizarBBBobDetalles(otros_atributos_evento)
-
-              campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(List(otros_atributos_updated))))
-            }
+            case Some(value) if value.BOB_DETALLES.nonEmpty =>
+              val otros_atributos_updated = value.BOB_DETALLES.map(actualizarBBBobDetalles)
+              campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(otros_atributos_updated)))
           }
         } else if (campoEvento.getName == "BOB_SUPRESIONES") {
           evento.BOB_SUPRESIONES match {
             case None => obligacionNuevoTest
-            case Some(value) if value.BOB_DETALLES_SUPRESIONES.nonEmpty => {
-              val otros_atributos_evento =
-                evento.BOB_SUPRESIONES.get.BOB_DETALLES_SUPRESIONES.head
-
-              val otros_atributos_updated =
-                actualizarBBBobSupresiones(otros_atributos_evento)
-
-              campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(List(otros_atributos_updated))))
-            }
+            case Some(value) if value.BOB_DETALLES_SUPRESIONES.nonEmpty =>
+              val supresiones_updated = value.BOB_DETALLES_SUPRESIONES.map(actualizarBBBobSupresiones)
+              campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(supresiones_updated)))
           }
         }
       }
@@ -122,33 +110,23 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
           campoEvento.set(obligacionNuevoTest, None)
         } else if (campoEvento.get(evento).equals(Some(999))) {
           campoEvento.set(obligacionNuevoTest, None)
-
         } else if (campoEvento.getName == "BOB_OTROS_ATRIBUTOS") {
-          estado.BOB_OTROS_ATRIBUTOS match {
-            case None => obligacionNuevoTest
-            case Some(value) if value.BOB_DETALLES.nonEmpty => {
-              val otros_atributos_evento = evento.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head
-
-              val otros_atributos_estado = value.BOB_DETALLES.head
-
-              val otros_atributos_updated = actualizarCCBobDetalles(otros_atributos_evento, otros_atributos_estado)
-
-              campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(List(otros_atributos_updated))))
-            }
+          (evento.BOB_OTROS_ATRIBUTOS, estado.BOB_OTROS_ATRIBUTOS) match {
+            case (Some(eventoValue), Some(estadoValue)) if eventoValue.BOB_DETALLES.nonEmpty && estadoValue.BOB_DETALLES.nonEmpty =>
+              val otros_atributos_updated = eventoValue.BOB_DETALLES.zip(estadoValue.BOB_DETALLES).map {
+                case (eventoDetalle, estadoDetalle) => actualizarCCBobDetalles(eventoDetalle, estadoDetalle)
+              }
+              campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(otros_atributos_updated)))
+            case _ => obligacionNuevoTest
           }
         } else if (campoEvento.getName == "BOB_SUPRESIONES") {
-          estado.BOB_SUPRESIONES match {
-            case None => obligacionNuevoTest
-            case Some(value) if value.BOB_DETALLES_SUPRESIONES.nonEmpty => {
-              val otros_atributos_evento = evento.BOB_SUPRESIONES.get.BOB_DETALLES_SUPRESIONES.head
-
-              val otros_atributos_estado = value.BOB_DETALLES_SUPRESIONES.head
-
-              val otros_atributos_updated =
-                actualizarCCBobSupresiones(otros_atributos_evento, otros_atributos_estado)
-
-              campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(List(otros_atributos_updated))))
-            }
+          (evento.BOB_SUPRESIONES, estado.BOB_SUPRESIONES) match {
+            case (Some(eventoValue), Some(estadoValue)) if eventoValue.BOB_DETALLES_SUPRESIONES.nonEmpty && estadoValue.BOB_DETALLES_SUPRESIONES.nonEmpty =>
+              val supresiones_updated = eventoValue.BOB_DETALLES_SUPRESIONES.zip(estadoValue.BOB_DETALLES_SUPRESIONES).map {
+                case (eventoSupresion, estadoSupresion) => actualizarCCBobSupresiones(eventoSupresion, estadoSupresion)
+              }
+              campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(supresiones_updated)))
+            case _ => obligacionNuevoTest
           }
         }
       }
