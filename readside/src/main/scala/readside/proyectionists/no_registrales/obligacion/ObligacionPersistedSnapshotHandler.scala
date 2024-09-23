@@ -16,9 +16,9 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 class ObligacionPersistedSnapshotHandler(
-    implicit
-    r: MonitoringAndCassandraWrite
-) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
+                                          implicit
+                                          r: MonitoringAndCassandraWrite
+                                        ) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
 
   @JsonIgnore
   private val log = LoggerFactory.getLogger(this.getClass)
@@ -31,6 +31,8 @@ class ObligacionPersistedSnapshotHandler(
   override def processInput(input: String): Either[Throwable, ObligacionPersistedSnapshot] =
     decode[ObligacionPersistedSnapshot](input)
 
+  val contadorBien = r.monitoring.counter("Mi_prueba_readside")
+  val contadorMal = r.monitoring.counter("Mi_prueba_readside_fail")
   override def processMessage(registro: ObligacionPersistedSnapshot): Future[Response.SuccessProcessing] = {
     //recordLag(calculateLag(registro.deliveryId.toString))
     if (registro.operacion.equals("U")) {
@@ -38,10 +40,12 @@ class ObligacionPersistedSnapshotHandler(
 
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
-          case Failure(exception) => log.error("Dont persist obligacion" + exception)
+          case Failure(exception) => {
+            log.error("Dont persist obligacion" + exception)
+            contadorMal.increment()
+          }
           case Success(value) => {
-            //log.error("ERROR - 1 " + registro.deliveryId)
-//            log.debug("Persist obligacion" + value)
+            contadorBien.increment()
           }
         }
       } yield SuccessProcessing(registro.aggregateRoot, registro.deliveryId)
