@@ -27,7 +27,9 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     queryBus.subscribe[ObligacionQueries.GetStateObligacion](new ObligacionGetStateHandler(this).handle)
     queryBus.subscribe[ObligacionQueries.GetSnapshotObligacion](new ObligacionSnapshotHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateFromDto](new ObligacionUpdateFromDtoHandler(this).handle)
-    commandBus.subscribe[ObligacionCommands.ObligacionAntUpdateFromDto](new ObligacionAntUpdateFromDtoHandler(this).handle)
+    commandBus.subscribe[ObligacionCommands.ObligacionAntUpdateFromDto](
+      new ObligacionAntUpdateFromDtoHandler(this).handle
+    )
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateExencion](new ObligacionUpdateExencionHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionRemove](new ObligacionRemoveHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionRemoveInfoFromObjeto](
@@ -50,7 +52,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       },
       cmd.tipoObjeto,
       cmd.obligacionId,
-      state.saldo,
+      state.saldo.getOrElse(0),
       state.exenta,
       state.porcentajeExencion,
       state.idExterno,
@@ -73,7 +75,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       },
       evt.tipoObjeto,
       evt.obligacionId,
-      state.saldo,
+      state.saldo.getOrElse(0),
       state.exenta,
       state.porcentajeExencion,
       state.idExterno,
@@ -102,7 +104,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       registro = state.registro,
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
-      saldo = state.saldo,
+      saldo = state.saldo.getOrElse(0),
       operacion = ObligacionEvents.operaciones("Upsert"),
       resultDmn = state.resultDmn
     ).asJson.toString()
@@ -138,7 +140,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       registro = state.registro,
       exenta = state.exenta,
       porcentajeExencion = state.porcentajeExencion.getOrElse(0),
-      saldo = state.saldo,
+      saldo = state.saldo.getOrElse(0),
       operacion = ObligacionEvents.operaciones("Delete"),
       resultDmn = state.resultDmn
     ).asJson.toString()

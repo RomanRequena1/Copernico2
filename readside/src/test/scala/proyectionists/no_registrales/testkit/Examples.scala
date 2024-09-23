@@ -236,7 +236,7 @@ class Examples(testName: String) {
     BOB_CONCEPTO = None,
     BOB_IMPUESTO = None,
     BOB_OTROS_ATRIBUTOS = detallesObligacion,
-    BOB_SALDO = 200,
+    BOB_SALDO = Some(200),
     BOB_SOJ_IDENTIFICADOR_2 = None,
     BOB_ADHERIDO_DEBITO = None,
     BOB_CANAL_ORIGEN = None,
@@ -274,7 +274,7 @@ class Examples(testName: String) {
     BOB_CONCEPTO = None,
     BOB_IMPUESTO = None,
     BOB_OTROS_ATRIBUTOS = detallesObligacion,
-    BOB_SALDO = 200,
+    BOB_SALDO = Some(200),
     BOB_SOJ_IDENTIFICADOR_2 = None,
     BOB_ADHERIDO_DEBITO = None,
     BOB_CANAL_ORIGEN = None,
@@ -312,7 +312,7 @@ class Examples(testName: String) {
     BOB_CONCEPTO = None,
     BOB_IMPUESTO = None,
     BOB_OTROS_ATRIBUTOS = detallesObligacionPago,
-    BOB_SALDO = 100.00,
+    BOB_SALDO = Some(200),
     BOB_SOJ_IDENTIFICADOR_2 = None,
     BOB_ADHERIDO_DEBITO = None,
     BOB_CANAL_ORIGEN = None,
@@ -472,7 +472,7 @@ class Examples(testName: String) {
     )
 
     val obnTest = ObligacionesTri(
-      BOB_SALDO = 100.00,
+      BOB_SALDO = Some(200),
       BOB_SUJ_IDENTIFICADOR = "CuitLucas",
       BOB_SOJ_TIPO_OBJETO = "A",
       BOB_SOJ_IDENTIFICADOR = "ABC123",
@@ -513,11 +513,11 @@ class Examples(testName: String) {
 
   def obligacionWithSaldo200 =
     obligacionExample
-      .copy(BOB_SALDO = 200)
+      .copy(BOB_SALDO = Some(200))
       .copy(EV_ID = deliveryIdAct)
   def obligacionWithSaldo50 =
     obligacionWithSaldo200
-      .copy(BOB_SALDO = 50)
+      .copy(BOB_SALDO = Some(50))
       .copy(EV_ID = deliveryIdAct)
   def obligacionVencida =
     obligacionWithSaldo50

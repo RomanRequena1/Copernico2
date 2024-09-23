@@ -282,7 +282,7 @@ abstract class BaseAntSpec(
           obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(obligacionInicial.BOB_SOJ_IDENTIFICADOR)
           obligacion.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
           obligacion.getLocalDate("BOB_VENCIMIENTO").atStartOfDay() should be(obligacionInicial.BOB_VENCIMIENTO.get)
-          obligacion.getFloat("BOB_SALDO") should be(obligacionInicial.BOB_SALDO)
+          obligacion.getFloat("BOB_SALDO").toInt should be(obligacionInicial.BOB_SALDO.get)
           obligacion.getString("BOB_TIPO") should be(obligacionInicial.BOB_TIPO.get)
 
           // No persistir BOB_PRORROGA, BOB_TIPO
@@ -362,7 +362,7 @@ abstract class BaseAntSpec(
 
                 // Mantener la bob_estado y bob_saldo
                 obligacion2.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
-                obligacion2.getFloat("BOB_SALDO") should be(obligacionInicial.BOB_SALDO)
+                obligacion2.getFloat("BOB_SALDO").toInt should be(obligacionInicial.BOB_SALDO.get)
 
                 // Persistir nuevo bob_tipo y bob_prorroga
                 obligacion2.getString("BOB_TIPO") should be(obligacionModificado.BOB_TIPO.get)
@@ -410,8 +410,6 @@ abstract class BaseAntSpec(
         println(s"Error decodificando JSON inicial: $error")
     }
   }
-
-
 
   "Test 3: Replica de pruebas/fallo" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
     implicit val dispatcher: ExecutionContextExecutor = s.dispatcher
@@ -483,7 +481,7 @@ abstract class BaseAntSpec(
           obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(obligacionInicial.BOB_SOJ_IDENTIFICADOR)
           obligacion.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
           obligacion.getLocalDate("BOB_VENCIMIENTO").atStartOfDay() should be(obligacionInicial.BOB_VENCIMIENTO.get)
-          obligacion.getFloat("BOB_SALDO") should be(obligacionInicial.BOB_SALDO)
+          obligacion.getFloat("BOB_SALDO").toInt should be(obligacionInicial.BOB_SALDO.get)
           obligacion.getString("BOB_TIPO") should be(obligacionInicial.BOB_TIPO.get)
 
           // No persistir BOB_PRORROGA, BOB_TIPO
@@ -563,7 +561,7 @@ abstract class BaseAntSpec(
 
                 // Mantener la bob_estado y bob_saldo
                 obligacion2.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
-                obligacion2.getFloat("BOB_SALDO") should be(obligacionInicial.BOB_SALDO)
+                obligacion2.getFloat("BOB_SALDO").toInt should be(obligacionInicial.BOB_SALDO.get)
 
                 // Persistir nuevo bob_tipo y bob_prorroga
                 obligacion2.getString("BOB_TIPO") should be(obligacionModificado.BOB_TIPO.get)
@@ -595,8 +593,7 @@ abstract class BaseAntSpec(
                 decode[List[DetallesSupresiones]](bobDetallesSupresiones) match {
                   case Left(error) => fail(s"Error decoding BOB_DETALLES_SUPRESIONES: $error")
                   case Right(detalles) =>
-
-                    detalles.head.BOB_DESCRIPCION.get should be ("Descripcion supresiones")
+                    detalles.head.BOB_DESCRIPCION.get should be("Descripcion supresiones")
                     detalles.head.BOB_ESTADO_SUP.get should be("ESTADONUEVO")
                 }
               }

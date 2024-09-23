@@ -333,10 +333,10 @@ abstract class BaseTriSpec(
     val messageProducer = context.messageProducer
     val cassandra = context.cassandra
 
-    val sujeto = "CuitTri-T2"
-    val IdObjeto = "ObjetoTri-T2"
+    val sujeto = "CuitTri-T3"
+    val IdObjeto = "ObjetoTri-T3"
     val tipoObjeto = "A"
-    val obn_id = "1234"
+    val obn_id = "1234T3"
 
     //bob_cuota, bob_vencimiento, tipo son optional pero son requeridos por el dmn y si es asi
 
@@ -347,10 +347,11 @@ abstract class BaseTriSpec(
       "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
       "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
       "BOB_OBN_ID": "$obn_id",
-      "BOB_ESTADO": "ADMINISTRATIVA",
+      "BOB_ESTADO": "JUDICIAL",
       "BOB_PRORROGA": "1000-01-01 00:00:00.0",
       "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
       "BOB_PERIODO": "2024",
+      "BOB_FISCALIZADA": "Fiscalizada",
       "BOB_CUOTA": "6",
       "BOB_CAPITAL": "200",
       "BOB_CONCEPTO": "601",
@@ -384,22 +385,19 @@ abstract class BaseTriSpec(
 
           val obligacion = resultado.one()
 
-          // Persistir la BOB_SALDO, BOB_ESTADO y BOB_VENCIMIENTO
+          // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
           obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(obligacionInicial.BOB_SOJ_IDENTIFICADOR)
           obligacion.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
           obligacion.getLocalDate("BOB_VENCIMIENTO").atStartOfDay() should be(obligacionInicial.BOB_VENCIMIENTO.get)
-          obligacion.getFloat("BOB_SALDO") should be(obligacionInicial.BOB_SALDO)
-          obligacion.getString("BOB_TIPO") should be(obligacionInicial.BOB_TIPO.get)
+          obligacion.getFloat("BOB_SALDO").toInt should be(obligacionInicial.BOB_SALDO.get)
+          obligacion.getString("BOB_FISCALIZADA") should be(obligacionInicial.BOB_FISCALIZADA.get)
 
-          // No persistir BOB_PRORROGA, BOB_TIPO
+          // No persistir BOB_PRORROGA ni BOB_INDICE_INT_PUNIT
           obligacion.isNull("BOB_PRORROGA") should be(true)
           obligacion.isNull("BOB_INDICE_INT_PUNIT") should be(true)
 
           val bobOtrosAtributos = obligacion.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
           val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
-
-          //          val bobSupresiones = obligacion.getMap("BOB_SUPRESIONES", classOf[String], classOf[String])
-          //          val bobDetallesSupresiones: String = bobSupresiones.get("BOB_DETALLES_SUPRESIONES")
 
           decode[List[DetallesObligacion]](bobDetalles) match {
             case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
@@ -431,16 +429,17 @@ abstract class BaseTriSpec(
             "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
             "BOB_OBN_ID": "$obn_id",
             "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
-            "BOB_PRORROGA": "2025-01-01 00:00:00.0",
+            "BOB_PRORROGA": "2024-03-01 00:00:00.0",
+            "BOB_FISCALIZADA": "NO Fiscalizada",
             "BOB_PERIODO": "2024",
             "BOB_INTERES_PUNIT": "999",
             "BOB_SALDO": "200",
-            "BOB_TIPO": "interurbano",
             "BOB_PLN_ID": "null",
             "BOB_OTROS_ATRIBUTOS": {
             "BOB_DETALLES": [
             {
             "BOB_MUNICIPIO": "Municipio",
+            "RULE_NUMBER": "1",
             "JUICIO_MULTIOBJETO": "Multiobjeto"
              }]}
           }"""
@@ -463,10 +462,10 @@ abstract class BaseTriSpec(
 
                 // Mantener la bob_estado y bob_saldo
                 obligacion2.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
-                obligacion2.getFloat("BOB_SALDO") should be(obligacionInicial.BOB_SALDO)
+                obligacion2.getFloat("BOB_SALDO").toInt should be(obligacionInicial.BOB_SALDO.get)
 
-                // Persistir nuevo bob_tipo y bob_prorroga
-                obligacion2.getString("BOB_TIPO") should be(obligacionModificado.BOB_TIPO.get)
+                // Persistir nuevo BOB_FISCALIZADA y BOB_PRORROGA
+                obligacion2.getString("BOB_FISCALIZADA") should be(obligacionModificado.BOB_FISCALIZADA.get)
                 obligacion2.getLocalDate("BOB_PRORROGA").atStartOfDay() should be(
                   obligacionModificado.BOB_PRORROGA.get
                 )
@@ -488,19 +487,6 @@ abstract class BaseTriSpec(
                     // Mantener bob_detalles: PLAN_MULTIOBJETO
                     detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
                 }
-
-                //                val bobSupresiones = obligacion.getMap("BOB_SUPRESIONES", classOf[String], classOf[String])
-                //                val bobDetallesSupresiones: String = bobSupresiones.get("BOB_DETALLES_SUPRESIONES")
-                //
-                //                decode[List[DetallesSupresiones]](bobDetallesSupresiones) match {
-                //                  case Left(error) => fail(s"Error decoding BOB_DETALLES_SUPRESIONES: $error")
-                //                  case Right(detalles) =>
-                //                    // No persistir BOB_ESTADO_SUP
-                //                    detalles.head.BOB_ESTADO_SUP.get should be(None)
-                //
-                //                    // mantener bob_tipo_sup en supresiones
-                //                    detalles.head.BOB_TIPO_SUP.get should be("R")
-                //                }
               }
 
             case Left(error) =>

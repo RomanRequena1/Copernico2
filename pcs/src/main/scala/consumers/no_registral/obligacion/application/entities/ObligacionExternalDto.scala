@@ -72,7 +72,7 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization {
 
   def BOB_TIPO: Option[String]
 
-  def BOB_SALDO: BigDecimal
+  def BOB_SALDO: Option[BigDecimal]
 
   def BOB_TOTAL: Option[BigDecimal]
 
@@ -87,7 +87,7 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization {
 }
 
 case class ObligacionesTri(
-    BOB_SALDO: BigDecimal,
+    BOB_SALDO: Option[BigDecimal],
     BOB_SUJ_IDENTIFICADOR: String,
     BOB_SOJ_IDENTIFICADOR_2: Option[String],
     BOB_SOJ_TIPO_OBJETO: String,
@@ -126,7 +126,7 @@ case class ObligacionesTri(
     with CbroSerialization
 
 case class ObligacionesAnt(
-    BOB_SALDO: BigDecimal,
+    BOB_SALDO: Option[BigDecimal],
     BOB_SUJ_IDENTIFICADOR: String,
     BOB_SOJ_IDENTIFICADOR_2: Option[String],
     BOB_SOJ_TIPO_OBJETO: String,

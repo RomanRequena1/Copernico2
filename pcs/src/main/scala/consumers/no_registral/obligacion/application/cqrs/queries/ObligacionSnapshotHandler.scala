@@ -17,7 +17,7 @@ class ObligacionSnapshotHandler(actor: ObligacionActor)
     val sender = actor.context.sender()
 
     val response = GetObligacionResponse(
-      actor.state.saldo,
+      actor.state.saldo.getOrElse(0),
       actor.state.fechaUltMod,
       actor.state.exenta,
       actor.state.porcentajeExencion,

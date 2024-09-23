@@ -11,7 +11,7 @@ import serialization.CbroSerialization
 import java.time.LocalDateTime
 
 case class ObligacionState(
-    saldo: BigDecimal = 0,
+    saldo: Option[BigDecimal] = None,
     fechaUltMod: LocalDateTime = LocalDateTime.MIN,
     exenta: Boolean = false,
     porcentajeExencion: Option[BigDecimal] = None,
@@ -45,7 +45,8 @@ case class ObligacionState(
           lastDeliveryIdByEvents = e.deliveryId
         )
       case e: ObligacionEvents.ObligacionRemoved =>
-        copy(saldo = 0, registro = Some(e.registro), lastDeliveryIdByEvents = e.registro.EV_ID)
+        copy(saldo = Some(0), registro = Some(e.registro), lastDeliveryIdByEvents = e.registro.EV_ID)
+
       case e: ObligacionEvents.ObligacionUpdatedFromDto =>
         copy(
           saldo = e.registro.BOB_SALDO,
@@ -58,6 +59,7 @@ case class ObligacionState(
           idExterno = e.registro.SOJ_ID_EXTERNO,
           resultDmn = e.resultDmn
         )
+
       case e: ObligacionEvents.ObligacionAntUpdatedFromDto =>
         copy(
           saldo = e.registro.BOB_SALDO,
