@@ -37,7 +37,6 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
 //    logger.error(input)
     val x = decode[ObligacionesTri](input)
-    print("HERE: " + x)
     decode[ObligacionesTri](input)
   }
 
@@ -111,7 +110,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
   private def isTreintaPorciento(obn: ObligacionesTri): (ObligacionesTri, Any) = {
     //todo set deuda30Obligacion en state
     Some(DMNTreintaPorciento.dmn(obn)) match {
-      case f if f.get.equals(1) => { //case 0
+      case f if f.get.equals(1) => {
         val detalles: Option[List[DetallesObligacion]] = Some(
           obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m =>
             m.copy(tiene30Obligaciones = Some(true),
