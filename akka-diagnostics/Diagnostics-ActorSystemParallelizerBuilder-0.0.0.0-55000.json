@@ -1,5 +1,5 @@
 {
-  "start-time" : "2024-09-23T19:37:13.371",
+  "start-time" : "2024-09-25T19:53:03.409",
   "akka-version" : "2.6.15",
   "akka-diagnostics-version" : "1.1.16",
   "akka-http-version" : "10.2.0",
@@ -28,15 +28,15 @@
   "system-metrics" : {
     "heap-init" : 257949696,
     "heap-max" : 4114612224,
-    "heap-used" : 234588832,
-    "heap-committed" : 385875968,
+    "heap-used" : 134939808,
+    "heap-committed" : 399507456,
     "os-processors" : 8,
     "mem-pool-0" : {
       "name" : "CodeHeap 'non-nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 5836800,
-      "used" : 1520896,
+      "used" : 1522944,
       "committed" : 2555904
     },
     "mem-pool-1" : {
@@ -44,56 +44,56 @@
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 73686200,
-      "committed" : 76668928
+      "used" : 73614896,
+      "committed" : 76623872
     },
     "mem-pool-2" : {
       "name" : "CodeHeap 'profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122908672,
-      "used" : 11852544,
-      "committed" : 11862016
+      "used" : 11511040,
+      "committed" : 11534336
     },
     "mem-pool-3" : {
       "name" : "Compressed Class Space",
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : 1073741824,
-      "used" : 9385136,
-      "committed" : 10870784
+      "used" : 9371424,
+      "committed" : 10825728
     },
     "mem-pool-4" : {
       "name" : "G1 Eden Space",
       "type" : "Heap memory",
       "init" : 27262976,
       "max" : -1,
-      "used" : 207618048,
-      "committed" : 227540992
+      "used" : 108003328,
+      "committed" : 234881024
     },
     "mem-pool-5" : {
       "name" : "G1 Old Gen",
       "type" : "Heap memory",
       "init" : 230686720,
       "max" : 4114612224,
-      "used" : 12290720,
-      "committed" : 143654912
+      "used" : 11207840,
+      "committed" : 147849216
     },
     "mem-pool-6" : {
       "name" : "G1 Survivor Space",
       "type" : "Heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 14680064,
-      "committed" : 14680064
+      "used" : 16777216,
+      "committed" : 16777216
     },
     "mem-pool-7" : {
       "name" : "CodeHeap 'non-profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122912768,
-      "used" : 4335488,
-      "committed" : 4390912
+      "used" : 4245888,
+      "committed" : 4259840
     }
   },
   "configuration" : {
@@ -1475,7 +1475,7 @@
             }
         },
         "java" : {
-            "command" : "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner -s proyectionists.no_registrales.base_Tri.acceptance.BaseTri -testName Test 3: un obligacion should End to end, PCS a Readside -showProgressMessages true",
+            "command" : "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner -s proyectionists.no_registrales.base_Tri.acceptance.BaseTri -showProgressMessages true",
             "launcher" : "SUN_STANDARD"
         },
         "jnu" : {

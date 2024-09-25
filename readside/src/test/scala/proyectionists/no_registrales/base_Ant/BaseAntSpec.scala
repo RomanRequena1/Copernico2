@@ -203,9 +203,7 @@ abstract class BaseAntSpec(
                     // Mantener soj_detalles: semaforo_marca
                     detalles.head.SOJ_SEMAFORO_MARCA.get should be("P")
                 }
-
               }
-
             case Left(error) =>
               println(s"Error decodificando JSON modificado: $error")
           }

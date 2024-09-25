@@ -327,21 +327,22 @@ abstract class BaseTriSpec(
     }
   }
 
-  "Test 3: un obligacion" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
-    implicit val dispatcher = s.dispatcher
-    val context = getContext(s)
-    val messageProducer = context.messageProducer
-    val cassandra = context.cassandra
+  "Test 3: un obligacion con state parcial" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
+      val cassandra = context.cassandra
 
-    val sujeto = "CuitTri-T3"
-    val IdObjeto = "ObjetoTri-T3"
-    val tipoObjeto = "A"
-    val obn_id = "1234T3"
+      val sujeto = "CuitTri-T3"
+      val IdObjeto = "ObjetoTri-T3"
+      val tipoObjeto = "A"
+      val obn_id = "1234T3"
 
-    //bob_cuota, bob_vencimiento, tipo son optional pero son requeridos por el dmn y si es asi
+      //bob_cuota, bob_vencimiento, tipo son optional pero son requeridos por el dmn y si es asi
 
-    val obligacionJsonInicial =
-      s"""{
+      val obligacionJsonInicial =
+        s"""{
       "EV_ID": "$deliveryIdAct",
       "BOB_SUJ_IDENTIFICADOR": "$sujeto",
       "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
@@ -370,59 +371,60 @@ abstract class BaseTriSpec(
       }]}
     }"""
 
-    val testObligacionParcial: Either[io.circe.Error, ObligacionesTri] = decode[ObligacionesTri](obligacionJsonInicial)
+      val testObligacionParcial: Either[io.circe.Error, ObligacionesTri] =
+        decode[ObligacionesTri](obligacionJsonInicial)
 
-    testObligacionParcial match {
-      case Right(obligacionInicial) =>
-        messageProducer.produceObligacion(obligacionInicial)
+      testObligacionParcial match {
+        case Right(obligacionInicial) =>
+          messageProducer.produceObligacion(obligacionInicial)
 
-        eventually(timeout(15.seconds), interval(100.milliseconds)) {
-          val resultado: AsyncResultSet = cassandra.cassandraWrite
-            .cqlSelect(
-              s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}';"
-            )
-            .futureValue
+          eventually(timeout(15.seconds), interval(100.milliseconds)) {
+            val resultado: AsyncResultSet = cassandra.cassandraWrite
+              .cqlSelect(
+                s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}';"
+              )
+              .futureValue
 
-          val obligacion = resultado.one()
+            val obligacion = resultado.one()
 
-          // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
-          obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(obligacionInicial.BOB_SOJ_IDENTIFICADOR)
-          obligacion.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
-          obligacion.getLocalDate("BOB_VENCIMIENTO").atStartOfDay() should be(obligacionInicial.BOB_VENCIMIENTO.get)
-          obligacion.getFloat("BOB_SALDO").toInt should be(obligacionInicial.BOB_SALDO.get)
-          obligacion.getString("BOB_FISCALIZADA") should be(obligacionInicial.BOB_FISCALIZADA.get)
+            // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
+            obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(obligacionInicial.BOB_SOJ_IDENTIFICADOR)
+            obligacion.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
+            obligacion.getLocalDate("BOB_VENCIMIENTO").atStartOfDay() should be(obligacionInicial.BOB_VENCIMIENTO.get)
+            obligacion.getFloat("BOB_SALDO").toInt should be(obligacionInicial.BOB_SALDO.get)
+            obligacion.getString("BOB_FISCALIZADA") should be(obligacionInicial.BOB_FISCALIZADA.get)
 
-          // No persistir BOB_PRORROGA ni BOB_INDICE_INT_PUNIT
-          obligacion.isNull("BOB_PRORROGA") should be(true)
-          obligacion.isNull("BOB_INDICE_INT_PUNIT") should be(true)
+            // No persistir BOB_PRORROGA ni BOB_INDICE_INT_PUNIT
+            obligacion.isNull("BOB_PRORROGA") should be(true)
+            obligacion.isNull("BOB_INDICE_INT_PUNIT") should be(true)
 
-          val bobOtrosAtributos = obligacion.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
-          val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
+            val bobOtrosAtributos = obligacion.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+            val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
 
-          decode[List[DetallesObligacion]](bobDetalles) match {
-            case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
-            case Right(detalles) =>
-              // Persistir en bob_detalle el PLAN_MULTIOBJETO
-              detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
-          }
+            decode[List[DetallesObligacion]](bobDetalles) match {
+              case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
+              case Right(detalles) =>
+                // Persistir en bob_detalle el PLAN_MULTIOBJETO
+                detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
+            }
 
-          //          decode[List[DetallesSupresiones]](bobDetallesSupresiones) match {
-          //            case Left(error) => fail(s"Error decoding BOB_DETALLES_SUPRESIONES: $error")
-          //            case Right(detalles) =>
-          //              // Persistir en soj_detalle el BOB_TIPO_SUP
-          //              detalles.head.BOB_TIPO_SUP.get should be("R")
-          //          }
+            //          decode[List[DetallesSupresiones]](bobDetallesSupresiones) match {
+            //            case Left(error) => fail(s"Error decoding BOB_DETALLES_SUPRESIONES: $error")
+            //            case Right(detalles) =>
+            //              // Persistir en soj_detalle el BOB_TIPO_SUP
+            //              detalles.head.BOB_TIPO_SUP.get should be("R")
+            //          }
 
-          // persistir nuevo bob_tipo y fecha bob_prorroga
-          // persistir bob_detalles BOB_MUNICIPIO y JUICIO_MULTIOBJETO
-          // mantener bob_detalles PLAN_MULTIOBJETO
-          // no persistir BOB_ESTADO_SUP en supresiones
-          // mantener bob_tipo_sup en supressiones
-          // mantener bob_estado y bob_saldo
-          // eliminar impuesto y soj_id_externo
+            // persistir nuevo bob_tipo y fecha bob_prorroga
+            // persistir bob_detalles BOB_MUNICIPIO y JUICIO_MULTIOBJETO
+            // mantener bob_detalles PLAN_MULTIOBJETO
+            // no persistir BOB_ESTADO_SUP en supresiones
+            // mantener bob_tipo_sup en supressiones
+            // mantener bob_estado y bob_saldo
+            // eliminar impuesto y soj_id_externo
 
-          val obligacionModificadoJson =
-            s"""{
+            val obligacionModificadoJson =
+              s"""{
             "EV_ID": "$deliveryIdAct",
             "BOB_SUJ_IDENTIFICADOR": "$sujeto",
             "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
@@ -444,59 +446,59 @@ abstract class BaseTriSpec(
              }]}
           }"""
 
-          val testObligacionModificado: Either[io.circe.Error, ObligacionesTri] =
-            decode[ObligacionesTri](obligacionModificadoJson)
+            val testObligacionModificado: Either[io.circe.Error, ObligacionesTri] =
+              decode[ObligacionesTri](obligacionModificadoJson)
 
-          testObligacionModificado match {
-            case Right(obligacionModificado) =>
-              messageProducer.produceObligacion(obligacionModificado)
+            testObligacionModificado match {
+              case Right(obligacionModificado) =>
+                messageProducer.produceObligacion(obligacionModificado)
 
-              eventually(timeout(15.seconds), interval(100.milliseconds)) {
-                val resultado: AsyncResultSet = cassandra.cassandraWrite
-                  .cqlSelect(
-                    s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}';"
+                eventually(timeout(15.seconds), interval(100.milliseconds)) {
+                  val resultado: AsyncResultSet = cassandra.cassandraWrite
+                    .cqlSelect(
+                      s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}';"
+                    )
+                    .futureValue
+
+                  val obligacion2 = resultado.one()
+
+                  // Mantener la bob_estado y bob_saldo
+                  obligacion2.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
+                  obligacion2.getFloat("BOB_SALDO").toInt should be(obligacionInicial.BOB_SALDO.get)
+
+                  // Persistir nuevo BOB_FISCALIZADA y BOB_PRORROGA
+                  obligacion2.getString("BOB_FISCALIZADA") should be(obligacionModificado.BOB_FISCALIZADA.get)
+                  obligacion2.getLocalDate("BOB_PRORROGA").atStartOfDay() should be(
+                    obligacionModificado.BOB_PRORROGA.get
                   )
-                  .futureValue
 
-                val obligacion2 = resultado.one()
+                  //Eliminar el bob_interes_punit, bob_pln_id
+                  obligacion2.isNull("BOB_INTERES_PUNIT") should be(true)
+                  obligacion2.isNull("BOB_PLN_ID") should be(true)
 
-                // Mantener la bob_estado y bob_saldo
-                obligacion2.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
-                obligacion2.getFloat("BOB_SALDO").toInt should be(obligacionInicial.BOB_SALDO.get)
+                  val bobOtrosAtributos = obligacion2.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+                  val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
 
-                // Persistir nuevo BOB_FISCALIZADA y BOB_PRORROGA
-                obligacion2.getString("BOB_FISCALIZADA") should be(obligacionModificado.BOB_FISCALIZADA.get)
-                obligacion2.getLocalDate("BOB_PRORROGA").atStartOfDay() should be(
-                  obligacionModificado.BOB_PRORROGA.get
-                )
+                  decode[List[DetallesObligacion]](bobDetalles) match {
+                    case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
+                    case Right(detalles) =>
+                      // Persistir bob_detalles: BOB_MUNICIPIO y JUICIO_MULTIOBJETO.
+                      detalles.head.BOB_MUNICIPIO.get should be("Municipio")
+                      detalles.head.JUICIO_MULTIOBJETO.get should be("Multiobjeto")
 
-                //Eliminar el bob_interes_punit, bob_pln_id
-                obligacion2.isNull("BOB_INTERES_PUNIT") should be(true)
-                obligacion2.isNull("BOB_PLN_ID") should be(true)
-
-                val bobOtrosAtributos = obligacion2.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
-                val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
-
-                decode[List[DetallesObligacion]](bobDetalles) match {
-                  case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
-                  case Right(detalles) =>
-                    // Persistir bob_detalles: BOB_MUNICIPIO y JUICIO_MULTIOBJETO.
-                    detalles.head.BOB_MUNICIPIO.get should be("Municipio")
-                    detalles.head.JUICIO_MULTIOBJETO.get should be("Multiobjeto")
-
-                    // Mantener bob_detalles: PLAN_MULTIOBJETO
-                    detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
+                      // Mantener bob_detalles: PLAN_MULTIOBJETO
+                      detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
+                  }
                 }
-              }
 
-            case Left(error) =>
-              println(s"Error decodificando JSON modificado: $error")
+              case Left(error) =>
+                println(s"Error decodificando JSON modificado: $error")
+            }
+
           }
 
-        }
-
-      case Left(error) =>
-        println(s"Error decodificando JSON inicial: $error")
-    }
+        case Left(error) =>
+          println(s"Error decodificando JSON inicial: $error")
+      }
   }
 }
