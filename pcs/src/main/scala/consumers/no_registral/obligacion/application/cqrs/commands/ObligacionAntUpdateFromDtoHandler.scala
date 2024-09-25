@@ -121,19 +121,27 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
           }
         } else if (campoEvento.getName == "BOB_SUPRESIONES") {
           (evento.BOB_SUPRESIONES, estado.BOB_SUPRESIONES) match {
-            case (Some(eventoValue), Some(estadoValue)) if eventoValue.BOB_DETALLES_SUPRESIONES.nonEmpty && estadoValue.BOB_DETALLES_SUPRESIONES.nonEmpty =>
-              val supresiones_updated = eventoValue.BOB_DETALLES_SUPRESIONES.zip(estadoValue.BOB_DETALLES_SUPRESIONES).map {
-                case (eventoSupresion, estadoSupresion) => actualizarCCBobSupresiones(eventoSupresion, estadoSupresion)
-              }
+            case (Some(eventoSupresiones), Some(estadoSupresiones)) =>
+              val supresionesExistentes = estadoSupresiones.BOB_DETALLES_SUPRESIONES
+              val supresionesNuevas = eventoSupresiones.BOB_DETALLES_SUPRESIONES
+              val supresionesActualizadas = supresionesExistentes ++ supresionesNuevas
+              val supresiones_updated = supresionesActualizadas.map(supresion =>
+                actualizarCCBobSupresiones(supresion, DetallesSupresiones(None, None, None, None, None))
+              )
               campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(supresiones_updated)))
-            case _ => obligacionNuevoTest
+            case (Some(eventoSupresiones), None) =>
+              val supresiones_updated = eventoSupresiones.BOB_DETALLES_SUPRESIONES.map(supresion =>
+                actualizarCCBobSupresiones(supresion, DetallesSupresiones(None, None, None, None, None))
+              )
+              campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(supresiones_updated)))
+            case _ => // No hacer nada si no hay supresiones en el evento
           }
         }
       }
       obligacionNuevoTest
     }
-    def actualizarCCBobSupresiones(atributosEvento: DetallesSupresiones, atributosEstado: DetallesSupresiones) = {
 
+    def actualizarCCBobSupresiones(atributosEvento: DetallesSupresiones, atributosEstado: DetallesSupresiones): DetallesSupresiones = {
       val declaredFields = atributosEvento.getClass.getDeclaredFields
       var atributosNuevo = atributosEvento
 
@@ -143,14 +151,15 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
         campoEvento.setAccessible(true)
         campoEstado.setAccessible(true)
 
-        if (campoEvento.get(atributosEvento) == None) {
-          campoEvento.set(atributosNuevo, campoEstado.get(atributosEstado))
-        } else if (campoEvento.get(atributosEvento).equals(Some("null"))) {
-          campoEvento.set(atributosNuevo, None)
-        } else if (campoEvento.get(atributosEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
-          campoEvento.set(atributosNuevo, None)
-        } else if (campoEvento.get(atributosEvento).equals(Some(999))) {
-          campoEvento.set(atributosNuevo, None)
+        val valorEvento = Option(campoEvento.get(atributosEvento))
+        val valorEstado = Option(campoEstado.get(atributosEstado))
+
+        (valorEvento, valorEstado) match {
+          case (Some(Some("null")), _) => campoEvento.set(atributosNuevo, None)
+          case (Some(Some(date: LocalDateTime)), _) if date == LocalDateTime.of(1000, 1, 1, 0, 0, 0) => campoEvento.set(atributosNuevo, None)
+          case (Some(Some(999)), _) => campoEvento.set(atributosNuevo, None)
+          case (None, Some(valor)) => campoEvento.set(atributosNuevo, valor)
+          case _ => // Mantener el valor del evento o None si no hay valor
         }
       }
       atributosNuevo
