@@ -1,5 +1,5 @@
 {
-  "start-time" : "2024-09-25T19:35:56.077",
+  "start-time" : "2024-09-26T19:03:42.168",
   "akka-version" : "2.6.15",
   "akka-diagnostics-version" : "1.1.16",
   "akka-http-version" : "10.2.0",
@@ -28,7 +28,7 @@
   "system-metrics" : {
     "heap-init" : 390070272,
     "heap-max" : 6224347136,
-    "heap-used" : 223639408,
+    "heap-used" : 224388768,
     "heap-committed" : 468713472,
     "os-processors" : 12,
     "mem-pool-0" : {
@@ -36,7 +36,7 @@
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 5836800,
-      "used" : 1515392,
+      "used" : 1512960,
       "committed" : 2555904
     },
     "mem-pool-1" : {
@@ -44,24 +44,24 @@
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 73681992,
-      "committed" : 76627968
+      "used" : 73751064,
+      "committed" : 76587008
     },
     "mem-pool-2" : {
       "name" : "CodeHeap 'profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122908672,
-      "used" : 10860288,
-      "committed" : 10878976
+      "used" : 11127936,
+      "committed" : 11141120
     },
     "mem-pool-3" : {
       "name" : "Compressed Class Space",
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : 1073741824,
-      "used" : 9412280,
-      "committed" : 10878976
+      "used" : 9408200,
+      "committed" : 10874880
     },
     "mem-pool-4" : {
       "name" : "G1 Eden Space",
@@ -76,7 +76,7 @@
       "type" : "Heap memory",
       "init" : 362807296,
       "max" : 6224347136,
-      "used" : 8681328,
+      "used" : 9430688,
       "committed" : 173015040
     },
     "mem-pool-6" : {
@@ -92,7 +92,7 @@
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122912768,
-      "used" : 4024576,
+      "used" : 4022784,
       "committed" : 4063232
     }
   },
