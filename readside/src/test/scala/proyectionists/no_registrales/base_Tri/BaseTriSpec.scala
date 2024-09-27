@@ -5,7 +5,10 @@ import cassandra.MockMonitoringAndCassandraWrite
 import com.datastax.oss.driver.api.core.cql.AsyncResultSet
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{DetallesObjeto, ObjetosTri}
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.{DetallesObjetoDecoder, ObjetosTriDecoder}
-import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{DetallesObligacionDecoder, ObligacionesTriDecoder}
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{
+  DetallesObligacionDecoder,
+  ObligacionesTriDecoder
+}
 import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionesTri}
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.SujetoTri
@@ -499,48 +502,46 @@ abstract class BaseTriSpec(
     }
   }
 
-  "Test4 del 30%: Un sujeto - objeto Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
-    implicit val dispatcher = s.dispatcher
-    val context = getContext(s)
-    val messageProducer = context.messageProducer
-    val cassandra = context.cassandra
+  "Test 4 del 30%: Un sujeto - objeto Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
+      val cassandra = context.cassandra
 
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
 
-    val sujeto = "SUJETO_30_TEST1"
-    val tipoObjeto = "A"
-    val IdObjeto = "OBJETO30_PRIMERO"
-    val IdObjeto2 = "OBJETO30_SEGUNDO"
-    val IdObjeto3 = "OBJETO30_TERCERO"
-    val obn_id = "obnGracia-T1"
-    val obn_id2 = "obnMUC-T1"
-    val obn_id3 = "obnDeuda-T1"
+      val sujeto = "SUJETO_30_TEST1"
+      val tipoObjeto = "A"
+      val IdObjeto = "OBJETO30_PRIMERO"
+      val IdObjeto2 = "OBJETO30_SEGUNDO"
+      val IdObjeto3 = "OBJETO30_TERCERO"
+      val obn_id = "obnGracia-T1"
+      val obn_id2 = "obnMUC-T1"
+      val obn_id3 = "obnDeuda-T1"
 
+      val vtoVencida = LocalDateTime.now().minusDays(25)
+      val vtoVencidaParsed = LocalDateTime.now().minusDays(25).format(formatter)
 
-    val vtoVencida = LocalDateTime.now().minusDays(25)
-    val vtoVencidaParsed = LocalDateTime.now().minusDays(25).format(formatter)
+      val vtoMUC = vtoVencida.plusMonths(1).format(formatter)
 
-    val vtoMUC = vtoVencida.plusMonths(1).format(formatter)
+      val fecha = LocalDateTime.now().minusDays(5)
+      val vtoPlazoGracia = LocalDateTime.now().minusDays(5).format(formatter)
 
-    val fecha = LocalDateTime.now().minusDays(5)
-    val vtoPlazoGracia = LocalDateTime.now().minusDays(5).format(formatter)
+      val periodo = fecha.getYear
+      val cuota = fecha.getMonthValue
 
-    val periodo = fecha.getYear
-    val cuota = fecha.getMonthValue
-
-
-    /*
+      /*
      El evento debe:
      Persistir el alta Suj1-Obj1-Tipo2
      Objeto1 - Condonacion por sujeto
      Obn con vencimiento fecha < 10 dias de actual.
      Tambien validamos el objeto1 que se cree como tipo 2 por default
-     */
+       */
 
-
-    //todo ALTA DE OBJ2 - TIPO2
-    val SegundoObjeto30Porciento =
-      s"""
+      //todo ALTA DE OBJ2 - TIPO2
+      val SegundoObjeto30Porciento =
+        s"""
       {
       "EV_ID": "$deliveryIdAct",
       "SOJ_SUJ_IDENTIFICADOR": "$sujeto",
@@ -552,9 +553,9 @@ abstract class BaseTriSpec(
       }
     """
 
-    //todo ALTA DE OBJ3 - TIPO2
-    val TerceroObjeto30Porciento =
-      s"""
+      //todo ALTA DE OBJ3 - TIPO2
+      val TerceroObjeto30Porciento =
+        s"""
       {
       "EV_ID": "$deliveryIdAct",
       "SOJ_SUJ_IDENTIFICADOR": "$sujeto",
@@ -566,10 +567,10 @@ abstract class BaseTriSpec(
       }
     """
 
-    //todo ALTA DE OBJ1 CON OBN VENCIDA - TIPO2
-    //FIXME EL CAMPO BOB_OTROS_ATRIBUTOS -> BOB_DETALLES DEBE ESTAR EN EL JSON SINO ROMPE EL DMN
-    val obligacionVencidaNoDeuda =
-      s"""{
+      //todo ALTA DE OBJ1 CON OBN VENCIDA - TIPO2
+      //FIXME EL CAMPO BOB_OTROS_ATRIBUTOS -> BOB_DETALLES DEBE ESTAR EN EL JSON SINO ROMPE EL DMN
+      val obligacionVencidaNoDeuda =
+        s"""{
       "EV_ID": "$deliveryIdAct",
       "BOB_SUJ_IDENTIFICADOR": "$sujeto",
       "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
@@ -589,12 +590,12 @@ abstract class BaseTriSpec(
       }]}
     }"""
 
-    val obligacionVencidaMUC =
-      s"""{
+      val obligacionVencidaMUC =
+        s"""{
       "EV_ID": "$deliveryIdAct",
       "BOB_SUJ_IDENTIFICADOR": "$sujeto",
       "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
+      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto2",
       "BOB_OBN_ID": "$obn_id2",
       "BOB_ESTADO": "ADMINISTRATIVA",
       "BOB_VENCIMIENTO": "$vtoVencidaParsed",
@@ -611,13 +612,12 @@ abstract class BaseTriSpec(
       }]}
     }"""
 
-
-    val obligacionVencida =
-      s"""{
+      val obligacionVencida =
+        s"""{
       "EV_ID": "$deliveryIdAct",
       "BOB_SUJ_IDENTIFICADOR": "$sujeto",
       "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
+      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto3",
       "BOB_OBN_ID": "$obn_id3",
       "BOB_ESTADO": "ADMINISTRATIVA",
       "BOB_VENCIMIENTO": "$vtoVencidaParsed",
@@ -633,97 +633,163 @@ abstract class BaseTriSpec(
       }]}
     }"""
 
+      val testSegundoObjeto30Porciento: Either[io.circe.Error, ObjetosTri] =
+        decode[ObjetosTri](SegundoObjeto30Porciento)
+      val testTercerObjeto30Porciento: Either[io.circe.Error, ObjetosTri] = decode[ObjetosTri](TerceroObjeto30Porciento)
+      val testObligacion30Porciento: Either[io.circe.Error, ObligacionesTri] =
+        decode[ObligacionesTri](obligacionVencidaNoDeuda)
+      val testObligacionMUC: Either[io.circe.Error, ObligacionesTri] = decode[ObligacionesTri](obligacionVencidaMUC)
+      val testObligacionVencida: Either[io.circe.Error, ObligacionesTri] = decode[ObligacionesTri](obligacionVencida)
 
-    val testSegundoObjeto30Porciento: Either[io.circe.Error, ObjetosTri] = decode[ObjetosTri](SegundoObjeto30Porciento)
-    val testTercerObjeto30Porciento: Either[io.circe.Error, ObjetosTri] = decode[ObjetosTri](TerceroObjeto30Porciento)
-    val testObligacion30Porciento: Either[io.circe.Error, ObligacionesTri] = decode[ObligacionesTri](obligacionVencidaNoDeuda)
-    val testObligacionMUC: Either[io.circe.Error, ObligacionesTri] = decode[ObligacionesTri](obligacionVencidaMUC)
-    val testObligacionVencida: Either[io.circe.Error, ObligacionesTri] = decode[ObligacionesTri](obligacionVencida)
+      testSegundoObjeto30Porciento match {
+        case Right(objetoInicial) =>
+          messageProducer.produceObjeto(objetoInicial)
 
+          testTercerObjeto30Porciento match {
+            case Right(objetoInicial) =>
+              messageProducer.produceObjeto(objetoInicial)
 
-    testSegundoObjeto30Porciento match {
-      case Right(objetoInicial) =>
-        messageProducer.produceObjeto(objetoInicial)
+              testObligacion30Porciento match {
+                case Right(obligacionVencidaNoDeuda) =>
+                  messageProducer.produceObligacion(obligacionVencidaNoDeuda)
 
-      case Left(error) =>
-        println(s"Error decodificando JSON testSegundoObjeto30Porciento: $error")
-    }
+                  eventually(timeout(15.seconds), interval(100.milliseconds)) {
 
+                    val resultadoObligacion1: AsyncResultSet = cassandra.cassandraWrite
+                      .cqlSelect(
+                        s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '$IdObjeto' AND BOB_SOJ_TIPO_OBJETO = '$tipoObjeto' " +
+                        s" AND BOB_PERIODO = '$periodo' AND BOB_CUOTA = '$cuota' AND BOB_OBN_ID = '$obn_id';"
+                      )
+                      .futureValue
 
-    testTercerObjeto30Porciento match {
-      case Right(objetoInicial) =>
-        messageProducer.produceObjeto(objetoInicial)
+                    val obligacion1 = resultadoObligacion1.one()
 
-      case Left(error) =>
-        println(s"Error decodificando JSON testTerceroObjeto30Porciento: $error")
-    }
+                    //Validar la evaluacion de la obligacion: resultdmn
+                    obligacion1.getString("BOB_RESULTDMN") should be("1")
 
-    testObligacion30Porciento match {
-      case Right(obligacionVencidaNoDeuda) =>
-        messageProducer.produceObligacion(obligacionVencidaNoDeuda)
+                    val resultadoObjeto1: AsyncResultSet = cassandra.cassandraWrite
+                      .cqlSelect(
+                        s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujeto' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
+                      )
+                      .futureValue
 
-        eventually(timeout(15.seconds), interval(100.milliseconds)) {
-          val resultado: AsyncResultSet = cassandra.cassandraWrite
-            .cqlSelect(
-              s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}' " +
-                s" AND BOB_PERIODO = '${periodo}' AND BOB_CUOTA = '${cuota}' AND BOB_OBN_ID = '${obn_id}';")
-            .futureValue
+                    val objeto1 = resultadoObjeto1.one()
 
-          val obligacion = resultado.one()
+                    // Validar la aplicabilidad del cupon: soj_aplicarDescuento
+                    objeto1.getBoolean("soj_aplicarDescuento") should be(true)
 
-          //BOB_OBN_ID y resultdmn
-          obligacion.getString("BOB_OBN_ID") should be(obligacionVencidaNoDeuda.BOB_OBN_ID)
-          obligacion.getString("BOB_RESULTDMN") should be("1")
+                    testObligacionMUC match {
+                      case Right(obligacionVencidaMUC) =>
+                        messageProducer.produceObligacion(obligacionVencidaMUC)
 
-        }
+                        eventually(timeout(15.seconds), interval(100.milliseconds)) {
+                          val resultadoObligacion2: AsyncResultSet = cassandra.cassandraWrite
+                            .cqlSelect(
+                              s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '$IdObjeto2' AND BOB_SOJ_TIPO_OBJETO = '$tipoObjeto' " +
+                              s" AND BOB_PERIODO = '$periodo' AND BOB_CUOTA = '$cuota' AND BOB_OBN_ID = '$obn_id2';"
+                            )
+                            .futureValue
 
-      case Left(error) =>
-        println(s"Error decodificando JSON testObligacion30Porciento: $error")
-    }
+                          val obligacion2 = resultadoObligacion2.one()
 
-        testObligacionMUC match {
-          case Right(obligacionVencidaMUC) =>
-            messageProducer.produceObligacion(obligacionVencidaMUC)
+                          //Validar la evaluacion de la obligacion: resultdmn
+                          obligacion2.getString("BOB_RESULTDMN") should be("1")
 
-            eventually(timeout(15.seconds), interval(100.milliseconds)) {
-              val resultado: AsyncResultSet = cassandra.cassandraWrite
-                .cqlSelect(
-                  s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}' " +
-                    s" AND BOB_PERIODO = '${periodo}' AND BOB_CUOTA = '${cuota}' AND BOB_OBN_ID = '${obn_id2}';")
-                .futureValue
+                          val resultadoObjeto2: AsyncResultSet = cassandra.cassandraWrite
+                            .cqlSelect(
+                              s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujeto' AND SOJ_IDENTIFICADOR = '$IdObjeto2' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
+                            )
+                            .futureValue
 
-              val obligacion2 = resultado.one()
+                          val objeto2 = resultadoObjeto2.one()
 
-              //BOB_OBN_ID y resultdmn
-              obligacion2.getString("BOB_OBN_ID") should be(obligacionVencidaMUC.BOB_OBN_ID)
-              obligacion2.getString("BOB_RESULTDMN") should be("1")
+                          // Validar la aplicabilidad del cupon: soj_aplicarDescuento
+                          objeto2.getBoolean("soj_aplicarDescuento") should be(true)
 
-            }
-          case Left(error) =>
-            println(s"Error decodificando JSON testObligacion30Porciento: $error")
-        }
+                          testObligacionVencida match {
+                            case Right(obnVencida) =>
+                              messageProducer.produceObligacion(obnVencida)
 
-      testObligacionVencida match {
-          case Right(obnVencida) =>
-            messageProducer.produceObligacion(obnVencida)
+                              eventually(timeout(15.seconds), interval(100.milliseconds)) {
+                                //Obligacion 3 DEUDA
+                                val resultadoObligacion3: AsyncResultSet = cassandra.cassandraWrite
+                                  .cqlSelect(
+                                    s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '$IdObjeto3' AND BOB_SOJ_TIPO_OBJETO = '$tipoObjeto' " +
+                                    s" AND BOB_PERIODO = '$periodo' AND BOB_CUOTA = '$cuota' AND BOB_OBN_ID = '$obn_id3';"
+                                  )
+                                  .futureValue
 
-            eventually(timeout(15.seconds), interval(100.milliseconds)) {
-              val resultado: AsyncResultSet = cassandra.cassandraWrite
-                .cqlSelect(
-                  s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}' " +
-                    s" AND BOB_PERIODO = '${periodo}' AND BOB_CUOTA = '${cuota}' AND BOB_OBN_ID = '${obn_id3}';"
-                )
-                .futureValue
+                                val obligacion3 = resultadoObligacion3.one()
 
-              val obligacion3 = resultado.one()
+                                //Validar la evaluacion de la obligacion: resultdmn
+                                obligacion3.getString("BOB_RESULTDMN") should be("-8")
 
-              //BOB_OBN_ID y resultdmn
-              obligacion3.getString("BOB_OBN_ID") should be(obnVencida.BOB_OBN_ID)
-              obligacion3.getString("BOB_RESULTDMN") shouldNot be("1")
+                                //Objeto 1
+                                val resultadoObjeto1: AsyncResultSet = cassandra.cassandraWrite
+                                  .cqlSelect(
+                                    s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujeto' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
+                                  )
+                                  .futureValue
 
-            }
-      case Left(error) =>
-        println(s"Error decodificando JSON testObligacion30Porciento: $error")
+                                val objeto1 = resultadoObjeto1.one()
+
+                                // Validar la aplicabilidad del cupon: soj_aplicarDescuento
+                                objeto1.getBoolean("soj_aplicarDescuento") should be(false)
+                                objeto1.getBoolean("soj_tiene30Objeto") should be(true)
+                                //Fixme: verificar pq el objeto_vinculo no persiste en su map el primer VSO
+                                // objeto1.getBoolean("soj_tiene30ObjetoVinculo") should be(false)
+
+                                //Objeto 2
+                                val resultadoObjeto2: AsyncResultSet = cassandra.cassandraWrite
+                                  .cqlSelect(
+                                    s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujeto' AND SOJ_IDENTIFICADOR = '$IdObjeto2' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
+                                  )
+                                  .futureValue
+
+                                val objeto2 = resultadoObjeto2.one()
+
+                                // Validar la aplicabilidad del cupon: soj_aplicarDescuento
+                                objeto2.getBoolean("soj_aplicarDescuento") should be(false)
+                                objeto2.getBoolean("soj_tiene30Objeto") should be(true)
+                                //Fixme: verificar pq el objeto_vinculo no persiste en su map el primer VSO
+                                // objeto2.getBoolean("soj_tiene30ObjetoVinculo") should be(false)
+
+                                //Objeto 3
+                                val resultadoObjeto3: AsyncResultSet = cassandra.cassandraWrite
+                                  .cqlSelect(
+                                    s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujeto' AND SOJ_IDENTIFICADOR = '$IdObjeto3' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
+                                  )
+                                  .futureValue
+
+                                val objeto3 = resultadoObjeto3.one()
+
+                                // Validar la aplicabilidad del cupon: soj_aplicarDescuento
+                                objeto3.getBoolean("soj_aplicarDescuento") should be(false)
+                                objeto3.getBoolean("soj_tiene30Objeto") should be(false)
+                                //Fixme: verificar pq el objeto_vinculo no persiste en su map el primer VSO
+                                // objeto3.getBoolean("soj_tiene30ObjetoVinculo") should be(false)
+
+                              }
+
+                            // Implicito se sabe que el tiene30sujeto en obn1 y obn2 debe permanecer en true
+                            // pero para obn3 -> false.
+
+                            case Left(error) =>
+                              println(s"Error decodificando JSON testObligacion30Porciento: $error")
+                          }
+                        }
+                      case Left(error) =>
+                        println(s"Error decodificando JSON testObligacion30Porciento: $error")
+                    }
+                  }
+                case Left(error) =>
+                  println(s"Error decodificando JSON testObligacion30Porciento: $error")
+              }
+            case Left(error) =>
+              println(s"Error decodificando JSON testTerceroObjeto30Porciento: $error")
+          }
+        case Left(error) =>
+          println(s"Error decodificando JSON testSegundoObjeto30Porciento: $error")
       }
   }
 }
