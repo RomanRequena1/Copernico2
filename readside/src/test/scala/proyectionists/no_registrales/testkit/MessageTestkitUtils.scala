@@ -174,5 +174,17 @@ object MessageTestkitUtils {
                               ),
                               topic)(_ => ())
     }
+
+    def produceEvento(evento: String, topic: String): Future[akka.Done] = {
+      messageProducer.produce(
+        Seq(
+          KafkaKeyValue(
+            aggregateRoot = "1",
+            json = evento
+          )
+        ),
+        topic
+      )(_ => ())
+    }
   }
 }
