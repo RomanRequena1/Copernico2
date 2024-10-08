@@ -1,11 +1,11 @@
 {
-  "start-time" : "2024-08-16T14:51:38.371",
+  "start-time" : "2024-10-04T14:08:59.320",
   "akka-version" : "2.6.15",
   "akka-diagnostics-version" : "1.1.16",
   "akka-http-version" : "10.2.0",
   "akka-persistence-cassandra-version" : "1.0.5",
   "alpakka-kafka-version" : "2.1.0",
-  "classpath" : "/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/job-1/target/e2f0d577/d1d0d1e6/pcs_2.13-1.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a77839da/44b75f31/common_2.13-0.1.0-SNAPSHOT.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/e6157672/08373e89/akka-cluster-tools_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/1d18387f/94b5d03a/akka-remote_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/c713b77c/01b2a5c3/akka-discovery_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/67a5e78a/65175896/akka-persistence-query_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/9d767cda/5ff27aca/akka-actor_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/94fc291e/bcdf8def/akka-persistence_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/c45f7a0b/2cafeb9a/ojdbc8-21.3.0.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a8ce6bf3/84e9d8a4/akka-slf4j_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/302f404a/d4b6c8bd/akka-http-core_2.13-10.2.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/94c49862/ed4fd22e/akka-http_2.13-10.2.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/20ce24a8/6fc81601/akka-http-spray-json_2.13-10.2.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/381e53da/43b12d87/akka-cluster_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/99cd5689/d4d57a90/akka-cluster-sharding_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/b8240caf/caebe80d/akka-actor-typed_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/0bdf5684/b6e387c6/akka-persistence-typed_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/d52bec12/24e352b8/akka-cluster-sharding-typed_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/12c1d486/5e998c32/akka-discovery-kubernetes-api_2.13-1.1.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/ea87a980/81b9d336/akka-management_2.13-1.1.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/d7be111a/540bd5e8/akka-management-cluster-http_2.13-1.1.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/3d887fd3/30de04da/akka-management-cluster-bootstrap_2.13-1.1.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/41e75204/bcb37556/akka-stream-kafka_2.13-2.1.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/2a6cdb61/ba41856c/akka-serialization-jackson_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/ffc9d497/251d0885/akka-protobuf_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/099706ce/03f7a303/akka-diagnostics_2.13-1.1.16.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/118a3917/fd60c5bf/akka-persistence-inmemory_2.13-2.5.15.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/e424cfcb/d95c66ac/postgresql-42.6.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/9fab2893/44fd861a/HikariCP-3.4.5.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/fcecd8e1/1098231a/dmn-engine-1.8.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/ac8e981b/6d6ad52e/camunda-engine-dmn-7.21.0-alpha4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/15c8764e/0bb7910b/circe-core_2.13-0.14.3.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/affa6e3d/e33d3781/circe-generic_2.13-0.14.3.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/add674de/450d65f6/circe-parser_2.13-0.14.3.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/64fc2ea0/03720ab6/circe-generic-extras_2.13-0.14.3.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/e0f089b1/72fd1ccd/scalaz-core_2.13-7.2.28.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/5d1c5ed4/3d146dcd/scalaz-concurrent_2.13-7.2.28.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/3cb012f1/0006b2ff/akka-persistence-cassandra_2.13-1.0.5.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/31a61f2c/c14f5344/akka-projection-core_2.13-0.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a0387d5b/e32cf066/akka-projection-eventsourced_2.13-0.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/0341f698/b3492d1f/akka-projection-cassandra_2.13-0.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/bb0e5899/82773da1/logback-classic-1.4.11.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/ae840229/eebc720e/logstash-logback-encoder-5.3.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/f3aeb1ff/d8741d4e/akka-kryo-serialization_2.13-2.0.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/9dc64ff3/6a1cfd94/play-json_2.13-2.8.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/8bfd4c6c/8dcc3c28/play-json-extensions_2.13-0.40.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/7a0443ce/18a0a49c/play-json-traits_2.13-1.5.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/196b7492/5a9cf629/commons-io-2.6.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/51901bcb/65c5c050/reflections-0.9.10.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/afda78f6/4dbb01a8/shapeless_2.13-2.3.10.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/ea015189/e9ce8fd6/akka-http-play-json_2.13-1.30.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/aa10e693/c095e6c3/monitoring-interceptors-6.1.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/196cd4d3/d77b6af7/kamon-core_2.13-2.2.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a3871d39/0c6e8f87/kamon-status-page_2.13-2.2.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/49ac15d7/e3fe8713/kamon-prometheus_2.13-2.2.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/9fc8539f/169a37bb/cinnamon-akka_2.13-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/bfc7354c/0f73c446/cinnamon-akka-http_2.13-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/4cb123fe/7de2d783/cinnamon-jvm-metrics-producer-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/c837a08b/3998c47b/cinnamon-prometheus-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/08e36d14/2ce30553/cinnamon-prometheus-httpserver-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/84e7787a/2f782412/cinnamon-akka-persistence_2.13-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/1c6b7393/69e9d976/cinnamon-akka-stream_2.13-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/0bc00fed/2caaa3ac/cinnamon-opentracing_2.13-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/38621741/d2efe8be/cinnamon-opentracing-jaeger-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/72fdfe58/5bd8f2b9/cinnamon-opentracing-zipkin-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/ab69470b/01f463e7/cinnamon-akka-typed_2.13-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/22f3c180/3d626ed8/akka-coordination_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/654b98bb/405a6345/akka-stream_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/6394083e/bc45a4be/akka-pki_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/1528be5b/2c6252bc/agrona-1.9.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/ecff6960/65a4d7a3/config-1.4.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/0676008f/cb34b137/scala-java8-compat_2.13-0.9.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/47b5b984/0ca0f260/slf4j-api-2.0.7.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/9e12d498/e7f4ecec/akka-parsing_2.13-10.2.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/0baf7801/a5f09784/spray-json_2.13-1.3.5.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/80d8c088/4a849e70/akka-distributed-data_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/87a7456d/b2b6c73d/akka-stream-typed_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/368887d2/7938cec0/akka-cluster-typed_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/0dec7f14/586fc152/akka-management-pki_2.13-1.1.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/40702964/12282c3b/kafka-clients-6.1.0-ce.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/e489d94f/fb39dfc5/scala-collection-compat_2.13-2.4.3.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/fa4105d7/b5ab9d75/jackson-core-2.11.4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/5e1ae883/4ad10380/jackson-annotations-2.11.4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/225fd328/0f3efdec/jackson-databind-2.11.4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/0bbf26b6/6f7be969/jackson-module-scala_2.13-2.11.4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a9151fa2/a6b4df02/jackson-datatype-jdk8-2.11.4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/584c683c/6498c943/jackson-datatype-jsr310-2.11.4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/aeae981b/90c5f8b7/jackson-module-parameter-names-2.11.4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/e76a4269/3708b43c/jackson-dataformat-cbor-2.11.4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/b8e17ee5/b9827313/lz4-java-1.7.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/34908f25/066b4db5/commons-lang3-3.5.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/78bc2af7/501e6e6b/checker-qual-3.31.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/653066ea/174749ac/feel-engine-1.17.5.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/0d92e4fa/ba903889/camunda-dmn-model-7.21.0-alpha4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/7e35f240/d7ddc72b/camunda-commons-utils-1.13.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a46ac787/9e8ede42/camunda-commons-typed-values-7.21.0-alpha4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/23c87b22/6a15e007/camunda-engine-feel-api-7.21.0-alpha4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/f34d1865/0d71a491/camunda-engine-feel-juel-7.21.0-alpha4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/bfb2f232/a5b75715/camunda-engine-feel-scala-7.21.0-alpha4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a5f472aa/31fa83d0/feel-engine-1.17.5-scala-shaded.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/7781c38b/4a7aae44/camunda-juel-7.21.0-alpha4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/edfd46bf/031573b9/circe-numbers_2.13-0.14.3.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/e8a162a5/99482c83/cats-core_2.13-2.8.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/ab65e094/172c3594/circe-jawn_2.13-0.14.3.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/41680df2/161d65a2/scalaz-effect_2.13-7.2.28.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/e71fcb42/ee0bc8d5/akka-stream-alpakka-cassandra_2.13-2.0.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/39b1959e/0276e5f8/akka-protobuf-v3_2.13-2.6.15.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/b2358ced/aab0a3c4/logback-core-1.4.11.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/9bd47cc7/53a166ba/kryo-5.0.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/99c53625/6a7a0579/play-functional_2.13-2.8.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/4e11c895/f9fd6ced/joda-time-2.10.5.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/4a3a2d82/4598152b/guava-18.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/d64706e3/51e84830/javassist-3.18.2-GA.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a3a1bdb8/ef63af0c/annotations-2.0.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/5252cffb/6d219ef7/common-utils-6.1.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/3f17b477/73d75af5/okhttp-3.14.7.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/6c6d6258/fc3270d7/cinnamon-java-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/c6354aa2/fffba0da/cinnamon-scala_2.13-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/6d449b6c/11ae4ddc/cinnamon-core-java-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/5be87bde/c140e4ce/simpleclient-0.8.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/6a5935ba/14d77992/HdrHistogram-2.1.12.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/505de6a5/1b96c5e6/simpleclient_httpserver-0.8.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/538081f0/09dccfd5/cinnamon-akka-cluster_2.13-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/1eff56d2/06ce52a3/cinnamon-play_2.13-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/054f871b/3c54491b/opentracing-api-0.32.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/9f33bd7b/49cc5a5e/opentracing-util-0.32.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/80075c55/8f0bde5f/cinnamon-opentracing-tracer-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/7abe3204/9f274d41/jaeger-thrift-0.35.5.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/5e5482e7/7f0616e0/jaeger-zipkin-0.35.5.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/9dc9fdc2/30fcd385/commons-codec-1.12.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/5400687b/960d60b9/httpcore-4.4.10.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/94dfbd16/8fa64fae/reactive-streams-1.0.3.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/eade1d2a/c46b6b30/ssl-config-core_2.13-0.4.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/6c38508f/7336a38a/asn-one-0.5.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/3cd4d35e/3fb9012e/lmdbjava-0.7.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/8b52a134/707224be/zstd-jni-1.4.5-6.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/80684e9d/9a14a8fb/snappy-java-1.1.7.7.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/eb79113c/13ff81dc/jackson-module-paranamer-2.11.4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/b8c9bbbc/00e62564/fastparse_2.13-3.0.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/c046b082/04e0bd77/camunda-xml-model-7.21.0-alpha4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/d6def017/0960debe/camunda-commons-logging-1.13.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/8772626f/b96ed7c8/cats-kernel_2.13-2.8.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/44ce854c/9c713ec0/jawn-parser_2.13-1.4.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/7742a1da/f964df66/java-driver-core-4.6.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/92714e8e/95434e11/netty-handler-4.1.52.Final.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/4c91ae33/d9a78abd/reflectasm-1.11.9.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/61274d34/645445bf/objenesis-3.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/1e00736b/c0af7752/minlog-1.3.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/95e8ad89/f2915dcd/okio-1.17.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/6a0ab50c/d2e1eabf/cinnamon-core_2.13-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a0ecb908/47e5d467/cinnamon-common-2.16.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/64331d6b/9f77b5f0/simpleclient_common-0.8.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/bc940b14/3d626106/opentracing-noop-0.32.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/bd4fadfc/db219b32/jaeger-core-0.35.5.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/43ff6e28/82f977c9/libthrift-0.12.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/91de26ac/82bbf548/jaeger-client-0.35.5.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a4b3dc34/a1d5f1d8/zipkin-sender-urlconnection-2.7.6.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a6640285/de51ef4b/scala-parser-combinators_2.13-1.1.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/03e2f8e6/5fa7d7f5/jnr-ffi-2.1.10.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/3f389959/c175b978/jffi-1.2.19.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/3f42d895/77feaaa8/jffi-1.2.19-native.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/17160345/dccb3b8e/jnr-constants-0.9.12.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/e711cd61/daed874d/paranamer-2.8.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/c36ba150/588866b0/sourcecode_2.13-0.3.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/99fc0f33/01ac730b/geny_2.13-1.0.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/6d876ab8/1f3130c2/native-protocol-1.4.10.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/96463c36/50cffbc2/java-driver-shaded-guava-25.1-jre.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/635585a4/51dc87f4/jnr-posix-3.0.50.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/43ffe9dc/c7d24218/javatuples-1.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/0546aa5b/9a62370d/metrics-core-4.0.5.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/800cfd9e/3998a867/jcip-annotations-1.0-1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/d91f56fb/93a0293f/netty-common-4.1.52.Final.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/81230010/6d31edc0/netty-resolver-4.1.52.Final.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a440ed9f/f9e494a7/netty-buffer-4.1.52.Final.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/9a5010a8/2ae91f32/netty-transport-4.1.52.Final.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/0d66560a/f2864d24/netty-codec-4.1.52.Final.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/cebad0ea/ce364181/gson-2.8.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/b5b61b90/2217c003/jaeger-tracerresolver-0.35.5.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/3e25ccc2/983fff97/zipkin-reporter-2.7.6.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/36749278/395a47c2/zipkin-2.9.4.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a04d2243/a8143746/httpclient-4.5.6.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/4cf78f7e/df42223a/asm-7.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/65556c7b/50450156/asm-commons-7.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/e0a5ea5b/a19ba10d/asm-analysis-7.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/76b7f83d/c3984e41/asm-tree-7.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/c3bdc4bd/a043cd25/asm-util-7.1.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/ea07fdd5/29a67df4/jnr-a64asm-1.0.0.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/58f0a94b/d875bee2/jnr-x86asm-1.0.2.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/a382b3d3/e24b0cdc/opentracing-tracerresolver-0.1.6.jar:/home/daguis/Desktop/KOLEKTOR/Copernico/pcs-sam/target/bg-jobs/sbt_75f47130/target/5f269876/e02e153b/commons-logging-1.2.jar",
+  "classpath" : "/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/job-1/target/81439e80/b66e0ce9/pcs_2.13-1.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/ad84c146/7e41d736/common_2.13-0.1.0-SNAPSHOT.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/72003473/08373e89/akka-cluster-tools_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/0f9a2050/94b5d03a/akka-remote_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/0827f9e7/01b2a5c3/akka-discovery_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/dc96f256/65175896/akka-persistence-query_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/826b53a3/5ff27aca/akka-actor_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/934fef9e/bcdf8def/akka-persistence_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/44231e32/2cafeb9a/ojdbc8-21.3.0.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/25d9c8f9/84e9d8a4/akka-slf4j_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/598029db/d4b6c8bd/akka-http-core_2.13-10.2.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/58babcad/ed4fd22e/akka-http_2.13-10.2.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/9b709ae6/6fc81601/akka-http-spray-json_2.13-10.2.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/09fd9b09/43b12d87/akka-cluster_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/e2c4e690/d4d57a90/akka-cluster-sharding_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/d29836de/caebe80d/akka-actor-typed_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/cbc2e281/b6e387c6/akka-persistence-typed_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/c3d14099/24e352b8/akka-cluster-sharding-typed_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/d46e307c/5e998c32/akka-discovery-kubernetes-api_2.13-1.1.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/104afa05/81b9d336/akka-management_2.13-1.1.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/16d2edc9/540bd5e8/akka-management-cluster-http_2.13-1.1.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/3bd4422c/30de04da/akka-management-cluster-bootstrap_2.13-1.1.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/56d852f9/bcb37556/akka-stream-kafka_2.13-2.1.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/eb997df2/ba41856c/akka-serialization-jackson_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/eca890d3/251d0885/akka-protobuf_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/70f8a892/03f7a303/akka-diagnostics_2.13-1.1.16.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/0bc3609f/fd60c5bf/akka-persistence-inmemory_2.13-2.5.15.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/1709491b/d95c66ac/postgresql-42.6.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/48e07548/44fd861a/HikariCP-3.4.5.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/0c3dfca6/1098231a/dmn-engine-1.8.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/d6d6ee0f/6d6ad52e/camunda-engine-dmn-7.21.0-alpha4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/d6ebd699/0bb7910b/circe-core_2.13-0.14.3.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/2a1ea78c/e33d3781/circe-generic_2.13-0.14.3.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/fb69afa3/450d65f6/circe-parser_2.13-0.14.3.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/fe1bd521/03720ab6/circe-generic-extras_2.13-0.14.3.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/10c749dd/72fd1ccd/scalaz-core_2.13-7.2.28.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/f1b41b40/3d146dcd/scalaz-concurrent_2.13-7.2.28.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/ceb6ff02/0006b2ff/akka-persistence-cassandra_2.13-1.0.5.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/2049717f/c14f5344/akka-projection-core_2.13-0.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/cc2d1a88/e32cf066/akka-projection-eventsourced_2.13-0.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/cc692200/b3492d1f/akka-projection-cassandra_2.13-0.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/7bbc13f5/82773da1/logback-classic-1.4.11.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/d6a4e8e3/eebc720e/logstash-logback-encoder-5.3.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/56c335bd/d8741d4e/akka-kryo-serialization_2.13-2.0.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/d09d3b78/6a1cfd94/play-json_2.13-2.8.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/30c9aae3/8dcc3c28/play-json-extensions_2.13-0.40.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/e6b9ba40/18a0a49c/play-json-traits_2.13-1.5.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/6f55f0bb/5a9cf629/commons-io-2.6.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/e8d986e0/65c5c050/reflections-0.9.10.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/61d82ed9/4dbb01a8/shapeless_2.13-2.3.10.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/186f643e/e9ce8fd6/akka-http-play-json_2.13-1.30.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/cb6811a7/c095e6c3/monitoring-interceptors-6.1.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/9e7e11fd/d77b6af7/kamon-core_2.13-2.2.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/3ae93ab2/0c6e8f87/kamon-status-page_2.13-2.2.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/370216b8/e3fe8713/kamon-prometheus_2.13-2.2.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/236b1b26/169a37bb/cinnamon-akka_2.13-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/5661a7a4/0f73c446/cinnamon-akka-http_2.13-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/7b4105fa/7de2d783/cinnamon-jvm-metrics-producer-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/9c2e50e5/3998c47b/cinnamon-prometheus-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/f2f848d4/2ce30553/cinnamon-prometheus-httpserver-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/b82e0ce4/2f782412/cinnamon-akka-persistence_2.13-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/572443e2/69e9d976/cinnamon-akka-stream_2.13-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/705b283a/2caaa3ac/cinnamon-opentracing_2.13-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/5eb6d57f/d2efe8be/cinnamon-opentracing-jaeger-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/a5e64de0/5bd8f2b9/cinnamon-opentracing-zipkin-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/6c0c22bc/01f463e7/cinnamon-akka-typed_2.13-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/c3c4a64d/3d626ed8/akka-coordination_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/39d41800/405a6345/akka-stream_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/a3c82a28/bc45a4be/akka-pki_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/3c7775ce/2c6252bc/agrona-1.9.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/e8590f82/65a4d7a3/config-1.4.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/c8dd141e/cb34b137/scala-java8-compat_2.13-0.9.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/aa612ae3/0ca0f260/slf4j-api-2.0.7.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/e4e61ca2/e7f4ecec/akka-parsing_2.13-10.2.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/68722066/a5f09784/spray-json_2.13-1.3.5.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/a13bf20d/4a849e70/akka-distributed-data_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/c598c29d/b2b6c73d/akka-stream-typed_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/57474957/7938cec0/akka-cluster-typed_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/67e5b15b/586fc152/akka-management-pki_2.13-1.1.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/a72bc427/12282c3b/kafka-clients-6.1.0-ce.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/c3c697b6/fb39dfc5/scala-collection-compat_2.13-2.4.3.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/1efb98ab/b5ab9d75/jackson-core-2.11.4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/8ed10e87/4ad10380/jackson-annotations-2.11.4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/fad7cc84/0f3efdec/jackson-databind-2.11.4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/7c63a26d/6f7be969/jackson-module-scala_2.13-2.11.4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/3c084eca/a6b4df02/jackson-datatype-jdk8-2.11.4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/3b9232f8/6498c943/jackson-datatype-jsr310-2.11.4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/5bdcef22/90c5f8b7/jackson-module-parameter-names-2.11.4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/d80d64ef/3708b43c/jackson-dataformat-cbor-2.11.4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/5142bd01/b9827313/lz4-java-1.7.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/14e6f7f0/066b4db5/commons-lang3-3.5.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/48557095/501e6e6b/checker-qual-3.31.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/74c0c333/174749ac/feel-engine-1.17.5.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/54644956/ba903889/camunda-dmn-model-7.21.0-alpha4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/3387a74b/d7ddc72b/camunda-commons-utils-1.13.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/49dee718/9e8ede42/camunda-commons-typed-values-7.21.0-alpha4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/9f112afc/6a15e007/camunda-engine-feel-api-7.21.0-alpha4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/138caadc/0d71a491/camunda-engine-feel-juel-7.21.0-alpha4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/7ba03856/a5b75715/camunda-engine-feel-scala-7.21.0-alpha4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/b0053aa5/31fa83d0/feel-engine-1.17.5-scala-shaded.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/4388ef94/4a7aae44/camunda-juel-7.21.0-alpha4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/33000ec6/031573b9/circe-numbers_2.13-0.14.3.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/2e723e6c/99482c83/cats-core_2.13-2.8.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/9540bd85/172c3594/circe-jawn_2.13-0.14.3.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/32bfd776/161d65a2/scalaz-effect_2.13-7.2.28.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/544945e9/ee0bc8d5/akka-stream-alpakka-cassandra_2.13-2.0.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/2060da43/0276e5f8/akka-protobuf-v3_2.13-2.6.15.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/539e6d06/aab0a3c4/logback-core-1.4.11.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/11271226/53a166ba/kryo-5.0.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/bc3033e8/6a7a0579/play-functional_2.13-2.8.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/b9992d34/f9fd6ced/joda-time-2.10.5.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/8e21247a/4598152b/guava-18.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/e978a79e/51e84830/javassist-3.18.2-GA.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/89eddb48/ef63af0c/annotations-2.0.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/47ced9f6/6d219ef7/common-utils-6.1.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/8bcd8685/73d75af5/okhttp-3.14.7.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/2f22d26e/fc3270d7/cinnamon-java-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/153aa698/fffba0da/cinnamon-scala_2.13-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/c5b25f0d/11ae4ddc/cinnamon-core-java-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/146755c0/c140e4ce/simpleclient-0.8.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/8c7dcf8e/14d77992/HdrHistogram-2.1.12.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/6ed94d64/1b96c5e6/simpleclient_httpserver-0.8.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/0ea9e75b/09dccfd5/cinnamon-akka-cluster_2.13-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/71699bf0/06ce52a3/cinnamon-play_2.13-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/441888ea/3c54491b/opentracing-api-0.32.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/0e60ac01/49cc5a5e/opentracing-util-0.32.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/14ca03eb/8f0bde5f/cinnamon-opentracing-tracer-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/081ddbe2/9f274d41/jaeger-thrift-0.35.5.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/12e0adb1/7f0616e0/jaeger-zipkin-0.35.5.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/d1ac461f/30fcd385/commons-codec-1.12.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/0054c9bf/960d60b9/httpcore-4.4.10.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/0b148815/8fa64fae/reactive-streams-1.0.3.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/ab43927e/c46b6b30/ssl-config-core_2.13-0.4.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/cbbba613/7336a38a/asn-one-0.5.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/fcf047b7/3fb9012e/lmdbjava-0.7.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/0a42de5c/707224be/zstd-jni-1.4.5-6.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/52ba2af1/9a14a8fb/snappy-java-1.1.7.7.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/fb605368/13ff81dc/jackson-module-paranamer-2.11.4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/b0ae21c4/00e62564/fastparse_2.13-3.0.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/cf7db842/04e0bd77/camunda-xml-model-7.21.0-alpha4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/e49340c0/0960debe/camunda-commons-logging-1.13.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/e40e4471/b96ed7c8/cats-kernel_2.13-2.8.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/9c598c4e/9c713ec0/jawn-parser_2.13-1.4.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/1098b99c/f964df66/java-driver-core-4.6.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/9d07d30d/95434e11/netty-handler-4.1.52.Final.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/fbbef9ad/d9a78abd/reflectasm-1.11.9.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/edaf7ce1/645445bf/objenesis-3.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/dc6bc601/c0af7752/minlog-1.3.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/ad630fd6/f2915dcd/okio-1.17.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/0ee9cbf4/d2e1eabf/cinnamon-core_2.13-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/bc60ffa4/47e5d467/cinnamon-common-2.16.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/b1946d3b/9f77b5f0/simpleclient_common-0.8.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/af671d93/3d626106/opentracing-noop-0.32.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/467d2390/db219b32/jaeger-core-0.35.5.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/89057306/82f977c9/libthrift-0.12.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/4d73a267/82bbf548/jaeger-client-0.35.5.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/d1a3e48d/a1d5f1d8/zipkin-sender-urlconnection-2.7.6.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/83947f2a/de51ef4b/scala-parser-combinators_2.13-1.1.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/40562ebb/5fa7d7f5/jnr-ffi-2.1.10.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/11c7b080/c175b978/jffi-1.2.19.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/ce05accc/77feaaa8/jffi-1.2.19-native.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/28d938bf/dccb3b8e/jnr-constants-0.9.12.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/8e230c52/daed874d/paranamer-2.8.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/cb1808ed/588866b0/sourcecode_2.13-0.3.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/a4d05286/01ac730b/geny_2.13-1.0.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/67670d13/1f3130c2/native-protocol-1.4.10.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/5c2b6217/50cffbc2/java-driver-shaded-guava-25.1-jre.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/0af63719/51dc87f4/jnr-posix-3.0.50.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/40c70ff7/c7d24218/javatuples-1.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/c7217281/9a62370d/metrics-core-4.0.5.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/14d52da9/3998a867/jcip-annotations-1.0-1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/6c08c774/93a0293f/netty-common-4.1.52.Final.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/27946db1/6d31edc0/netty-resolver-4.1.52.Final.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/10c82a21/f9e494a7/netty-buffer-4.1.52.Final.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/3cf51a10/2ae91f32/netty-transport-4.1.52.Final.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/caa4e038/f2864d24/netty-codec-4.1.52.Final.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/f43ce77f/ce364181/gson-2.8.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/a0154878/2217c003/jaeger-tracerresolver-0.35.5.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/29dac19d/983fff97/zipkin-reporter-2.7.6.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/b4131e90/395a47c2/zipkin-2.9.4.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/03fe360c/a8143746/httpclient-4.5.6.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/840952af/df42223a/asm-7.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/025679f5/50450156/asm-commons-7.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/16fc0968/a19ba10d/asm-analysis-7.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/8e025ed7/c3984e41/asm-tree-7.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/f2a96f95/a043cd25/asm-util-7.1.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/b278451c/29a67df4/jnr-a64asm-1.0.0.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/6aec17f6/d875bee2/jnr-x86asm-1.0.2.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/26acafb7/e24b0cdc/opentracing-tracerresolver-0.1.6.jar:/home/roman/Documentos/pcs-sam/target/bg-jobs/sbt_7ff059b2/target/3c050271/e02e153b/commons-logging-1.2.jar",
   "configuration-warnings" : [
     {
       "checker-key" : "dispatcher-count",
@@ -15,22 +15,22 @@
     },
     {
       "checker-key" : "dispatcher-total-size",
-      "message" : "You have a total of [224] threads in all configured dispatchers. That many threads might result in reduced performance. This machine has [8] available processors.",
+      "message" : "You have a total of [324] threads in all configured dispatchers. That many threads might result in reduced performance. This machine has [12] available processors.",
       "properties" : "ActividadSujetoActor, DeclaracionJuradaActor, CalendarioActor, PlanCabeceraActor, JuicioDosActor, StartStopSingleton, TramiteActor, ObjetoVinculoActor, SujetoActor, ComponenteIActor, ExclusionesSujetoActor, CuponDescuentoActor, EtapasProcesalesActor, TellSupervisor, DomicilioObjetoActor, SubastaActor, MessageProcessorSupervisorActor, ObligacionActor, my-dispatcher, JuicioActor, JuicioObnActor, ParametricaPlanActor, ObjetoActor, PlanPagoActor, DomicilioSujetoActor, ParametricaRecargoActor",
       "defaults" : ""
     }],
   "system-metrics" : {
-    "heap-init" : 257949696,
-    "heap-max" : 1610612736,
-    "heap-used" : 253567328,
-    "heap-committed" : 383778816,
-    "os-processors" : 8,
+    "heap-init" : 536870912,
+    "heap-max" : 1073741824,
+    "heap-used" : 426934920,
+    "heap-committed" : 610271232,
+    "os-processors" : 12,
     "mem-pool-0" : {
       "name" : "CodeHeap 'non-nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 5836800,
-      "used" : 1875328,
+      "used" : 1698176,
       "committed" : 2555904
     },
     "mem-pool-1" : {
@@ -38,56 +38,56 @@
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 216584592,
-      "committed" : 230846464
+      "used" : 166171104,
+      "committed" : 177209344
     },
     "mem-pool-2" : {
       "name" : "CodeHeap 'profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122908672,
-      "used" : 54776960,
-      "committed" : 55902208
+      "used" : 26759424,
+      "committed" : 26804224
     },
     "mem-pool-3" : {
       "name" : "Compressed Class Space",
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : 1073741824,
-      "used" : 30391792,
-      "committed" : 37388288
+      "used" : 24139024,
+      "committed" : 29622272
     },
     "mem-pool-4" : {
       "name" : "G1 Eden Space",
       "type" : "Heap memory",
-      "init" : 27262976,
+      "init" : 28311552,
       "max" : -1,
-      "used" : 50331648,
-      "committed" : 120586240
+      "used" : 239075328,
+      "committed" : 376438784
     },
     "mem-pool-5" : {
       "name" : "G1 Old Gen",
       "type" : "Heap memory",
-      "init" : 230686720,
-      "max" : 1610612736,
-      "used" : 200089952,
-      "committed" : 258998272
+      "init" : 508559360,
+      "max" : 1073741824,
+      "used" : 180519560,
+      "committed" : 225443840
     },
     "mem-pool-6" : {
       "name" : "G1 Survivor Space",
       "type" : "Heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 4194304,
-      "committed" : 4194304
+      "used" : 8388608,
+      "committed" : 8388608
     },
     "mem-pool-7" : {
       "name" : "CodeHeap 'non-profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122912768,
-      "used" : 17639296,
-      "committed" : 17760256
+      "used" : 11192960,
+      "committed" : 11206656
     }
   },
   "configuration" : {
@@ -421,7 +421,7 @@
                 "akka://PersonClassificationService@0.0.0.0:2551"
             ],
             "sharding" : {
-                "passivate-idle-entity-after" : "3600s"
+                "passivate-idle-entity-after" : "50000s"
             },
             "shutdown-after-unsuccessful-join-seed-nodes" : "30s",
             "split-brain-resolver" : {
@@ -1037,8 +1037,8 @@
         "advanced" : {
             "auth-provider" : {
                 "class" : "PlainTextAuthProvider",
-                "password" : "inicial",
-                "username" : "oper_drivera"
+                "password" : "cassandra",
+                "username" : "cassandra"
             },
             "connection" : {
                 "max-requests-per-connection" : "4096",
@@ -1064,7 +1064,7 @@
             "reconnect-on-init" : true,
             "throttler" : {
                 "class" : "ConcurrencyLimitingRequestThrottler",
-                "max-concurrent-requests" : "1024",
+                "max-concurrent-requests" : "1024 ",
                 "max-queue-size" : 100000
             }
         },
@@ -1115,15 +1115,6 @@
         "encoding" : "UTF-8",
         "separator" : "/"
     },
-    "grouping" : {
-        "with" : {
-            "qualified" : {
-                "names" : {
-                    "enabled" : "true"
-                }
-            }
-        }
-    },
     "hardwareSpecs" : {
         "parallelismFactor" : 1,
         "parallelismMax" : 64,
@@ -1135,11 +1126,10 @@
         "ip" : "0.0.0.0",
         "port" : "8081"
     },
-    "idea" : {
-        "installation" : {
-            "dir" : "/snap/intellij-idea-community/525"
-        },
-        "managed" : "true"
+    "intellij" : {
+        "debug" : {
+            "agent" : "true"
+        }
     },
     "java" : {
         "awt" : {
@@ -1147,19 +1137,19 @@
             "printerjob" : "sun.print.PSPrinterJob"
         },
         "class" : {
-            "path" : "/home/daguis/.local/share/JetBrains/IdeaIC2024.2/Scala/launcher/sbt-launch.jar",
+            "path" : "/home/roman/.local/share/JetBrains/IdeaIC2024.1/Scala/launcher/sbt-launch.jar:/opt/intellij-idea-community/lib/idea_rt.jar",
             "version" : "55.0"
         },
-        "home" : "/usr/lib/jvm/java-11-openjdk-amd64",
+        "home" : "/home/roman/.jdks/corretto-11.0.24",
         "io" : {
             "tmpdir" : "/tmp"
         },
         "library" : {
-            "path" : "/usr/java/packages/lib:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib"
+            "path" : "/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib"
         },
         "runtime" : {
             "name" : "OpenJDK Runtime Environment",
-            "version" : "11.0.24+8-post-Ubuntu-1ubuntu322.04"
+            "version" : "11.0.24+8-LTS"
         },
         "specification" : {
             "maintenance" : {
@@ -1171,21 +1161,29 @@
         },
         "vendor" : {
             "url" : {
-                "bug" : "https://bugs.launchpad.net/ubuntu/+source/openjdk-lts"
-            }
+                "bug" : "https://github.com/corretto/corretto-11/issues/"
+            },
+            "version" : "Corretto-11.0.24.8.1"
         },
         "version" : "11.0.24",
         "vm" : {
             "compressedOopsMode" : "32-bit",
-            "info" : "mixed mode, sharing",
+            "info" : "mixed mode",
             "name" : "OpenJDK 64-Bit Server VM",
             "specification" : {
                 "name" : "Java Virtual Machine Specification",
                 "vendor" : "Oracle Corporation",
                 "version" : "11"
             },
-            "vendor" : "Ubuntu",
-            "version" : "11.0.24+8-post-Ubuntu-1ubuntu322.04"
+            "vendor" : "Amazon.com Inc.",
+            "version" : "11.0.24+8-LTS"
+        }
+    },
+    "jboss" : {
+        "modules" : {
+            "system" : {
+                "pkgs" : "com.intellij.rt"
+            }
         }
     },
     "jdk" : {
@@ -1202,12 +1200,12 @@
         "nosys" : "true",
         "platform" : {
             "library" : {
-                "path" : "/usr/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu:/usr/lib64:/lib64:/usr/lib:/lib:/lib32:/usr/lib/x86_64-linux-gnu/libfakeroot"
+                "path" : "/usr/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu:/usr/lib64:/lib64:/usr/lib:/lib"
             }
         }
     },
     "jnidispatch" : {
-        "path" : "/home/daguis/.cache/JNA/temp/jna1986948837546023718.tmp"
+        "path" : "/home/roman/.cache/JNA/temp/jna2191452378044759600.tmp"
     },
     "kafka" : {
         "CONSUMER_GROUP" : "WRITESIDE",
@@ -1369,25 +1367,13 @@
     "os" : {
         "arch" : "amd64",
         "name" : "Linux",
-        "version" : "6.5.0-44-generic"
+        "version" : "6.8.0-45-generic"
     },
     "path" : {
         "separator" : ":"
     },
     "projectionists" : {
         "defaultParallelism" : 3
-    },
-    "sbt" : {
-        "supershell" : "false"
-    },
-    "separate" : {
-        "prod" : {
-            "test" : {
-                "sources" : {
-                    "enabled" : "false"
-                }
-            }
-        }
     },
     "ssl-config" : {
         "logger" : "com.typesafe.sslconfig.akka.util.AkkaLoggerBridge"
@@ -1400,7 +1386,7 @@
         },
         "boot" : {
             "library" : {
-                "path" : "/usr/lib/jvm/java-11-openjdk-amd64/lib"
+                "path" : "/home/roman/.jdks/corretto-11.0.24/lib"
             }
         },
         "cpu" : {
@@ -1413,7 +1399,7 @@
             }
         },
         "java" : {
-            "command" : "/home/daguis/.local/share/JetBrains/IdeaIC2024.2/Scala/launcher/sbt-launch.jar early(addPluginSbtFile=\"\"\"/tmp/idea2.sbt\"\"\") idea-shell",
+            "command" : "xsbt.boot.Boot pcs/run",
             "launcher" : "SUN_STANDARD"
         },
         "jnu" : {
@@ -1429,12 +1415,12 @@
         }
     },
     "swoval" : {
-        "tmpdir" : "/home/daguis/.sbt/1.0"
+        "tmpdir" : "/home/roman/.sbt/1.0"
     },
     "user" : {
-        "country" : "US",
-        "language" : "en",
-        "timezone" : "America/Argentina/Buenos_Aires"
+        "country" : "AR",
+        "language" : "es",
+        "timezone" : "America/Argentina/Cordoba"
     }
 }
 }

@@ -1,5 +1,5 @@
 import Settings._
-import sbt.Keys.scalaVersion
+import sbt.Keys.{scalaVersion, test}
 
 
 run / javaOptions += javaOpts
@@ -42,7 +42,7 @@ FunTest / testOptions := Seq(Tests.Filter(funTestFilter))
 Test / testOptions := Seq(Tests.Filter(unitTestFilter))
 
 run / cinnamon := true
-test / cinnamon := false
+test / cinnamon := true
 cinnamonLogLevel := "INFO"
 
 lazy val globalResources = file("resources")
@@ -68,7 +68,10 @@ lazy val pcs = project
   .enablePlugins(JavaServerAppPackaging, DockerPlugin)
   .enablePlugins(CinnamonAgentOnly)
   .settings(
-    mainClass := Some("Main")
+    mainClass := Some("Main"),
+    run / cinnamon := true,
+    test / cinnamon := true,
+    cinnamonLogLevel := "INFO"
   )
   .settings(
     dockerBaseImage := "openjdk:11",
@@ -102,7 +105,10 @@ lazy val readside = project
   .enablePlugins(JavaServerAppPackaging, DockerPlugin)
   .enablePlugins(CinnamonAgentOnly)
   .settings(
-    mainClass := Some("readside.Main")
+    mainClass := Some("readside.Main"),
+    run / cinnamon := true,
+    test / cinnamon := true,
+    cinnamonLogLevel := "INFO"
   )
   .settings(
     dockerBaseImage := "openjdk:11",

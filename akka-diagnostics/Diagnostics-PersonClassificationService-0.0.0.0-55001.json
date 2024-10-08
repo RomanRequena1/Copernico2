@@ -1,5 +1,5 @@
 {
-  "start-time" : "2024-10-03T15:57:56.569",
+  "start-time" : "2024-10-08T19:42:24.020",
   "akka-version" : "2.6.15",
   "akka-diagnostics-version" : "1.1.16",
   "akka-http-version" : "10.2.0",
@@ -28,7 +28,7 @@
   "system-metrics" : {
     "heap-init" : 390070272,
     "heap-max" : 6224347136,
-    "heap-used" : 246409904,
+    "heap-used" : 152952824,
     "heap-committed" : 468713472,
     "os-processors" : 12,
     "mem-pool-0" : {
@@ -36,7 +36,7 @@
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 5836800,
-      "used" : 1519360,
+      "used" : 1547008,
       "committed" : 2555904
     },
     "mem-pool-1" : {
@@ -44,56 +44,56 @@
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 73811480,
-      "committed" : 76623872
+      "used" : 82070152,
+      "committed" : 85540864
     },
     "mem-pool-2" : {
       "name" : "CodeHeap 'profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122908672,
-      "used" : 11503104,
-      "committed" : 11534336
+      "used" : 16314368,
+      "committed" : 16318464
     },
     "mem-pool-3" : {
       "name" : "Compressed Class Space",
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : 1073741824,
-      "used" : 9417328,
-      "committed" : 10878976
+      "used" : 10489608,
+      "committed" : 12189696
     },
     "mem-pool-4" : {
       "name" : "G1 Eden Space",
       "type" : "Heap memory",
       "init" : 27262976,
       "max" : -1,
-      "used" : 222298112,
-      "committed" : 281018368
+      "used" : 34603008,
+      "committed" : 225443840
     },
     "mem-pool-5" : {
       "name" : "G1 Old Gen",
       "type" : "Heap memory",
       "init" : 362807296,
       "max" : 6224347136,
-      "used" : 9431728,
-      "committed" : 173015040
+      "used" : 106815480,
+      "committed" : 231735296
     },
     "mem-pool-6" : {
       "name" : "G1 Survivor Space",
       "type" : "Heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 14680064,
-      "committed" : 14680064
+      "used" : 11534336,
+      "committed" : 11534336
     },
     "mem-pool-7" : {
       "name" : "CodeHeap 'non-profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122912768,
-      "used" : 4394752,
-      "committed" : 4456448
+      "used" : 5919488,
+      "committed" : 5963776
     }
   },
   "configuration" : {
@@ -607,6 +607,30 @@
             "com.lightbend.akka.diagnostics.DiagnosticsExtension",
             "akka.stream.SystemMaterializer$",
             "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
+            "akka.stream.SystemMaterializer$",
             "akka.stream.SystemMaterializer$"
         ],
         "log-config-on-start" : "on",
@@ -1053,6 +1077,10 @@
         "prometheus" : {
             "exporters" : [
                 "http-server",
+                "http-server",
+                "http-server",
+                "http-server",
+                "http-server",
                 "http-server"
             ],
             "http-server" : {
@@ -1077,13 +1105,13 @@
                 "username" : "cassandra"
             },
             "connection" : {
-                "max-requests-per-connection" : 1024,
+                "max-requests-per-connection" : "4096",
                 "pool" : {
                     "local" : {
-                        "size" : 1
+                        "size" : "4"
                     },
                     "remote" : {
-                        "size" : 1
+                        "size" : "1"
                     }
                 }
             },
@@ -1098,15 +1126,22 @@
                 }
             },
             "reconnect-on-init" : true,
+            "reconnection-policy" : {
+                "base-delay" : "1 second",
+                "class" : "ExponentialReconnectionPolicy",
+                "max-delay" : "60 seconds"
+            },
             "throttler" : {
                 "class" : "ConcurrencyLimitingRequestThrottler",
-                "max-concurrent-requests" : 512,
+                "max-concurrent-requests" : "1024 ",
                 "max-queue-size" : 100000
             }
         },
         "basic" : {
             "contact-points" : {
-                "1" : "0.0.0.0:9042"
+                "1" : "0.0.0.0:9042",
+                "2" : "",
+                "3" : ""
             },
             "load-balancing-policy" : {
                 "local-datacenter" : "datacenter1"
@@ -1445,7 +1480,7 @@
             }
         },
         "java" : {
-            "command" : "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner -s proyectionists.no_registrales.base_Tri.acceptance.BaseTri -testName Test del bug de objeto vinculo should End to end, PCS a Readside -showProgressMessages true",
+            "command" : "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner -s proyectionists.no_registrales.base_Tri.acceptance.BaseTri -testName Test 4 del 30%: Un sujeto - objeto Tri should End to end, PCS a Readside -showProgressMessages true",
             "launcher" : "SUN_STANDARD"
         },
         "jnu" : {

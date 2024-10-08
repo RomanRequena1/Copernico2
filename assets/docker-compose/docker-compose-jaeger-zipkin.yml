@@ -24,3 +24,40 @@ services:
       JAVA_OPTS: "-Xmx1G -Xms512M"
       ZIPKIN_BASIC_SECURITY_USERNAME: admin
       ZIPKIN_BASIC_SECURITY_PASSWORD: admin
+
+  jaeger2:
+    container_name: jaeger2
+    image: 'jaegertracing/all-in-one:latest'
+    #    network_mode: bridge
+    ports:
+      - '5775:5775/udp'
+      - '16686:16686'
+    environment:
+      COLLECTOR_ZIPKIN_HTTP_PORT: 9411
+      JAEGER_REPORTER_MAX_QUEUE_SIZE: 1000
+
+    networks:
+      kafka_copernico_net:
+        ipv4_address: 172.22.0.90
+
+  jaeger3:
+    container_name: jaeger3
+    image: 'jaegertracing/all-in-one:latest'
+    #    network_mode: bridge
+    ports:
+      - '5775:5775/udp'
+      - '16686:16686'
+    environment:
+      COLLECTOR_ZIPKIN_HTTP_PORT: 9411
+      JAEGER_REPORTER_MAX_QUEUE_SIZE: 1000
+      SPAN_STORAGE_TYPE: cassandra
+      CASSANDRA_SERVERS: "172.22.0.7:9042"
+
+    networks:
+      kafka_copernico_net:
+        ipv4_address: 172.22.0.91
+
+networks:
+  kafka_copernico_net:
+    external: true
+    name: kafka_copernico_net
