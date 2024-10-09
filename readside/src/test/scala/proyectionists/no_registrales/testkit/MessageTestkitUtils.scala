@@ -11,10 +11,7 @@ import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import consumers.no_registral.objeto.infrastructure.consumer._
 import consumers.no_registral.obligacion.application.entities.{ObligacionesAnt, ObligacionesTri}
-import consumers.no_registral.obligacion.infrastructure.consumer.{
-  ObligacionNoTributariaTransaction,
-  ObligacionTributariaTransaction
-}
+import consumers.no_registral.obligacion.infrastructure.consumer.{ObligacionNoTributariaTransaction, ObligacionTributariaTransaction}
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
 import consumers.no_registral.sujeto.infrastructure.consumer.SujetoTributarioTransaction
 import kafka.KafkaMessageProducer.KafkaKeyValue
@@ -22,22 +19,15 @@ import kafka.{MessageProcessor, MessageProducer}
 import monitoring.DummyMonitoring
 import io.circe.syntax.EncoderOps
 import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits.SujetoTriEncoder
-import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.{
-  ObjetoSnapshotPersistedEncoder,
-  ObjetosAntEncoder,
-  ObjetosExternalDtoEncoder,
-  ObjetosTriEncoder
-}
-import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{
-  ObligacionesAntEncoder,
-  ObligacionesTriEncoder
-}
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.{ObjetoSnapshotPersistedEncoder, ObjetosAntEncoder, ObjetosExternalDtoEncoder, ObjetosTriEncoder}
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{ObligacionesAntEncoder, ObligacionesTriEncoder}
 import design_principles.external_pub_sub.kafka.{KafkaMock, KafkaProduction}
 import design_principles.projection.mock.{CassandraTestkitMock, CassandraWriteMock}
 import readside.proyectionists.no_registrales.objeto.ObjetoSnapshotPersistedHandler
 import readside.proyectionists.no_registrales.obligacion.ObligacionPersistedSnapshotHandler
 import readside.proyectionists.no_registrales.sujeto.SujetoSnapshotPersistedHandler
 import design_principles.external_pub_sub.kafka.KafkaProduction.MessageProcessorImplicits
+import readside.proyectionists.no_registrales.transferencia.TransferenciaSnapshotPersistedHandler
 
 class MessageTestkitUtils(s: ActorSystem, sujeto: ActorRef) {
 
@@ -55,6 +45,7 @@ class MessageTestkitUtils(s: ActorSystem, sujeto: ActorRef) {
            new ObjetoSnapshotPersistedHandler,
            new SujetoSnapshotPersistedHandler,
            new ObligacionPersistedSnapshotHandler,
+           new TransferenciaSnapshotPersistedHandler,
            ObjetoTributarioTransaction(sujeto, monitoring),
            ObjetoNoTributarioTransaction(sujeto, monitoring),
            ObligacionTributariaTransaction(sujeto, monitoring),
@@ -173,6 +164,18 @@ object MessageTestkitUtils {
                                 )
                               ),
                               topic)(_ => ())
+    }
+
+    def produceEvento(evento: String, topic: String): Future[akka.Done] = {
+      messageProducer.produce(
+        Seq(
+          KafkaKeyValue(
+            aggregateRoot = "1",
+            json = evento
+          )
+        ),
+        topic
+      )(_ => ())
     }
   }
 }

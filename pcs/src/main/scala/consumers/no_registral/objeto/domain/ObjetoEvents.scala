@@ -32,6 +32,7 @@ object ObjetoEvents {
       tiene30Sujeto: Boolean,
       exclusionSUjeto: Option[String]
   ) extends ObjetoEvents
+
   case class ObjetoSnapshotPersisted(
       deliveryId: BigInt,
       sujetoId: String,

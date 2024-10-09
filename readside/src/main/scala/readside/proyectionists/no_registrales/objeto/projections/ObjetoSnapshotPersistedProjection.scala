@@ -39,7 +39,7 @@ case class ObjetoSnapshotPersistedProjection(
           "soj_tipo_exclusion" -> Some(event.exclusionObjeto),
           "soj_titularidad" -> r.SOJ_TITULARIDAD,
           "soj_tiene30Objeto" -> event.tiene30Objeto,
-          "soj_tiene30ObjetoVinculo" -> event.tiene30ObjetoVinculo,
+          "soj_tiene30objetovinculo" -> event.tiene30ObjetoVinculo,
           "soj_aplicarDescuento" -> event.aplicarDescuento,
           "soj_resultDmn" -> Some(event.bandTipo.toInt),
           "soj_fecha_vta_subasta" -> r.SOJ_FECHA_VTA_SUBASTA,
@@ -54,6 +54,7 @@ case class ObjetoSnapshotPersistedProjection(
           "soj_identificador_2" -> event.objetoId2,
           "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[", ",", "]")),
           "soj_tiene30Objeto" -> event.tiene30Objeto,
+          "soj_tiene30objetovinculo" -> event.tiene30ObjetoVinculo,
           "soj_aplicarDescuento" -> event.aplicarDescuento,
           "soj_resultDmn" -> Some(event.bandTipo.toInt)
         )

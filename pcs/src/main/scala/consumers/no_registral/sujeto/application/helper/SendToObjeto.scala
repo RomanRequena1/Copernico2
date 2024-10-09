@@ -41,7 +41,8 @@ object SendToObjeto {
             },
             actor.path.toString.last.toString,
             currentState.tiene30Sujeto,
-            currentState.exclusionSujeto
+            currentState.exclusionSujeto,
+
           )
         )
       })

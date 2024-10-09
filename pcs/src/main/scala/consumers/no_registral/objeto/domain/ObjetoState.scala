@@ -131,9 +131,8 @@ case class ObjetoState(
         copy(tiene30Sujeto = Some(evt.tiene30Sujeto))
       // TODO: check when an object with multiple owners changes its exclusions.
       case evt: ObjetoEvents.UpdatedState30ObjetoFromObjVinculo =>
-        val _tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo
         copy(
-          tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
+          tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo, //todo CAMBIE ACA
           // Este pisaba a todos los tiene30objeto de los VSO, deberia guardarse solo en tiene30ObjVinculo
           //          tiene30Objeto = diffCurrentStateAndNewStateTest(obnVencidas, _tiene30ObjetoVinculo),
           exclusionObjeto = evt.exclusionObjetoVinculo
@@ -184,12 +183,14 @@ case class ObjetoState(
           obnVencidas = _obnVencidas,
           tiene30Objeto = diff
         )
-      case ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento(_, _, _, _, _, obligacionId, _, _, _, _, _) =>
-        val _obnVencidas = validExitsObnVencidasTreinta(obligacionId)
+
+      case evt: ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento =>
+        val _obnVencidas = validExitsObnVencidasTreinta(evt.obligacionId)
         val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
         copy(
           obnVencidas = _obnVencidas,
-          tiene30Objeto = diff
+          tiene30Objeto = diff,
+          tiene30ObjetoVinculo = tiene30ObjetoVinculo //todo agregue aca
         )
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
         copy(
