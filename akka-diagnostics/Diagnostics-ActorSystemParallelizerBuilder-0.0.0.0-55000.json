@@ -1,5 +1,5 @@
 {
-  "start-time" : "2024-10-08T19:42:21.798",
+  "start-time" : "2024-10-09T13:30:56.622",
   "akka-version" : "2.6.15",
   "akka-diagnostics-version" : "1.1.16",
   "akka-http-version" : "10.2.0",
@@ -28,15 +28,15 @@
   "system-metrics" : {
     "heap-init" : 390070272,
     "heap-max" : 6224347136,
-    "heap-used" : 128835576,
-    "heap-committed" : 468713472,
+    "heap-used" : 273824256,
+    "heap-committed" : 631242752,
     "os-processors" : 12,
     "mem-pool-0" : {
       "name" : "CodeHeap 'non-nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 5836800,
-      "used" : 1547008,
+      "used" : 1543552,
       "committed" : 2555904
     },
     "mem-pool-1" : {
@@ -44,56 +44,56 @@
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 81986416,
-      "committed" : 85540864
+      "used" : 80812304,
+      "committed" : 84361216
     },
     "mem-pool-2" : {
       "name" : "CodeHeap 'profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122908672,
-      "used" : 16108416,
-      "committed" : 16121856
+      "used" : 14798080,
+      "committed" : 14811136
     },
     "mem-pool-3" : {
       "name" : "Compressed Class Space",
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : 1073741824,
-      "used" : 10480504,
-      "committed" : 12189696
+      "used" : 10332376,
+      "committed" : 12058624
     },
     "mem-pool-4" : {
       "name" : "G1 Eden Space",
       "type" : "Heap memory",
       "init" : 27262976,
       "max" : -1,
-      "used" : 10485760,
-      "committed" : 225443840
+      "used" : 170917888,
+      "committed" : 333447168
     },
     "mem-pool-5" : {
       "name" : "G1 Old Gen",
       "type" : "Heap memory",
       "init" : 362807296,
       "max" : 6224347136,
-      "used" : 106815480,
-      "committed" : 231735296
+      "used" : 54671872,
+      "committed" : 249561088
     },
     "mem-pool-6" : {
       "name" : "G1 Survivor Space",
       "type" : "Heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 11534336,
-      "committed" : 11534336
+      "used" : 48234496,
+      "committed" : 48234496
     },
     "mem-pool-7" : {
       "name" : "CodeHeap 'non-profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122912768,
-      "used" : 5823232,
-      "committed" : 5832704
+      "used" : 5448320,
+      "committed" : 5505024
     }
   },
   "configuration" : {
@@ -1055,7 +1055,7 @@
                 "host" : "localhost",
                 "max-packet-size" : 65000,
                 "max-queue-size" : 1000,
-                "port" : "5775"
+                "port" : 5775
             },
             "tracer" : {
                 "rate-limiting-sampler" : {
@@ -1380,7 +1380,7 @@
         "status-page" : {
             "listen" : {
                 "hostname" : "0.0.0.0",
-                "port" : 5266
+                "port" : "5266"
             }
         }
     },
