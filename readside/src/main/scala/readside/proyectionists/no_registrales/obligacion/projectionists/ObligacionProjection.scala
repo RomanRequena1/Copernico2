@@ -8,8 +8,7 @@ trait ObligacionProjection extends UpdateReadSideProjection[ObligacionEvents.Obl
   val keys: List[(String, Object)] = List(
     "bob_soj_identificador" -> event.objetoId,
     "bob_soj_tipo_objeto" -> event.tipoObjeto,
-    "bob_periodo" -> event.registro.get.BOB_PERIODO,
-    "bob_cuota" -> event.registro.get.BOB_CUOTA,
-    "bob_obn_id" -> event.obligacionId
+    "bob_obn_id" -> event.obligacionId,
+    "bob_suj_identificador" -> event.sujetoId
   )
 }

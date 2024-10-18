@@ -35,7 +35,6 @@ final case class ObligacionSnapshotProjection(
   }
   val fromRegistro = registro map { registro =>
     List(
-      "bob_suj_identificador" -> event.sujetoId,
       "bob_adherido_debito" -> registro.BOB_ADHERIDO_DEBITO,
       "bob_canal_origen" -> registro.BOB_CANAL_ORIGEN,
       "bob_capital" -> registro.BOB_CAPITAL,
@@ -60,7 +59,9 @@ final case class ObligacionSnapshotProjection(
       "bob_oga_id" -> registro.BOB_OGA_ID,
       "bob_vencimiento_2" -> registro.BOB_VENCIMIENTO_2,
       "bob_tiene30Obligacion" -> bobOtrosAtributos,
-      "bob_resultDmn" -> event.resultDmn
+      "bob_resultDmn" -> event.resultDmn,
+      "bob_periodo" -> registro.BOB_PERIODO,
+      "bob_cuota" -> registro.BOB_CUOTA
     )
   }
   val other: List[(String, BigDecimal)] =

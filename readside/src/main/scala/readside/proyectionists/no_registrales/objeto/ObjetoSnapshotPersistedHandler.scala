@@ -51,10 +51,10 @@ class ObjetoSnapshotPersistedHandler(
           .cql(
             s"""
           DELETE FROM read_side.buc_sujeto_objeto """ +
-              """ WHERE soj_suj_identificador = """ +
-              s""" '${registro.sujetoId}' """ +
-              s""" and soj_tipo_objeto = '${registro.tipoObjeto}' """ +
-              s""" and soj_identificador = '${registro.objetoId}' """
+            """ WHERE soj_suj_identificador = """ +
+            s""" '${registro.sujetoId}' """ +
+            s""" and soj_tipo_objeto = '${registro.tipoObjeto}' """ +
+            s""" and soj_identificador = '${registro.objetoId}' """
           )
           .recover { ex: Throwable =>
             println(ex.getMessage)
@@ -68,8 +68,8 @@ class ObjetoSnapshotPersistedHandler(
           .cql(
             s"""
       DELETE FROM read_side.buc_obligaciones """ +
-              s""" WHERE bob_soj_identificador = '${registro.objetoId}' """ +
-              s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """
+            s""" WHERE bob_soj_identificador = '${registro.objetoId}' """ +
+            s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """
           )
           .recover { ex: Throwable =>
             println(ex.getMessage)
