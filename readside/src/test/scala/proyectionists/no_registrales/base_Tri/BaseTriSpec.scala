@@ -888,7 +888,7 @@ abstract class BaseTriSpec(
 
                                 // Validar la aplicabilidad del cupon: soj_aplicarDescuento
                                 objeto1.getBoolean("soj_aplicarDescuento") should be(false)
-                                objeto1.getBoolean("soj_tiene30Objeto") should be(true)
+                                objeto1.getBoolean("soj_tiene30Objeto") should be(false)
                                 //Fixme: verificar pq el objeto_vinculo no persiste en su map el primer VSO
                                 // objeto1.getBoolean("soj_tiene30ObjetoVinculo") should be(false)
 
@@ -902,7 +902,7 @@ abstract class BaseTriSpec(
                                 val objeto2 = resultadoObjeto2.one()
 
                                 // Validar la aplicabilidad del cupon: soj_aplicarDescuento
-                                objeto2.getBoolean("soj_aplicarDescuento") should be(false)
+                                objeto2.getBoolean("soj_aplicarDescuento") should be(true)
                                 objeto2.getBoolean("soj_tiene30Objeto") should be(true)
                                 //Fixme: verificar pq el objeto_vinculo no persiste en su map el primer VSO
                                 // objeto2.getBoolean("soj_tiene30ObjetoVinculo") should be(false)
@@ -917,8 +917,8 @@ abstract class BaseTriSpec(
                                 val objeto3 = resultadoObjeto3.one()
 
                                 // Validar la aplicabilidad del cupon: soj_aplicarDescuento
-                                objeto3.getBoolean("soj_aplicarDescuento") should be(false)
-                                objeto3.getBoolean("soj_tiene30Objeto") should be(false)
+                                objeto3.getBoolean("soj_aplicarDescuento") should be(true)
+                                objeto3.getBoolean("soj_tiene30Objeto") should be(true)
                                 //Fixme: verificar pq el objeto_vinculo no persiste en su map el primer VSO
                                 // objeto3.getBoolean("soj_tiene30ObjetoVinculo") should be(false)
 
@@ -1084,7 +1084,8 @@ abstract class BaseTriSpec(
             val objetoA = resultadoObjetoA.one()
 
             //validad la evaluacion de que esta el objeto primero
-            objetoA.getString("SOJ_DESCRIPCION") should be("PrimerObjetoPrueba_T1") //todo aca
+            objetoA.getString("SOJ_DESCRIPCION") should be("PrimerObjetoPrueba_T1")
+
 
             //TODO SEGUNDO EVENTO
             testSujetoObjetoB match {
@@ -1117,10 +1118,21 @@ abstract class BaseTriSpec(
                           )
                           .futureValue
 
+                        val resultadoObjetoA: AsyncResultSet = cassandra.cassandraWrite
+                          .cqlSelect(
+                            s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoA' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
+                          )
+                          .futureValue
+
                         val obligacionVencidaA = resultadoVencida.one()
+                        val objetoA = resultadoObjetoA.one()
 
                         //validad la evaluacion de que esta la obligacion vencida del objeto b
                         obligacionVencidaA.getString("BOB_ESTADO") should be("ADMINISTRATIVA")
+
+                        //validar que el tiene30 esta en false
+                        objetoA.getBoolean("soj_tiene30objeto") should be(false)
+                        objetoA.getBoolean("soj_tiene30objetovinculo") should be(false)
                       }
 
                       //todo CUARTO EVENTO
@@ -1136,10 +1148,22 @@ abstract class BaseTriSpec(
                               )
                               .futureValue
 
-                            val obligacionVencida = resultadoVencida.one()
+                            val resultadoObjetoB: AsyncResultSet = cassandra.cassandraWrite
+                              .cqlSelect(
+                                s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoB' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
+                              )
+                              .futureValue
 
-                            //validad la evaluacion de que esta la obligacion vencida del objeto b
+                            val obligacionVencida = resultadoVencida.one()
+                            val objetoB = resultadoObjetoB.one()
+
+
+                            //validar la evaluacion de que esta la obligacion vencida del objeto b
                             obligacionVencida.getString("BOB_ESTADO") should be("ADMINISTRATIVA")
+
+                            //validar que el tiene30 esta en false
+                            objetoB.getBoolean("soj_tiene30objeto") should be(false)
+                            objetoB.getBoolean("soj_tiene30objetovinculo") should be(false)
                           }
 
                           //todo QUINTO EVENTO
@@ -1154,10 +1178,21 @@ abstract class BaseTriSpec(
                                   )
                                   .futureValue
 
+                                val resultadoObjetoA: AsyncResultSet = cassandra.cassandraWrite
+                                  .cqlSelect(
+                                    s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoA' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
+                                  )
+                                  .futureValue
+
                                 val obligacionPaga = resultadoPaga.one()
+                                val objetoA = resultadoObjetoA.one()
 
                                 //validad la evaluacion de que esta pagada del objeto a
                                 obligacionPaga.getLong("count") should be(0)
+
+                                //validar que el tiene30 esta en true pero del vinculo false
+                                objetoA.getBoolean("soj_tiene30objeto") should be(true)
+                                objetoA.getBoolean("soj_tiene30objetovinculo") should be(false)
                               }
                             case Left(e) =>
                               println("ERROR DE LA OBN VENCIDA" + e)
@@ -1297,6 +1332,19 @@ abstract class BaseTriSpec(
 
           //validar la evaluacion de que esta la obligacion vencida
           obligacionVencidaNoDeuda.getString("BOB_ADHERIDO_DEBITO") should be("N")
+
+          val resultadoObjetoA: AsyncResultSet = cassandra.cassandraWrite
+            .cqlSelect(
+              s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoA' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
+            )
+            .futureValue
+
+          val objetoA = resultadoObjetoA.one()
+
+          //validar que el tiene30 esta en true
+          objetoA.getBoolean("soj_tiene30objeto") should be(true)
+          objetoA.getBoolean("soj_tiene30objetovinculo") should be(true)
+
         }
 
         //todo SEGUNDO EVENTO (capital)
@@ -1315,6 +1363,18 @@ abstract class BaseTriSpec(
 
               //validar la evaluacion de que el capital debe ser 3000
               obligacionMuc.getFloat("BOB_TOTAL") should be(99999)
+
+              val resultadoObjetoA: AsyncResultSet = cassandra.cassandraWrite
+                .cqlSelect(
+                  s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoA' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
+                )
+                .futureValue
+
+              val objetoA = resultadoObjetoA.one()
+
+              //validar que el tiene30 esta en true
+              objetoA.getBoolean("soj_tiene30objeto") should be(true)
+              objetoA.getBoolean("soj_tiene30objetovinculo") should be(true)
             }
 
             //todo TERCER EVENTO (impuesto)
@@ -1333,6 +1393,18 @@ abstract class BaseTriSpec(
 
                   //validar la evaluacion que el impuesto es 2000
                   obligacionVencida.getString("BOB_PLN_ID") should be("10")
+
+                  val resultadoObjetoA: AsyncResultSet = cassandra.cassandraWrite
+                    .cqlSelect(
+                      s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoA' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
+                    )
+                    .futureValue
+
+                  val objetoA = resultadoObjetoA.one()
+
+                  //validar que el tiene30 esta en false
+                  objetoA.getBoolean("soj_tiene30objeto") should be(false)
+                  objetoA.getBoolean("soj_tiene30objetovinculo") should be(false)
                 }
               case Left(e) =>
                 println("ERROR DE LA OBN VENCIDA" + e)

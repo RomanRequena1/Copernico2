@@ -151,4 +151,6 @@ lazy val it = project
 
 val AkkaVersion = "2.6.15"
 libraryDependencies += "com.typesafe.akka" %% "akka-persistence" % AkkaVersion
+libraryDependencies += "com.datastax.oss" % "java-driver-core" % "4.13.0"
+
 
