@@ -168,7 +168,8 @@ object Dependencies {
     val status = "io.kamon" %% "kamon-status-page" % "2.2.0"
     val prometheus = "io.kamon" %% "kamon-prometheus" % "2.2.0"
     // val bundle = "io.kamon" %% "kamon-bundle" % "2.1.13"
-    override def modules: Seq[sbt.ModuleID] = core :: status :: prometheus :: Nil
+    val dropwizard = "io.prometheus" % "simpleclient_dropwizard" % "0.8.0"
+    override def modules: Seq[sbt.ModuleID] = core :: status :: prometheus :: dropwizard ::Nil
   }
 
 

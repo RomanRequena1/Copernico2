@@ -1,13 +1,17 @@
 package design_principles.microservice.kafka_consumer_microservice
 
-import akka.actor.{ActorSystem, Props}
+import akka.actor.ActorSystem
 import akka.dispatchers.ActorsDispatchers
 import akka.http.AkkaHttpServer
 import akka.http.scaladsl.server.Directives._
+import akka.stream.alpakka.cassandra.CassandraMetricsRegistry
 import api.stats.ClusterStats
 import com.typesafe.config.{Config, ConfigFactory}
 import design_principles.actor_model.context_provider.{Guardian, GuardianRequirements}
 import design_principles.actor_model.mechanism.stream_supervision.MessageProcessorSupervisorActorController
+import io.prometheus.client.CollectorRegistry
+import io.prometheus.client.dropwizard.DropwizardExports
+import io.prometheus.client.exporter.HTTPServer
 import life_cycle.AppLifecycleMicroservice
 
 import scala.concurrent.Await
@@ -33,6 +37,12 @@ object MainApplication {
 
     implicit val system: ActorSystem = Guardian.getContext(GuardianRequirements(actorSystemName, config))
 
+
+    val prom: HTTPServer = new HTTPServer(9089)
+
+    val oo = CassandraMetricsRegistry.get(system).getRegistry
+
+    val yy: Unit = CollectorRegistry.defaultRegistry.register(new DropwizardExports(oo))
 
     val routes = ProductionMicroserviceContextProvider.getContext(system, config) { implicit microserviceProvisioning =>
       val microservices = microservicesFactory(microserviceProvisioning)
