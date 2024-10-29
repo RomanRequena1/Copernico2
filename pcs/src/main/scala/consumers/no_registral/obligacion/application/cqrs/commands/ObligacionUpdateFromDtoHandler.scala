@@ -22,6 +22,7 @@ import scala.util.{Success, Try}
 class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommandHandler[ObligacionUpdateFromDto] {
   override def handle(command: ObligacionUpdateFromDto): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
+    println("CUMBIA ObligacionUpdateFromDtoHandler")
 
     def getBBParams(evento: ObligacionExternalDto) = {
       val declaredFields = evento.getClass.getDeclaredFields

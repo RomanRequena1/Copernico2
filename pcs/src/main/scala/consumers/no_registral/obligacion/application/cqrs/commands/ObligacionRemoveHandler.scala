@@ -12,7 +12,7 @@ import scala.util.{Success, Try}
 class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler[ObligacionRemove] {
   override def handle(command: ObligacionRemove): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-
+    println("CUMBIA ObligacionRemoveHandler")
     val event =
       ObligacionEvents.ObligacionRemoved(
         command.deliveryId,
@@ -25,7 +25,9 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
       )
 
     if (DeliveryIdManagement.isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(s"[${actor.name} | ${actor.persistenceId}] -obligacion- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
+      log.warn(
+        s"[${actor.name} | ${actor.persistenceId}] -obligacion- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
+      )
 
       // Informs that operation has been ignored */
       //todo check if this is desirable, why? signal the sender??
@@ -35,18 +37,18 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
 
       Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     } else {
-    actor.persistEvent(event) { () =>
-      actor.state += event
-      // Propaga actualizaciones al padre (Objeto)
-      actor.informRemoveToParent(command)
-      actor.lastDeliveryId = command.deliveryId
-      actor.deleteSnapshot(event) { () =>
+      actor.persistEvent(event) { () =>
+        actor.state += event
+        // Propaga actualizaciones al padre (Objeto)
+        actor.informRemoveToParent(command)
+        actor.lastDeliveryId = command.deliveryId
+        actor.deleteSnapshot(event) { () =>
+          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+        }
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+      Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     }
-    Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
-  }
   }
 }
 /*val stateIsEmpty = state.equals(state.empty)

@@ -38,6 +38,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
     val log: Logger = LoggerFactory.getLogger(this.getClass)
+    println("CUMBIA ObjetoUpdateFromTriHandler")
 
     val semaforo_marca: Option[ListDetallesObjeto] => Option[String] = {
       case Some(d) => d.SOJ_DETALLES.head.SOJ_SEMAFORO_MARCA
