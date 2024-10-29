@@ -60,7 +60,7 @@ case class ObjetoSnapshotPersistedProjection(
         )
       )
   }
-
+// FIXME: quitar el others y agregar el soj_saldo donde corresponda
   val others: List[(String, BigDecimal)] = List(
     "soj_saldo" -> event.saldo
     //"soj_vencida" -> event.vencimiento,

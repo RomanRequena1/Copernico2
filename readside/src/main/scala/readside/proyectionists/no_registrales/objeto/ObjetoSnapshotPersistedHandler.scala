@@ -16,9 +16,9 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 class ObjetoSnapshotPersistedHandler(
-                                      implicit
-                                      r: MonitoringAndCassandraWrite
-                                    ) extends ActorTransaction[ObjetoSnapshotPersisted](r.monitoring)(r.actorTransactionRequirements) {
+    implicit
+    r: MonitoringAndCassandraWrite
+) extends ActorTransaction[ObjetoSnapshotPersisted](r.monitoring)(r.actorTransactionRequirements) {
   @JsonIgnore
   private val log = LoggerFactory.getLogger(this.getClass)
 
@@ -38,7 +38,7 @@ class ObjetoSnapshotPersistedHandler(
     if (registro.operacion.equals("U")) {
       for {
         done <- r.cassandraWrite.writeState(projection).andThen {
-          case Failure(exception) => println("Dont persist objeto" + exception )
+          case Failure(exception) => println("Dont persist objeto" + exception)
           case Success(value) => ()
           //connOracleReadsideToCass(registro.deliveryId.toString(),"objeto", registro.registro.get.SOJ_CANAL_ORIGEN.getOrElse("TAX"))
         }
@@ -64,12 +64,14 @@ class ObjetoSnapshotPersistedHandler(
     } else {
       val cassandra = new CassandraWriteProduction()
       for {
+        // FULL DELETE
         done <- cassandra
           .cql(
             s"""
       DELETE FROM read_side.buc_obligaciones """ +
-            s""" WHERE bob_soj_identificador = '${registro.objetoId}' """ +
-            s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """
+              s""" WHERE bob_soj_identificador = '${registro.objetoId}' """ +
+              s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """ +
+              s""" and bob_suj_identificador = '${registro.sujetoId}' """
           )
           .recover { ex: Throwable =>
             println(ex.getMessage)
