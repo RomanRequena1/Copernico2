@@ -8,7 +8,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import design_principles.actor_model.system_parallelizable.ActorSystemGenerator.RunTest
 import design_principles.actor_model.system_parallelizable.{ActorSystemParallelizerBuilder, AvailablePortProvider}
 import design_principles.actor_model.utils.Generators
-import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
+import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures, Waiters}
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, RandomTestOrder}
@@ -31,7 +31,8 @@ abstract class ActorSpec
     with BeforeAndAfterEach
     with Eventually
     with IntegrationPatience
-    with ScalaFutures {
+    with ScalaFutures
+    with Waiters {
 
   def parallelActorSystemRunner(testContext: ActorSystem => Unit): Unit =
     ActorSystemParallelizerBuilder.actor

@@ -1,5 +1,5 @@
 {
-  "start-time" : "2024-10-29T19:47:34.133",
+  "start-time" : "2024-10-30T22:31:46.247",
   "akka-version" : "2.6.15",
   "akka-diagnostics-version" : "1.1.16",
   "akka-http-version" : "10.2.0",
@@ -28,15 +28,15 @@
   "system-metrics" : {
     "heap-init" : 257949696,
     "heap-max" : 4114612224,
-    "heap-used" : 152480768,
-    "heap-committed" : 362807296,
+    "heap-used" : 152075352,
+    "heap-committed" : 373293056,
     "os-processors" : 8,
     "mem-pool-0" : {
       "name" : "CodeHeap 'non-nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 5836800,
-      "used" : 1521664,
+      "used" : 1520640,
       "committed" : 2555904
     },
     "mem-pool-1" : {
@@ -44,23 +44,23 @@
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 73682704,
-      "committed" : 76623872
+      "used" : 73743784,
+      "committed" : 76677120
     },
     "mem-pool-2" : {
       "name" : "CodeHeap 'profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122908672,
-      "used" : 11557504,
-      "committed" : 11599872
+      "used" : 11422720,
+      "committed" : 11468800
     },
     "mem-pool-3" : {
       "name" : "Compressed Class Space",
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : 1073741824,
-      "used" : 9391728,
+      "used" : 9396328,
       "committed" : 10878976
     },
     "mem-pool-4" : {
@@ -68,32 +68,32 @@
       "type" : "Heap memory",
       "init" : 27262976,
       "max" : -1,
-      "used" : 126877696,
-      "committed" : 212860928
+      "used" : 124780544,
+      "committed" : 218103808
     },
     "mem-pool-5" : {
       "name" : "G1 Old Gen",
       "type" : "Heap memory",
       "init" : 230686720,
       "max" : 4114612224,
-      "used" : 10923008,
-      "committed" : 134217728
+      "used" : 10517592,
+      "committed" : 138412032
     },
     "mem-pool-6" : {
       "name" : "G1 Survivor Space",
       "type" : "Heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 15728640,
-      "committed" : 15728640
+      "used" : 16777216,
+      "committed" : 16777216
     },
     "mem-pool-7" : {
       "name" : "CodeHeap 'non-profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122912768,
-      "used" : 4255104,
-      "committed" : 4259840
+      "used" : 4267648,
+      "committed" : 4325376
     }
   },
   "configuration" : {

@@ -20,6 +20,7 @@ import proyectionists.no_registrales.testkit.MessageTestkitUtils._
 import proyectionists.no_registrales.testkit.{Examples, NoRegistralesImplicitConversions}
 import utils.generators.Model.deliveryIdAct
 import io.circe.parser.decode
+import org.scalatest.concurrent.Waiters
 import org.scalatest.{Assertion, Succeeded}
 import org.scalatest.time.SpanSugar.convertIntToGrainOfTime
 
@@ -1514,34 +1515,19 @@ abstract class BaseTriSpec(
 
     for {
       // 1 - Crear VSO_A
-      altaVSO_A <- {
-        println("Step 1: Decoding VSO_A")
-        decode[ObjetosTri](VSO_A)
-      }
-      _ = messageProducer.produceObjeto(altaVSO_A)
-
+      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
       // 2 - Alta obn en VSO_A
-      altaObligacionDecoded <- {
-        println("Step 2: Producing altaObligacion")
-        decode[ObligacionesTri](altaObligacion)
-      }
-      _ = messageProducer.produceObligacion(altaObligacionDecoded)
-
+      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
       // 3 - Pago obn en VSO_A
-      pagoObligacionDecoded <- {
-        println("Step 3: Producing pagoObligacion")
-        decode[ObligacionesTri](pagoObligacion)
-      }
-      _ = messageProducer.produceObligacion(pagoObligacionDecoded)
-
-      // 4- Verify
-      _ <- {
-        println("Step 4: Starting verification with eventually")
-        eventually(timeout(15.seconds), interval(100.milliseconds)) {
-          println("Eventually...")
-          Right(verifyRemovedCassandra(testData1))
-        }
-      }
+      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
     } yield ()
+
+    println("Step 4")
+    Thread.sleep(5000)
+    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+      println("Eventually")
+      verifyRemovedCassandra(testData1)
+    }
   }
+
 }
