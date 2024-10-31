@@ -38,11 +38,11 @@ object MainApplication {
     implicit val system: ActorSystem = Guardian.getContext(GuardianRequirements(actorSystemName, config))
 
 
-    val prom: HTTPServer = new HTTPServer(9089)
+   // val prom: HTTPServer = new HTTPServer(9089)
 
-    val oo = CassandraMetricsRegistry.get(system).getRegistry
+    //val oo = CassandraMetricsRegistry.get(system).getRegistry
 
-    val yy: Unit = CollectorRegistry.defaultRegistry.register(new DropwizardExports(oo))
+    //val yy: Unit = CollectorRegistry.defaultRegistry.register(new DropwizardExports(oo))
 
     val routes = ProductionMicroserviceContextProvider.getContext(system, config) { implicit microserviceProvisioning =>
       val microservices = microservicesFactory(microserviceProvisioning)

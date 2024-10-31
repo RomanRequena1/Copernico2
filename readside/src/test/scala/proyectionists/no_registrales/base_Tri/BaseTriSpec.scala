@@ -6,12 +6,9 @@ import cassandra.MockMonitoringAndCassandraWrite
 import com.datastax.oss.driver.api.core.cql.AsyncResultSet
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{DetallesObjeto, ObjetosTri}
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.{DetallesObjetoDecoder, ObjetosTriDecoder}
-import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{
-  DetallesObligacionDecoder,
-  ObligacionesTriDecoder
-}
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{DetallesObligacionDecoder, ObligacionesTriDecoder}
 import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionesTri}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesSupresiones, ObligacionesTri}
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.SujetoTri
 import design_principles.actor_model.ActorSpec
 import design_principles.external_pub_sub.kafka.MessageProcessorLogging
@@ -1416,6 +1413,5 @@ abstract class BaseTriSpec(
         println("ERROR DE LA OBN VENCIDA" + e)
     }
   }
-
 }
 

@@ -1,0 +1,70 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Readside" type="SbtRunConfiguration" factoryName="sbt Task" show_console_on_std_err="false" show_console_on_std_out="false">
+    <option name="allowRunningInParallel" value="false" />
+    <option name="projectPathOnTarget" />
+    <option name="selectedOptions">
+      <list />
+    </option>
+    <option name="tasks" value="readside/run" />
+    <option name="useSbtShell" value="false" />
+    <option name="vmparams" value="-Xms512M -Xmx1024M -Xss1M -XX:+CMSClassUnloadingEnabled" />
+    <option name="workingDir" value="$PROJECT_DIR$" />
+    <envs>
+      <env name="CASSANDRA_CONTACT_POINTS_UNO" value="0.0.0.0:9042" />
+      <env name="ENVIRONMENT_EXECUTION" value="DESA" />
+      <env name="ZIPKIN_HOST" value="host.docker.internal" />
+      <env name="STRING_CONEXION_TIMESCALEDB" value="'jdbc:postgresql://172.22.2.1:5432/postgres'" />
+      <env name="CLUSTER_IP" value="0.0.0.0" />
+      <env name="APACHE_KAFKA_DEBUG_MODE" value="WARN" />
+      <env name="KAFKA_BROKERS_LIST" value="localhost:9092" />
+      <env name="POOL_LOCAL_SIZE" value="3" />
+      <env name="JAEGER_PORT" value="5775" />
+      <env name="USER_POSTGRES" value="'postgres'" />
+      <env name="APACHE_KAFKA_CLIENTS_NETWORK_CLIENT_DEBUG_MODE" value="OFF" />
+      <env name="DMN_ID_DECISION_30" value="'Decision_descuento'" />
+      <env name="ENABLE_TRAZ" value="'false'" />
+      <env name="PROJECTIONIST_PARALELLISM" value="3" />
+      <env name="METRICS_JMX_REPORTER_DEBUG_MODE" value="'OFF'" />
+      <env name="DATASTAX_DEBUG_MODE" value="WARN" />
+      <env name="DATASTACKS_DEBUG_MODE" value="OFF" />
+      <env name="DMN_ID_OBJETO_CUPON" value="'Decision_0tsof3f'" />
+      <env name="PROMETHEUS_PORT" value="9099" />
+      <env name="LOG_ROOT_LEVEL_DEBUG_MODE" value="WARN" />
+      <env name="APACHE_KAFKA_APP_INFO_PARSER_DEBUG_MODE" value="OFF" />
+      <env name="PASSIVATE" value="'20s'" />
+      <env name="NET_LOGSTASH_DEBUG_MODE" value="OFF" />
+      <env name="TIMEOUT" value="200" />
+      <env name="JAEGER_HOST" value="0.0.0.0" />
+      <env name="AKKA_DEBUG_MODE" value="WARN" />
+      <env name="CASSANDRA_USERNAME" value="cassandra" />
+      <env name="HTTP_PORT" value="8084" />
+      <env name="AKKA_KAFKA_DEBUG_MODE" value="OFF" />
+      <env name="I0ITEC_ZKCLIENT_DEBUG_MODE" value="OFF" />
+      <env name="PATH_DMN_CLASIF_OBJETO" value="'/opt/docker/bin/decision_30_descuento.dmn'" />
+      <env name="DMN_ID_CLASIF_OBJETO" value="&quot;Decision_Clasificacion_Objeto&quot;" />
+      <env name="MAX_REQUESTS_PER_CONNECTION" value="1024" />
+      <env name="KAMON_STATUS_PAGE" value="5268" />
+      <env name="IO_NETTY_DEBUG_MODE" value="OFF" />
+      <env name="PATH_DMN_OBJETO_CUPON" value="'/opt/docker/bin/objetoCupon.dmn'" />
+      <env name="REFLECTION_DEBUG_MODE" value="OFF" />
+      <env name="CASSANDRA_CONTACT_POINTS" value="'172.22.0.6:9042'" />
+      <env name="NAME_TABLE1" value="'table_nifi_to_kafka'" />
+      <env name="KAFKA_DEBUG_MODE" value="ERROR" />
+      <env name="SEED_NODES" value="akka://PersonClassificationServiceReadSide@0.0.0.0:2554" />
+      <env name="ZIPKIN_PORT" value="9411" />
+      <env name="PASSWORD_POSTGRES" value="'password'" />
+      <env name="CINNAMON_PORT" value="9091" />
+      <env name="NAME_TABLE2" value="'table_kafka_to_pcs'" />
+      <env name="NAME_TABLE3" value="'table_pcs_to_kafka'" />
+      <env name="NAME_TABLE4" value="'table_readsie_to_cass'" />
+      <env name="POOL_REMOTE_SIZE" value="1" />
+      <env name="APACHE_ZOOKEEPER_DEBUG_MODE" value="OFF" />
+      <env name="CLUSTER_PORT" value="2554" />
+      <env name="CASSANDRA_PASSWORD" value="cassandra" />
+      <env name="LOGSTASH" value="0.0.0.0:5000" />
+      <env name="PATH_DMN_DECISION_30" value="'/opt/docker/bin/clasificacion_objeto.dmn'" />
+      <env name="MAX_CONCURRENT_REQUESTS" value="512" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>
