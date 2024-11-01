@@ -1502,9 +1502,9 @@ abstract class BaseTriSpec(
       val cassandra = context.cassandra
       val resultado: AsyncResultSet = cassandra.cassandraWrite
         .cqlSelect(
-          s"SELECT COUNT(*) FROM read_side.buc_obligaciones WHERE" +
-            s" BOB_SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
-            s" AND BOB_SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+          s"SELECT COUNT(*) FROM read_side.buc_obligaciones" +
+            s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+            s" AND BOB_SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
             s" AND BOB_SUJ_IDENTIFICADOR = '${testData1.sujetoId}'" +
             s" AND BOB_OBN_ID = '${testData1.obnId}';"
         )
@@ -1520,137 +1520,68 @@ abstract class BaseTriSpec(
 
     //todo PRIMER TEST
 
-    //    for {
-    //      // 1 - Crear VSO_A
-    //      altaVSO_A <- {
-    //        Thread.sleep(5000)
-    //        decode[ObjetosTri](VSO_A)
-    //      }
-    //      _ = messageProducer.produceObjeto(altaVSO_A)
-    //
-    //      // 2 - Alta obn en VSO_A
-    //      altaObligacionDecoded <- {
-    //        Thread.sleep(5000)
-    //        decode[ObligacionesTri](altaObligacion)
-    //      }
-    //      _ = messageProducer.produceObligacion(altaObligacionDecoded)
-    //
-    //      // 3 - Pago obn en VSO_A
-    //      pagoObligacionDecoded <- {
-    //        Thread.sleep(5000)
-    //        decode[ObligacionesTri](pagoObligacion)
-    //      }
-    //      _ = messageProducer.produceObligacion(pagoObligacionDecoded)
-    //
-    //      // 4- Verify
-    //      _ <- {
-    //        println("Step 4: Starting verification with eventually")
-    //        Thread.sleep(5000)
-    //        eventually(timeout(15.seconds), interval(100.milliseconds)) {
-    //          Right(verifyRemovedCassandra(testData1))
-    //        }
-    //      }
-    //    } yield ()
+    for {
+      // 1 - Crear VSOA
+      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+      // 2 - Alta obn en VSO_A
+      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+      // 3 - Pago obn en VSOA
+      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
+    } yield ()
+
+    Thread.sleep(5000)
+    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+      println("Eventually")
+      verifyRemovedCassandra(testData1)
+    }
+
 
     //todo SEGUNDO Y TERCER TEST
 
-    //    for {
-    //      // 1 - Crear VSO_A
-    //      altaVSO_A <- {
-    //        Thread.sleep(5000)
-    //        decode[ObjetosTri](VSO_A)
-    //      }
-    //      _ = messageProducer.produceObjeto(altaVSO_A)
-    //
-    //      // 2 - Alta obn en VSO_A
-    //      altaObligacionDecoded <- {
-    //        Thread.sleep(5000)
-    //        decode[ObligacionesTri](altaObligacion)
-    //      }
-    //      _ = messageProducer.produceObligacion(altaObligacionDecoded)
-    //
-    //      // 3 - Dar baja a VSO_A
-    //      bajaVSO_A <- {
-    //        Thread.sleep(5000)
-    //        decode[ObjetosTri](VSO_A_BAJA)
-    //      }
-    //      _ = messageProducer.produceObjeto(bajaVSO_A)
-    //
-    //      //4- Pagar la obn
-    //       pagoObligacionDecoded <- {
-    //       Thread.sleep(5000)
-    //       decode[ObligacionesTri](pagoObligacion)
-    //     }
-    //       _ = messageProducer.produceObligacion(pagoObligacionDecoded)
-    //
-    //      // 5- Verify
-    //      _ <- {
-    //        println("Step 4: Starting verification with eventually")
-    //        eventually(timeout(15.seconds), interval(100.milliseconds)) {
-    //          Right(verifyRemovedCassandra(testData1))
-    //        }
-    //      }
-    //    } yield ()
+    for {
+      // 1 - Crear VSOA
+      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+      // 2 - Alta obn en VSO_A
+      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+      // 3 - Dar baja VSO_A
+      _ <- messageProducer.produceEvento(VSO_A_BAJA, "DGR-COP-OBJETOS-TRI")
+      // 4 - Pagar la Obn
+      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
+    } yield ()
+
+    Thread.sleep(5000)
+    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+      println("Eventually")
+      verifyRemovedCassandra(testData1)
+    }
+
 
     //TODO CUARTO QUINTO Y SEXTO TEST
 
     for {
       // 1 - Alta obn en VSO_A
-      altaObligacionDecoded <- {
-        Thread.sleep(5000)
-        decode[ObligacionesTri](altaObligacion)
-      }
-      _ = messageProducer.produceObligacion(altaObligacionDecoded)
-
-      // 2 alta de vso_a
-      altaVSO_A <- {
-        Thread.sleep(5000)
-        decode[ObjetosTri](VSO_A)
-      }
-      _ = messageProducer.produceObjeto(altaVSO_A)
-
-      // 3 - Dar baja a VSO_A
-      bajaVSO_A <- {
-        Thread.sleep(5000)
-        decode[ObjetosTri](VSO_A_BAJA)
-      }
-      _ = messageProducer.produceObjeto(bajaVSO_A)
-
-      // 4 - alta obn vso_a dada de baja
-      altaObligacionDecoded <- {
-        Thread.sleep(5000)
-        decode[ObligacionesTri](altaObligacion)
-      }
-      _ = messageProducer.produceObligacion(altaObligacionDecoded)
-
-      // 5 - alta de vso_a
-      altaVSO_A <- {
-        Thread.sleep(5000)
-        decode[ObjetosTri](VSO_A)
-      }
-      _ = messageProducer.produceObjeto(altaVSO_A)
-
-      // 6 - obn sobre vso_a existente
-      altaObligacionDecoded <- {
-        Thread.sleep(5000)
-        decode[ObligacionesTri](altaObligacion)
-      }
-      _ = messageProducer.produceObligacion(altaObligacionDecoded)
-
-      //7 - Pagar la obn
-      pagoObligacionDecoded <- {
-        Thread.sleep(5000)
-        decode[ObligacionesTri](pagoObligacion)
-      }
-      _ = messageProducer.produceObligacion(pagoObligacionDecoded)
-
-      // 8 - Verify
-      _ <- {
-        println("Step 4: Starting verification with eventually")
-        eventually(timeout(15.seconds), interval(100.milliseconds)) {
-          Right(verifyRemovedCassandra(testData1))
-        }
-      }
+      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+      // 2 - Crear VSOA
+      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+      // 3 - Dar baja VSO_A
+      _ <- messageProducer.produceEvento(VSO_A_BAJA, "DGR-COP-OBJETOS-TRI")
+      // 4 - Pagar la Obn
+      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
+      // 5 - Alta la Obn vso_a dada de baja
+      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+      // 6 - Alta VSOA
+      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+      // 7 - Alta obn en VSO_A existente
+      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+      // 8 - Pagar la Obn
+      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
     } yield ()
+
+    Thread.sleep(5000)
+    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+      println("Eventually")
+      verifyRemovedCassandra(testData1)
+    }
   }
+
 }
