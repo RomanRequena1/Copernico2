@@ -1,33 +1,27 @@
 package proyectionists.no_registrales.base_Tri
 
-import akka.actor.ActorSystem
-import akka.actor.testkit.typed.scaladsl.LoggingTestKit.error
+import akka.actor.{ActorSystem, Identify}
 import cassandra.MockMonitoringAndCassandraWrite
 import com.datastax.oss.driver.api.core.cql.AsyncResultSet
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{DetallesObjeto, ObjetosTri}
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.{DetallesObjetoDecoder, ObjetosTriDecoder}
-import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{
-  DetallesObligacionDecoder,
-  ObligacionesTriDecoder
-}
-import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionesTri}
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{DetallesObligacionDecoder, ObligacionesTriDecoder}
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.SujetoTri
+import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 import design_principles.actor_model.ActorSpec
 import design_principles.external_pub_sub.kafka.MessageProcessorLogging
+import io.circe.parser.decode
 import kafka.{MessageProcessor, MessageProducer}
+import org.scalatest.Assertion
+import org.scalatest.time.SpanSugar.convertIntToGrainOfTime
 import proyectionists.no_registrales.testkit.MessageTestkitUtils._
 import proyectionists.no_registrales.testkit.{Examples, NoRegistralesImplicitConversions}
 import utils.generators.Model.deliveryIdAct
-import io.circe.parser.decode
-import org.scalatest.concurrent.Waiters
-import org.scalatest.{Assertion, Succeeded}
-import org.scalatest.time.SpanSugar.convertIntToGrainOfTime
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import scala.collection.convert.ImplicitConversions.`iterable AsScalaIterable`
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 object BaseTriSpec {
   case class TestContext(messageProducer: MessageProducer,
@@ -35,17 +29,17 @@ object BaseTriSpec {
                          cassandra: MockMonitoringAndCassandraWrite)
 }
 abstract class BaseTriSpec(
-    getContext: ActorSystem => BaseTriSpec.TestContext
-) extends ActorSpec
-    with NoRegistralesImplicitConversions {
+                            getContext: ActorSystem => BaseTriSpec.TestContext
+                          ) extends ActorSpec
+  with NoRegistralesImplicitConversions {
   val examples = new Examples("ObjetoSpec")
 
   case class TestData(
-      sujetoId: String,
-      objetoId: String,
-      objetoTipo: String,
-      obnId: String
-  )
+                       sujetoId: String,
+                       objetoId: String,
+                       objetoTipo: String,
+                       obnId: String
+                     )
 
   override protected def beforeAll(): Unit = {
     println("BEFORE ALL")
@@ -531,39 +525,39 @@ abstract class BaseTriSpec(
       val tipoObjeto = "A"
       val obnId = "1234-T4"
 
-//      val obligacionJsonCuit1 =
-//        s"""{
-//      "EV_ID": "1",
-//      "BOB_SUJ_IDENTIFICADOR": "$sujeto1",
-//      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-//      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
-//      "BOB_OBN_ID": "$obnId",
-//      "BOB_ESTADO": "JUDICIAL",
-//      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
-//      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
-//      "BOB_PERIODO": "2024",
-//      "BOB_FISCALIZADA": "Fiscalizada",
-//      "BOB_CUOTA": "1",
-//      "BOB_CAPITAL": "100",
-//      "BOB_CONCEPTO": "601",
-//      "BOB_IMPUESTO": "600",
-//      "BOB_INTERES_PUNIT": "1000",
-//      "BOB_INDICE_INT_PUNIT": "null",
-//      "BOB_SALDO": "200",
-//      "BOB_TIPO": "tributaria",
-//      "BOB_OGA_ID": null,
-//      "BOB_PLN_ID": "5555",
-//      "BOB_OTROS_ATRIBUTOS": {
-//      "BOB_DETALLES": [
-//      {
-//      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
-//      "RULE_NUMBER": "1"
-//      }]}
-//    }"""
-//
-//      messageProducer.produceEvento(obligacionJsonCuit1, "DGR-COP-OBLIGACIONES-TRI")
-//
-//      Thread.sleep(5000)
+      //      val obligacionJsonCuit1 =
+      //        s"""{
+      //      "EV_ID": "1",
+      //      "BOB_SUJ_IDENTIFICADOR": "$sujeto1",
+      //      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
+      //      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
+      //      "BOB_OBN_ID": "$obnId",
+      //      "BOB_ESTADO": "JUDICIAL",
+      //      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
+      //      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+      //      "BOB_PERIODO": "2024",
+      //      "BOB_FISCALIZADA": "Fiscalizada",
+      //      "BOB_CUOTA": "1",
+      //      "BOB_CAPITAL": "100",
+      //      "BOB_CONCEPTO": "601",
+      //      "BOB_IMPUESTO": "600",
+      //      "BOB_INTERES_PUNIT": "1000",
+      //      "BOB_INDICE_INT_PUNIT": "null",
+      //      "BOB_SALDO": "200",
+      //      "BOB_TIPO": "tributaria",
+      //      "BOB_OGA_ID": null,
+      //      "BOB_PLN_ID": "5555",
+      //      "BOB_OTROS_ATRIBUTOS": {
+      //      "BOB_DETALLES": [
+      //      {
+      //      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
+      //      "RULE_NUMBER": "1"
+      //      }]}
+      //    }"""
+      //
+      //      messageProducer.produceEvento(obligacionJsonCuit1, "DGR-COP-OBLIGACIONES-TRI")
+      //
+      //      Thread.sleep(5000)
 
       val n = 10
       for (i <- 1 until n) {
@@ -598,43 +592,43 @@ abstract class BaseTriSpec(
       }]}
     }"""
 
-//        val obligacionJsonCuit2 =
-//          s"""{
-//      "EV_ID": "${i + 1}",
-//      "BOB_SUJ_IDENTIFICADOR": "$sujeto1",
-//      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-//      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
-//      "BOB_OBN_ID": "$obnId",
-//      "BOB_ESTADO": "JUDICIAL",
-//      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
-//      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
-//      "BOB_PERIODO": "2024",
-//      "BOB_FISCALIZADA": "Fiscalizada",
-//      "BOB_CUOTA": "1",
-//      "BOB_CAPITAL": "100${i + 1}",
-//      "BOB_CONCEPTO": "601",
-//      "BOB_IMPUESTO": "600",
-//      "BOB_INTERES_PUNIT": "1000",
-//      "BOB_INDICE_INT_PUNIT": "null",
-//      "BOB_SALDO": "202",
-//      "BOB_TIPO": "tributaria",
-//      "BOB_OGA_ID": null,
-//      "BOB_PLN_ID": "5555",
-//      "BOB_OTROS_ATRIBUTOS": {
-//      "BOB_DETALLES": [
-//      {
-//      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
-//      "RULE_NUMBER": "1"
-//      }]}
-//    }"""
+        //        val obligacionJsonCuit2 =
+        //          s"""{
+        //      "EV_ID": "${i + 1}",
+        //      "BOB_SUJ_IDENTIFICADOR": "$sujeto1",
+        //      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
+        //      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
+        //      "BOB_OBN_ID": "$obnId",
+        //      "BOB_ESTADO": "JUDICIAL",
+        //      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
+        //      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+        //      "BOB_PERIODO": "2024",
+        //      "BOB_FISCALIZADA": "Fiscalizada",
+        //      "BOB_CUOTA": "1",
+        //      "BOB_CAPITAL": "100${i + 1}",
+        //      "BOB_CONCEPTO": "601",
+        //      "BOB_IMPUESTO": "600",
+        //      "BOB_INTERES_PUNIT": "1000",
+        //      "BOB_INDICE_INT_PUNIT": "null",
+        //      "BOB_SALDO": "202",
+        //      "BOB_TIPO": "tributaria",
+        //      "BOB_OGA_ID": null,
+        //      "BOB_PLN_ID": "5555",
+        //      "BOB_OTROS_ATRIBUTOS": {
+        //      "BOB_DETALLES": [
+        //      {
+        //      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
+        //      "RULE_NUMBER": "1"
+        //      }]}
+        //    }"""
 
         messageProducer.produceEvento(obligacionJsonCuit1, "DGR-COP-OBLIGACIONES-TRI")
-//        messageProducer.produceEvento(obligacionJsonCuit2, "DGR-COP-OBLIGACIONES-TRI")
+        //        messageProducer.produceEvento(obligacionJsonCuit2, "DGR-COP-OBLIGACIONES-TRI")
       }
 
       eventually(timeout(15.seconds), interval(1.milliseconds)) {
         Thread.sleep(5000)
-// 1 - Queda el registro persistido
+        // 1 - Queda el registro persistido
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}' AND BOB_OBN_ID = '$obnId' AND BOB_SUJ_IDENTIFICADOR = '${sujeto1}1';"
@@ -644,18 +638,18 @@ abstract class BaseTriSpec(
         val obligacion = resultado.one()
         obligacion.getString("BOB_OBN_ID") should be(obnId)
 
-// 2 - Queda el registro eliminado
+        // 2 - Queda el registro eliminado
 
-//        val resultado1: AsyncResultSet = cassandra.cassandraWrite
-//          .cqlSelect(
-//            s"SELECT COUNT(*) FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}' AND BOB_OBN_ID = '$obnId' AND BOB_SUJ_IDENTIFICADOR = '${sujeto1}';"
-//          )
-//          .futureValue
-//
-//        val obligacion1 = resultado1.one()
-//
-//        val count = obligacion1.getLong("count") // Fetch the count result
-//        count should be(0) // Check if the count is 0
+        //        val resultado1: AsyncResultSet = cassandra.cassandraWrite
+        //          .cqlSelect(
+        //            s"SELECT COUNT(*) FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}' AND BOB_OBN_ID = '$obnId' AND BOB_SUJ_IDENTIFICADOR = '${sujeto1}';"
+        //          )
+        //          .futureValue
+        //
+        //        val obligacion1 = resultado1.one()
+        //
+        //        val count = obligacion1.getLong("count") // Fetch the count result
+        //        count should be(0) // Check if the count is 0
       }
 
   }
@@ -1020,7 +1014,7 @@ abstract class BaseTriSpec(
       }]}
     }"""
       Thread.sleep(5000)
-// N - 99999 - 10
+      // N - 99999 - 10
 
       val testObnVencidaNoDeuda: Either[io.circe.Error, ObligacionesTri] =
         decode[ObligacionesTri](obligacionVencidaNoDeuda)
@@ -1426,8 +1420,6 @@ abstract class BaseTriSpec(
     val context = getContext(s)
     val messageProducer = context.messageProducer
 
-    //TODO: hacerlo beforeAll , global
-
     val testData1 = TestData(
       sujetoId = "CuitTri_T9",
       objetoId = "ObjetoTri_T9",
@@ -1444,6 +1436,19 @@ abstract class BaseTriSpec(
       "SOJ_IDENTIFICADOR": "${testData1.objetoId}",
       "SOJ_DESCRIPCION": "PrimerObjetoPrueba_T1",
       "SOJ_ESTADO": null,
+      "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0"
+      }
+    """
+
+    val VSO_A_BAJA =
+      s"""
+      {
+      "EV_ID": "$deliveryIdAct",
+      "SOJ_SUJ_IDENTIFICADOR": "${testData1.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testData1.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testData1.objetoId}",
+      "SOJ_DESCRIPCION": "PrimerObjetoPrueba_T1",
+      "SOJ_ESTADO": "BAJA",
       "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0"
       }
     """
@@ -1498,10 +1503,10 @@ abstract class BaseTriSpec(
       val resultado: AsyncResultSet = cassandra.cassandraWrite
         .cqlSelect(
           s"SELECT COUNT(*) FROM read_side.buc_obligaciones WHERE" +
-          s" BOB_SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
-          s" AND BOB_SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
-          s" AND BOB_SUJ_IDENTIFICADOR = '${testData1.sujetoId}'" +
-          s" AND BOB_OBN_ID = '${testData1.obnId}';"
+            s" BOB_SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
+            s" AND BOB_SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+            s" AND BOB_SUJ_IDENTIFICADOR = '${testData1.sujetoId}'" +
+            s" AND BOB_OBN_ID = '${testData1.obnId}';"
         )
         .futureValue
 
@@ -1513,21 +1518,139 @@ abstract class BaseTriSpec(
     // verfyDetailsValueCassandra(testData: TestData, value: Any): Assertion
     // {match tipoValue => hacer get de String|Boolean|Float}
 
+    //todo PRIMER TEST
+
+    //    for {
+    //      // 1 - Crear VSO_A
+    //      altaVSO_A <- {
+    //        Thread.sleep(5000)
+    //        decode[ObjetosTri](VSO_A)
+    //      }
+    //      _ = messageProducer.produceObjeto(altaVSO_A)
+    //
+    //      // 2 - Alta obn en VSO_A
+    //      altaObligacionDecoded <- {
+    //        Thread.sleep(5000)
+    //        decode[ObligacionesTri](altaObligacion)
+    //      }
+    //      _ = messageProducer.produceObligacion(altaObligacionDecoded)
+    //
+    //      // 3 - Pago obn en VSO_A
+    //      pagoObligacionDecoded <- {
+    //        Thread.sleep(5000)
+    //        decode[ObligacionesTri](pagoObligacion)
+    //      }
+    //      _ = messageProducer.produceObligacion(pagoObligacionDecoded)
+    //
+    //      // 4- Verify
+    //      _ <- {
+    //        println("Step 4: Starting verification with eventually")
+    //        Thread.sleep(5000)
+    //        eventually(timeout(15.seconds), interval(100.milliseconds)) {
+    //          Right(verifyRemovedCassandra(testData1))
+    //        }
+    //      }
+    //    } yield ()
+
+    //todo SEGUNDO Y TERCER TEST
+
+    //    for {
+    //      // 1 - Crear VSO_A
+    //      altaVSO_A <- {
+    //        Thread.sleep(5000)
+    //        decode[ObjetosTri](VSO_A)
+    //      }
+    //      _ = messageProducer.produceObjeto(altaVSO_A)
+    //
+    //      // 2 - Alta obn en VSO_A
+    //      altaObligacionDecoded <- {
+    //        Thread.sleep(5000)
+    //        decode[ObligacionesTri](altaObligacion)
+    //      }
+    //      _ = messageProducer.produceObligacion(altaObligacionDecoded)
+    //
+    //      // 3 - Dar baja a VSO_A
+    //      bajaVSO_A <- {
+    //        Thread.sleep(5000)
+    //        decode[ObjetosTri](VSO_A_BAJA)
+    //      }
+    //      _ = messageProducer.produceObjeto(bajaVSO_A)
+    //
+    //      //4- Pagar la obn
+    //       pagoObligacionDecoded <- {
+    //       Thread.sleep(5000)
+    //       decode[ObligacionesTri](pagoObligacion)
+    //     }
+    //       _ = messageProducer.produceObligacion(pagoObligacionDecoded)
+    //
+    //      // 5- Verify
+    //      _ <- {
+    //        println("Step 4: Starting verification with eventually")
+    //        eventually(timeout(15.seconds), interval(100.milliseconds)) {
+    //          Right(verifyRemovedCassandra(testData1))
+    //        }
+    //      }
+    //    } yield ()
+
+    //TODO CUARTO QUINTO Y SEXTO TEST
+
     for {
-      // 1 - Crear VSO_A
-      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
-      // 2 - Alta obn en VSO_A
-      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
-      // 3 - Pago obn en VSO_A
-      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
+      // 1 - Alta obn en VSO_A
+      altaObligacionDecoded <- {
+        Thread.sleep(5000)
+        decode[ObligacionesTri](altaObligacion)
+      }
+      _ = messageProducer.produceObligacion(altaObligacionDecoded)
+
+      // 2 alta de vso_a
+      altaVSO_A <- {
+        Thread.sleep(5000)
+        decode[ObjetosTri](VSO_A)
+      }
+      _ = messageProducer.produceObjeto(altaVSO_A)
+
+      // 3 - Dar baja a VSO_A
+      bajaVSO_A <- {
+        Thread.sleep(5000)
+        decode[ObjetosTri](VSO_A_BAJA)
+      }
+      _ = messageProducer.produceObjeto(bajaVSO_A)
+
+      // 4 - alta obn vso_a dada de baja
+      altaObligacionDecoded <- {
+        Thread.sleep(5000)
+        decode[ObligacionesTri](altaObligacion)
+      }
+      _ = messageProducer.produceObligacion(altaObligacionDecoded)
+
+      // 5 - alta de vso_a
+      altaVSO_A <- {
+        Thread.sleep(5000)
+        decode[ObjetosTri](VSO_A)
+      }
+      _ = messageProducer.produceObjeto(altaVSO_A)
+
+      // 6 - obn sobre vso_a existente
+      altaObligacionDecoded <- {
+        Thread.sleep(5000)
+        decode[ObligacionesTri](altaObligacion)
+      }
+      _ = messageProducer.produceObligacion(altaObligacionDecoded)
+
+      //7 - Pagar la obn
+      pagoObligacionDecoded <- {
+        Thread.sleep(5000)
+        decode[ObligacionesTri](pagoObligacion)
+      }
+      _ = messageProducer.produceObligacion(pagoObligacionDecoded)
+
+      // 8 - Verify
+      _ <- {
+        println("Step 4: Starting verification with eventually")
+        eventually(timeout(15.seconds), interval(100.milliseconds)) {
+          Right(verifyRemovedCassandra(testData1))
+        }
+      }
     } yield ()
-
-    println("Step 4")
-    Thread.sleep(5000)
-    eventually(timeout(15.seconds), interval(100.milliseconds)) {
-      println("Eventually")
-      verifyRemovedCassandra(testData1)
-    }
   }
-
 }
