@@ -198,7 +198,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       command.objetoId,
       command.tipoObjeto,
       command.obligacionId,
-      command.registro,
+      getObligacionFFF(),
       command.detallesObligacion,
       command.detallesSupresiones,
       command.isAdheridoDebito,
