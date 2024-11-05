@@ -63,8 +63,8 @@ class ObligacionPersistedSnapshotHandler(
       DELETE FROM read_side.buc_obligaciones """ +
             s""" WHERE bob_soj_identificador = '${registro.objetoId}' """ +
             s""" and bob_soj_tipo_objeto = '${registro.tipoObjeto}' """ +
-            s""" and bob_obn_id = '${registro.obligacionId}' """ +
-            s""" and bob_suj_identificador = '${registro.sujetoId}' """
+            s""" and bob_suj_identificador = '${registro.sujetoId}' """ +
+            s""" and bob_obn_id = '${registro.obligacionId}' """
           )
           .andThen {
             case Failure(exception) => log.error("Dont persist obligacion" + exception)
