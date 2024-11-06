@@ -16,16 +16,17 @@ import life_cycle.AppLifecycleMicroservice
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
+import scala.util.Try
 
 object MainApplication {
 
   def startMicroservices(
-      microservicesFactory: KafkaConsumerMicroserviceRequirements => Seq[KafkaConsumerMicroservice],
-      ip: String,
-      port: Int,
-      actorSystemName: String,
-      extraConfigurations: Config = ConfigFactory.empty
-  ): Unit = {
+                          microservicesFactory: KafkaConsumerMicroserviceRequirements => Seq[KafkaConsumerMicroservice],
+                          ip: String,
+                          port: Int,
+                          actorSystemName: String,
+                          extraConfigurations: Config = ConfigFactory.empty
+                        ): Unit = {
 
     val mainConfig = ConfigFactory.load()
     lazy val config = Seq(
@@ -36,13 +37,16 @@ object MainApplication {
     ).reduce(_ withFallback _)
 
     implicit val system: ActorSystem = Guardian.getContext(GuardianRequirements(actorSystemName, config))
+    val cassandraMetricsPort = Try(System.getenv("CASSANDRA_METRICS_PORT")).getOrElse("9089")
 
 
-   // val prom: HTTPServer = new HTTPServer(9089)
-
-    //val oo = CassandraMetricsRegistry.get(system).getRegistry
-
-    //val yy: Unit = CollectorRegistry.defaultRegistry.register(new DropwizardExports(oo))
+    try {
+      new HTTPServer(cassandraMetricsPort.toInt)
+      val cassandraRegistry = CassandraMetricsRegistry.get(system).getRegistry
+      CollectorRegistry.defaultRegistry.register(new DropwizardExports(cassandraRegistry))
+    } catch {
+      case e: Exception => println(s"ERROR: Failed to export Cassandra metrics: ${e.getMessage}")
+    }
 
     val routes = ProductionMicroserviceContextProvider.getContext(system, config) { implicit microserviceProvisioning =>
       val microservices = microservicesFactory(microserviceProvisioning)
