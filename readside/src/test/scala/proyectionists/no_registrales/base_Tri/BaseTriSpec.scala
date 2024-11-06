@@ -6,7 +6,10 @@ import com.datastax.oss.driver.api.core.cql.AsyncResultSet
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{DetallesObjeto, ObjetosTri}
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.{DetallesObjetoDecoder, ObjetosTriDecoder}
 import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionesTri}
-import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{DetallesObligacionDecoder, ObligacionesTriDecoder}
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{
+  DetallesObligacionDecoder,
+  ObligacionesTriDecoder
+}
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.SujetoTri
 import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 import design_principles.actor_model.ActorSpec
@@ -29,17 +32,17 @@ object BaseTriSpec {
                          cassandra: MockMonitoringAndCassandraWrite)
 }
 abstract class BaseTriSpec(
-                            getContext: ActorSystem => BaseTriSpec.TestContext
-                          ) extends ActorSpec
-  with NoRegistralesImplicitConversions {
+    getContext: ActorSystem => BaseTriSpec.TestContext
+) extends ActorSpec
+    with NoRegistralesImplicitConversions {
   val examples = new Examples("ObjetoSpec")
 
   case class TestData(
-                       sujetoId: String,
-                       objetoId: String,
-                       objetoTipo: String,
-                       obnId: String
-                     )
+      sujetoId: String,
+      objetoId: String,
+      objetoTipo: String,
+      obnId: String
+  )
 
   override protected def beforeAll(): Unit = {
     println("BEFORE ALL")
@@ -108,7 +111,6 @@ abstract class BaseTriSpec(
 
         val sujeto = resultado.one()
 
-
         //Mantener la denominacion
         sujeto.getString("SUJ_DENOMINACION") should be("Sujeto-Test1")
 
@@ -120,7 +122,6 @@ abstract class BaseTriSpec(
         // Eliminar el email
         sujeto.isNull("SUJ_EMAIL") should be(true)
       }
-
 
       /*
      El evento debe:
@@ -182,8 +183,8 @@ abstract class BaseTriSpec(
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-              s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-              s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+            s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
           )
           .futureValue
 
@@ -219,8 +220,8 @@ abstract class BaseTriSpec(
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-              s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-              s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+            s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
           )
           .futureValue
 
@@ -256,7 +257,6 @@ abstract class BaseTriSpec(
             detalles.head.SOJ_SEMAFORO_MARCA.get should be("P")
         }
       }
-
 
       val testData = TestData(
         sujetoId = "CuitTri_T2",
@@ -324,39 +324,40 @@ abstract class BaseTriSpec(
         verifyCassandra2(testData)
       }
   }
-  "Test 3 Alta/Modificacion: de obligacion Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner {implicit s =>
-    implicit val dispatcher = s.dispatcher
-    val context = getContext(s)
-    val messageProducer = context.messageProducer
+  "Test 3 Alta/Modificacion: de obligacion Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
 
-    def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
-      val cassandra = context.cassandra
-      val resultado: AsyncResultSet = cassandra.cassandraWrite
-        .cqlSelect(
-          s"SELECT * FROM read_side.buc_obligaciones" +
+      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_obligaciones" +
             s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
             s" AND BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
             s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
             s" AND BOB_OBN_ID = '${testData.obnId}';"
-        )
-        .futureValue
+          )
+          .futureValue
 
-      val obligacion = resultado.one()
+        val obligacion = resultado.one()
 
-      // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
-      obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(testData.objetoId)
-      obligacion.getString("BOB_ESTADO") should be("JUDICIAL")
-    }
+        // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
+        obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(testData.objetoId)
+        obligacion.getString("BOB_ESTADO") should be("JUDICIAL")
+      }
 
-    val testData = TestData(
-      sujetoId = "CuitTri_T3",
-      objetoId = "ObjetoTri_T3",
-      objetoTipo = "A",
-      obnId = "Obn_T3"
-    )
+      val testData = TestData(
+        sujetoId = "CuitTri_T3",
+        objetoId = "ObjetoTri_T3",
+        objetoTipo = "A",
+        obnId = "Obn_T3"
+      )
 
-    val obligacionJson =
-      s"""{
+      val obligacionJson =
+        s"""{
       "EV_ID": "$deliveryIdAct",
       "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
       "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
@@ -385,37 +386,37 @@ abstract class BaseTriSpec(
       }]}
     }"""
 
-    for {
-      // 1 - Alta obn
-      _ <- messageProducer.produceEvento(obligacionJson, "DGR-COP-OBLIGACIONES-TRI")
-    } yield ()
-    eventually(timeout(15.seconds), interval(100.milliseconds)) {
-      println("Eventually")
-      verifyCassandra(testData)
-    }
+      for {
+        // 1 - Alta obn
+        _ <- messageProducer.produceEvento(obligacionJson, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Eventually")
+        verifyCassandra(testData)
+      }
 
   }
-  "Test 4 Alta/Modificacion: de obligacion con state parcial" should "End to end, PCS a Readside" in parallelActorSystemRunner {implicit s =>
-    implicit val dispatcher = s.dispatcher
-    val context = getContext(s)
-    val messageProducer = context.messageProducer
+  "Test 4 Alta/Modificacion: de obligacion con state parcial" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
 
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
 
-    val fecha = LocalDateTime.now().minusDays(5).format(formatter)
-    val fecha2 = LocalDateTime.now().minusMonths(3).format(formatter)
+      val fecha = LocalDateTime.now().minusDays(5).format(formatter)
+      val fecha2 = LocalDateTime.now().minusMonths(3).format(formatter)
 
-
-    def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
-      val expectedDate = LocalDateTime.parse("2024-10-30T00:00")
-      val cassandra = context.cassandra
+      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val expectedDate = LocalDateTime.parse("2024-10-30T00:00")
+        val cassandra = context.cassandra
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT * FROM read_side.buc_obligaciones" +
-              s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
-              s" AND BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-              s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-              s" AND BOB_OBN_ID = '${testData.obnId}';"
+            s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+            s" AND BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s" AND BOB_OBN_ID = '${testData.obnId}';"
           )
           .futureValue
 
@@ -424,7 +425,9 @@ abstract class BaseTriSpec(
         // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
         obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(testData.objetoId)
         obligacion.getString("BOB_ESTADO") should be("JUDICIAL")
-        obligacion.getLocalDate("BOB_VENCIMIENTO").atStartOfDay() should be(expectedDate) //TODO SI EL TEST FALLA ES PORQUE HAY QUE ACTUALIZAR LA FECHA <-
+        obligacion
+          .getLocalDate("BOB_VENCIMIENTO")
+          .atStartOfDay() should be(expectedDate) //TODO SI EL TEST FALLA ES PORQUE HAY QUE ACTUALIZAR LA FECHA <-
         obligacion.getFloat("BOB_SALDO").toInt should be(200)
         obligacion.getString("BOB_FISCALIZADA") should be("Fiscalizada")
 
@@ -443,16 +446,16 @@ abstract class BaseTriSpec(
         }
       }
 
-    def verifyCassandra2(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
-      val expectedDate = LocalDateTime.parse("2024-08-04T00:00")
-      val cassandra = context.cassandra
+      def verifyCassandra2(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val expectedDate = LocalDateTime.parse("2024-08-04T00:00")
+        val cassandra = context.cassandra
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT * FROM read_side.buc_obligaciones" +
-              s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
-              s" AND BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-              s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-              s" AND BOB_OBN_ID = '${testData.obnId}';"
+            s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+            s" AND BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s" AND BOB_OBN_ID = '${testData.obnId}';"
           )
           .futureValue
 
@@ -464,7 +467,9 @@ abstract class BaseTriSpec(
 
         // Persistir nuevo BOB_FISCALIZADA y BOB_PRORROGA
         obligacion.getString("BOB_FISCALIZADA") should be("NO Fiscalizada")
-        obligacion.getLocalDate("BOB_PRORROGA").atStartOfDay() should be(expectedDate) //TODO SI EL TEST FALLA ES PORQUE HAY QUE ACTUALIZAR LA FECHA <-
+        obligacion
+          .getLocalDate("BOB_PRORROGA")
+          .atStartOfDay() should be(expectedDate) //TODO SI EL TEST FALLA ES PORQUE HAY QUE ACTUALIZAR LA FECHA <-
 
         //Eliminar el bob_interes_punit, bob_pln_id
         obligacion.isNull("BOB_INTERES_PUNIT") should be(true)
@@ -523,7 +528,7 @@ abstract class BaseTriSpec(
     }"""
 
       val obligacionModificadoJson =
-      s"""{
+        s"""{
           "EV_ID": "$deliveryIdAct",
           "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
           "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
@@ -559,10 +564,10 @@ abstract class BaseTriSpec(
         // - Pago obn en VSOA
         _ <- messageProducer.produceEvento(obligacionModificadoJson, "DGR-COP-OBLIGACIONES-TRI")
       } yield ()
-        eventually(timeout(15.seconds), interval(100.milliseconds)) {
-          println("Eventually")
-          verifyCassandra2(testData)
-        }
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Eventually")
+        verifyCassandra2(testData)
+      }
   }
   "Test 5 Sincro: de cambios masivos sobre misma obn" should "End to end, PCS a Readside" in parallelActorSystemRunner {
     implicit s =>
@@ -652,8 +657,8 @@ abstract class BaseTriSpec(
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-              s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-              s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+            s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
           )
           .futureValue
 
@@ -667,8 +672,8 @@ abstract class BaseTriSpec(
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-              s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-              s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+            s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
           )
           .futureValue
 
@@ -682,17 +687,16 @@ abstract class BaseTriSpec(
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT COUNT(*) FROM read_side.buc_obligaciones" +
-              s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
-              s" AND BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-              s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-              s" AND BOB_OBN_ID = '${testData.obnId}';"
+            s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+            s" AND BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s" AND BOB_OBN_ID = '${testData.obnId}';"
           )
           .futureValue
 
         val obligacionRemoved = resultado.one()
         obligacionRemoved.getLong("count") should be(0)
       }
-
 
       val fecha = LocalDateTime.now().minusDays(5)
       val fechaformatter = LocalDateTime.now().minusDays(5).format(formatter)
@@ -790,7 +794,6 @@ abstract class BaseTriSpec(
       }]}
     }"""
 
-
       //todo PRIMER EVENTO
 
       for {
@@ -811,7 +814,7 @@ abstract class BaseTriSpec(
         verifyFalseCassandra(testDataB)
       }
 
-      for{
+      for {
         // 1 - obn Paga SujetoA
         _ <- messageProducer.produceEvento(obligacionPagaSujetoA, "DGR-COP-OBLIGACIONES-TRI")
       } yield ()
@@ -924,8 +927,8 @@ abstract class BaseTriSpec(
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-              s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-              s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+            s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
           )
           .futureValue
 
@@ -939,8 +942,8 @@ abstract class BaseTriSpec(
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-              s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-              s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+            s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
           )
           .futureValue
 
@@ -1271,6 +1274,9 @@ abstract class BaseTriSpec(
           println(s"Error decodificando JSON testSegundoObjeto30Porciento: $error")
       }
   }
+
+  // TODO: Separar en test distintos
+  // Pasar las funciones de verify a un helper comun.
   "Test 9 Remove: de obligacion Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
     implicit val dispatcher = s.dispatcher
     val context = getContext(s)
@@ -1354,89 +1360,162 @@ abstract class BaseTriSpec(
       }]}
     }"""
 
-    def verifyRemovedCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+    def verifyObnRemovedCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
       val cassandra = context.cassandra
       val resultado: AsyncResultSet = cassandra.cassandraWrite
         .cqlSelect(
           s"SELECT COUNT(*) FROM read_side.buc_obligaciones" +
-            s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
-            s" AND BOB_SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
-            s" AND BOB_SUJ_IDENTIFICADOR = '${testData1.sujetoId}'" +
-            s" AND BOB_OBN_ID = '${testData1.obnId}';"
+          s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+          s" AND BOB_SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
+          s" AND BOB_SUJ_IDENTIFICADOR = '${testData1.sujetoId}'" +
+          s" AND BOB_OBN_ID = '${testData1.obnId}';"
         )
         .futureValue
 
       val obligacionRemoved = resultado.one()
       obligacionRemoved.getLong("count") should be(0)
     }
+    def verifyObjetoRemovedCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+      val cassandra = context.cassandra
+      val resultado: AsyncResultSet = cassandra.cassandraWrite
+        .cqlSelect(
+          s"SELECT COUNT(*) FROM read_side.buc_sujeto_objeto" +
+            s" WHERE SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+            s" AND SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
+            s" AND SOJ_SUJ_IDENTIFICADOR = '${testData1.sujetoId}';"
+        )
+        .futureValue
+
+      val obligacionRemoved = resultado.one()
+      obligacionRemoved.getLong("count") should be(0)
+    }
+
+    def verifyObnAltaCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+      val cassandra = context.cassandra
+      val resultado: AsyncResultSet = cassandra.cassandraWrite
+        .cqlSelect(
+          s"SELECT COUNT(*) FROM read_side.buc_obligaciones" +
+          s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+          s" AND BOB_SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
+          s" AND BOB_SUJ_IDENTIFICADOR = '${testData1.sujetoId}'" +
+          s" AND BOB_OBN_ID = '${testData1.obnId}';"
+        )
+        .futureValue
+
+      val obligacionRemoved = resultado.one()
+      obligacionRemoved.getLong("count") should be(1)
+    }
+    def verifyObjetoAltaCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+      val cassandra = context.cassandra
+      val resultado: AsyncResultSet = cassandra.cassandraWrite
+        .cqlSelect(
+          s"SELECT COUNT(*) FROM read_side.buc_sujeto_objeto" +
+            s" WHERE SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+            s" AND SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
+            s" AND SOJ_SUJ_IDENTIFICADOR = '${testData1.sujetoId}';"
+        )
+        .futureValue
+
+      val obligacionRemoved = resultado.one()
+      obligacionRemoved.getLong("count") should be(1)
+    }
+
     //TODO: cuando necesitemos validar campos llamar a
     // verifyValueCassandra(testData: TestData, value: String|Boolean|Float): Assertion
     // verfyDetailsValueCassandra(testData: TestData, value: Any): Assertion
     // {match tipoValue => hacer get de String|Boolean|Float}
 
-    //todo PRIMER TEST
+    //1 - Mandar un pago de obn sobre una VSO que existe y es valida
 
+//    //    1 - Mandar un pago de obn sobre una VSO que existe y es valida - Checked!
+//    for {
+//      // 1 - Crear VSOA
+//      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+//      // 2 - Alta obn en VSO_A
+//      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//      // 3 - Pago obn en VSOA
+//      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//    } yield ()
+//
+//    Thread.sleep(5000)
+//    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+//      println("Eventually")
+//      verifyObnRemovedCassandra(testData1)
+//      verifyObjetoAltaCassandra(testData1)
+//    }
+
+////    2 - Mandar un pago de obn sobre una VSO dada de baja -> No crear VSO
+//    for {
+//      // 1 - Crear VSOA
+//      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+//      // 2 - Alta obn en VSO_A
+//      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//      // 3 - Dar baja VSO_A
+//      _ <- messageProducer.produceEvento(VSO_A_BAJA, "DGR-COP-OBJETOS-TRI")
+//      // 4 - Pagar la Obn
+//      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//    } yield ()
+//
+//    Thread.sleep(5000)
+//    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+//      println("Eventually")
+//      verifyObnRemovedCassandra(testData1)
+//      verifyObjetoRemovedCassandra(testData1)
+//    }
+
+////    3 - Mandar un pago de obn sobre una VSO que no existe -> Crear VSO
+//    for {
+//      // 1 - Pagar la Obn
+//      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//    } yield ()
+//
+//    Thread.sleep(5000)
+//    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+//      println("Eventually")
+//      verifyObnRemovedCassandra(testData1)
+//      verifyObjetoRemovedCassandra(testData1)
+//    }
+//
+////    4 - Mandar obn de deuda de una VSO que no existe
+//    for {
+//      // 2 - Alta obn en VSO_A
+//      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//    } yield ()
+//
+//    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+//      println("Eventually")
+//      verifyObnAltaCassandra(testData1)
+//      verifyObjetoAltaCassandra(testData1)
+//    }
+
+////    5 - Mandar obn de deuda de una VSO dada de baja
+//    for {
+//      // 1 - Crear VSO_A
+//      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+//      // 2 - Dar baja VSO_A
+//      _ <- messageProducer.produceEvento(VSO_A_BAJA, "DGR-COP-OBJETOS-TRI")
+//      // 3 - Alta obn en VSO_A
+//      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//    } yield ()
+//
+//    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+//      println("Eventually")
+//      verifyObnAltaCassandra(testData1)
+//      verifyObjetoAltaCassandra(testData1)
+//    }
+
+//    6 - Mandar obn de deuda de una VSO que existe y es valida
     for {
-      // 1 - Crear VSOA
+      // 1 - Crear VSO_A
       _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
       // 2 - Alta obn en VSO_A
       _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
-      // 3 - Pago obn en VSOA
-      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
     } yield ()
 
-    Thread.sleep(5000)
     eventually(timeout(15.seconds), interval(100.milliseconds)) {
       println("Eventually")
-      verifyRemovedCassandra(testData1)
+      verifyObnAltaCassandra(testData1)
+      verifyObjetoAltaCassandra(testData1)
     }
-
-
-    //todo SEGUNDO Y TERCER TEST
-
-    for {
-      // 1 - Crear VSOA
-      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
-      // 2 - Alta obn en VSO_A
-      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
-      // 3 - Dar baja VSO_A
-      _ <- messageProducer.produceEvento(VSO_A_BAJA, "DGR-COP-OBJETOS-TRI")
-      // 4 - Pagar la Obn
-      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
-    } yield ()
-
-    Thread.sleep(5000)
-    eventually(timeout(15.seconds), interval(100.milliseconds)) {
-      println("Eventually")
-      verifyRemovedCassandra(testData1)
-    }
-
-
-    //TODO CUARTO QUINTO Y SEXTO TEST
-
-    for {
-      // 1 - Alta obn en VSO_A
-      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
-      // 2 - Crear VSOA
-      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
-      // 3 - Dar baja VSO_A
-      _ <- messageProducer.produceEvento(VSO_A_BAJA, "DGR-COP-OBJETOS-TRI")
-      // 4 - Pagar la Obn
-      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
-      // 5 - Alta la Obn vso_a dada de baja
-      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
-      // 6 - Alta VSOA
-      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
-      // 7 - Alta obn en VSO_A existente
-      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
-      // 8 - Pagar la Obn
-      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
-    } yield ()
-
-    Thread.sleep(5000)
-    eventually(timeout(15.seconds), interval(100.milliseconds)) {
-      println("Eventually")
-      verifyRemovedCassandra(testData1)
-    }
-  }
+cop  }
 }

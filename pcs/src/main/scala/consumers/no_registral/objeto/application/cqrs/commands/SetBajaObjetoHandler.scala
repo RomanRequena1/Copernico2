@@ -18,6 +18,8 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
       command: ObjetoCommands.SetBajaObjeto
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
+    println("CUMBIA SetBajaObjetoHandler")
+
     val event = ObjetoEvents.ObjetoBajaSet(
       actor.state.lastDeliveryIdByEvents,
       command.sujetoId,

@@ -20,6 +20,7 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
                      ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
     val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
+    println("CUMBIA ObjetoRemoveObligacionHandler")
 
     val event = ObjetoRemovedObligacion(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
