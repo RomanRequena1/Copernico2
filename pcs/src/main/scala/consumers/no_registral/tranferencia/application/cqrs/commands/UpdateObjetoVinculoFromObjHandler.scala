@@ -16,6 +16,15 @@ import scala.util.{Success, Try}
 class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaActorRequirements: MonitoringAndMessageProducer) extends SyncCommandHandler[UpdateVinculoObjetoFromObj] {
   override def handle(command: UpdateVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
+
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
+
     val event = ObjetoVinculoEvent.UpdatedVinculoObjetoFromObj(
       command.sujetoId,
       command.objetoId,
@@ -24,7 +33,8 @@ class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaA
       command.isResponsable,
       command.estadoObj,
       command.titularidad,
-      command.exclusionObjeto
+      command.exclusionObjeto,
+      command.deliveryId
     )
 
     implicit val ssytem: ActorSystem = actor.context.system
@@ -36,7 +46,7 @@ class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor, tranferenciaA
       actor.state += event
       actor.state.mapVinculo.foreach {
         e => {
-            actorSujetoGeneral.ask[Response.SuccessProcessing](UpdateState30ObjetoFromObjVinculo(0, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo, command.exclusionObjeto))
+            actorSujetoGeneral.ask[Response.SuccessProcessing](UpdateState30ObjetoFromObjVinculo(command.deliveryId, e._1.sujetoId, e._1.objetoId, e._1.tipoObj, actor.state.tiene30ObjetoVinculo, command.exclusionObjeto))
         }
       }
       actor.persistSnapshot(event, actor.state) { () =>

@@ -13,6 +13,13 @@ class ObjetoSnapshotHandler(actor: ObjetoActor) extends SyncCommandHandler[Objet
   override def handle(
       command: ObjetoCommands.ObjetoSnapshot
   ): Try[Response.SuccessProcessing] = {
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
     val event = ObjetoSnapshotPersisted(
       command.deliveryId,
       command.sujetoId,

@@ -38,7 +38,14 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
     val log: Logger = LoggerFactory.getLogger(this.getClass)
-    println("CUMBIA ObjetoUpdateFromTriHandler")
+
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
 
     val semaforo_marca: Option[ListDetallesObjeto] => Option[String] = {
       case Some(d) => d.SOJ_DETALLES.head.SOJ_SEMAFORO_MARCA
@@ -204,7 +211,9 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
     }
 
     val event = ObjetoEvents.ObjetoUpdatedFromTri(
-      if (command.deliveryId.signum < 0) actor.state.lastDeliveryIdByEvents else command.deliveryId,
+      //TODO: validar para que esta este If
+//      if (command.deliveryId.signum < 0) actor.state.lastDeliveryIdByEvents else command.deliveryId,
+      command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -318,13 +327,16 @@ object test {
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }
       } else {
+
+
         SendObjetoToObjetoVinculo(Obje,
                                   actor,
                                   command.sujetoId,
                                   command.objetoId,
                                   command.tipoObjeto,
                                   command.registro.SOJ_ESTADO,
-                                  requeriment)
+                                  requeriment,
+                                  command)
       }
       //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler
       if (actor.state.eventCounter == eventCounterMax) {

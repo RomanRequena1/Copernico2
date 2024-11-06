@@ -16,7 +16,13 @@ import scala.util.{Success, Try}
 class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[SujetoUpdateFromTri] {
   override def handle(command: SujetoUpdateFromTri): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
     def getBBParams(evento: SujetoExternalDto) = {
       val declaredFields = evento.getClass.getDeclaredFields
       val sujetoNuevoTest = evento

@@ -14,6 +14,14 @@ class ObjetoMapRemoveFromObligacionHandler(actor: ObjetoActor)
                        command: ObjetoCommands.RemoveObjetoFromObligacion
                      ): Try[Response.SuccessProcessing] = {
 
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
+
     val event = RemovedObjetoFromObligacion(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,

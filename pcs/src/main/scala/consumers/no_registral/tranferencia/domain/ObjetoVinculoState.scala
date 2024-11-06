@@ -15,7 +15,8 @@ final case class ObjetoVinculoState(
                                   mapTransf: Map[Vinculo, VinculoCotitular] = Map.empty, //todo contiene todos los vinculos responsables que son transf  junto con el tiene30Objeto
                                   mapVinculo: Map[Vinculo, VinculoCotitular] = Map.empty, //todo contiene todos los vinculos que no son transf junto con el tiene30Objeto
                                   tiene30ObjetoVinculo: Boolean = false, //todo si ese objeto tiene 30 que depende de todos los vinculos, depende el caso
-                                  exclusionObjetoVinculo: Option[String] = None
+                                  exclusionObjetoVinculo: Option[String] = None,
+                                  lastDeliveryIdByEvents: BigInt = 0
                                   ) extends AbstractState[ObjetoVinculoEvent] with CbroSerialization{
 
   def +(event: ObjetoVinculoEvent): ObjetoVinculoState  = {
@@ -114,7 +115,8 @@ final case class ObjetoVinculoState(
         copy(
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
           mapVinculo = _mapVinculo,
-          exclusionObjetoVinculo = evt.exclusionObjeto
+          exclusionObjetoVinculo = evt.exclusionObjeto,
+          lastDeliveryIdByEvents = evt.deliveryId
         )
 
       case evt: ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj =>
@@ -126,7 +128,8 @@ final case class ObjetoVinculoState(
         copy(
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
           mapVinculo = _mapVinculo,
-          mapTransf = _mapTransf
+          mapTransf = _mapTransf,
+          lastDeliveryIdByEvents = evt.deliveryId
         )
 
       case evt: ObjetoVinculoEvent.RemovedVinculoObjetoFromObj =>
@@ -137,7 +140,8 @@ final case class ObjetoVinculoState(
         copy(
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
           mapVinculo = _mapVinculo,
-          mapTransf = _mapTransf
+          mapTransf = _mapTransf,
+          lastDeliveryIdByEvents = evt.deliveryId
         )
 //      case evt: ObjetoVinculoEvent.ObjetoVinculoSnapshotPersisted =>
 //        copy(

@@ -18,8 +18,14 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
       command: ObjetoCommands.SetBajaObjeto
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    println("CUMBIA SetBajaObjetoHandler")
 
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
     val event = ObjetoEvents.ObjetoBajaSet(
       actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
@@ -29,6 +35,7 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
       command.isResponsable,
       command.sujetoResponsable
     )
+    //TODO: validar para que se utiliza este if
     if(command.deliveryId.signum < 0 || !isIdempotent(command, actor.state.lastDeliveryIdByEvents)){
       implicit val ac: ActorSystem = actor.context.system
       val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
@@ -42,7 +49,7 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
           }
         }
         SendToObligaciones(actor)
-        SendObjetoToObjetoVinculo(Obje,actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment)
+        SendObjetoToObjetoVinculo(Obje,actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment, command)
       }
     }
 

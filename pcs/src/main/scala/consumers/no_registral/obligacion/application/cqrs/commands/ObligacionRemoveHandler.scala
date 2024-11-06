@@ -12,7 +12,15 @@ import scala.util.{Success, Try}
 class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler[ObligacionRemove] {
   override def handle(command: ObligacionRemove): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    println("CUMBIA ObligacionRemoveHandler")
+
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
+
     val event =
       ObligacionEvents.ObligacionRemoved(
         command.deliveryId,

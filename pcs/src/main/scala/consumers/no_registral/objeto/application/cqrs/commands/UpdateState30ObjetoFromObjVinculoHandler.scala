@@ -11,16 +11,27 @@ import design_principles.actor_model.Response
 
 import scala.util.{Success, Try}
 
-class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor,requeriment: MonitoringAndMessageProducer) extends SyncCommandHandler[ObjetoCommands.UpdateState30ObjetoFromObjVinculo] {
+class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
+    extends SyncCommandHandler[ObjetoCommands.UpdateState30ObjetoFromObjVinculo] {
 
   /**
    * Si el objeto tiene 30% manda mensaje a los objetos vinculados y si no manda mensaje a los objetos vinculados
    */
   override def handle(
-                       command: ObjetoCommands.UpdateState30ObjetoFromObjVinculo
-                     ): Try[Response.SuccessProcessing] = {
+      command: ObjetoCommands.UpdateState30ObjetoFromObjVinculo
+  ): Try[Response.SuccessProcessing] = {
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
+
     val event = UpdatedState30ObjetoFromObjVinculo(
-      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
+      //TODO: validar para que esta este If
+//      if (actor.state.lastDeliveryIdByEvents.equals(0)) 10 else command.deliveryId,
+      command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -34,7 +45,7 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor,requeriment: M
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
 
-      if(actor.state.tiene30Objeto.equals(false)) {
+      if (actor.state.tiene30Objeto.equals(false)) {
         SendToSujeto(actor, requeriment, event)
 
       } else {

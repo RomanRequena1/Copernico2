@@ -15,6 +15,13 @@ class ObligacionUpdateExencionHandler(actor: ObligacionActor)
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
     // The compareTo() method returns:
     // 0 if both are equal.
     // >0 if the current date object comes after the specified date object.

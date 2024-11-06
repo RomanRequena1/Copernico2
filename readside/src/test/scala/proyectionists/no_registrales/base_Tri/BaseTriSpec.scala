@@ -1292,7 +1292,31 @@ abstract class BaseTriSpec(
     val VSO_A =
       s"""
       {
-      "EV_ID": "$deliveryIdAct",
+      "EV_ID": "1",
+      "SOJ_SUJ_IDENTIFICADOR": "${testData1.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testData1.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testData1.objetoId}",
+      "SOJ_DESCRIPCION": "PrimerObjetoPrueba_T1",
+      "SOJ_ESTADO": null,
+      "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0"
+      }
+    """
+    val VSO_A2 =
+      s"""
+      {
+      "EV_ID": "2",
+      "SOJ_SUJ_IDENTIFICADOR": "${testData1.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testData1.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testData1.objetoId}",
+      "SOJ_DESCRIPCION": "PrimerObjetoPrueba_T1",
+      "SOJ_ESTADO": null,
+      "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0"
+      }
+    """
+    val VSO_A3 =
+      s"""
+      {
+      "EV_ID": "3",
       "SOJ_SUJ_IDENTIFICADOR": "${testData1.sujetoId}",
       "SOJ_TIPO_OBJETO": "${testData1.objetoTipo}",
       "SOJ_IDENTIFICADOR": "${testData1.objetoId}",
@@ -1427,22 +1451,24 @@ abstract class BaseTriSpec(
 
     //1 - Mandar un pago de obn sobre una VSO que existe y es valida
 
-//    //    1 - Mandar un pago de obn sobre una VSO que existe y es valida - Checked!
-//    for {
-//      // 1 - Crear VSOA
-//      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
-//      // 2 - Alta obn en VSO_A
+    //    1 - Mandar un pago de obn sobre una VSO que existe y es valida - Checked!
+    for {
+      // 1 - Crear VSOA
+      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+      _ <- messageProducer.produceEvento(VSO_A2, "DGR-COP-OBJETOS-TRI")
+      _ <- messageProducer.produceEvento(VSO_A3, "DGR-COP-OBJETOS-TRI")
+      // 2 - Alta obn en VSO_A
 //      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
-//      // 3 - Pago obn en VSOA
+      // 3 - Pago obn en VSOA
 //      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
-//    } yield ()
-//
-//    Thread.sleep(5000)
-//    eventually(timeout(15.seconds), interval(100.milliseconds)) {
-//      println("Eventually")
-//      verifyObnRemovedCassandra(testData1)
-//      verifyObjetoAltaCassandra(testData1)
-//    }
+    } yield ()
+
+    Thread.sleep(5000)
+    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+      println("Eventually")
+      verifyObnRemovedCassandra(testData1)
+      verifyObjetoAltaCassandra(testData1)
+    }
 
 ////    2 - Mandar un pago de obn sobre una VSO dada de baja -> No crear VSO
 //    for {
@@ -1504,18 +1530,18 @@ abstract class BaseTriSpec(
 //      verifyObjetoAltaCassandra(testData1)
 //    }
 
-//    6 - Mandar obn de deuda de una VSO que existe y es valida
-    for {
-      // 1 - Crear VSO_A
-      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
-      // 2 - Alta obn en VSO_A
-      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
-    } yield ()
-
-    eventually(timeout(15.seconds), interval(100.milliseconds)) {
-      println("Eventually")
-      verifyObnAltaCassandra(testData1)
-      verifyObjetoAltaCassandra(testData1)
-    }
-cop  }
+////    6 - Mandar obn de deuda de una VSO que existe y es valida
+//    for {
+//      // 1 - Crear VSO_A
+//      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+//      // 2 - Alta obn en VSO_A
+//      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//    } yield ()
+//
+//    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+//      println("Eventually")
+//      verifyObnAltaCassandra(testData1)
+//      verifyObjetoAltaCassandra(testData1)
+//    }
+  }
 }

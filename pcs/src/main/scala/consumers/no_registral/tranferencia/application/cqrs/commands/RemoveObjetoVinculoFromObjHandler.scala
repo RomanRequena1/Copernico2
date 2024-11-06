@@ -26,7 +26,8 @@ class RemoveObjetoVinculoFromObjHandler (actor: ObjetoVinculoActor, tranferencia
       command.isResponsable,
       command.estadoObj,
       command.titularidad,
-      command.exclusionObjeto
+      command.exclusionObjeto,
+      command.deliveryId
     )
 
     implicit val ssytem: ActorSystem = actor.context.system

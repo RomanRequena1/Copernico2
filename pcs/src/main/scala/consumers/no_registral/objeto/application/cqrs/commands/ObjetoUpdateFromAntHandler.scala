@@ -9,16 +9,23 @@ import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
 
+import java.time.LocalDateTime
 import scala.util.{Success, Try}
 
 class ObjetoUpdateFromAntHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
-    extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromAnt] {
+extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromAnt] {
   override def handle(
-      command: ObjetoCommands.ObjetoUpdateFromAnt
+  command: ObjetoCommands.ObjetoUpdateFromAnt
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
-    import java.time.LocalDateTime
+    log.debug(
+    f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
 
     def getBBParams(evento: ObjetoExternalDto) = {
       val declaredFields = evento.getClass.getDeclaredFields

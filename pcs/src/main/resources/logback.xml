@@ -28,6 +28,7 @@
     </appender>
 
         <logger name="akka" level="${AKKA_DEBUG_MODE}"/>
+        <logger name="consumers" level="${LOCAL_DEBUG_LOGS}"/>
         <logger name="akka.kafka" level="${AKKA_KAFKA_DEBUG_MODE}"/>
         <logger name="org.apache.zookeeper" level="${APACHE_ZOOKEEPER_DEBUG_MODE}"/>
         <logger name="org.I0Itec.zkclient" level="${I0ITEC_ZKCLIENT_DEBUG_MODE}"/>

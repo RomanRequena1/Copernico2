@@ -11,6 +11,7 @@ sealed trait ObjetoVinculoEvent extends Event with ObjetoVinculoMessage with Cbr
 
 object ObjetoVinculoEvent {
 
+  //FIXME: agregar deliveryId a todos los eventos de VinculoActor
   case class ObjetoVinculoSnapshotPersisted(
                                              objetoId: String,
                                              tipoObj: String,
@@ -29,7 +30,8 @@ object ObjetoVinculoEvent {
                                         isResponsable: Option[Boolean],
                                         estadoObj: Option[String],
                                         titularidad: Option[String],
-                                        exclusionObjeto: Option[String]
+                                        exclusionObjeto: Option[String],
+                                        deliveryId: BigInt
                                       ) extends ObjetoVinculoEvent
 
   case class RemovedVinculoObjetoFromObj(
@@ -40,7 +42,8 @@ object ObjetoVinculoEvent {
                                           isResponsable: Option[Boolean],
                                           estadoObj: Option[String],
                                           titularidad: Option[String],
-                                          excusionObjeto: Option[String]
+                                          excusionObjeto: Option[String],
+                                          deliveryId: BigInt
                                         ) extends ObjetoVinculoEvent
 
   case class CreatedTransfVinculoObjetoFromObj(
@@ -51,16 +54,9 @@ object ObjetoVinculoEvent {
                                            isResponsable: Option[Boolean],
                                            estadoObj: Option[String],
                                            titularidad: Option[String],
-                                           exclusionObjeto: Option[String]
+                                           exclusionObjeto: Option[String],
+                                           deliveryId: BigInt
                                            ) extends ObjetoVinculoEvent{
-
-  case class ObjetoVinculoSnapshotPersisted(
-                                             objetoId: String,
-                                             tipoObj: String,
-                                             mapTransf: Map[Vinculo, VinculoCotitular],
-                                             mapVinculo: Map[Vinculo, VinculoCotitular]
-                                           ) extends ObjetoVinculoEvent
-
 
   case class UpdatedVinculoObjetoFromObj(
                                         sujetoId: String,
@@ -69,7 +65,8 @@ object ObjetoVinculoEvent {
                                         tiene30Objeto: Boolean,
                                         isResponsable: Option[Boolean],
                                         estadoObj: Option[String],
-                                        titularidad: Option[String]
+                                        titularidad: Option[String],
+                                        deliveryId: BigInt
                                       ) extends ObjetoVinculoEvent
 
   case class CreatedTransfVinculoObjetoFromObj(
@@ -79,7 +76,8 @@ object ObjetoVinculoEvent {
                                            tiene30Objeto: Boolean,
                                            isResponsable: Option[Boolean],
                                            estadoObj: Option[String],
-                                           titularidad: Option[String]
+                                           titularidad: Option[String],
+                                           deliveryId: BigInt
                                          ) extends ObjetoVinculoEvent
 }
 }

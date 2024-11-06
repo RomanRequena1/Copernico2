@@ -12,6 +12,13 @@ import scala.util.{Success, Try}
 class SujetoSetBajaFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandler[SujetoSetBajaFromObjeto] {
   override def handle(command: SujetoSetBajaFromObjeto): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
     val event = SujetoEvents.SujetoBajaFromObjetoSet(
       command.deliveryId,
       command.sujetoId,

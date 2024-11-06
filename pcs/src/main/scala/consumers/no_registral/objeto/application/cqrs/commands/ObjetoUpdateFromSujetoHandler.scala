@@ -16,8 +16,19 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor) extends SyncCommandHandl
                        command: ObjetoCommands.ObjetoUpdateFromSujeto
                      ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
+
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
+
     val event = ObjetoUpdatedFromSujeto(
-      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
+      //TODO: validar para que se usa el if
+//      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else command.deliveryId,
+      command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,

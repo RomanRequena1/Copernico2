@@ -22,7 +22,14 @@ import scala.util.{Success, Try}
 class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommandHandler[ObligacionUpdateFromDto] {
   override def handle(command: ObligacionUpdateFromDto): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    println("CUMBIA ObligacionUpdateFromDtoHandler")
+
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
 
     def getBBParams(evento: ObligacionExternalDto) = {
       val declaredFields = evento.getClass.getDeclaredFields
