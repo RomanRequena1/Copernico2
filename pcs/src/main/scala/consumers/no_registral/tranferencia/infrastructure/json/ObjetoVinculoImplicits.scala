@@ -7,7 +7,6 @@ import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax.EncoderOps
 object ObjetoVinculoImplicits {
 
-
   //RESPONSES
   implicit val GetObjetoVinculoResponseDecoder: Decoder[GetObjetoVinculoResponse] = deriveDecoder
   implicit val GetObjetoVinculoResponseEncoder: Encoder[GetObjetoVinculoResponse] = deriveEncoder
@@ -25,19 +24,19 @@ object ObjetoVinculoImplicits {
   /**
    * Este implicit es para poder serializar un Map[Vinculo, VinculoCotitular] a Json
    */
-
-  implicit val mapVinculoCotitularEncoder: Encoder[Map[Vinculo, VinculoCotitular]] = new Encoder[Map[Vinculo, VinculoCotitular]] {
-    override def apply(map: Map[Vinculo, VinculoCotitular]): Json = {
-      Json.fromFields(map.map { case (k, v) =>
-        k.asJson.toString -> v.asJson
-      })
+  implicit val mapVinculoCotitularEncoder: Encoder[Map[Vinculo, VinculoCotitular]] =
+    new Encoder[Map[Vinculo, VinculoCotitular]] {
+      override def apply(map: Map[Vinculo, VinculoCotitular]): Json = {
+        Json.fromFields(map.map {
+          case (k, v) =>
+            k.asJson.toString -> v.asJson
+        })
+      }
     }
-  }
 
   /**
    * Este implicit es para poder serializar un Map[Vinculo, VinculoCotitular] a Json
    */
-
   // KeyDecoder for Vinculo
   implicit val vinculoKeyDecoder: KeyDecoder[Vinculo] = new KeyDecoder[Vinculo] {
     override def apply(key: String): Option[Vinculo] = {
@@ -50,21 +49,29 @@ object ObjetoVinculoImplicits {
     }
   }
 
-
   // Decoder for ObjetoVinculoSnapshotPersisted
-  implicit val objetoVinculoDecoder: Decoder[ObjetoVinculoSnapshotPersisted] = new Decoder[ObjetoVinculoSnapshotPersisted] {
-    override def apply(c: HCursor): Decoder.Result[ObjetoVinculoSnapshotPersisted] = {
-      for {
-        objetoId <- c.downField("objetoId").as[String]
-        tipoObj <- c.downField("tipoObj").as[String]
-        tiene30ObjetoVinculo <- c.downField("tiene30ObjetoVinculo").as[Boolean]
-        mapTransf <- c.downField("mapTransf").as[Map[Vinculo, VinculoCotitular]](Decoder.decodeMap[Vinculo, VinculoCotitular])
-        mapVinculo <- c.downField("mapVinculo").as[Map[Vinculo, VinculoCotitular]](Decoder.decodeMap[Vinculo, VinculoCotitular])
-        exclusionObjetoVinculo <- c.downField("exclusionObjetoVinculo").as[Option[String]]
-      } yield ObjetoVinculoSnapshotPersisted(objetoId, tipoObj, tiene30ObjetoVinculo, mapTransf, mapVinculo, exclusionObjetoVinculo)
+  implicit val objetoVinculoDecoder: Decoder[ObjetoVinculoSnapshotPersisted] =
+    new Decoder[ObjetoVinculoSnapshotPersisted] {
+      override def apply(c: HCursor): Decoder.Result[ObjetoVinculoSnapshotPersisted] = {
+        for {
+          objetoId <- c.downField("objetoId").as[String]
+          tipoObj <- c.downField("tipoObj").as[String]
+          tiene30ObjetoVinculo <- c.downField("tiene30ObjetoVinculo").as[Boolean]
+          mapTransf <- c
+            .downField("mapTransf")
+            .as[Map[Vinculo, VinculoCotitular]](Decoder.decodeMap[Vinculo, VinculoCotitular])
+          mapVinculo <- c
+            .downField("mapVinculo")
+            .as[Map[Vinculo, VinculoCotitular]](Decoder.decodeMap[Vinculo, VinculoCotitular])
+          exclusionObjetoVinculo <- c.downField("exclusionObjetoVinculo").as[Option[String]]
+          deliveryId <- c.downField("deliveryId").as[BigInt]
+        } yield ObjetoVinculoSnapshotPersisted(objetoId,
+                                               tipoObj,
+                                               tiene30ObjetoVinculo,
+                                               mapTransf,
+                                               mapVinculo,
+                                               exclusionObjetoVinculo,
+                                               deliveryId)
+      }
     }
-  }
 }
-
-
-

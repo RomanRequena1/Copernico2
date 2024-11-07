@@ -38,7 +38,8 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
         consolidatedState.tiene30ObjetoVinculo,
         consolidatedState.mapTransf,
         consolidatedState.mapVinculo,
-        consolidatedState.exclusionObjetoVinculo)
+        consolidatedState.exclusionObjetoVinculo,
+        consolidatedState.lastDeliveryIdByEvents)
 
     requirements.messageProducer.produce(
       data = Seq(
