@@ -5,14 +5,15 @@ import consumers.no_registral.objeto.domain.ObjetoEvents.RemovedObjetoFromObliga
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
+import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotentInternally
 
 import scala.util.{Success, Try}
 
 class ObjetoMapRemoveFromObligacionHandler(actor: ObjetoActor)
-  extends SyncCommandHandler[ObjetoCommands.RemoveObjetoFromObligacion] {
+    extends SyncCommandHandler[ObjetoCommands.RemoveObjetoFromObligacion] {
   override def handle(
-                       command: ObjetoCommands.RemoveObjetoFromObligacion
-                     ): Try[Response.SuccessProcessing] = {
+      command: ObjetoCommands.RemoveObjetoFromObligacion
+  ): Try[Response.SuccessProcessing] = {
 
     log.debug(
       f"""|CUMBIA
@@ -21,7 +22,7 @@ class ObjetoMapRemoveFromObligacionHandler(actor: ObjetoActor)
           |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
           |""".stripMargin
     )
-
+    val sender = actor.context.sender()
     val event = RemovedObjetoFromObligacion(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
@@ -30,9 +31,16 @@ class ObjetoMapRemoveFromObligacionHandler(actor: ObjetoActor)
       command.obligacionId,
       command.cuota
     )
+    if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
+      log.error(
+        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
+      )
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 
-    actor.persistEvent(event) { () =>
-      actor.state += event
+    } else {
+      actor.persistEvent(event) { () =>
+        actor.state += event
+      }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

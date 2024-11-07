@@ -162,6 +162,7 @@ extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromAnt] {
       command.sujetoResponsable,
       command.isAdheridoDebito
     )
+
     // FIXME: Chequear si debemos sumar algun comportamiento del ObjetoUpdateFromTriHandler
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
       log.error(

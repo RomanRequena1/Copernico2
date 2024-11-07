@@ -15,6 +15,7 @@ import scala.util.{Success, Try}
 
 class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[SujetoUpdateFromTri] {
   override def handle(command: SujetoUpdateFromTri): Try[Response.SuccessProcessing] = {
+
     val sender = actor.context.sender()
     log.debug(
       f"""|CUMBIA
@@ -23,6 +24,7 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
           |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
           |""".stripMargin
     )
+
     def getBBParams(evento: SujetoExternalDto) = {
       val declaredFields = evento.getClass.getDeclaredFields
       val sujetoNuevoTest = evento

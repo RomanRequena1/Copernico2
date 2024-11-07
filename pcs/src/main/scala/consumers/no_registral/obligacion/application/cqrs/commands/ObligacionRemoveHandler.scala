@@ -6,6 +6,7 @@ import consumers.no_registral.obligacion.infrastructure.dependency_injection.Obl
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement
+import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
 
 import scala.util.{Success, Try}
 
@@ -32,7 +33,7 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
         command.cuota
       )
 
-    if (DeliveryIdManagement.isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
+    if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
       log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -obligacion- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )

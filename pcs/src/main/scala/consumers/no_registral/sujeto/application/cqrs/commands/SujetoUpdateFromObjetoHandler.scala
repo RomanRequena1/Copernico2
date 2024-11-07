@@ -8,7 +8,7 @@ import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoA
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
-import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
+import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotentInternally
 
 import scala.util.{Success, Try}
 
@@ -32,7 +32,7 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
       command.clasificacionObjeto
     )
 
-    if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
+    if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
       println(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {

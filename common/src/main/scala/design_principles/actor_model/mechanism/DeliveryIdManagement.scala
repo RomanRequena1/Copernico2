@@ -6,4 +6,7 @@ object DeliveryIdManagement {
   def isIdempotent(command: Command, lastDeliveryIdByEvents: BigInt): Boolean = {
     command.deliveryId <= lastDeliveryIdByEvents
   }
+  def isIdempotentInternally(command: Command, lastDeliveryIdByEvents: BigInt): Boolean = {
+    command.deliveryId < lastDeliveryIdByEvents
+  }
 }
