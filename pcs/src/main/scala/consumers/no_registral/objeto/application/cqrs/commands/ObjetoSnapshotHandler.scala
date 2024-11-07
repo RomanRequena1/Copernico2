@@ -6,6 +6,7 @@ import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoA
 import consumers.no_registral.obligacion.domain.ObligacionEvents
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
+import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotentInternally
 
 import scala.util.{Success, Try}
 
@@ -13,6 +14,13 @@ class ObjetoSnapshotHandler(actor: ObjetoActor) extends SyncCommandHandler[Objet
   override def handle(
       command: ObjetoCommands.ObjetoSnapshot
   ): Try[Response.SuccessProcessing] = {
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
     val event = ObjetoSnapshotPersisted(
       command.deliveryId,
       command.sujetoId,
@@ -28,7 +36,7 @@ class ObjetoSnapshotHandler(actor: ObjetoActor) extends SyncCommandHandler[Objet
       command.obligacionesSaldo,
       actor.state.cuotas,
       actor.state.clasificacionObjeto,
-      operacion = ObligacionEvents.operaciones.get("Upsert").get,
+      operacion = ObligacionEvents.operaciones("Upsert"),
       command.idExterno,
       Some(actor.state.tiene30Objeto),
       actor.state.aplicarDescuento,
@@ -38,11 +46,20 @@ class ObjetoSnapshotHandler(actor: ObjetoActor) extends SyncCommandHandler[Objet
     )
     val consolidatedState = actor.state + event
     val sender = actor.context.sender()
+
+    if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
+      log.error(
+        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
+      )
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+
+    } else {
     actor.persistSnapshot(event, consolidatedState) { () =>
       actor.state = consolidatedState
       actor.informParent(actor.state.lastDeliveryIdByEvents, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state)
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     }
+      }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }

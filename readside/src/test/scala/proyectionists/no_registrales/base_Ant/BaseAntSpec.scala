@@ -212,7 +212,6 @@ abstract class BaseAntSpec(
         println(s"Error decodificando JSON inicial: $error")
     }
   }
-
   "Test 2: un obligacion ANT" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
     implicit val dispatcher: ExecutionContextExecutor = s.dispatcher
     val context = getContext(s)

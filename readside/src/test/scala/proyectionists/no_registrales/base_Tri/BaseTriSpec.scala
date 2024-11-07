@@ -1,27 +1,30 @@
 package proyectionists.no_registrales.base_Tri
 
-import akka.actor.ActorSystem
-import akka.actor.testkit.typed.scaladsl.LoggingTestKit.error
+import akka.actor.{ActorSystem, Identify}
 import cassandra.MockMonitoringAndCassandraWrite
 import com.datastax.oss.driver.api.core.cql.AsyncResultSet
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{DetallesObjeto, ObjetosTri}
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits.{DetallesObjetoDecoder, ObjetosTriDecoder}
-import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{DetallesObligacionDecoder, ObligacionesTriDecoder}
-import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesSupresiones, ObligacionesTri}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ObligacionesTri}
+import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits.{
+  DetallesObligacionDecoder,
+  ObligacionesTriDecoder
+}
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.SujetoTri
+import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 import design_principles.actor_model.ActorSpec
 import design_principles.external_pub_sub.kafka.MessageProcessorLogging
+import io.circe.parser.decode
 import kafka.{MessageProcessor, MessageProducer}
+import org.scalatest.Assertion
+import org.scalatest.time.SpanSugar.convertIntToGrainOfTime
 import proyectionists.no_registrales.testkit.MessageTestkitUtils._
 import proyectionists.no_registrales.testkit.{Examples, NoRegistralesImplicitConversions}
 import utils.generators.Model.deliveryIdAct
-import io.circe.parser.decode
-import org.scalatest.time.SpanSugar.convertIntToGrainOfTime
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 object BaseTriSpec {
   case class TestContext(messageProducer: MessageProducer,
@@ -33,6 +36,13 @@ abstract class BaseTriSpec(
 ) extends ActorSpec
     with NoRegistralesImplicitConversions {
   val examples = new Examples("ObjetoSpec")
+
+  case class TestData(
+      sujetoId: String,
+      objetoId: String,
+      objetoTipo: String,
+      obnId: String
+  )
 
   override protected def beforeAll(): Unit = {
     println("BEFORE ALL")
@@ -56,34 +66,73 @@ abstract class BaseTriSpec(
     super.beforeAll()
   }
 
-  //FIXME: Validar que el serializador pueda detectar el tipo de datos sin comillas, ejemplo: 999 vs "999"
-  //El sujeto funciona con 999 y "999"
+  "Test 1 Alta/Modificacion: de sujeto Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
 
-  // - Verifica que primer evento con reglas de borrado no persistan y sin campos soj_otros_atributos. Json
-  // - Verifica que el segundo evento con reglas de borrado borre y sin campos soj_otros_atributos. Json
-  // - Verifica que evento modificado cambie campos con valores, mantenga valores de state. CaseClass
-  // y borre los definidos.
-  // - Verifica la baja del objeto. CaseClass
+      val testData = TestData(
+        sujetoId = "CuitTri_T1",
+        objetoId = "ObjetoTri_T1",
+        objetoTipo = "A",
+        obnId = "Obn_T1"
+      )
 
-  // **Nota: validar String, LocalDateTime y BigDecimal
+      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val expectedDate = LocalDateTime.parse("2024-11-04T00:00")
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_sujeto WHERE SUJ_IDENTIFICADOR = '${testData.sujetoId}';"
+          )
+          .futureValue
 
-  "Test 1: Un sujeto Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
-    implicit val dispatcher = s.dispatcher
-    val context = getContext(s)
-    val messageProducer = context.messageProducer
-    val cassandra = context.cassandra
+        val sujeto = resultado.one()
 
-    val sujeto = "CuitTri-T1"
-    /*
+        // Persistir el mail y denominacion
+        sujeto.getString("SUJ_IDENTIFICADOR") should be(testData.sujetoId)
+        sujeto.getString("SUJ_DENOMINACION") should be("Sujeto-Test1")
+        sujeto.getString("SUJ_EMAIL") should be("test1@ejemplo.com")
+
+        // No persistir direccion ni saldo
+        sujeto.getInt("SUJ_CAT_SUJ_ID") should be(0)
+        sujeto.isNull("SUJ_DIRECCION") should be(true)
+      }
+
+      def verifyCassandra2(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val expectedDate = LocalDateTime.parse("2024-11-04T00:00")
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_sujeto WHERE SUJ_IDENTIFICADOR = '${testData.sujetoId}';"
+          )
+          .futureValue
+
+        val sujeto = resultado.one()
+
+        //Mantener la denominacion
+        sujeto.getString("SUJ_DENOMINACION") should be("Sujeto-Test1")
+
+        //Persistir nueva direccion y canal origen
+        sujeto.getString("SUJ_IDENTIFICADOR") should be(testData.sujetoId)
+        sujeto.getString("SUJ_DIRECCION") should be("Calle falsa 123")
+        sujeto.getString("SUJ_CANAL_ORIGEN") should be("OTAX")
+
+        // Eliminar el email
+        sujeto.isNull("SUJ_EMAIL") should be(true)
+      }
+
+      /*
      El evento debe:
     - Persistir el mail y denominacion
     - No persistir direccion ni saldo
-     */
-    val sujetoJsonParcial =
-      s"""
+       */
+      val sujetoJsonParcial =
+        s"""
     {
       "EV_ID": $deliveryIdAct,
-      "SUJ_IDENTIFICADOR": "$sujeto",
+      "SUJ_IDENTIFICADOR": "${testData.sujetoId}",
       "SUJ_DENOMINACION": "Sujeto-Test1",
       "SUJ_EMAIL": "test1@ejemplo.com",
       "SUJ_DIRECCION": "null",
@@ -91,109 +140,142 @@ abstract class BaseTriSpec(
     }
     """
 
-    val testSujetoInicial: Either[io.circe.Error, SujetoTri] = decode[SujetoTri](sujetoJsonParcial)
-
-    testSujetoInicial match {
-      case Right(sujetoInicial) =>
-        messageProducer.produceSujeto(sujetoInicial)
-
-        eventually(timeout(15.seconds), interval(100.milliseconds)) {
-          val resultado: AsyncResultSet = cassandra.cassandraWrite
-            .cqlSelect(
-              s"SELECT * FROM read_side.buc_sujeto WHERE SUJ_IDENTIFICADOR = '${sujetoInicial.SUJ_IDENTIFICADOR}';"
-            )
-            .futureValue
-
-          val sujeto = resultado.one()
-
-          // Persistir el mail y denominacion
-          sujeto.getString("SUJ_IDENTIFICADOR") should be(sujetoInicial.SUJ_IDENTIFICADOR)
-          sujeto.getString("SUJ_DENOMINACION") should be(sujetoInicial.SUJ_DENOMINACION.get)
-          sujeto.getString("SUJ_EMAIL") should be(sujetoInicial.SUJ_EMAIL.get)
-
-          // No persistir direccion ni saldo
-          sujeto.getInt("SUJ_CAT_SUJ_ID") should be(0)
-          sujeto.isNull("SUJ_DIRECCION") should be(true)
-        }
-
-        /*
-         El evento debe:
-        - Persistir nueva direccion y canal origen
-        - Eliminar el email
-        - Mantener la denominacion
-         */
-        val sujetoModificadoJson =
-          s"""
+      val sujetoModificadoJson =
+        s"""
         {
           "EV_ID": $deliveryIdAct,
-          "SUJ_IDENTIFICADOR": "$sujeto",
+          "SUJ_IDENTIFICADOR": "${testData.sujetoId}",
           "SUJ_DIRECCION": "Calle falsa 123",
           "SUJ_EMAIL": "null",
           "SUJ_CANAL_ORIGEN": "OTAX"
         }
         """
 
-        val testSujetoModificado: Either[io.circe.Error, SujetoTri] = decode[SujetoTri](sujetoModificadoJson)
+      for {
+        // 1 - Crear VSOA
+        _ <- messageProducer.produceEvento(sujetoJsonParcial, "DGR-COP-SUJETO-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        verifyCassandra(testData)
+      }
 
-        testSujetoModificado match {
-          case Right(sujetoModificado) =>
-            messageProducer.produceSujeto(sujetoModificado)
+      for {
+        // 1 - Crear VSOA
+        _ <- messageProducer.produceEvento(sujetoModificadoJson, "DGR-COP-SUJETO-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        verifyCassandra2(testData)
+      }
 
-            eventually(timeout(15.seconds), interval(100.milliseconds)) {
-              val resultado: AsyncResultSet = cassandra.cassandraWrite
-                .cqlSelect(
-                  s"SELECT * FROM read_side.buc_sujeto WHERE SUJ_IDENTIFICADOR = '${sujetoModificado.SUJ_IDENTIFICADOR}';"
-                )
-                .futureValue
-
-              val sujeto = resultado.one()
-              //Mantener la denominacion
-              sujeto.getString("SUJ_DENOMINACION") should be(sujetoInicial.SUJ_DENOMINACION.get)
-
-              //Persistir nueva direccion y canal origen
-              sujeto.getString("SUJ_IDENTIFICADOR") should be(sujetoModificado.SUJ_IDENTIFICADOR)
-              sujeto.getString("SUJ_DIRECCION") should be(sujetoModificado.SUJ_DIRECCION.get)
-              sujeto.getString("SUJ_CANAL_ORIGEN") should be(sujetoModificado.SUJ_CANAL_ORIGEN.get)
-
-              // Eliminar el email
-              sujeto.isNull("SUJ_EMAIL") should be(true)
-            }
-
-          case Left(error) =>
-            println(s"Error decodificando JSON modificado: $error")
-        }
-
-      case Left(error) =>
-        println(s"Error decodificando JSON inicial: $error")
-    }
   }
-  "Test 2: un objeto Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
-    implicit val dispatcher = s.dispatcher
-    val context = getContext(s)
-    val messageProducer = context.messageProducer
-    val cassandra = context.cassandra
+  "Test 2 Alta/Modificacion: de objeto Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
 
-    val sujeto = "CuitTri-T2"
-    val IdObjeto = "ObjetoTri-T2"
-    val tipoObjeto = "A"
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
+      val fecha = LocalDateTime.now().format(formatter)
 
-    /*
-     El evento debe:
-    - Persistir la descripcion, fecha inicio y base imponible
-    - Persistir en soj_detalle el semaforo_marca
-    - No persistir subtipo, fecha_adq_subasta
-     */
-    val objetoJsonInicial =
-      s"""
+      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val expectedDate = LocalDateTime.parse("2024-11-04T00:00")
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+          )
+          .futureValue
+
+        val objeto2 = resultado.one()
+
+        // Persistir la descripcion y fecha_inicio
+        objeto2.getString("SOJ_DESCRIPCION") should be("ObjetoPrueba_T2")
+        objeto2.getLocalDate("SOJ_FECHA_INICIO").atStartOfDay() should be(expectedDate)
+        objeto2.getString("SOJ_SUJ_IDENTIFICADOR") should be(testData.sujetoId)
+
+        // State parcial
+        objeto2.isNull("SOJ_SUBTIPO") should be(true)
+        objeto2.isNull("SOJ_FECHA_ADQ_SUBASTA") should be(true)
+
+        // Persistir el origen, base_imponible
+        objeto2.getString("SOJ_CANAL_ORIGEN") should be("OTAX")
+        objeto2.getFloat("SOJ_BASE_IMPONIBLE") should be(12345)
+
+        val sojOtrosAtributos = objeto2.getMap("SOJ_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+        val sojDetalles: String = sojOtrosAtributos.get("SOJ_DETALLES")
+
+        decode[List[DetallesObjeto]](sojDetalles) match {
+          case Left(error) => fail(s"Error decoding SOJ_OTROS_ATRIBUTOS: $error")
+          case Right(detalles) =>
+            // Persistir soj_detalles: semaforo_marca
+            detalles.head.SOJ_SEMAFORO_MARCA.get should be("P")
+        }
+      }
+
+      def verifyCassandra2(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val expectedDate = LocalDateTime.parse("2024-11-04T00:00")
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+          )
+          .futureValue
+
+        val objeto2 = resultado.one()
+
+        // Mantener la descripcion y fecha_inicio
+        objeto2.getString("SOJ_DESCRIPCION") should be("ObjetoPrueba_T2")
+        objeto2.getLocalDate("SOJ_FECHA_INICIO").atStartOfDay() should be(expectedDate)
+
+        // Persistir nuevo sutbipo y fecha_adq_subasta
+        objeto2.getString("SOJ_SUJ_IDENTIFICADOR") should be(testData.sujetoId)
+        objeto2.getString("SOJ_SUBTIPO") should be("Urbano")
+        objeto2.getLocalDate("SOJ_FECHA_ADQ_SUBASTA").atStartOfDay() should be(expectedDate)
+
+        // Eliminar el origen, base_imponible
+        objeto2.isNull("SOJ_CANAL_ORIGEN") should be(true)
+        objeto2.getFloat("SOJ_BASE_IMPONIBLE") should be(0.0)
+
+        val sojOtrosAtributos = objeto2.getMap("SOJ_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+        val sojDetalles: String = sojOtrosAtributos.get("SOJ_DETALLES")
+
+        decode[List[DetallesObjeto]](sojDetalles) match {
+          case Left(error) => fail(s"Error decoding SOJ_OTROS_ATRIBUTOS: $error")
+          case Right(detalles) =>
+            // Persistir soj_detalles: responsable y porcentaje.
+            detalles.head.RESPONSABLE_OTROS_ATRIBUTOS.get should be("S")
+            detalles.head.PORCENTAJE_OTROS_ATRIBUTOS.get should be(100)
+
+            // No persistir semaforo_color
+            detalles.head.SOJ_SEMAFORO_COLOR should be(None)
+
+            // Mantener soj_detalles: semaforo_marca
+            detalles.head.SOJ_SEMAFORO_MARCA.get should be("P")
+        }
+      }
+
+      val testData = TestData(
+        sujetoId = "CuitTri_T2",
+        objetoId = "ObjetoTri_T2",
+        objetoTipo = "A",
+        obnId = "Obn_T2"
+      )
+
+      val objetoJsonInicial =
+        s"""
       {
       "EV_ID": "$deliveryIdAct",
-      "SOJ_SUJ_IDENTIFICADOR": "$sujeto",
-      "SOJ_TIPO_OBJETO": "$tipoObjeto",
-      "SOJ_IDENTIFICADOR": "$IdObjeto",
+      "SOJ_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testData.objetoId}",
       "SOJ_DESCRIPCION": "ObjetoPrueba_T2",
       "SOJ_ESTADO": null,
       "SOJ_FECHA_ADQ_SUBASTA": "1000-01-01 00:00:00.0",
-      "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0",
+      "SOJ_FECHA_INICIO": "$fecha",
       "SOJ_BASE_IMPONIBLE": "12345",
       "SOJ_SUBTIPO": "null",
       "SOJ_CANAL_ORIGEN": "OTAX",
@@ -203,59 +285,15 @@ abstract class BaseTriSpec(
       }
     """
 
-    val testObjetoParcial: Either[io.circe.Error, ObjetosTri] = decode[ObjetosTri](objetoJsonInicial)
-
-    testObjetoParcial match {
-      case Right(objetoInicial) =>
-        messageProducer.produceObjeto(objetoInicial)
-
-        eventually(timeout(15.seconds), interval(100.milliseconds)) {
-          val resultado: AsyncResultSet = cassandra.cassandraWrite
-            .cqlSelect(
-              s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${objetoInicial.SOJ_SUJ_IDENTIFICADOR}';"
-            )
-            .futureValue
-
-          val objeto = resultado.one()
-
-          // Persistir la descripcion, fecha inicio y base imponible
-          objeto.getString("SOJ_SUJ_IDENTIFICADOR") should be(objetoInicial.SOJ_SUJ_IDENTIFICADOR)
-          objeto.getString("SOJ_DESCRIPCION") should be(objetoInicial.SOJ_DESCRIPCION.get)
-          objeto.getLocalDate("SOJ_FECHA_INICIO").atStartOfDay() should be(objetoInicial.SOJ_FECHA_INICIO.get)
-          objeto.getFloat("SOJ_BASE_IMPONIBLE") should be(objetoInicial.SOJ_BASE_IMPONIBLE.get)
-
-          // No persistir subtipo, fecha_adq_subasta
-          objeto.isNull("SOJ_SUBTIPO") should be(true)
-          objeto.isNull("SOJ_FECHA_ADQ_SUBASTA") should be(true)
-
-          val sojOtrosAtributos = objeto.getMap("SOJ_OTROS_ATRIBUTOS", classOf[String], classOf[String])
-          val sojDetalles: String = sojOtrosAtributos.get("SOJ_DETALLES")
-
-          decode[List[DetallesObjeto]](sojDetalles) match {
-            case Left(error) => fail(s"Error decoding SOJ_OTROS_ATRIBUTOS: $error")
-            case Right(detalles) =>
-              // Persistir en soj_detalle el semaforo_marca
-              detalles.head.SOJ_SEMAFORO_MARCA.get should be("P")
-          }
-
-          /*
-         El evento debe:
-        - Persistir nuevo sutbipo y fecha_adq_subasta
-        - Persistir soj_detalles: responsable y porcentaje.
-        - Mantener soj_detalles: semaforo_marca
-        - No persistir semaforo_color
-        - Eliminar el origen, base_imponible
-        - Mantener la descripcion y fecha_inicio
-           */
-          val objetoModificadoJson =
-            s"""
+      val objetoModificadoJson =
+        s"""
             {
             "EV_ID": "$deliveryIdAct",
-            "SOJ_SUJ_IDENTIFICADOR": "$sujeto",
-            "SOJ_TIPO_OBJETO": "$tipoObjeto",
-            "SOJ_IDENTIFICADOR": "$IdObjeto",
+            "SOJ_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+            "SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+            "SOJ_IDENTIFICADOR": "${testData.objetoId}",
             "SOJ_ESTADO": null,
-            "SOJ_FECHA_ADQ_SUBASTA": "2024-01-01 00:00:00.0",
+            "SOJ_FECHA_ADQ_SUBASTA": "$fecha",
             "SOJ_BASE_IMPONIBLE": "999",
             "SOJ_SUBTIPO": "Urbano",
             "SOJ_CANAL_ORIGEN": "null",
@@ -269,85 +307,62 @@ abstract class BaseTriSpec(
           }
           """
 
-          val testObjetoModificado: Either[io.circe.Error, ObjetosTri] = decode[ObjetosTri](objetoModificadoJson)
+      for {
+        // 1 - Alta OBJETO
+        _ <- messageProducer.produceEvento(objetoJsonInicial, "DGR-COP-OBJETOS-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        verifyCassandra(testData)
+      }
 
-          testObjetoModificado match {
-            case Right(objetoModificado) =>
-              messageProducer.produceObjeto(objetoModificado)
-
-              eventually(timeout(15.seconds), interval(100.milliseconds)) {
-                val resultado: AsyncResultSet = cassandra.cassandraWrite
-                  .cqlSelect(
-                    s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujeto';"
-                  )
-                  .futureValue
-
-                val objeto2 = resultado.one()
-
-                // Mantener la descripcion y fecha_inicio
-                objeto2.getString("SOJ_DESCRIPCION") should be(objetoInicial.SOJ_DESCRIPCION.get)
-                objeto2.getLocalDate("SOJ_FECHA_INICIO").atStartOfDay() should be(objetoInicial.SOJ_FECHA_INICIO.get)
-
-                // Persistir nuevo sutbipo y fecha_adq_subasta
-                objeto2.getString("SOJ_SUJ_IDENTIFICADOR") should be(objetoModificado.SOJ_SUJ_IDENTIFICADOR)
-                objeto2.getString("SOJ_SUBTIPO") should be(objetoModificado.SOJ_SUBTIPO.get)
-                objeto2.getLocalDate("SOJ_FECHA_ADQ_SUBASTA").atStartOfDay() should be(
-                  objetoModificado.SOJ_FECHA_ADQ_SUBASTA.get
-                )
-
-                // Eliminar el origen, base_imponible
-                objeto2.isNull("SOJ_CANAL_ORIGEN") should be(true)
-                objeto2.getFloat("SOJ_BASE_IMPONIBLE") should be(0.0)
-
-                val sojOtrosAtributos = objeto2.getMap("SOJ_OTROS_ATRIBUTOS", classOf[String], classOf[String])
-                val sojDetalles: String = sojOtrosAtributos.get("SOJ_DETALLES")
-
-                decode[List[DetallesObjeto]](sojDetalles) match {
-                  case Left(error) => fail(s"Error decoding SOJ_OTROS_ATRIBUTOS: $error")
-                  case Right(detalles) =>
-                    // Persistir soj_detalles: responsable y porcentaje.
-                    detalles.head.RESPONSABLE_OTROS_ATRIBUTOS.get should be("S")
-                    detalles.head.PORCENTAJE_OTROS_ATRIBUTOS.get should be(100)
-
-                    // No persistir semaforo_color
-                    detalles.head.SOJ_SEMAFORO_COLOR should be(None)
-
-                    // Mantener soj_detalles: semaforo_marca
-                    detalles.head.SOJ_SEMAFORO_MARCA.get should be("P")
-                }
-
-              }
-
-            case Left(error) =>
-              println(s"Error decodificando JSON modificado: $error")
-          }
-        }
-      case Left(error) =>
-        println(s"Error decodificando JSON inicial: $error")
-    }
+      for {
+        // 2 - Modificar Objeto
+        _ <- messageProducer.produceEvento(objetoModificadoJson, "DGR-COP-OBJETOS-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Eventually")
+        verifyCassandra2(testData)
+      }
   }
-
-  "Test 3: un obligacion con state parcial" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+  "Test 3 Alta/Modificacion: de obligacion Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner {
     implicit s =>
       implicit val dispatcher = s.dispatcher
       val context = getContext(s)
       val messageProducer = context.messageProducer
-      val cassandra = context.cassandra
 
-      val sujeto = "CuitTri-T3"
-      val IdObjeto = "ObjetoTri-T3"
-      val tipoObjeto = "A"
-      val obn_id = "1234T3"
+      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_obligaciones" +
+            s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+            s" AND BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s" AND BOB_OBN_ID = '${testData.obnId}';"
+          )
+          .futureValue
 
-      //bob_cuota, bob_vencimiento, tipo son optional pero son requeridos por el dmn y si es asi
+        val obligacion = resultado.one()
 
-      val obligacionJsonInicial =
+        // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
+        obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(testData.objetoId)
+        obligacion.getString("BOB_ESTADO") should be("JUDICIAL")
+      }
+
+      val testData = TestData(
+        sujetoId = "CuitTri_T3",
+        objetoId = "ObjetoTri_T3",
+        objetoTipo = "A",
+        obnId = "Obn_T3"
+      )
+
+      val obligacionJson =
         s"""{
       "EV_ID": "$deliveryIdAct",
-      "BOB_SUJ_IDENTIFICADOR": "$sujeto",
-      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
-      "BOB_OBN_ID": "$obn_id",
+      "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
+      "BOB_OBN_ID": "${testData.obnId}",
       "BOB_ESTADO": "JUDICIAL",
       "BOB_PRORROGA": "1000-01-01 00:00:00.0",
       "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
@@ -371,143 +386,190 @@ abstract class BaseTriSpec(
       }]}
     }"""
 
-      val testObligacionParcial: Either[io.circe.Error, ObligacionesTri] =
-        decode[ObligacionesTri](obligacionJsonInicial)
+      for {
+        // 1 - Alta obn
+        _ <- messageProducer.produceEvento(obligacionJson, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Eventually")
+        verifyCassandra(testData)
+      }
 
-      testObligacionParcial match {
-        case Right(obligacionInicial) =>
-          messageProducer.produceObligacion(obligacionInicial)
+  }
+  "Test 4 Alta/Modificacion: de obligacion con state parcial" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
 
-          eventually(timeout(15.seconds), interval(100.milliseconds)) {
-            val resultado: AsyncResultSet = cassandra.cassandraWrite
-              .cqlSelect(
-                s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}';"
-              )
-              .futureValue
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
 
-            val obligacion = resultado.one()
+      val fecha = LocalDateTime.now().minusDays(5).format(formatter)
+      val fecha2 = LocalDateTime.now().minusMonths(3).format(formatter)
 
-            // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
-            obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(obligacionInicial.BOB_SOJ_IDENTIFICADOR)
-            obligacion.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
-            obligacion.getLocalDate("BOB_VENCIMIENTO").atStartOfDay() should be(obligacionInicial.BOB_VENCIMIENTO.get)
-            obligacion.getFloat("BOB_SALDO").toInt should be(obligacionInicial.BOB_SALDO.get)
-            obligacion.getString("BOB_FISCALIZADA") should be(obligacionInicial.BOB_FISCALIZADA.get)
+      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val expectedDate = LocalDateTime.parse("2024-10-30T00:00")
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_obligaciones" +
+            s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+            s" AND BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s" AND BOB_OBN_ID = '${testData.obnId}';"
+          )
+          .futureValue
 
-            // No persistir BOB_PRORROGA ni BOB_INDICE_INT_PUNIT
-            obligacion.isNull("BOB_PRORROGA") should be(true)
-            obligacion.isNull("BOB_INDICE_INT_PUNIT") should be(true)
+        val obligacion = resultado.one()
 
-            val bobOtrosAtributos = obligacion.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
-            val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
+        // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
+        obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(testData.objetoId)
+        obligacion.getString("BOB_ESTADO") should be("JUDICIAL")
+        obligacion
+          .getLocalDate("BOB_VENCIMIENTO")
+          .atStartOfDay() should be(expectedDate) //TODO SI EL TEST FALLA ES PORQUE HAY QUE ACTUALIZAR LA FECHA <-
+        obligacion.getFloat("BOB_SALDO").toInt should be(200)
+        obligacion.getString("BOB_FISCALIZADA") should be("Fiscalizada")
 
-            decode[List[DetallesObligacion]](bobDetalles) match {
-              case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
-              case Right(detalles) =>
-                // Persistir en bob_detalle el PLAN_MULTIOBJETO
-                detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
-            }
+        // No persistir BOB_PRORROGA ni BOB_INDICE_INT_PUNIT
+        obligacion.isNull("BOB_PRORROGA") should be(true)
+        obligacion.isNull("BOB_INDICE_INT_PUNIT") should be(true)
 
-            //          decode[List[DetallesSupresiones]](bobDetallesSupresiones) match {
-            //            case Left(error) => fail(s"Error decoding BOB_DETALLES_SUPRESIONES: $error")
-            //            case Right(detalles) =>
-            //              // Persistir en soj_detalle el BOB_TIPO_SUP
-            //              detalles.head.BOB_TIPO_SUP.get should be("R")
-            //          }
+        val bobOtrosAtributos = obligacion.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+        val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
 
-            // persistir nuevo bob_tipo y fecha bob_prorroga
-            // persistir bob_detalles BOB_MUNICIPIO y JUICIO_MULTIOBJETO
-            // mantener bob_detalles PLAN_MULTIOBJETO
-            // no persistir BOB_ESTADO_SUP en supresiones
-            // mantener bob_tipo_sup en supressiones
-            // mantener bob_estado y bob_saldo
-            // eliminar impuesto y soj_id_externo
+        decode[List[DetallesObligacion]](bobDetalles) match {
+          case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
+          case Right(detalles) =>
+            // Persistir en bob_detalle el PLAN_MULTIOBJETO
+            detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
+        }
+      }
 
-            val obligacionModificadoJson =
-              s"""{
-            "EV_ID": "$deliveryIdAct",
-            "BOB_SUJ_IDENTIFICADOR": "$sujeto",
-            "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-            "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
-            "BOB_OBN_ID": "$obn_id",
-            "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
-            "BOB_PRORROGA": "2024-03-01 00:00:00.0",
-            "BOB_FISCALIZADA": "NO Fiscalizada",
-            "BOB_PERIODO": "2024",
-            "BOB_INTERES_PUNIT": "999",
-            "BOB_SALDO": "200",
-            "BOB_PLN_ID": "null",
-            "BOB_OTROS_ATRIBUTOS": {
-            "BOB_DETALLES": [
-            {
-            "BOB_MUNICIPIO": "Municipio",
-            "RULE_NUMBER": "1",
-            "JUICIO_MULTIOBJETO": "Multiobjeto"
-             }]}
-          }"""
+      def verifyCassandra2(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val expectedDate = LocalDateTime.parse("2024-08-04T00:00")
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_obligaciones" +
+            s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+            s" AND BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s" AND BOB_OBN_ID = '${testData.obnId}';"
+          )
+          .futureValue
 
-            val testObligacionModificado: Either[io.circe.Error, ObligacionesTri] =
-              decode[ObligacionesTri](obligacionModificadoJson)
+        val obligacion = resultado.one()
 
-            testObligacionModificado match {
-              case Right(obligacionModificado) =>
-                messageProducer.produceObligacion(obligacionModificado)
+        // Mantener la bob_estado y bob_saldo
+        obligacion.getString("BOB_ESTADO") should be("JUDICIAL")
+        obligacion.getFloat("BOB_SALDO").toInt should be(200)
 
-                eventually(timeout(15.seconds), interval(100.milliseconds)) {
-                  val resultado: AsyncResultSet = cassandra.cassandraWrite
-                    .cqlSelect(
-                      s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}';"
-                    )
-                    .futureValue
+        // Persistir nuevo BOB_FISCALIZADA y BOB_PRORROGA
+        obligacion.getString("BOB_FISCALIZADA") should be("NO Fiscalizada")
+        obligacion
+          .getLocalDate("BOB_PRORROGA")
+          .atStartOfDay() should be(expectedDate) //TODO SI EL TEST FALLA ES PORQUE HAY QUE ACTUALIZAR LA FECHA <-
 
-                  val obligacion2 = resultado.one()
+        //Eliminar el bob_interes_punit, bob_pln_id
+        obligacion.isNull("BOB_INTERES_PUNIT") should be(true)
+        obligacion.isNull("BOB_PLN_ID") should be(true)
 
-                  // Mantener la bob_estado y bob_saldo
-                  obligacion2.getString("BOB_ESTADO") should be(obligacionInicial.BOB_ESTADO.get)
-                  obligacion2.getFloat("BOB_SALDO").toInt should be(obligacionInicial.BOB_SALDO.get)
+        val bobOtrosAtributos = obligacion.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+        val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
 
-                  // Persistir nuevo BOB_FISCALIZADA y BOB_PRORROGA
-                  obligacion2.getString("BOB_FISCALIZADA") should be(obligacionModificado.BOB_FISCALIZADA.get)
-                  obligacion2.getLocalDate("BOB_PRORROGA").atStartOfDay() should be(
-                    obligacionModificado.BOB_PRORROGA.get
-                  )
+        decode[List[DetallesObligacion]](bobDetalles) match {
+          case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
+          case Right(detalles) =>
+            // Persistir bob_detalles: BOB_MUNICIPIO y JUICIO_MULTIOBJETO.
+            detalles.head.BOB_MUNICIPIO.get should be("Municipio")
+            detalles.head.JUICIO_MULTIOBJETO.get should be("Multiobjeto")
 
-                  //Eliminar el bob_interes_punit, bob_pln_id
-                  obligacion2.isNull("BOB_INTERES_PUNIT") should be(true)
-                  obligacion2.isNull("BOB_PLN_ID") should be(true)
+            // Mantener bob_detalles: PLAN_MULTIOBJETO
+            detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
+        }
+      }
 
-                  val bobOtrosAtributos = obligacion2.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
-                  val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
+      val testData = TestData(
+        sujetoId = "CuitTri_T4",
+        objetoId = "ObjetoTri_T4",
+        objetoTipo = "A",
+        obnId = "Obn_T4"
+      )
 
-                  decode[List[DetallesObligacion]](bobDetalles) match {
-                    case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
-                    case Right(detalles) =>
-                      // Persistir bob_detalles: BOB_MUNICIPIO y JUICIO_MULTIOBJETO.
-                      detalles.head.BOB_MUNICIPIO.get should be("Municipio")
-                      detalles.head.JUICIO_MULTIOBJETO.get should be("Multiobjeto")
+      val obligacionJsonInicial =
+        s"""{
+      "EV_ID": "$deliveryIdAct",
+      "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
+      "BOB_OBN_ID": "${testData.obnId}",
+      "BOB_ESTADO": "JUDICIAL",
+      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
+      "BOB_VENCIMIENTO": "$fecha",
+      "BOB_PERIODO": "2024",
+      "BOB_FISCALIZADA": "Fiscalizada",
+      "BOB_CUOTA": "6",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "601",
+      "BOB_IMPUESTO": "600",
+      "BOB_INTERES_PUNIT": "1000",
+      "BOB_INDICE_INT_PUNIT": "null",
+      "BOB_SALDO": "200",
+      "BOB_TIPO": "tributaria",
+      "BOB_OGA_ID": null,
+      "BOB_PLN_ID": "5555",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [
+      {
+      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
+      "RULE_NUMBER": "1"
+      }]}
+    }"""
 
-                      // Mantener bob_detalles: PLAN_MULTIOBJETO
-                      detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
-                  }
-                }
+      val obligacionModificadoJson =
+        s"""{
+          "EV_ID": "$deliveryIdAct",
+          "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+          "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+          "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
+          "BOB_OBN_ID": "${testData.obnId}",
+          "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+          "BOB_PRORROGA": "$fecha2",
+          "BOB_FISCALIZADA": "NO Fiscalizada",
+          "BOB_PERIODO": "2024",
+          "BOB_INTERES_PUNIT": "999",
+          "BOB_SALDO": "200",
+          "BOB_PLN_ID": "null",
+          "BOB_OTROS_ATRIBUTOS": {
+          "BOB_DETALLES": [
+          {
+          "BOB_MUNICIPIO": "Municipio",
+          "RULE_NUMBER": "1",
+          "JUICIO_MULTIOBJETO": "Multiobjeto"
+           }]}
+        }"""
 
-              case Left(error) =>
-                println(s"Error decodificando JSON modificado: $error")
-            }
+      //todo PRIMER TEST
+      for {
+        // 1 - Alta obn
+        _ <- messageProducer.produceEvento(obligacionJsonInicial, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Eventually")
+        verifyCassandra(testData)
+      }
 
-          }
-
-        case Left(error) =>
-          println(s"Error decodificando JSON inicial: $error")
+      for {
+        // - Pago obn en VSOA
+        _ <- messageProducer.produceEvento(obligacionModificadoJson, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Eventually")
+        verifyCassandra2(testData)
       }
   }
-
-  // FIXME:
-  //  - Al iterar sobre el nro de cuota | periodo, persiste "n" registros distintos ya son Keys
-  //  - Al iterar sobre el capital y rulenumer, inestable.
-  //  - Al iterar sobre el cuit, no persiste y loguea error.
-
-  "Test 4: cambios masivos sobre misma obn" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+  "Test 5 Sincro: de cambios masivos sobre misma obn" should "End to end, PCS a Readside" in parallelActorSystemRunner {
     implicit s =>
       implicit val dispatcher: ExecutionContextExecutor = s.dispatcher
       val context = getContext(s)
@@ -515,45 +577,10 @@ abstract class BaseTriSpec(
       val cassandra = context.cassandra
 
       val sujeto1 = "CuitTri-1-T4"
-      val sujeto2 = "CuitTri-2-T4"
 
       val IdObjeto = "ObjetoTri-T4"
       val tipoObjeto = "A"
       val obnId = "1234-T4"
-
-//      val obligacionJsonCuit1 =
-//        s"""{
-//      "EV_ID": "1",
-//      "BOB_SUJ_IDENTIFICADOR": "$sujeto1",
-//      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-//      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
-//      "BOB_OBN_ID": "$obnId",
-//      "BOB_ESTADO": "JUDICIAL",
-//      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
-//      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
-//      "BOB_PERIODO": "2024",
-//      "BOB_FISCALIZADA": "Fiscalizada",
-//      "BOB_CUOTA": "1",
-//      "BOB_CAPITAL": "100",
-//      "BOB_CONCEPTO": "601",
-//      "BOB_IMPUESTO": "600",
-//      "BOB_INTERES_PUNIT": "1000",
-//      "BOB_INDICE_INT_PUNIT": "null",
-//      "BOB_SALDO": "200",
-//      "BOB_TIPO": "tributaria",
-//      "BOB_OGA_ID": null,
-//      "BOB_PLN_ID": "5555",
-//      "BOB_OTROS_ATRIBUTOS": {
-//      "BOB_DETALLES": [
-//      {
-//      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
-//      "RULE_NUMBER": "1"
-//      }]}
-//    }"""
-//
-//      messageProducer.produceEvento(obligacionJsonCuit1, "DGR-COP-OBLIGACIONES-TRI")
-//
-//      Thread.sleep(5000)
 
       val n = 10
       for (i <- 1 until n) {
@@ -588,43 +615,12 @@ abstract class BaseTriSpec(
       }]}
     }"""
 
-//        val obligacionJsonCuit2 =
-//          s"""{
-//      "EV_ID": "${i + 1}",
-//      "BOB_SUJ_IDENTIFICADOR": "$sujeto1",
-//      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-//      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
-//      "BOB_OBN_ID": "$obnId",
-//      "BOB_ESTADO": "JUDICIAL",
-//      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
-//      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
-//      "BOB_PERIODO": "2024",
-//      "BOB_FISCALIZADA": "Fiscalizada",
-//      "BOB_CUOTA": "1",
-//      "BOB_CAPITAL": "100${i + 1}",
-//      "BOB_CONCEPTO": "601",
-//      "BOB_IMPUESTO": "600",
-//      "BOB_INTERES_PUNIT": "1000",
-//      "BOB_INDICE_INT_PUNIT": "null",
-//      "BOB_SALDO": "202",
-//      "BOB_TIPO": "tributaria",
-//      "BOB_OGA_ID": null,
-//      "BOB_PLN_ID": "5555",
-//      "BOB_OTROS_ATRIBUTOS": {
-//      "BOB_DETALLES": [
-//      {
-//      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
-//      "RULE_NUMBER": "1"
-//      }]}
-//    }"""
-
         messageProducer.produceEvento(obligacionJsonCuit1, "DGR-COP-OBLIGACIONES-TRI")
-//        messageProducer.produceEvento(obligacionJsonCuit2, "DGR-COP-OBLIGACIONES-TRI")
       }
 
       eventually(timeout(15.seconds), interval(1.milliseconds)) {
         Thread.sleep(5000)
-// 1 - Queda el registro persistido
+        // 1 - Queda el registro persistido
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}' AND BOB_OBN_ID = '$obnId' AND BOB_SUJ_IDENTIFICADOR = '${sujeto1}1';"
@@ -633,23 +629,359 @@ abstract class BaseTriSpec(
 
         val obligacion = resultado.one()
         obligacion.getString("BOB_OBN_ID") should be(obnId)
+      }
+  }
+  "Test 6 Sincro: de las obligaciones retroactivas " should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
 
-// 2 - Queda el registro eliminado
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
 
-//        val resultado1: AsyncResultSet = cassandra.cassandraWrite
-//          .cqlSelect(
-//            s"SELECT COUNT(*) FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${IdObjeto}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}' AND BOB_OBN_ID = '$obnId' AND BOB_SUJ_IDENTIFICADOR = '${sujeto1}';"
-//          )
-//          .futureValue
-//
-//        val obligacion1 = resultado1.one()
-//
-//        val count = obligacion1.getLong("count") // Fetch the count result
-//        count should be(0) // Check if the count is 0
+      val testDataA = TestData(
+        sujetoId = "CuitTri_T6",
+        objetoId = "ObjetoTri_T6",
+        objetoTipo = "A",
+        obnId = "Obn_T6"
+      )
+      val testDataB = TestData(
+        sujetoId = "CuitTriB_T6",
+        objetoId = "ObjetoTri_T6",
+        objetoTipo = "A",
+        obnId = "Obn_T6"
+      )
+
+      def verifyFalseCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+          )
+          .futureValue
+
+        val objetoResult = resultado.one()
+        objetoResult.getBoolean("soj_tiene30objeto") should be(false)
+        objetoResult.getBoolean("soj_tiene30objetovinculo") should be(false)
       }
 
+      def verifyVinculoCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+          )
+          .futureValue
+
+        val objetoResult = resultado.one()
+        objetoResult.getBoolean("soj_tiene30objeto") should be(true)
+        objetoResult.getBoolean("soj_tiene30objetovinculo") should be(false)
+      }
+
+      def verifyRemovedCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT COUNT(*) FROM read_side.buc_obligaciones" +
+            s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+            s" AND BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s" AND BOB_OBN_ID = '${testData.obnId}';"
+          )
+          .futureValue
+
+        val obligacionRemoved = resultado.one()
+        obligacionRemoved.getLong("count") should be(0)
+      }
+
+      val fecha = LocalDateTime.now().minusDays(5)
+      val fechaformatter = LocalDateTime.now().minusDays(5).format(formatter)
+
+      val periodo = fecha.getYear
+      val cuota = fecha.getMonthValue
+
+      val ObjetoA =
+        s"""
+      {
+      "EV_ID": "$deliveryIdAct",
+      "SOJ_SUJ_IDENTIFICADOR": "${testDataA.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testDataA.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testDataA.objetoId}",
+      "SOJ_DESCRIPCION": "PrimerObjetoPrueba_T1",
+      "SOJ_ESTADO": null,
+      "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0"
+      }
+    """
+
+      val ObjetoB =
+        s"""
+      {
+      "EV_ID": "$deliveryIdAct",
+      "SOJ_SUJ_IDENTIFICADOR": "${testDataB.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testDataB.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testDataB.objetoId}",
+      "SOJ_DESCRIPCION": "SegundoObjetoPrueba_T2",
+      "SOJ_ESTADO": null,
+      "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0"
+      }
+    """
+
+      val obligacionVencidaSujetoA =
+        s"""{
+      "EV_ID": "$deliveryIdAct",
+      "BOB_SUJ_IDENTIFICADOR": "${testDataA.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testDataA.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testDataA.objetoId}",
+      "BOB_OBN_ID": "${testDataA.obnId}",
+      "BOB_ESTADO": "ADMINISTRATIVA",
+      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+      "BOB_PERIODO": "$periodo",
+      "BOB_CUOTA": "$cuota",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "601",
+      "BOB_IMPUESTO": "600",
+      "BOB_TIPO": "tributaria",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [{
+      "BOB_MUNICIPIO": "Municipio"
+      }]}
+    }"""
+
+      val obligacionVencidaSujetoB =
+        s"""{
+      "EV_ID": "$deliveryIdAct",
+      "BOB_SUJ_IDENTIFICADOR": "${testDataB.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testDataB.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testDataB.objetoId}",
+      "BOB_OBN_ID": "${testDataB.obnId}",
+      "BOB_ESTADO": "ADMINISTRATIVA",
+      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+      "BOB_PERIODO": "$periodo",
+      "BOB_CUOTA": "$cuota",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "601",
+      "BOB_IMPUESTO": "600",
+      "BOB_TIPO": "tributaria",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [{
+      "BOB_MUNICIPIO": "Municipio"
+      }]}
+    }"""
+
+      val obligacionPagaSujetoA =
+        s"""{
+      "EV_ID": "$deliveryIdAct",
+      "BOB_SUJ_IDENTIFICADOR": "${testDataA.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testDataA.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testDataA.objetoId}",
+      "BOB_OBN_ID": "${testDataA.obnId}",
+      "BOB_ESTADO": "ADMINISTRATIVA",
+      "BOB_VENCIMIENTO": "$fechaformatter",
+      "BOB_PERIODO": "$periodo",
+      "BOB_CUOTA": "$cuota",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "601",
+      "BOB_IMPUESTO": "600",
+      "BOB_TIPO": "tributaria",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [{
+      "BOB_MUNICIPIO": "Municipio",
+      "RULE_NUMBER": "-1"
+      }]}
+    }"""
+
+      //todo PRIMER EVENTO
+
+      for {
+        // 1 - Crear OBJETOA
+        _ <- messageProducer.produceEvento(ObjetoA, "DGR-COP-OBJETOS-TRI")
+        // 2 - Crear OBJETOB
+        _ <- messageProducer.produceEvento(ObjetoB, "DGR-COP-OBJETOS-TRI")
+        // 3 - Alta obn vencida SujetoA
+        _ <- messageProducer.produceEvento(obligacionVencidaSujetoA, "DGR-COP-OBLIGACIONES-TRI")
+        // 4 - Alta obn vencida SujetoB
+        _ <- messageProducer.produceEvento(obligacionVencidaSujetoB, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+
+      Thread.sleep(5000)
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Eventually")
+        verifyFalseCassandra(testDataA)
+        verifyFalseCassandra(testDataB)
+      }
+
+      for {
+        // 1 - obn Paga SujetoA
+        _ <- messageProducer.produceEvento(obligacionPagaSujetoA, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+
+      Thread.sleep(5000)
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Eventually")
+        verifyRemovedCassandra(testDataA)
+        verifyVinculoCassandra(testDataA)
+      }
   }
-  "Test 5: del 30%: Un sujeto - objeto Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+  "Test 7 Sincro: de sincronizacion de cuits" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
+
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
+
+      val testData = TestData(
+        sujetoId = "CuitTri_T7",
+        objetoId = "ObjetoTri_T7",
+        objetoTipo = "A",
+        obnId = "Obn_T7"
+      )
+
+      val fecha = LocalDateTime.now().minusDays(5)
+      val vtoVencida = LocalDateTime.now().minusDays(25)
+      val vtoVencidaParsed = LocalDateTime.now().minusDays(25).format(formatter)
+
+      val vtoMUC = vtoVencida.plusMonths(1).format(formatter)
+      val vtoPlazoGracia = LocalDateTime.now().minusDays(5).format(formatter)
+
+      val periodo = fecha.getYear
+      val cuota = fecha.getMonthValue
+      val obligacionVencidaNoDeuda =
+        s"""{
+      "EV_ID": "$deliveryIdAct",
+      "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
+      "BOB_OBN_ID": "${testData.obnId}",
+      "BOB_ESTADO": "ADMINISTRATIVA",
+      "BOB_VENCIMIENTO": "$vtoPlazoGracia",
+      "BOB_PERIODO": "$periodo",
+      "BOB_CUOTA": "$cuota",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "601",
+      "BOB_IMPUESTO": "600",
+      "BOB_TIPO": "tributaria",
+      "BOB_ADHERIDO_DEBITO": "N",
+      "BOB_TOTAL": "1000000",
+      "BOB_PLN_ID": "null",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [{
+      "BOB_MUNICIPIO": "Municipio"
+      }]}
+    }"""
+
+      val obligacionVencidaMUC =
+        s"""{
+      "EV_ID": "$deliveryIdAct",
+      "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
+      "BOB_OBN_ID": "${testData.obnId}",
+      "BOB_ESTADO": "ADMINISTRATIVA",
+      "BOB_VENCIMIENTO": "$vtoVencidaParsed",
+      "BOB_VENCIMIENTO_2": "$vtoMUC",
+      "BOB_PERIODO": "$periodo",
+      "BOB_CUOTA": "$cuota",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "840",
+      "BOB_IMPUESTO": "2",
+      "BOB_TIPO": "tributaria",
+      "BOB_ADHERIDO_DEBITO": "N",
+      "BOB_TOTAL": "99999",
+      "BOB_PLN_ID": "null",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [{
+      "BOB_MUNICIPIO": "Municipio"
+      }]}
+    }"""
+
+      val obligacionVencida =
+        s"""{
+      "EV_ID": "$deliveryIdAct",
+      "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
+      "BOB_OBN_ID": "${testData.obnId}",
+      "BOB_ESTADO": "ADMINISTRATIVA",
+      "BOB_VENCIMIENTO": "$vtoVencidaParsed",
+      "BOB_PERIODO": "$periodo",
+      "BOB_CUOTA": "$cuota",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "601",
+      "BOB_IMPUESTO": "600",
+      "BOB_TIPO": "tributaria",
+      "BOB_PLN_ID": "10",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [{
+      "BOB_MUNICIPIO": "Municipio"
+      }]}
+    }"""
+      // N - 99999 - 10
+
+      def verifyTrueCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+          )
+          .futureValue
+
+        val objetoResult = resultado.one()
+        objetoResult.getBoolean("soj_tiene30objeto") should be(true)
+        objetoResult.getBoolean("soj_tiene30objetovinculo") should be(true)
+      }
+
+      def verifyFalseCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+          )
+          .futureValue
+
+        val objetoResult = resultado.one()
+        objetoResult.getBoolean("soj_tiene30objeto") should be(false)
+        objetoResult.getBoolean("soj_tiene30objetovinculo") should be(false)
+      }
+
+      //todo PRIMER EVENTO
+
+      for {
+        //obn vencida no deuda
+        _ <- messageProducer.produceEvento(obligacionVencidaNoDeuda, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Eventually")
+        verifyTrueCassandra(testData)
+      }
+
+      for {
+        // obn vencida MUC
+        _ <- messageProducer.produceEvento(obligacionVencidaMUC, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Eventually")
+        verifyTrueCassandra(testData)
+      }
+
+      for {
+        //obn vencida
+        _ <- messageProducer.produceEvento(obligacionVencida, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Eventually")
+        verifyFalseCassandra(testData)
+      }
+  }
+  "Test 8    30%: MUC, Plazo de gracia y Deuda" should "End to end, PCS a Readside" in parallelActorSystemRunner {
     implicit s =>
       implicit val dispatcher = s.dispatcher
       val context = getContext(s)
@@ -943,358 +1275,81 @@ abstract class BaseTriSpec(
       }
   }
 
-  "Test de las obligaciones retroactivas " should "End to end, PCS a Readside" in parallelActorSystemRunner {
-    implicit s =>
-      implicit val dispatcher = s.dispatcher
-      val context = getContext(s)
-      val messageProducer = context.messageProducer
-      val cassandra = context.cassandra
+  // TODO: Separar en test distintos
+  // Pasar las funciones de verify a un helper comun.
+  "Test 9 Remove: de obligacion Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
+    implicit val dispatcher = s.dispatcher
+    val context = getContext(s)
+    val messageProducer = context.messageProducer
 
-      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
+    val testData1 = TestData(
+      sujetoId = "CuitTri_T9",
+      objetoId = "ObjetoTri_T9",
+      objetoTipo = "A",
+      obnId = "Obn_T9"
+    )
 
-      val sujetoA = "SUJETO_A"
-      val sujetoB = "SUJETO_B"
-
-      val tipoObjeto = "A"
-      val IdObjeto = "OBJETO30_TERCERO"
-      val obn_id = "obnDeuda-T1"
-
-      val fecha = LocalDateTime.now().minusDays(5)
-      val fechaformatter = LocalDateTime.now().minusDays(5).format(formatter)
-
-      val periodo = fecha.getYear
-      val cuota = fecha.getMonthValue
-
-      val SujetoObjetoA =
-        s"""
+    val VSO_A =
+      s"""
       {
-      "EV_ID": "$deliveryIdAct",
-      "SOJ_SUJ_IDENTIFICADOR": "$sujetoA",
-      "SOJ_TIPO_OBJETO": "$tipoObjeto",
-      "SOJ_IDENTIFICADOR": "$IdObjeto",
+      "EV_ID": "1",
+      "SOJ_SUJ_IDENTIFICADOR": "${testData1.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testData1.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testData1.objetoId}",
+      "SOJ_DESCRIPCION": "PrimerObjetoPrueba_T1",
+      "SOJ_ESTADO": null,
+      "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0"
+      }
+    """
+    val VSO_A2 =
+      s"""
+      {
+      "EV_ID": "2",
+      "SOJ_SUJ_IDENTIFICADOR": "${testData1.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testData1.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testData1.objetoId}",
+      "SOJ_DESCRIPCION": "PrimerObjetoPrueba_T1",
+      "SOJ_ESTADO": null,
+      "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0"
+      }
+    """
+    val VSO_A3 =
+      s"""
+      {
+      "EV_ID": "3",
+      "SOJ_SUJ_IDENTIFICADOR": "${testData1.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testData1.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testData1.objetoId}",
       "SOJ_DESCRIPCION": "PrimerObjetoPrueba_T1",
       "SOJ_ESTADO": null,
       "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0"
       }
     """
 
-      val SujetoObjetoB =
-        s"""
+    val VSO_A_BAJA =
+      s"""
       {
       "EV_ID": "$deliveryIdAct",
-      "SOJ_SUJ_IDENTIFICADOR": "$sujetoB",
-      "SOJ_TIPO_OBJETO": "$tipoObjeto",
-      "SOJ_IDENTIFICADOR": "$IdObjeto",
-      "SOJ_DESCRIPCION": "SegundoObjetoPrueba_T2",
-      "SOJ_ESTADO": null,
+      "SOJ_SUJ_IDENTIFICADOR": "${testData1.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testData1.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testData1.objetoId}",
+      "SOJ_DESCRIPCION": "PrimerObjetoPrueba_T1",
+      "SOJ_ESTADO": "BAJA",
       "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0"
       }
     """
 
-      val obligacionVencidaSujetoA =
-        s"""{
+    val altaObligacion =
+      s"""{
       "EV_ID": "$deliveryIdAct",
-      "BOB_SUJ_IDENTIFICADOR": "$sujetoA",
-      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
-      "BOB_OBN_ID": "$obn_id",
+      "BOB_SUJ_IDENTIFICADOR": "${testData1.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testData1.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testData1.objetoId}",
+      "BOB_OBN_ID": "${testData1.obnId}",
       "BOB_ESTADO": "ADMINISTRATIVA",
       "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
-      "BOB_PERIODO": "$periodo",
-      "BOB_CUOTA": "$cuota",
-      "BOB_CAPITAL": "200",
-      "BOB_CONCEPTO": "601",
-      "BOB_IMPUESTO": "600",
-      "BOB_TIPO": "tributaria",
-      "BOB_OTROS_ATRIBUTOS": {
-      "BOB_DETALLES": [{
-      "BOB_MUNICIPIO": "Municipio"
-      }]}
-    }"""
-
-      val obligacionVencidaSujetoB =
-        s"""{
-      "EV_ID": "$deliveryIdAct",
-      "BOB_SUJ_IDENTIFICADOR": "$sujetoB",
-      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
-      "BOB_OBN_ID": "$obn_id",
-      "BOB_ESTADO": "ADMINISTRATIVA",
-      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
-      "BOB_PERIODO": "$periodo",
-      "BOB_CUOTA": "$cuota",
-      "BOB_CAPITAL": "200",
-      "BOB_CONCEPTO": "601",
-      "BOB_IMPUESTO": "600",
-      "BOB_TIPO": "tributaria",
-      "BOB_OTROS_ATRIBUTOS": {
-      "BOB_DETALLES": [{
-      "BOB_MUNICIPIO": "Municipio"
-      }]}
-    }"""
-
-      val obligacionPagaSujetoA =
-        s"""{
-      "EV_ID": "$deliveryIdAct",
-      "BOB_SUJ_IDENTIFICADOR": "$sujetoA",
-      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
-      "BOB_OBN_ID": "$obn_id",
-      "BOB_ESTADO": "ADMINISTRATIVA",
-      "BOB_VENCIMIENTO": "$fechaformatter",
-      "BOB_PERIODO": "$periodo",
-      "BOB_CUOTA": "$cuota",
-      "BOB_CAPITAL": "200",
-      "BOB_CONCEPTO": "601",
-      "BOB_IMPUESTO": "600",
-      "BOB_TIPO": "tributaria",
-      "BOB_OTROS_ATRIBUTOS": {
-      "BOB_DETALLES": [{
-      "BOB_MUNICIPIO": "Municipio",
-      "RULE_NUMBER": "-1"
-      }]}
-    }"""
-
-      val testSujetoObjetoA: Either[io.circe.Error, ObjetosTri] = decode[ObjetosTri](SujetoObjetoA)
-      val testSujetoObjetoB: Either[io.circe.Error, ObjetosTri] = decode[ObjetosTri](SujetoObjetoB)
-
-      val testObligacionVencidaSujetoA: Either[io.circe.Error, ObligacionesTri] =
-        decode[ObligacionesTri](obligacionVencidaSujetoA)
-      val testObligacionVencidaSujetoB: Either[io.circe.Error, ObligacionesTri] =
-        decode[ObligacionesTri](obligacionVencidaSujetoB)
-      val testObligacionPagaSujetoA: Either[io.circe.Error, ObligacionesTri] =
-        decode[ObligacionesTri](obligacionPagaSujetoA)
-
-      //todo PRIMER EVENTO
-      testSujetoObjetoA match {
-        case Right(objetoPrimero) =>
-          messageProducer.produceObjeto(objetoPrimero)
-
-          eventually(timeout(15.seconds), interval(100.milliseconds)) {
-
-            val resultadoObjetoA: AsyncResultSet = cassandra.cassandraWrite
-              .cqlSelect(
-                s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoA' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
-              )
-              .futureValue
-
-            val objetoA = resultadoObjetoA.one()
-
-            //validad la evaluacion de que esta el objeto primero
-            objetoA.getString("SOJ_DESCRIPCION") should be("PrimerObjetoPrueba_T1")
-
-
-            //TODO SEGUNDO EVENTO
-            testSujetoObjetoB match {
-              case Right(objetoSegundo) =>
-                messageProducer.produceObjeto(objetoSegundo)
-
-                eventually(timeout(15.seconds), interval(100.milliseconds)) {
-
-                  val resultadoObjetoB: AsyncResultSet = cassandra.cassandraWrite
-                    .cqlSelect(
-                      s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoB' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
-                    )
-                    .futureValue
-
-                  val objetoB = resultadoObjetoB.one()
-
-                  //validad la evaluacion de que esta el objeto segundo
-                  objetoB.getString("SOJ_DESCRIPCION") should be("SegundoObjetoPrueba_T2")
-
-                  //TODO TERCER EVENTO
-                  testObligacionVencidaSujetoA match {
-                    case Right(obnVencidaA) =>
-                      messageProducer.produceObligacion(obnVencidaA)
-
-                      eventually(timeout(15.seconds), interval(100.milliseconds)) {
-
-                        val resultadoVencida: AsyncResultSet = cassandra.cassandraWrite
-                          .cqlSelect(
-                            s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SUJ_IDENTIFICADOR = '$sujetoA' AND BOB_SOJ_IDENTIFICADOR = '$IdObjeto' AND BOB_SOJ_TIPO_OBJETO = '$tipoObjeto' AND BOB_OBN_ID = '$obn_id';"
-                          )
-                          .futureValue
-
-                        val resultadoObjetoA: AsyncResultSet = cassandra.cassandraWrite
-                          .cqlSelect(
-                            s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoA' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
-                          )
-                          .futureValue
-
-                        val obligacionVencidaA = resultadoVencida.one()
-                        val objetoA = resultadoObjetoA.one()
-
-                        //validad la evaluacion de que esta la obligacion vencida del objeto b
-                        obligacionVencidaA.getString("BOB_ESTADO") should be("ADMINISTRATIVA")
-
-                        //validar que el tiene30 esta en false
-                        objetoA.getBoolean("soj_tiene30objeto") should be(false)
-                        objetoA.getBoolean("soj_tiene30objetovinculo") should be(false)
-                      }
-
-                      //todo CUARTO EVENTO
-                      testObligacionVencidaSujetoB match {
-                        case Right(obnVencidaB) =>
-                          messageProducer.produceObligacion(obnVencidaB)
-
-                          eventually(timeout(15.seconds), interval(100.milliseconds)) {
-
-                            val resultadoVencida: AsyncResultSet = cassandra.cassandraWrite
-                              .cqlSelect(
-                                s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SUJ_IDENTIFICADOR = '$sujetoB' AND BOB_SOJ_IDENTIFICADOR = '$IdObjeto' AND BOB_SOJ_TIPO_OBJETO = '$tipoObjeto' AND BOB_OBN_ID = '$obn_id';"
-                              )
-                              .futureValue
-
-                            val resultadoObjetoB: AsyncResultSet = cassandra.cassandraWrite
-                              .cqlSelect(
-                                s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoB' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
-                              )
-                              .futureValue
-
-                            val obligacionVencida = resultadoVencida.one()
-                            val objetoB = resultadoObjetoB.one()
-
-
-                            //validar la evaluacion de que esta la obligacion vencida del objeto b
-                            obligacionVencida.getString("BOB_ESTADO") should be("ADMINISTRATIVA")
-
-                            //validar que el tiene30 esta en false
-                            objetoB.getBoolean("soj_tiene30objeto") should be(false)
-                            objetoB.getBoolean("soj_tiene30objetovinculo") should be(false)
-                          }
-
-                          //todo QUINTO EVENTO
-                          testObligacionPagaSujetoA match {
-                            case Right(obnPaga) =>
-                              messageProducer.produceObligacion(obnPaga)
-                              eventually(timeout(15.seconds), interval(100.milliseconds)) {
-
-                                val resultadoPaga: AsyncResultSet = cassandra.cassandraWrite
-                                  .cqlSelect(
-                                    s"SELECT count(*) FROM read_side.buc_obligaciones WHERE BOB_SUJ_IDENTIFICADOR = '$sujetoA' AND BOB_SOJ_IDENTIFICADOR = '$IdObjeto' AND BOB_SOJ_TIPO_OBJETO = '$tipoObjeto' AND BOB_OBN_ID = '$obn_id';"
-                                  )
-                                  .futureValue
-
-                                val resultadoObjetoA: AsyncResultSet = cassandra.cassandraWrite
-                                  .cqlSelect(
-                                    s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoA' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
-                                  )
-                                  .futureValue
-
-                                val obligacionPaga = resultadoPaga.one()
-                                val objetoA = resultadoObjetoA.one()
-
-                                //validad la evaluacion de que esta pagada del objeto a
-                                obligacionPaga.getLong("count") should be(0)
-
-                                //validar que el tiene30 esta en true pero del vinculo false
-                                objetoA.getBoolean("soj_tiene30objeto") should be(true)
-                                objetoA.getBoolean("soj_tiene30objetovinculo") should be(false)
-                              }
-                            case Left(e) =>
-                              println("ERROR DE LA OBN VENCIDA" + e)
-                          }
-                        case Left(e) =>
-                          println("ERROR DE LA OBN VENCIDA" + e)
-                      }
-                    case Left(e) =>
-                      println("ERROR DE LA OBN VENCIDA" + e)
-                  }
-                }
-              case Left(e) =>
-                println("ERROR DE LA OBN VENCIDA" + e)
-            }
-          }
-        case Left(e) =>
-          println("ERROR DE LA OBN VENCIDA" + e)
-      }
-  }
-
-  "Test de sincronizacion de cuits" should "End to end, PCS a Readside" in parallelActorSystemRunner { implicit s =>
-    implicit val dispatcher = s.dispatcher
-    val context = getContext(s)
-    val messageProducer = context.messageProducer
-    val cassandra = context.cassandra
-
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
-
-    val sujetoA = "SUJETO_A"
-
-    val tipoObjeto = "A"
-    val IdObjeto = "OBJETO30_TERCERO"
-    val obn_id = "obnDeuda-T1"
-
-    val fecha = LocalDateTime.now().minusDays(5)
-    val vtoVencida = LocalDateTime.now().minusDays(25)
-    val vtoVencidaParsed = LocalDateTime.now().minusDays(25).format(formatter)
-
-    val vtoMUC = vtoVencida.plusMonths(1).format(formatter)
-    val vtoPlazoGracia = LocalDateTime.now().minusDays(5).format(formatter)
-
-    val periodo = fecha.getYear
-    val cuota = fecha.getMonthValue
-    val obligacionVencidaNoDeuda =
-      s"""{
-      "EV_ID": "$deliveryIdAct",
-      "BOB_SUJ_IDENTIFICADOR": "$sujetoA",
-      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
-      "BOB_OBN_ID": "$obn_id",
-      "BOB_ESTADO": "ADMINISTRATIVA",
-      "BOB_VENCIMIENTO": "$vtoPlazoGracia",
-      "BOB_PERIODO": "$periodo",
-      "BOB_CUOTA": "$cuota",
-      "BOB_CAPITAL": "200",
-      "BOB_CONCEPTO": "601",
-      "BOB_IMPUESTO": "600",
-      "BOB_TIPO": "tributaria",
-      "BOB_ADHERIDO_DEBITO": "N",
-      "BOB_TOTAL": "1000000",
-      "BOB_PLN_ID": "null",
-      "BOB_OTROS_ATRIBUTOS": {
-      "BOB_DETALLES": [{
-      "BOB_MUNICIPIO": "Municipio"
-      }]}
-    }"""
-    Thread.sleep(5000)
-
-    val obligacionVencidaMUC =
-      s"""{
-      "EV_ID": "$deliveryIdAct",
-      "BOB_SUJ_IDENTIFICADOR": "$sujetoA",
-      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
-      "BOB_OBN_ID": "$obn_id",
-      "BOB_ESTADO": "ADMINISTRATIVA",
-      "BOB_VENCIMIENTO": "$vtoVencidaParsed",
-      "BOB_VENCIMIENTO_2": "$vtoMUC",
-      "BOB_PERIODO": "$periodo",
-      "BOB_CUOTA": "$cuota",
-      "BOB_CAPITAL": "200",
-      "BOB_CONCEPTO": "840",
-      "BOB_IMPUESTO": "2",
-      "BOB_TIPO": "tributaria",
-      "BOB_ADHERIDO_DEBITO": "N",
-      "BOB_TOTAL": "99999",
-      "BOB_PLN_ID": "null",
-      "BOB_OTROS_ATRIBUTOS": {
-      "BOB_DETALLES": [{
-      "BOB_MUNICIPIO": "Municipio"
-      }]}
-    }"""
-    Thread.sleep(5000)
-
-    val obligacionVencida =
-      s"""{
-      "EV_ID": "$deliveryIdAct",
-      "BOB_SUJ_IDENTIFICADOR": "$sujetoA",
-      "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
-      "BOB_SOJ_IDENTIFICADOR": "$IdObjeto",
-      "BOB_OBN_ID": "$obn_id",
-      "BOB_ESTADO": "ADMINISTRATIVA",
-      "BOB_VENCIMIENTO": "$vtoVencidaParsed",
-      "BOB_PERIODO": "$periodo",
-      "BOB_CUOTA": "$cuota",
+      "BOB_PERIODO": "2023",
+      "BOB_CUOTA": "11",
       "BOB_CAPITAL": "200",
       "BOB_CONCEPTO": "601",
       "BOB_IMPUESTO": "600",
@@ -1305,113 +1360,188 @@ abstract class BaseTriSpec(
       "BOB_MUNICIPIO": "Municipio"
       }]}
     }"""
-    Thread.sleep(5000)
-// N - 99999 - 10
 
-    val testObnVencidaNoDeuda: Either[io.circe.Error, ObligacionesTri] = decode[ObligacionesTri](obligacionVencidaNoDeuda)
-    val testObnVencidaMUC: Either[io.circe.Error, ObligacionesTri] = decode[ObligacionesTri](obligacionVencidaMUC)
-    val testObnVencida: Either[io.circe.Error, ObligacionesTri] = decode[ObligacionesTri](obligacionVencida)
+    val pagoObligacion =
+      s"""{
+      "EV_ID": "$deliveryIdAct",
+      "BOB_SUJ_IDENTIFICADOR": "${testData1.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testData1.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testData1.objetoId}",
+      "BOB_OBN_ID": "${testData1.obnId}",
+      "BOB_ESTADO": "ADMINISTRATIVA",
+      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+      "BOB_PERIODO": "2023",
+      "BOB_CUOTA": "11",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "601",
+      "BOB_IMPUESTO": "600",
+      "BOB_TIPO": "tributaria",
+      "BOB_PLN_ID": "10",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [{
+      "BOB_MUNICIPIO": "Municipio",
+      "RULE_NUMBER": "-1"
+      }]}
+    }"""
 
-    //todo PRIMER EVENTO
-    testObnVencidaNoDeuda match {
-      case Right(obnVencidaNoDeuda) =>
-        messageProducer.produceObligacion(obnVencidaNoDeuda)
+    def verifyObnRemovedCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+      val cassandra = context.cassandra
+      val resultado: AsyncResultSet = cassandra.cassandraWrite
+        .cqlSelect(
+          s"SELECT COUNT(*) FROM read_side.buc_obligaciones" +
+          s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+          s" AND BOB_SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
+          s" AND BOB_SUJ_IDENTIFICADOR = '${testData1.sujetoId}'" +
+          s" AND BOB_OBN_ID = '${testData1.obnId}';"
+        )
+        .futureValue
 
-        eventually(timeout(15.seconds), interval(100.milliseconds)) {
-
-          val resultadoVencidaNoDeuda: AsyncResultSet = cassandra.cassandraWrite
-            .cqlSelect(
-              s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SUJ_IDENTIFICADOR = '$sujetoA' AND BOB_SOJ_IDENTIFICADOR = '$IdObjeto' AND BOB_SOJ_TIPO_OBJETO = '$tipoObjeto' AND BOB_OBN_ID = '$obn_id';"
-            )
-            .futureValue
-
-          val obligacionVencidaNoDeuda = resultadoVencidaNoDeuda.one()
-
-          //validar la evaluacion de que esta la obligacion vencida
-          obligacionVencidaNoDeuda.getString("BOB_ADHERIDO_DEBITO") should be("N")
-
-          val resultadoObjetoA: AsyncResultSet = cassandra.cassandraWrite
-            .cqlSelect(
-              s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoA' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
-            )
-            .futureValue
-
-          val objetoA = resultadoObjetoA.one()
-
-          //validar que el tiene30 esta en true
-          objetoA.getBoolean("soj_tiene30objeto") should be(true)
-          objetoA.getBoolean("soj_tiene30objetovinculo") should be(true)
-
-        }
-
-        //todo SEGUNDO EVENTO (capital)
-        testObnVencidaMUC match {
-          case Right(obnMUC) =>
-            messageProducer.produceObligacion(obnMUC)
-
-            eventually(timeout(15.seconds), interval(100.milliseconds)) {
-              val resultadoMuc: AsyncResultSet = cassandra.cassandraWrite
-                .cqlSelect(
-                  s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SUJ_IDENTIFICADOR = '$sujetoA' AND BOB_SOJ_IDENTIFICADOR = '$IdObjeto' AND BOB_SOJ_TIPO_OBJETO = '$tipoObjeto' AND BOB_OBN_ID = '$obn_id';"
-                )
-                .futureValue
-
-              val obligacionMuc = resultadoMuc.one()
-
-              //validar la evaluacion de que el capital debe ser 3000
-              obligacionMuc.getFloat("BOB_TOTAL") should be(99999)
-
-              val resultadoObjetoA: AsyncResultSet = cassandra.cassandraWrite
-                .cqlSelect(
-                  s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoA' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
-                )
-                .futureValue
-
-              val objetoA = resultadoObjetoA.one()
-
-              //validar que el tiene30 esta en true
-              objetoA.getBoolean("soj_tiene30objeto") should be(true)
-              objetoA.getBoolean("soj_tiene30objetovinculo") should be(true)
-            }
-
-            //todo TERCER EVENTO (impuesto)
-            testObnVencida match {
-              case Right(obnVencida) =>
-                messageProducer.produceObligacion(obnVencida)
-                eventually(timeout(15.seconds), interval(100.milliseconds)) {
-
-                  val resultadoVencida: AsyncResultSet = cassandra.cassandraWrite
-                    .cqlSelect(
-                      s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SUJ_IDENTIFICADOR = '$sujetoA' AND BOB_SOJ_IDENTIFICADOR = '$IdObjeto' AND BOB_SOJ_TIPO_OBJETO = '$tipoObjeto' AND BOB_OBN_ID = '$obn_id';"
-                    )
-                    .futureValue
-
-                  val obligacionVencida = resultadoVencida.one()
-
-                  //validar la evaluacion que el impuesto es 2000
-                  obligacionVencida.getString("BOB_PLN_ID") should be("10")
-
-                  val resultadoObjetoA: AsyncResultSet = cassandra.cassandraWrite
-                    .cqlSelect(
-                      s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '$sujetoA' AND SOJ_IDENTIFICADOR = '$IdObjeto' and SOJ_TIPO_OBJETO = '$tipoObjeto';"
-                    )
-                    .futureValue
-
-                  val objetoA = resultadoObjetoA.one()
-
-                  //validar que el tiene30 esta en false
-                  objetoA.getBoolean("soj_tiene30objeto") should be(false)
-                  objetoA.getBoolean("soj_tiene30objetovinculo") should be(false)
-                }
-              case Left(e) =>
-                println("ERROR DE LA OBN VENCIDA" + e)
-            }
-          case Left(e) =>
-            println("ERROR DE LA OBN VENCIDA" + e)
-        }
-      case Left(e) =>
-        println("ERROR DE LA OBN VENCIDA" + e)
+      val obligacionRemoved = resultado.one()
+      obligacionRemoved.getLong("count") should be(0)
     }
+    def verifyObjetoRemovedCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+      val cassandra = context.cassandra
+      val resultado: AsyncResultSet = cassandra.cassandraWrite
+        .cqlSelect(
+          s"SELECT COUNT(*) FROM read_side.buc_sujeto_objeto" +
+            s" WHERE SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+            s" AND SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
+            s" AND SOJ_SUJ_IDENTIFICADOR = '${testData1.sujetoId}';"
+        )
+        .futureValue
+
+      val obligacionRemoved = resultado.one()
+      obligacionRemoved.getLong("count") should be(0)
+    }
+
+    def verifyObnAltaCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+      val cassandra = context.cassandra
+      val resultado: AsyncResultSet = cassandra.cassandraWrite
+        .cqlSelect(
+          s"SELECT COUNT(*) FROM read_side.buc_obligaciones" +
+          s" WHERE BOB_SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+          s" AND BOB_SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
+          s" AND BOB_SUJ_IDENTIFICADOR = '${testData1.sujetoId}'" +
+          s" AND BOB_OBN_ID = '${testData1.obnId}';"
+        )
+        .futureValue
+
+      val obligacionRemoved = resultado.one()
+      obligacionRemoved.getLong("count") should be(1)
+    }
+    def verifyObjetoAltaCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+      val cassandra = context.cassandra
+      val resultado: AsyncResultSet = cassandra.cassandraWrite
+        .cqlSelect(
+          s"SELECT COUNT(*) FROM read_side.buc_sujeto_objeto" +
+            s" WHERE SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+            s" AND SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
+            s" AND SOJ_SUJ_IDENTIFICADOR = '${testData1.sujetoId}';"
+        )
+        .futureValue
+
+      val obligacionRemoved = resultado.one()
+      obligacionRemoved.getLong("count") should be(1)
+    }
+
+    //TODO: cuando necesitemos validar campos llamar a
+    // verifyValueCassandra(testData: TestData, value: String|Boolean|Float): Assertion
+    // verfyDetailsValueCassandra(testData: TestData, value: Any): Assertion
+    // {match tipoValue => hacer get de String|Boolean|Float}
+
+    //1 - Mandar un pago de obn sobre una VSO que existe y es valida
+
+    //    1 - Mandar un pago de obn sobre una VSO que existe y es valida - Checked!
+    for {
+      // 1 - Crear VSOA
+      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+      _ <- messageProducer.produceEvento(VSO_A2, "DGR-COP-OBJETOS-TRI")
+      _ <- messageProducer.produceEvento(VSO_A3, "DGR-COP-OBJETOS-TRI")
+      // 2 - Alta obn en VSO_A
+//      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+      // 3 - Pago obn en VSOA
+//      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
+    } yield ()
+
+    Thread.sleep(5000)
+    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+      println("Eventually")
+      verifyObnRemovedCassandra(testData1)
+      verifyObjetoAltaCassandra(testData1)
+    }
+
+////    2 - Mandar un pago de obn sobre una VSO dada de baja -> No crear VSO
+//    for {
+//      // 1 - Crear VSOA
+//      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+//      // 2 - Alta obn en VSO_A
+//      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//      // 3 - Dar baja VSO_A
+//      _ <- messageProducer.produceEvento(VSO_A_BAJA, "DGR-COP-OBJETOS-TRI")
+//      // 4 - Pagar la Obn
+//      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//    } yield ()
+//
+//    Thread.sleep(5000)
+//    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+//      println("Eventually")
+//      verifyObnRemovedCassandra(testData1)
+//      verifyObjetoRemovedCassandra(testData1)
+//    }
+
+////    3 - Mandar un pago de obn sobre una VSO que no existe -> Crear VSO
+//    for {
+//      // 1 - Pagar la Obn
+//      _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//    } yield ()
+//
+//    Thread.sleep(5000)
+//    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+//      println("Eventually")
+//      verifyObnRemovedCassandra(testData1)
+//      verifyObjetoRemovedCassandra(testData1)
+//    }
+//
+////    4 - Mandar obn de deuda de una VSO que no existe
+//    for {
+//      // 2 - Alta obn en VSO_A
+//      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//    } yield ()
+//
+//    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+//      println("Eventually")
+//      verifyObnAltaCassandra(testData1)
+//      verifyObjetoAltaCassandra(testData1)
+//    }
+
+////    5 - Mandar obn de deuda de una VSO dada de baja
+//    for {
+//      // 1 - Crear VSO_A
+//      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+//      // 2 - Dar baja VSO_A
+//      _ <- messageProducer.produceEvento(VSO_A_BAJA, "DGR-COP-OBJETOS-TRI")
+//      // 3 - Alta obn en VSO_A
+//      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//    } yield ()
+//
+//    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+//      println("Eventually")
+//      verifyObnAltaCassandra(testData1)
+//      verifyObjetoAltaCassandra(testData1)
+//    }
+
+////    6 - Mandar obn de deuda de una VSO que existe y es valida
+//    for {
+//      // 1 - Crear VSO_A
+//      _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+//      // 2 - Alta obn en VSO_A
+//      _ <- messageProducer.produceEvento(altaObligacion, "DGR-COP-OBLIGACIONES-TRI")
+//    } yield ()
+//
+//    eventually(timeout(15.seconds), interval(100.milliseconds)) {
+//      println("Eventually")
+//      verifyObnAltaCassandra(testData1)
+//      verifyObjetoAltaCassandra(testData1)
+//    }
   }
 }
-

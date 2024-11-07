@@ -16,9 +16,9 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 class ObligacionPersistedSnapshotHandler(
-                                          implicit
-                                          r: MonitoringAndCassandraWrite
-                                        ) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
+    implicit
+    r: MonitoringAndCassandraWrite
+) extends ActorTransaction[ObligacionPersistedSnapshot](r.monitoring)(r.actorTransactionRequirements) {
 
   @JsonIgnore
   private val log = LoggerFactory.getLogger(this.getClass)
@@ -56,6 +56,7 @@ class ObligacionPersistedSnapshotHandler(
         case Some(x) => x.BOB_CANAL_ORIGEN.getOrElse("TAX")
         case None => "TAX"
       }
+      //TODO pk:  si cambia la pk de la tabla, reordenar
       for {
         done <- cassandra
           .cql(

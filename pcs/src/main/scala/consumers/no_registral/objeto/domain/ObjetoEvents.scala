@@ -96,6 +96,7 @@ object ObjetoEvents {
       tipoObjeto: String,
       tagRemoved: String
   ) extends ObjetoEvents
+
   case class UpdatedState30ObjetoFromObjVinculo(
       deliveryId: BigInt,
       sujetoId: String,

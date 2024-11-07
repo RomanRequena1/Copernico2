@@ -6,12 +6,20 @@ import consumers.no_registral.sujeto.domain.SujetoEvents
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
+import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotentInternally
 
 import scala.util.{Success, Try}
 
 class SujetoSetBajaFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandler[SujetoSetBajaFromObjeto] {
   override def handle(command: SujetoSetBajaFromObjeto): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
     val event = SujetoEvents.SujetoBajaFromObjetoSet(
       command.deliveryId,
       command.sujetoId,
@@ -19,11 +27,16 @@ class SujetoSetBajaFromObjetoHandler(actor: SujetoActor) extends SyncCommandHand
       command.tipoObjeto
     )
 
-    actor.persistEvent(event,Set("Sujeto")) { () =>
+    if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
+      println(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+    } else {
+      actor.persistEvent(event, Set("Sujeto")) { () =>
 
-      actor.state += event
+        actor.state += event
         SendToObjeto(actor.state, sender, actor.context, event.sujetoId, command.objetoId, command.tipoObjeto)
-      actor.persistSnapshot()(_ => ())
+        actor.persistSnapshot()(_ => ())
+      }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

@@ -56,7 +56,6 @@ object SendToObjetoFromSujeto {
             actorContext: ActorContext,
             sujetoId: String,
             exclusionSujeto: Option[String]): Unit = {
-
     actorContext.children.foreach(actor => {
       actor.ask[Response.SuccessProcessing](
         ObjetoUpdateFromSujeto(

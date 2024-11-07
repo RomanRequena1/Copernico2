@@ -64,11 +64,12 @@ final case class ObligacionSnapshotProjection(
       "bob_cuota" -> registro.BOB_CUOTA
     )
   }
+  // FIXME: quitar el others y agregar el bob_saldo donde corresponda
   val other: List[(String, BigDecimal)] =
-    List(
-      "bob_saldo" -> event.saldo
-      //"bob_porcentaje_exencion" -> event.porcentajeExencion,
-      //"bob_exenta" -> event.exenta
+  List(
+    "bob_saldo" -> event.saldo
+    //"bob_porcentaje_exencion" -> event.porcentajeExencion,
+    //"bob_exenta" -> event.exenta
     )
   val bindings: List[(String, Serializable)] = fromRegistro match {
     case Some(fromRegistro) => fromRegistro ++ other

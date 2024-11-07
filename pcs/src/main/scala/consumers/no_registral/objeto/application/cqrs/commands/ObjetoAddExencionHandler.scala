@@ -18,6 +18,15 @@ class ObjetoAddExencionHandler(actor: ObjetoActor)(implicit messageProducer: Mes
       command: ObjetoCommands.ObjetoAddExencion
   ): Try[Response.SuccessProcessing] = {
     val replyTo = actor.sender()
+
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
+
     val event = ObjetoEvents.ObjetoAddedExencion(
       command.deliveryId,
       command.sujetoId,
