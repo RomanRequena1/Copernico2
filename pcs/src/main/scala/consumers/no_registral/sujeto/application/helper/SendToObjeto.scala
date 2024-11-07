@@ -12,7 +12,6 @@ object SendToObjeto {
             sujetoId: String,
             objetoId: String,
             tipoObjeto: String): Unit = {
-    println(s"CUMBIA SendToObjeto lastdeliveryId: ${currentState.lastDeliveryIdByEvents}")
     if (currentState.diffStates) {
       actorContext
         .child(s"Sujeto-$sujetoId-Objeto-$objetoId-$tipoObjeto") match {
@@ -57,7 +56,6 @@ object SendToObjetoFromSujeto {
             actorContext: ActorContext,
             sujetoId: String,
             exclusionSujeto: Option[String]): Unit = {
-    println(s"CUMBIA SendToObjetoFromSujeto lastdeliveryId: ${currentState.lastDeliveryIdByEvents}")
     actorContext.children.foreach(actor => {
       actor.ask[Response.SuccessProcessing](
         ObjetoUpdateFromSujeto(
