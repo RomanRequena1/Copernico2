@@ -37,8 +37,6 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
       command.obligacionId,
       command.cuota
     )
-    implicit val ac: ActorSystem = actor.context.system
-    val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
 
     if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
       log.error(
@@ -47,6 +45,9 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 
     } else {
+      
+      implicit val ac: ActorSystem = actor.context.system
+      val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
       actor.persistEvent(event) { () =>
         actor.state += event
         if (!actor.state.isBaja) {
