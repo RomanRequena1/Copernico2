@@ -127,7 +127,7 @@ case class ObjetoState(
           exenciones = exenciones + exencion,
           isBaja = false
         )
-        // TODO: check si agregamos el deliveryId en objeto desde sujeto
+      // TODO: check si agregamos el deliveryId en objeto desde sujeto
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
         copy(tiene30Sujeto = Some(evt.tiene30Sujeto))
       // TODO: check when an object with multiple owners changes its exclusions.
@@ -136,8 +136,7 @@ case class ObjetoState(
           tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo, //todo CAMBIE ACA
           // Este pisaba a todos los tiene30objeto de los VSO, deberia guardarse solo en tiene30ObjVinculo
           //          tiene30Objeto = diffCurrentStateAndNewStateTest(obnVencidas, _tiene30ObjetoVinculo),
-          exclusionObjeto = evt.exclusionObjetoVinculo,
-          lastDeliveryIdByEvents = evt.deliveryId
+          exclusionObjeto = evt.exclusionObjetoVinculo
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
         copy(
@@ -157,8 +156,7 @@ case class ObjetoState(
             case x if x.contains("NE") => Some("NE")
             case x if x.contains("C") => Some("C")
             case _ => None
-          },
-          lastDeliveryIdByEvents = evt.deliveryId
+          }
         )
 
       case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
@@ -171,10 +169,19 @@ case class ObjetoState(
           registro = Some(evt.registro),
           sujetos = sujetos + evt.sujetoId,
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
-          isBaja = false,
-          lastDeliveryIdByEvents = evt.deliveryId
+          isBaja = false
         )
-      case ObjetoEvents.ObjetoUpdatedFromObligacion(deliveryId, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, _) =>
+      case ObjetoEvents.ObjetoUpdatedFromObligacion(deliveryId,
+                                                    sujetoId,
+                                                    _,
+                                                    _,
+                                                    _,
+                                                    obligacionId,
+                                                    saldoObligacion,
+                                                    _,
+                                                    _,
+                                                    _,
+                                                    _) =>
         val _obnVencidas = validExitsObnVencidas(obligacionId)
         val obligacionesSaldo_ = obligacionesSaldo + (obligacionId -> saldoObligacion)
         val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
@@ -185,8 +192,7 @@ case class ObjetoState(
           sujetos = sujetos + sujetoId,
           isBaja = false,
           obnVencidas = _obnVencidas,
-          tiene30Objeto = diff,
-          lastDeliveryIdByEvents = deliveryId
+          tiene30Objeto = diff
         )
 
       case evt: ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento =>
@@ -195,8 +201,7 @@ case class ObjetoState(
         copy(
           obnVencidas = _obnVencidas,
           tiene30Objeto = diff,
-          tiene30ObjetoVinculo = tiene30ObjetoVinculo, //todo agregue aca
-          lastDeliveryIdByEvents = evt.deliveryId
+          tiene30ObjetoVinculo = tiene30ObjetoVinculo
         )
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
         copy(
@@ -206,8 +211,7 @@ case class ObjetoState(
           obligacionesSaldo = evt.obligacionesSaldo,
           tags = evt.tags,
           isBaja = false,
-          cuotas = evt.cuotas,
-          lastDeliveryIdByEvents = evt.deliveryId
+          cuotas = evt.cuotas
         )
       case evt: ObjetoEvents.ObjetoTagAdded =>
         copy(tags = tags + evt.tagAdded, isBaja = false)
@@ -222,8 +226,7 @@ case class ObjetoState(
           },
           isResponsable = evt.isResponsable.getOrElse(false),
           registro = Some(evt.registro),
-          isBaja = true,
-          lastDeliveryIdByEvents = evt.deliveryId
+          isBaja = true
         )
       case evt: ObjetoEvents.ObjetoRemovedObligacion =>
         val obligacionesSaldo_ = obligacionesSaldo - (evt.obligacionId)
@@ -235,8 +238,7 @@ case class ObjetoState(
             obligaciones = obligaciones - evt.obligacionId,
             obligacionesSaldo = obligacionesSaldo_,
             obnVencidas = _obnVencidas,
-            tiene30Objeto = diff,
-            lastDeliveryIdByEvents = evt.deliveryId
+            tiene30Objeto = diff
           ) //todo ver aca como es para cuando pago la obligacion se cambie el state de los objetos
         } else {
           val cuotaIndex_ = evt.cuota.get.toInt
@@ -249,8 +251,7 @@ case class ObjetoState(
             obligacionesSaldo = obligacionesSaldo_,
             cuotas = cuotasPagadas_,
             obnVencidas = _obnVencidas,
-            tiene30Objeto = diff,
-            lastDeliveryIdByEvents = evt.deliveryId
+            tiene30Objeto = diff
           )
         }
       case evt: ObjetoEvents.RemovedObjetoFromObligacion =>
@@ -263,8 +264,7 @@ case class ObjetoState(
         val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
         copy(
           obnVencidas = _obnVencidas,
-          tiene30Objeto = diff,
-          lastDeliveryIdByEvents = evt.deliveryId
+          tiene30Objeto = diff
         )
       case evt =>
         log.warn(s"Unexpected event at ObjetoState ${evt}")
