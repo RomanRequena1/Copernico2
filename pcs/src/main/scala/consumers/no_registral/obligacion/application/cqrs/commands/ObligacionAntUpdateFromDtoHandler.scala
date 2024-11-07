@@ -2,13 +2,7 @@ package consumers.no_registral.obligacion.application.cqrs.commands
 
 import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionAntUpdateFromDto
-import consumers.no_registral.obligacion.application.entities.{
-  DetallesObligacion,
-  DetallesSupresiones,
-  ListDetallesObligaciones,
-  ListDetallesSupresiones,
-  ObligacionExternalDto
-}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionExternalDto}
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionAntUpdatedFromDto
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -51,35 +45,9 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
               val otros_atributos_updated = value.BOB_DETALLES.map(actualizarBBBobDetalles)
               campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(otros_atributos_updated)))
           }
-        } else if (campoEvento.getName == "BOB_SUPRESIONES") {
-          evento.BOB_SUPRESIONES match {
-            case None => obligacionNuevoTest
-            case Some(value) if value.BOB_DETALLES_SUPRESIONES.nonEmpty =>
-              val supresiones_updated = value.BOB_DETALLES_SUPRESIONES.map(actualizarBBBobSupresiones)
-              campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(supresiones_updated)))
-          }
         }
       }
       obligacionNuevoTest
-    }
-    def actualizarBBBobSupresiones(atributosEvento: DetallesSupresiones) = {
-
-      val declaredFields = atributosEvento.getClass.getDeclaredFields
-      var atributosNuevo = atributosEvento
-
-      declaredFields.foreach { campo =>
-        val campoEvento = atributosNuevo.getClass.getDeclaredField(campo.getName)
-        campoEvento.setAccessible(true)
-
-        if (campoEvento.get(atributosEvento).equals(Some("null"))) {
-          campoEvento.set(atributosNuevo, None)
-        } else if (campoEvento.get(atributosEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
-          campoEvento.set(atributosNuevo, None)
-        } else if (campoEvento.get(atributosEvento).equals(Some(999))) {
-          campoEvento.set(atributosNuevo, None)
-        }
-      }
-      atributosNuevo
     }
     def actualizarBBBobDetalles(atributosEvento: DetallesObligacion) = {
 
@@ -126,25 +94,6 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
               }
               campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(otros_atributos_updated)))
             case _ => obligacionNuevoTest
-          }
-        } else if (campoEvento.getName == "BOB_SUPRESIONES") {
-          (evento.BOB_SUPRESIONES, estado.BOB_SUPRESIONES) match {
-            case (Some(eventoSupresiones), Some(estadoSupresiones)) =>
-              // Combinar las supresiones del evento y del estado, eliminando duplicados
-              val supresionesUnicas = (eventoSupresiones.BOB_DETALLES_SUPRESIONES ++ estadoSupresiones.BOB_DETALLES_SUPRESIONES)
-                .groupBy(_.BOB_TIPO_SUP)
-                .map { case (_, supresiones) => supresiones.maxBy(_.BOB_FECHA_INICIO_SUP) }
-                .toList
-              campoEvento.set(obligacionNuevoTest, Some(ListDetallesSupresiones(supresionesUnicas)))
-            case (Some(eventoSupresiones), None) =>
-              // Si no hay supresiones en el estado, usar las del evento
-              campoEvento.set(obligacionNuevoTest, Some(eventoSupresiones))
-            case (None, Some(estadoSupresiones)) =>
-              // Si no hay nuevas supresiones, mantener las existentes
-              campoEvento.set(obligacionNuevoTest, Some(estadoSupresiones))
-            case (None, None) =>
-              // Si no hay supresiones en ninguno, dejar como None
-              campoEvento.set(obligacionNuevoTest, None)
           }
         }
       }

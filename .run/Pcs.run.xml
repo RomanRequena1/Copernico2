@@ -1,0 +1,57 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Pcs" type="SbtRunConfiguration" factoryName="sbt Task" show_console_on_std_err="false" show_console_on_std_out="false">
+    <option name="allowRunningInParallel" value="false" />
+    <option name="projectPathOnTarget" />
+    <option name="selectedOptions">
+      <list />
+    </option>
+    <option name="tasks" value="pcs/run" />
+    <option name="useSbtShell" value="false" />
+    <option name="vmparams" value="-Xms512M -Xmx1024M -Xss1M -XX:+CMSClassUnloadingEnabled" />
+    <option name="workingDir" value="$PROJECT_DIR$" />
+    <envs>
+      <env name="CASSANDRA_CONTACT_POINTS_UNO" value="0.0.0.0:9042" />
+      <env name="AKKA_DEBUG_MODE" value="INFO" />
+      <env name="CASSANDRA_USERNAME" value="app_actmod" />
+      <env name="HTTP_PORT" value="8081" />
+      <env name="AKKA_KAFKA_DEBUG_MODE" value="INFO" />
+      <env name="I0ITEC_ZKCLIENT_DEBUG_MODE" value="OFF" />
+      <env name="CONSUMER_PARALLELISM" value="4" />
+      <env name="MANAGEMENT_PORT" value="8551" />
+      <env name="PATH_DMN_CLASIF_OBJETO" value="$PROJECT_DIR$/clasificacion_objeto.dmn" />
+      <env name="DMN_ID_CLASIF_OBJETO" value="Decision_Clasificacion_Objeto" />
+      <env name="MAX_REQUESTS_PER_CONNECTION" value="4096" />
+      <env name="APACHE_KAFKA_DEBUG_MODE" value="INFO" />
+      <env name="KAFKA_BROKERS_LIST" value="localhost:9092" />
+      <env name="POOL_LOCAL_SIZE" value="4" />
+      <env name="JAEGER_PORT" value="5775" />
+      <env name="KAMON_STATUS_PAGE" value="5261" />
+      <env name="APACHE_KAFKA_CLIENTS_NETWORK_CLIENT_DEBUG_MODE" value="OFF" />
+      <env name="DMN_ID_DECISION_30" value="Decision_descuento" />
+      <env name="IO_NETTY_DEBUG_MODE" value="OFF" />
+      <env name="PATH_DMN_OBJETO_CUPON" value="$PROJECT_DIR$/objetoCupon.dmn" />
+      <env name="REFLECTION_DEBUG_MODE" value="OFF" />
+      <env name="CASSANDRA_CONTACT_POINTS" value="" />
+      <env name="METRICS_JMX_REPORTER_DEBUG_MODE" value="OFF" />
+      <env name="CASSANDRA_CONTACT_POINTS_TRES" value="" />
+      <env name="SEED_NODES" value="akka://PersonClassificationService@0.0.0.0:2551" />
+      <env name="DATASTAX_DEBUG_MODE" value="INFO" />
+      <env name="DMN_ID_OBJETO_CUPON" value="Decision_0tsof3f" />
+      <env name="PROMETHEUS_PORT" value="5001" />
+      <env name="POOL_REMOTE_SIZE" value="1" />
+      <env name="APACHE_ZOOKEEPER_DEBUG_MODE" value="OFF" />
+      <env name="CLUSTER_PORT" value="2551" />
+      <env name="CASSANDRA_CONTACT_POINTS_DOS" value="" />
+      <env name="LOG_ROOT_LEVEL_DEBUG_MODE" value="INFO" />
+      <env name="APACHE_KAFKA_APP_INFO_PARSER_DEBUG_MODE" value="OFF" />
+      <env name="CASSANDRA_PASSWORD" value="app03" />
+      <env name="PASSIVATE" value="120s" />
+      <env name="NET_LOGSTASH_DEBUG_MODE" value="OFF" />
+      <env name="TIMEOUT" value="50" />
+      <env name="PATH_DMN_DECISION_30" value="$PROJECT_DIR$/decision_30_descuento.dmn" />
+      <env name="JAEGER_HOST" value="'localhost'" />
+      <env name="MAX_CONCURRENT_REQUESTS" value="1024" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>

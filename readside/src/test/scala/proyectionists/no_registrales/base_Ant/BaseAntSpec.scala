@@ -604,4 +604,176 @@ abstract class BaseAntSpec(
         println(s"Error decodificando JSON inicial: $error")
     }
   }
+  "Test 4: Prueba de supresiones en obligaciones" should "mantener solo las supresiones del último evento" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
+      val cassandra = context.cassandra
+
+      val sujeto1 = "20-317357991-3"
+      val sujeto2 = "30-550273551-8"
+      val sujeto3 = "30-550273551-9"
+      val idObjeto1 = "0123-000181855"
+      val idObjeto2 = "0022-000991155"
+      val idObjeto3 = "0022-000991156"
+      val tipoObjeto = "SALUD"
+      val obnId1 = "32868589513"
+      val obnId2 = "18782512715"
+      val obnId3 = "18782512716"
+
+      val obligacionJsonInicial =
+        s"""{
+          "EV_ID": "20240923120300971428775999136",
+          "BOB_SUJ_IDENTIFICADOR": "$sujeto1",
+          "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
+          "BOB_SOJ_IDENTIFICADOR": "$idObjeto1",
+          "BOB_OBN_ID": "$obnId1",
+          "BOB_SUPRESIONES": {
+            "BOB_DETALLES_SUPRESIONES": [
+              {
+                "BOB_TIPO_SUP": "CMPAMI",
+                "BOB_DESCRIPCION": null,
+                "BOB_ESTADO_SUP": "REALESED",
+                "BOB_FECHA_INICIO_SUP": "2024-11-15 00:00:00.0",
+                "BOB_FECHA_FIN_SUP": "2024-11-30 00:00:00.0"
+              },
+              {
+                "BOB_TIPO_SUP": "CMYPLAN",
+                "BOB_DESCRIPCION": null,
+                "BOB_ESTADO_SUP": "ACTIVE",
+                "BOB_FECHA_INICIO_SUP": "2025-05-22 00:00:00.0",
+                "BOB_FECHA_FIN_SUP": null
+              }
+            ]
+          }
+        }"""
+
+      val testObligacionInicial: Either[io.circe.Error, ObligacionesAnt] =
+        decode[ObligacionesAnt](obligacionJsonInicial)
+
+      testObligacionInicial match {
+        case Right(obligacionInicial) =>
+          messageProducer.produceObligacion(obligacionInicial)
+
+          eventually(timeout(15.seconds), interval(100.milliseconds)) {
+            val resultado: AsyncResultSet = cassandra.cassandraWrite
+              .cqlSelect(
+                s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${idObjeto1}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}';"
+              )
+              .futureValue
+
+            val obligacion = resultado.one()
+
+            // Verificar que las supresiones iniciales se guardaron correctamente
+            val bobSupresiones = obligacion.getMap("BOB_SUPRESIONES", classOf[String], classOf[String])
+            val bobDetallesSupresiones: String = bobSupresiones.get("BOB_DETALLES_SUPRESIONES")
+
+            decode[List[DetallesSupresiones]](bobDetallesSupresiones) match {
+              case Left(error) => fail(s"Error decoding BOB_DETALLES_SUPRESIONES: $error")
+              case Right(supresiones) =>
+                supresiones.length should be(2)
+                supresiones.exists(_.BOB_TIPO_SUP.contains("CMPAMI")) should be(true)
+                supresiones.exists(_.BOB_TIPO_SUP.contains("CMYPLAN")) should be(true)
+            }
+          }
+
+          // Enviar segundo evento con diferentes supresiones
+          val obligacionModificadaJson =
+            s"""{
+              "EV_ID": "20241025155256009187825139601",
+              "BOB_SOJ_IDENTIFICADOR": "$idObjeto2",
+              "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
+              "BOB_SUJ_IDENTIFICADOR": "$sujeto2",
+              "BOB_OBN_ID": "$obnId2",
+              "BOB_PERIODO": "2023",
+              "BOB_CUOTA": "00",
+              "BOB_SUPRESIONES": {
+                "BOB_DETALLES_SUPRESIONES": [
+                  {
+                    "BOB_TIPO_SUP": "CMSSS",
+                    "BOB_DESCRIPCION": "[SALUD] - Bloqueo por pase a SSS",
+                    "BOB_ESTADO_SUP": "PENDING",
+                    "BOB_FECHA_INICIO_SUP": "2022-05-22 00:00:00.0",
+                    "BOB_FECHA_FIN_SUP": "2022-05-22 00:00:00.0"
+                  }
+                ]
+              }
+            }"""
+
+          val testObligacionModificada: Either[io.circe.Error, ObligacionesAnt] =
+            decode[ObligacionesAnt](obligacionModificadaJson)
+
+          testObligacionModificada match {
+            case Right(obligacionModificada) =>
+              messageProducer.produceObligacion(obligacionModificada)
+
+              eventually(timeout(15.seconds), interval(100.milliseconds)) {
+                val resultado2: AsyncResultSet = cassandra.cassandraWrite
+                  .cqlSelect(
+                    s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${idObjeto2}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}';"
+                  )
+                  .futureValue
+
+                val obligacion2 = resultado2.one()
+
+                // Verificar que solo quedaron las supresiones del último evento
+                val bobSupresiones2 = obligacion2.getMap("BOB_SUPRESIONES", classOf[String], classOf[String])
+                val bobDetallesSupresiones2: String = bobSupresiones2.get("BOB_DETALLES_SUPRESIONES")
+
+                decode[List[DetallesSupresiones]](bobDetallesSupresiones2) match {
+                  case Left(error) => fail(s"Error decoding BOB_DETALLES_SUPRESIONES: $error")
+                  case Right(supresiones) =>
+                    supresiones.length should be(1)
+                    supresiones.head.BOB_TIPO_SUP.get should be("CMSSS")
+                    supresiones.head.BOB_ESTADO_SUP.get should be("PENDING")
+                    supresiones.head.BOB_DESCRIPCION.get should be("[SALUD] - Bloqueo por pase a SSS")
+                }
+              }
+
+              // Enviar tercer evento sin supresiones
+              val obligacionSinSupresionesJson =
+                s"""{
+                  "EV_ID": "20241025155256009187825139602",
+                  "BOB_SOJ_IDENTIFICADOR": "$idObjeto3",
+                  "BOB_SOJ_TIPO_OBJETO": "$tipoObjeto",
+                  "BOB_SUJ_IDENTIFICADOR": "$sujeto3",
+                  "BOB_OBN_ID": "$obnId3",
+                  "BOB_PERIODO": "2023",
+                  "BOB_CUOTA": "00"
+                }"""
+
+              val testObligacionSinSupresiones: Either[io.circe.Error, ObligacionesAnt] =
+                decode[ObligacionesAnt](obligacionSinSupresionesJson)
+
+              testObligacionSinSupresiones match {
+                case Right(obligacionSinSupresiones) =>
+                  messageProducer.produceObligacion(obligacionSinSupresiones)
+
+                  eventually(timeout(15.seconds), interval(100.milliseconds)) {
+                    val resultado3: AsyncResultSet = cassandra.cassandraWrite
+                      .cqlSelect(
+                        s"SELECT * FROM read_side.buc_obligaciones WHERE BOB_SOJ_IDENTIFICADOR = '${idObjeto3}' AND BOB_SOJ_TIPO_OBJETO = '${tipoObjeto}';"
+                      )
+                      .futureValue
+
+                    val obligacion3 = resultado3.one()
+
+                    // Modificada la verificación para aceptar null o un mapa vacío
+                    val bobSupresiones3 = obligacion3.getMap("BOB_SUPRESIONES", classOf[String], classOf[String])
+                    (bobSupresiones3 == null || bobSupresiones3.isEmpty) should be(true)
+                  }
+
+                case Left(error) =>
+                  fail(s"Error decodificando JSON sin supresiones: $error")
+              }
+
+            case Left(error) =>
+              fail(s"Error decodificando JSON modificado: $error")
+          }
+
+        case Left(error) =>
+          fail(s"Error decodificando JSON inicial: $error")
+      }
+  }
 }

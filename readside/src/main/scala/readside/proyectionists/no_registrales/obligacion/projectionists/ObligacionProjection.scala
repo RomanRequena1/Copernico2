@@ -9,7 +9,7 @@ trait ObligacionProjection extends UpdateReadSideProjection[ObligacionEvents.Obl
     //TODO pk:  si cambia la pk de la tabla, reordenar
     "bob_soj_identificador" -> event.objetoId,
     "bob_soj_tipo_objeto" -> event.tipoObjeto,
+    "bob_suj_identificador" -> event.sujetoId,
     "bob_obn_id" -> event.obligacionId,
-    "bob_suj_identificador" -> event.sujetoId
   )
 }
