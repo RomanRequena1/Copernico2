@@ -50,7 +50,7 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
       val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
       actor.persistEvent(event) { () =>
         actor.state += event
-        if (!actor.state.isBaja) {
+        if (!actor.state.isBaja && actor.state.registro.isDefined) {
           //actor.informParent(command, actor.state)
           //actor.persistSnapshot(event, actor.state)(() => ())
           SendObjetoToObjetoVinculo(vinculoActor,
