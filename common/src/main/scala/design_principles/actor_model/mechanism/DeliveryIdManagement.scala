@@ -8,7 +8,7 @@ object DeliveryIdManagement {
   }
   def isIdempotentInternally(command: Command, lastDeliveryIdByEvents: BigInt): Boolean = {
     if (lastDeliveryIdByEvents == null) {
-      true
+      false
     } else
       command.deliveryId < lastDeliveryIdByEvents
   }
