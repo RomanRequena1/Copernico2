@@ -12,14 +12,20 @@ import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
 import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
-class JuicioDosRemoveFromDtoHandler(implicit messageProducer: MessageProducer){
+import org.slf4j.LoggerFactory
+class JuicioDosRemoveFromDtoHandler(implicit messageProducer: MessageProducer) {
 
-  def handle(command: JuicioDosRemoveFromDto)(state: JuicioDosState)(replyTo: ActorRef[Success]): ReplyEffect[JuicioDosRemovedFromDto, JuicioDosState] = {
+  def handle(
+      command: JuicioDosRemoveFromDto
+  )(state: JuicioDosState)(replyTo: ActorRef[Success]): ReplyEffect[JuicioDosRemovedFromDto, JuicioDosState] = {
+    val log = LoggerFactory.getLogger(this.getClass)
 
-    if(isIdempotent(command, state.lastDeliveryIdByEvents)){
-      println(s"[ ${command.aggregateRoot}] -juicio_tri- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + state.lastDeliveryIdByEvents)
+    if (isIdempotent(command, state.lastDeliveryIdByEvents)) {
+      log.warn(
+        s"[ ${command.aggregateRoot}] -juicio_tri- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + state.lastDeliveryIdByEvents
+      )
       Effect.reply(replyTo)(Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)))
-    }else {
+    } else {
       Effect
         .persist[
           JuicioDosRemovedFromDto,
@@ -36,12 +42,10 @@ class JuicioDosRemoveFromDtoHandler(implicit messageProducer: MessageProducer){
             Seq(
               KafkaKeyValue(
                 command.aggregateRoot,
-
-                  JuicioDosRemovedFromDto(
-                    command.juicioId,
-                    command.deliveryId,
-                    command.registro
-
+                JuicioDosRemovedFromDto(
+                  command.juicioId,
+                  command.deliveryId,
+                  command.registro
                 ).asJson.toString()
               )
             ),

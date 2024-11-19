@@ -36,8 +36,8 @@ class ObligacionRemoveFromObjeto(actor: ObligacionActor, requeriment: Monitoring
       )
 
     if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error(
-        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
+      log.warn(
+        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond internally_idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 

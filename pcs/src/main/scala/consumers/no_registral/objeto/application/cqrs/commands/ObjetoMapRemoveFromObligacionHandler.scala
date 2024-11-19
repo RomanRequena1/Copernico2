@@ -14,17 +14,17 @@ class ObjetoMapRemoveFromObligacionHandler(actor: ObjetoActor)
   override def handle(
       command: ObjetoCommands.RemoveObjetoFromObligacion
   ): Try[Response.SuccessProcessing] = {
+    val sender = actor.context.sender()
 
     log.debug(
-      f"""|CUMBIA
+    f"""|CUMBIA
           |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
           |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
           |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
           |""".stripMargin
     )
-    val sender = actor.context.sender()
     val event = RemovedObjetoFromObligacion(
-      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
+      command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -32,8 +32,8 @@ class ObjetoMapRemoveFromObligacionHandler(actor: ObjetoActor)
       command.cuota
     )
     if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error(
-        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
+      log.warn(
+        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond internally_idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 

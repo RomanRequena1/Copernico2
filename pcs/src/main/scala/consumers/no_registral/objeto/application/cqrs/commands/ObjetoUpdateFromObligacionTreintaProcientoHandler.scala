@@ -23,29 +23,7 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
     val obj_default: ObjetosTri = ObjetosTri(
-      Some("None"),
-      0,
-      "None",
-      "None",
-      "None",
-      Some("None"),
-      Some("None"),
-      Some("None"),
-      None,
-      None,
-      Some("None"),
-      None,
-      Some(0),
-      Some("None"),
-      Some(0),
-      Some("None"),
-      Some("None"),
-      Some("None"),
-      Some("None"),
-      Some("None"),
-      None,
-      None
-    )
+      Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"),Some("None"),None,None)
 
     log.debug(
       f"""|CUMBIA
@@ -56,7 +34,7 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
     )
 
     val event = ObjetoUpdatedFromObnTreintaProciento(
-      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
+      command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.objetoId2,
@@ -78,8 +56,8 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
     val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
 
     if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error(
-        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
+      log.warn(
+        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond internally_idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 

@@ -153,7 +153,7 @@ extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromAnt] {
     }
 
     val event = ObjetoEvents.ObjetoUpdatedFromAnt(
-      if (command.deliveryId.signum < 0) actor.state.lastDeliveryIdByEvents else command.deliveryId,
+      command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -165,7 +165,7 @@ extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromAnt] {
 
     // FIXME: Chequear si debemos sumar algun comportamiento del ObjetoUpdateFromTriHandler
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error(
+      log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)

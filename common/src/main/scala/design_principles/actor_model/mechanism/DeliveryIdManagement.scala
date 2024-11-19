@@ -7,6 +7,7 @@ object DeliveryIdManagement {
     command.deliveryId <= lastDeliveryIdByEvents
   }
   def isIdempotentInternally(command: Command, lastDeliveryIdByEvents: BigInt): Boolean = {
+    //TODO: quitar esta validación luego de truncar el writeside
     if (lastDeliveryIdByEvents == null) {
       false
     } else

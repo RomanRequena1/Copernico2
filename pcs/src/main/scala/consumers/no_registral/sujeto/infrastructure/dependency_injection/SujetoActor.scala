@@ -73,6 +73,7 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
   }
   def persistSnapshot()(handler: Seq[KafkaKeyValue] => Unit): Unit = {
     val sujetoId = SujetoMessageRoots.extractor(persistenceId).sujetoId
+    // FIXME: validar este comportamiento -> state.registro.map(_.EV_ID).getOrElse(state.lastInternalDeliveryId)
     val event = SujetoSnapshotPersisted(
       state.registro.map(_.EV_ID).getOrElse(state.lastInternalDeliveryId),
       sujetoId,

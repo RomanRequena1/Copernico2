@@ -35,7 +35,7 @@ CREATE TABLE read_side.buc_obligaciones (
     bob_tpbid text,
     bob_vencimiento date,
     bob_vencimiento_2 date,
-    PRIMARY KEY ((bob_soj_tipo_objeto, bob_soj_identificador), bob_suj_identificador, bob_obn_id)
+    PRIMARY KEY ((bob_soj_identificador, bob_soj_tipo_objeto), bob_suj_identificador, bob_obn_id)
 ) WITH CLUSTERING ORDER BY (bob_suj_identificador DESC, bob_obn_id DESC)
     AND bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}

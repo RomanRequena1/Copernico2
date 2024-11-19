@@ -22,7 +22,7 @@ class SujetoUpdateFromAntHandler(actor: SujetoActor) extends SyncCommandHandler[
     val event = SujetoUpdatedFromAnt(command.deliveryId, command.sujetoId, command.registro)
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      println(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
+      log.warn(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     } else {
       actor.persistEvent(event,Set("Sujeto")) { () =>

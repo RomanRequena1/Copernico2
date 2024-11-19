@@ -12,12 +12,18 @@ import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
 import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
+import org.slf4j.LoggerFactory
 
-class JuicioDosUpdateFromDtoHandler(implicit messageProducer: MessageProducer){
-  def handle(command: JuicioDosUpdateFromDto)(state: JuicioDosState)(replyTo: ActorRef[Success]): ReplyEffect[JuicioDosUpdatedFromDto, JuicioDosState] = {
+class JuicioDosUpdateFromDtoHandler(implicit messageProducer: MessageProducer) {
+  def handle(
+      command: JuicioDosUpdateFromDto
+  )(state: JuicioDosState)(replyTo: ActorRef[Success]): ReplyEffect[JuicioDosUpdatedFromDto, JuicioDosState] = {
+    val log = LoggerFactory.getLogger(this.getClass)
 
     if (isIdempotent(command, state.lastDeliveryIdByEvents)) {
-      println(s"[ ${command.aggregateRoot}] -juicio_tri- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + state.lastDeliveryIdByEvents)
+      log.warn(
+        s"[ ${command.aggregateRoot}] -juicio_tri- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + state.lastDeliveryIdByEvents
+      )
       Effect.reply(replyTo)(Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)))
 
     } else {
@@ -37,12 +43,10 @@ class JuicioDosUpdateFromDtoHandler(implicit messageProducer: MessageProducer){
             Seq(
               KafkaKeyValue(
                 command.aggregateRoot,
-
-                  JuicioDosUpdatedFromDto(
-                    command.juicioId,
-                    command.deliveryId,
-                    command.registro
-
+                JuicioDosUpdatedFromDto(
+                  command.juicioId,
+                  command.deliveryId,
+                  command.registro
                 ).asJson.toString()
               )
             ),

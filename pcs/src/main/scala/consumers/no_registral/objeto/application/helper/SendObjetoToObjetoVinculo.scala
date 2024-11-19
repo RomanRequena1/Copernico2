@@ -59,7 +59,7 @@ object testIfObjVinculo {
         ))
         res.onComplete {
           case Failure(exception) => log.error("Error to send event to objeto_vinculo (TRANSF)" + exception + "objID: "+ objetoId + "sujID: "+sujetoId)
-          case Success(value) => log.debug("Sent event to objet_vinculo " + " objID: "+ objetoId + " sujID: "+ sujetoId)
+          case Success(value) => log.debug("Sent event to objet_vinculo (TRANSF)" + " objID: "+ objetoId + " sujID: "+ sujetoId)
         }
 
         if (actor.state.tiene30Objeto.equals(false))
@@ -67,6 +67,7 @@ object testIfObjVinculo {
         else
           actor.informParent(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
 
+        //FIXME: Objeto en baja recibe una obn, activa el VSO?
       case x if x.getOrElse("").equals("BAJA") =>
         val res = vinculoActor.ask[Response.SuccessProcessing](RemoveObjetoVinculo(
           objetoId = objetoId,
@@ -80,7 +81,7 @@ object testIfObjVinculo {
           exclusionObjeto = actor.state.exclusionObjeto))
         res.onComplete {
           case Failure(exception) => log.error("Error to send event to objeto_vinculo (BAJA) " + exception + " objID: "+ objetoId + "sujID: "+sujetoId)
-          case Success(value) => log.debug("Sent event to objet_vinculo " + " objID: "+ objetoId + " sujID: "+ sujetoId)
+          case Success(value) => log.debug("Sent event to objet_vinculo (BAJA) " + " objID: "+ objetoId + " sujID: "+ sujetoId)
         }
 
       case _ =>
@@ -95,8 +96,8 @@ object testIfObjVinculo {
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
           exclusionObjeto = actor.state.exclusionObjeto))
         res.onComplete {
-          case Failure(exception) => log.error("Error to send event to objeto_vinculo " + exception + " objID: "+ objetoId + " sujID: "+sujetoId)
-          case Success(value) => log.debug("Sent event to objet_vinculo " + " objID: "+ objetoId + " sujID: "+ sujetoId)
+          case Failure(exception) => log.error("Error to send event to objeto_vinculo (case_) " + exception + " objID: "+ objetoId + " sujID: "+sujetoId)
+          case Success(value) => log.debug("Sent event to objet_vinculo (case_)" + " objID: "+ objetoId + " sujID: "+ sujetoId)
         }
     }
   }

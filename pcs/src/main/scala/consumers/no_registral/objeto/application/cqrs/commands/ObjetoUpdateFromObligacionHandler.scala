@@ -33,7 +33,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: Monitor
     )
 
     val event = ObjetoUpdatedFromObligacion(
-      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
+      command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.objetoId2,
@@ -54,8 +54,8 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: Monitor
     implicit val ac: ActorSystem = actor.context.system
     val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
     if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error(
-        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
+      log.warn(
+        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond internally_idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 

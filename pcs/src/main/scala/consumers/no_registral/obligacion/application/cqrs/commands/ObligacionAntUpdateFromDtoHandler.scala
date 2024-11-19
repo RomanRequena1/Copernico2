@@ -154,7 +154,7 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
     //val eventCounterMax = Try(System.getenv("EVENT-COUNTER-MAX")).getOrElse(9)
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(
+      log.error(
         s"[${actor.name} | ${actor.persistenceId}] -obligacionAnt- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)

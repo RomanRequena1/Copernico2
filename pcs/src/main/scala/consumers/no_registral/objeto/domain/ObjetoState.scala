@@ -171,17 +171,7 @@ case class ObjetoState(
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
           isBaja = false
         )
-      case ObjetoEvents.ObjetoUpdatedFromObligacion(deliveryId,
-                                                    sujetoId,
-                                                    _,
-                                                    _,
-                                                    _,
-                                                    obligacionId,
-                                                    saldoObligacion,
-                                                    _,
-                                                    _,
-                                                    _,
-                                                    _) =>
+      case ObjetoEvents.ObjetoUpdatedFromObligacion(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, _) =>
         val _obnVencidas = validExitsObnVencidas(obligacionId)
         val obligacionesSaldo_ = obligacionesSaldo + (obligacionId -> saldoObligacion)
         val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
@@ -201,7 +191,7 @@ case class ObjetoState(
         copy(
           obnVencidas = _obnVencidas,
           tiene30Objeto = diff,
-          tiene30ObjetoVinculo = tiene30ObjetoVinculo
+          tiene30ObjetoVinculo = tiene30ObjetoVinculo //todo agregue aca
         )
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
         copy(
