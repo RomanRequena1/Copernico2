@@ -3,9 +3,11 @@ package consumers.no_registral.obligacion.application.cqrs.commands
 import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionUpdateFromDto
 import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionExternalDto}
+import consumers.no_registral.obligacion.application.helper.StateParcialObligacion
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionUpdatedFromDto
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
+import cqrs.untyped.command.StateParcial
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
@@ -24,107 +26,13 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
           |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
           |""".stripMargin
     )
-
-    def getBBParams(evento: ObligacionExternalDto) = {
-      val declaredFields = evento.getClass.getDeclaredFields
-      var obligacionNuevoTest = evento
-
-      declaredFields.foreach { campo =>
-        val campoEvento = obligacionNuevoTest.getClass.getDeclaredField(campo.getName)
-        campoEvento.setAccessible(true)
-        if (campoEvento.get(evento).equals(Some("null"))) {
-          campoEvento.set(obligacionNuevoTest, None)
-        } else if (campoEvento.get(evento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
-          campoEvento.set(obligacionNuevoTest, None)
-        } else if (campoEvento.get(evento).equals(Some(999))) {
-          campoEvento.set(obligacionNuevoTest, None)
-        } else if (campoEvento.getName == "BOB_OTROS_ATRIBUTOS") {
-          evento.BOB_OTROS_ATRIBUTOS match {
-            case None => obligacionNuevoTest
-            case Some(value) if value.BOB_DETALLES.nonEmpty =>
-              val otros_atributos_updated = value.BOB_DETALLES.map(actualizarBB_BOBDetalles)
-              campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(otros_atributos_updated)))
-          }
-        }
-      }
-      obligacionNuevoTest
-    }
-    def actualizarBB_BOBDetalles(atributosEvento: DetallesObligacion) = {
-      val declaredFields = atributosEvento.getClass.getDeclaredFields
-      var atributosNuevo = atributosEvento
-
-      declaredFields.foreach { campo =>
-        val campoEvento = atributosNuevo.getClass.getDeclaredField(campo.getName)
-        campoEvento.setAccessible(true)
-
-        if (campoEvento.get(atributosEvento).equals(Some("null"))) {
-          campoEvento.set(atributosNuevo, None)
-        } else if (campoEvento.get(atributosEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
-          campoEvento.set(atributosNuevo, None)
-        } else if (campoEvento.get(atributosEvento).equals(Some(999))) {
-          campoEvento.set(atributosNuevo, None)
-        }
-      }
-      atributosNuevo
-    }
-
-    def getCCParams(evento: ObligacionExternalDto, estado: ObligacionExternalDto) = {
-      val declaredFields = evento.getClass.getDeclaredFields
-      var obligacionNuevoTest = evento
-
-      declaredFields.foreach { campo =>
-        val campoEvento = obligacionNuevoTest.getClass.getDeclaredField(campo.getName)
-        val campoEstado = estado.getClass.getDeclaredField(campo.getName)
-        campoEvento.setAccessible(true)
-        campoEstado.setAccessible(true)
-        if (campoEvento.get(evento) == None) {
-          campoEvento.set(obligacionNuevoTest, campoEstado.get(estado))
-        } else if (campoEvento.get(evento).equals(Some("null"))) {
-          campoEvento.set(obligacionNuevoTest, None)
-        } else if (campoEvento.get(evento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
-          campoEvento.set(obligacionNuevoTest, None)
-        } else if (campoEvento.get(evento).equals(Some(999))) {
-          campoEvento.set(obligacionNuevoTest, None)
-        } else if (campoEvento.getName == "BOB_OTROS_ATRIBUTOS") {
-          (evento.BOB_OTROS_ATRIBUTOS, estado.BOB_OTROS_ATRIBUTOS) match {
-            case (Some(eventoValue), Some(estadoValue))
-                if eventoValue.BOB_DETALLES.nonEmpty && estadoValue.BOB_DETALLES.nonEmpty =>
-              val otros_atributos_updated = eventoValue.BOB_DETALLES.zip(estadoValue.BOB_DETALLES).map {
-                case (eventoDetalle, estadoDetalle) => actualizarCC_BOBDetalles(eventoDetalle, estadoDetalle)
-              }
-              campoEvento.set(obligacionNuevoTest, Some(ListDetallesObligaciones(otros_atributos_updated)))
-            case _ => obligacionNuevoTest
-          }
-        }
-      }
-      obligacionNuevoTest
-    }
-    def actualizarCC_BOBDetalles(atributosEvento: DetallesObligacion, atributosEstado: DetallesObligacion) = {
-      val declaredFields = atributosEvento.getClass.getDeclaredFields
-      var atributosNuevo = atributosEvento
-
-      declaredFields.foreach { campo =>
-        val campoEvento = atributosNuevo.getClass.getDeclaredField(campo.getName)
-        val campoEstado = atributosEstado.getClass.getDeclaredField(campo.getName)
-        campoEvento.setAccessible(true)
-        campoEstado.setAccessible(true)
-
-        if (campoEvento.get(atributosEvento) == None) {
-          campoEvento.set(atributosNuevo, campoEstado.get(atributosEstado))
-        } else if (campoEvento.get(atributosEvento).equals(Some("null"))) {
-          campoEvento.set(atributosNuevo, None)
-        } else if (campoEvento.get(atributosEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
-          campoEvento.set(atributosNuevo, None)
-        } else if (campoEvento.get(atributosEvento).equals(Some(999))) {
-          campoEvento.set(atributosNuevo, None)
-        }
-      }
-      atributosNuevo
+    def getCCParams(evento: ObligacionExternalDto, estado: ObligacionExternalDto): ObligacionExternalDto = {
+      StateParcialObligacion.stateParcialCC(evento, Some(estado))
     }
 
     def getObligacionFFF() = {
       val obligacionFFF = actor.state.registro match {
-        case None => getBBParams(command.registro)
+        case None => StateParcialObligacion.stateParcialCC(command.registro, None)
         case Some(value) => {
           getCCParams(command.registro, value)
         }
@@ -137,7 +45,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       command.objetoId,
       command.tipoObjeto,
       command.obligacionId,
-      command.registro,
+      getObligacionFFF(),
       command.detallesObligacion,
       command.detallesSupresiones,
       command.isAdheridoDebito,
