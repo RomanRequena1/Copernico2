@@ -32,7 +32,11 @@ abstract class ActorTransaction[ExternalDto](
         val future = processMessage(value)
         future.onComplete {
           case Failure(exception) => recordErrors(exception, input)
-          case Success(_) => ()
+          case Success(a) => (a.aggregateRoot match {
+            case s"IDEM-INT$resto" => recordIdempotencyInternally()
+            case s"IDEM-$resto" => recordIdempotency()
+            case _ => ()
+          })
         }(actorTransactionRequirements.executionContext)
         recordLatency(future)
         future

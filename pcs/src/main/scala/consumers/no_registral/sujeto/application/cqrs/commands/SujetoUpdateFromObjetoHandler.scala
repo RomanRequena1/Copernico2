@@ -34,7 +34,7 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
 
     if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
       log.warn(s"[${actor.name} | ${actor.persistenceId}] respond internally_idempotent because of old delivery id | $command")
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+      sender ! Response.SuccessProcessing("IDEM-INT-" + command.aggregateRoot, command.deliveryId)
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event

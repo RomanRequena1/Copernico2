@@ -42,7 +42,7 @@ class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor,
       log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -objeto- respond internally_idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+      sender ! Response.SuccessProcessing("IDEM-INT-" + command.aggregateRoot, command.deliveryId)
 
     } else {
       implicit val ssytem: ActorSystem = actor.context.system

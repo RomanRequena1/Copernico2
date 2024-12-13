@@ -2,7 +2,7 @@ package consumers.no_registral.obligacion.application.cqrs.commands
 
 import akka.persistence.SnapshotSelectionCriteria
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionUpdateFromDto
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionExternalDto}
+  import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, ListDetallesObligaciones, ObligacionExternalDto}
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionUpdatedFromDto
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -160,7 +160,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       //todo check if this is desirable, why? signal the sender??
 
       // In this case the sender is "EL OBJETO"
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+      sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
 
       Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     } else {
