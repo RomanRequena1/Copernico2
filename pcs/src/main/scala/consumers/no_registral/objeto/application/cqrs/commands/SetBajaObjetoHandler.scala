@@ -28,7 +28,7 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
           |""".stripMargin
     )
     val event = ObjetoEvents.ObjetoBajaSet(
-      command.deliveryId,
+      actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,

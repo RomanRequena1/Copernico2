@@ -1908,4 +1908,98 @@ abstract class BaseTriSpec(
         verifyObjetoAltaCassandra(testData1)
       }
   }
+
+  "Test 15 de idempotencia externa" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
+
+      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_obligaciones" +
+              s" WHERE BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+              s" AND BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+              s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+              s" AND BOB_OBN_ID = '${testData.obnId}';"
+          )
+          .futureValue
+
+        val obligacion = resultado.one()
+
+        // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
+        obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(testData.objetoId)
+        obligacion.getString("BOB_ESTADO") should be("JUDICIAL")
+      }
+
+      val testData = TestData(
+        sujetoId = "CuitTri_T15",
+        objetoId = "ObjetoTri_T15",
+        objetoTipo = "A",
+        obnId = "Obn_T15"
+      )
+
+      val obligacionJson =
+        s"""{
+      "EV_ID": "20",
+      "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
+      "BOB_OBN_ID": "${testData.obnId}",
+      "BOB_ESTADO": "JUDICIAL",
+      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
+      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+      "BOB_PERIODO": "2024",
+      "BOB_FISCALIZADA": "Fiscalizada",
+      "BOB_CUOTA": "6",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "601",
+      "BOB_IMPUESTO": "600",
+      "BOB_INTERES_PUNIT": "1000",
+      "BOB_INDICE_INT_PUNIT": "null",
+      "BOB_SALDO": "200",
+      "BOB_TIPO": "tributaria",
+      "BOB_OGA_ID": null,
+      "BOB_PLN_ID": "5555",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [
+      {
+      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
+      "RULE_NUMBER": "1"
+      }]}
+    }"""
+
+      val objetoJsonInicial =
+        s"""
+      {
+      "EV_ID": "1",
+      "SOJ_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testData.objetoId}",
+      "SOJ_DESCRIPCION": "ObjetoPrueba_T2",
+      "SOJ_ESTADO": null,
+      "SOJ_FECHA_ADQ_SUBASTA": "1000-01-01 00:00:00.0",
+      "SOJ_FECHA_INICIO": "1000-01-01 00:00:00.0",
+      "SOJ_BASE_IMPONIBLE": "12345",
+      "SOJ_SUBTIPO": "null",
+      "SOJ_CANAL_ORIGEN": "OTAX",
+      "SOJ_OTROS_ATRIBUTOS": {
+      "SOJ_DETALLES":
+      [{"SOJ_SEMAFORO_MARCA": "P"}]}
+      }
+    """
+
+      for {
+        // 1 - Alta obn
+        _ <- messageProducer.produceEvento(obligacionJson, "DGR-COP-OBLIGACIONES-TRI")
+        // 2- Alta objeto
+        _ <- messageProducer.produceEvento(objetoJsonInicial, "DGR-COP-OBJETOS-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Validando...")
+        verifyCassandra(testData)
+      }
+  }
 }

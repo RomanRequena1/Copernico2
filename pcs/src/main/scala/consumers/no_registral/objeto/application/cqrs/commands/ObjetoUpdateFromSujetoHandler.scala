@@ -28,9 +28,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
     )
 
     val event = ObjetoUpdatedFromSujeto(
-      //TODO: validar para que se usa el if
-//      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else command.deliveryId,
-      command.deliveryId,
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,

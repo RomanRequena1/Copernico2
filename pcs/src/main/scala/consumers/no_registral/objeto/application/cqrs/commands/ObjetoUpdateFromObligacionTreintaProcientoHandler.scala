@@ -34,7 +34,7 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
     )
 
     val event = ObjetoUpdatedFromObnTreintaProciento(
-      command.deliveryId,
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.objetoId2,
