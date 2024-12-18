@@ -47,7 +47,7 @@ class RemoveObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor,
         actor.state.mapVinculo.foreach { e =>
           {
             actorSujetoGeneral.ask[Response.SuccessProcessing](
-              UpdateState30ObjetoFromObjVinculo(command.deliveryId,
+              UpdateState30ObjetoFromObjVinculo(0,
                                                 e._1.sujetoId,
                                                 e._1.objetoId,
                                                 e._1.tipoObj,

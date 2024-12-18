@@ -32,8 +32,7 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
 
     val event = UpdatedState30ObjetoFromObjVinculo(
       //TODO: validar para que esta este If
-//      if (actor.state.lastDeliveryIdByEvents.equals(0)) 10 else command.deliveryId,
-      command.deliveryId,
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,

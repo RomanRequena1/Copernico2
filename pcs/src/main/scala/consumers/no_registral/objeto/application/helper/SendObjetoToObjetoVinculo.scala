@@ -39,7 +39,7 @@ object SendObjetoToObjetoVinculo {
 object testIfObjVinculo {
 
   def apply(vinculoActor: ActorRef, actor: ObjetoActor, sujetoId: String, objetoId: String, tipoObjeto: String, estado: Option[String], requeriment: MonitoringAndMessageProducer, command: Command): Unit = {
-    val obj_default: ObjetosTri = ObjetosTri(Some("None"), command.deliveryId, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
+    val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
 
     val log: Logger = LoggerFactory.getLogger(this.getClass)
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
@@ -49,7 +49,7 @@ object testIfObjVinculo {
         val res = vinculoActor.ask[Response.SuccessProcessing](CreateTransfVinculoObjetoFromObj(
           objetoId = objetoId,
           sujetoId = sujetoId,
-          deliveryId = command.deliveryId,
+          deliveryId = 0,
           tipoObj = tipoObjeto,
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
@@ -72,7 +72,7 @@ object testIfObjVinculo {
         val res = vinculoActor.ask[Response.SuccessProcessing](RemoveObjetoVinculo(
           objetoId = objetoId,
           sujetoId = sujetoId,
-          deliveryId = command.deliveryId,
+          deliveryId = 0,
           tipoObj = tipoObjeto,
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
@@ -88,7 +88,7 @@ object testIfObjVinculo {
         val res = vinculoActor.ask[Response.SuccessProcessing](UpdateVinculoObjetoFromObj(
           objetoId = objetoId,
           sujetoId = sujetoId,
-          deliveryId = command.deliveryId,
+          deliveryId = 0,
           tipoObj = tipoObjeto,
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
