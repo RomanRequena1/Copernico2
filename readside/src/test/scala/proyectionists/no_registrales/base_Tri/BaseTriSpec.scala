@@ -412,7 +412,7 @@ abstract class BaseTriSpec(
       val fecha2 = LocalDateTime.now().minusMonths(3).format(formatter)
 
       def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
-        val expectedDate = LocalDateTime.parse("2024-11-08T00:00")
+        val expectedDate = LocalDateTime.parse("2024-12-21T00:00")
         val cassandra = context.cassandra
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
@@ -451,7 +451,7 @@ abstract class BaseTriSpec(
       }
 
       def verifyCassandra2(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
-        val expectedDate = LocalDateTime.parse("2024-08-13T00:00")
+        val expectedDate = LocalDateTime.parse("2024-09-26T00:00")
         val cassandra = context.cassandra
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(

@@ -3,6 +3,7 @@ package consumers.no_registral.objeto.application.cqrs.commands
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{DetallesObjeto, ListDetallesObjeto}
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoExternalDto}
+import consumers.no_registral.objeto.application.helper.StateParcialObjeto
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
@@ -26,128 +27,13 @@ extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromAnt] {
           |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
           |""".stripMargin
     )
-
-    def getBBParams(evento: ObjetoExternalDto) = {
-      val declaredFields = evento.getClass.getDeclaredFields
-      var objetoNuevoTest = evento
-
-      declaredFields.foreach { campo =>
-        val campoEvento = objetoNuevoTest.getClass.getDeclaredField(campo.getName)
-        campoEvento.setAccessible(true)
-
-        if (campoEvento.get(evento).equals(Some("null"))) {
-          campoEvento.set(objetoNuevoTest, None)
-        } else if (campoEvento.get(evento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
-          campoEvento.set(objetoNuevoTest, None)
-        } else if (campoEvento.get(evento).equals(Some(999))) {
-          campoEvento.set(objetoNuevoTest, None)
-        } else if (campoEvento.getName == "SOJ_OTROS_ATRIBUTOS") {
-          evento.SOJ_OTROS_ATRIBUTOS match {
-            case None => objetoNuevoTest
-            case Some(value) if value.SOJ_DETALLES.nonEmpty => {
-              val otros_atributos_evento =
-                evento.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES.head
-
-              val otros_atributos_updated =
-                actualizarBBSojDetalles(otros_atributos_evento)
-
-              campoEvento.set(objetoNuevoTest, Some(ListDetallesObjeto(List(otros_atributos_updated))))
-            }
-          }
-        }
-      }
-      objetoNuevoTest
+    def getCCParams(evento: ObjetoExternalDto, estado: ObjetoExternalDto): ObjetoExternalDto = {
+      StateParcialObjeto.stateParcialCC(evento, Some(estado))
     }
-
-    def actualizarBBSojDetalles(atributosEvento: DetallesObjeto) = {
-
-      val declaredFields = atributosEvento.getClass.getDeclaredFields
-      var atributosNuevo = atributosEvento
-
-      declaredFields.foreach { campo =>
-        val campoEvento = atributosNuevo.getClass.getDeclaredField(campo.getName)
-        campoEvento.setAccessible(true)
-
-        if (campoEvento.get(atributosEvento).equals(Some("null"))) {
-          campoEvento.set(atributosNuevo, None)
-        } else if (campoEvento.get(atributosEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
-          campoEvento.set(atributosNuevo, None)
-        } else if (campoEvento.get(atributosEvento).equals(Some(999))) {
-          campoEvento.set(atributosNuevo, None)
-        }
-      }
-      atributosNuevo
-    }
-
-    def getCCParams(evento: ObjetoExternalDto, estado: ObjetoExternalDto) = {
-      val declaredFields = evento.getClass.getDeclaredFields
-      var objetoNuevoTest = evento
-
-      declaredFields.foreach { campo =>
-        val campoEvento = objetoNuevoTest.getClass.getDeclaredField(campo.getName)
-        val campoEstado = estado.getClass.getDeclaredField(campo.getName)
-        campoEvento.setAccessible(true)
-        campoEstado.setAccessible(true)
-        if (campoEvento.get(evento) == None) {
-          campoEvento.set(objetoNuevoTest, campoEstado.get(estado))
-        } else if (campoEvento.get(evento).equals(Some("null"))) {
-          campoEvento.set(objetoNuevoTest, None)
-        } else if (campoEvento.get(evento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
-          campoEvento.set(objetoNuevoTest, None)
-        } else if (campoEvento.get(evento).equals(Some(999))) {
-          campoEvento.set(objetoNuevoTest, None)
-        } else if (campoEvento.getName == "SOJ_OTROS_ATRIBUTOS") {
-          estado.SOJ_OTROS_ATRIBUTOS match {
-            case None => objetoNuevoTest
-            case Some(value) if value.SOJ_DETALLES.nonEmpty => {
-              val otros_atributos_evento =
-                evento.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES.head
-
-              val otros_atributos_estado =
-                value.SOJ_DETALLES.head
-
-              //Option[ListDetallesObjeto]
-              val otros_atributos_updated =
-                actualizarCCSojDetalles(otros_atributos_evento, otros_atributos_estado)
-
-              campoEvento.set(objetoNuevoTest, Some(ListDetallesObjeto(List(otros_atributos_updated))))
-            }
-          }
-        }
-      }
-      objetoNuevoTest
-    }
-
-    def actualizarCCSojDetalles(atributosEvento: DetallesObjeto, atributosEstado: DetallesObjeto) = {
-
-      val declaredFields = atributosEvento.getClass.getDeclaredFields
-      var atributosNuevo = atributosEvento
-
-      declaredFields.foreach { campo =>
-        val campoEvento = atributosNuevo.getClass.getDeclaredField(campo.getName)
-        val campoEstado = atributosEstado.getClass.getDeclaredField(campo.getName)
-        campoEvento.setAccessible(true)
-        campoEstado.setAccessible(true)
-
-        if (campoEvento.get(atributosEvento) == None) {
-          campoEvento.set(atributosNuevo, campoEstado.get(atributosEstado))
-        } else if (campoEvento.get(atributosEvento).equals(Some("null"))) {
-          campoEvento.set(atributosNuevo, None)
-        } else if (campoEvento.get(atributosEvento).equals(Some(LocalDateTime.of(1000, 1, 1, 0, 0, 0)))) {
-          campoEvento.set(atributosNuevo, None)
-        } else if (campoEvento.get(atributosEvento).equals(Some(999))) {
-          campoEvento.set(atributosNuevo, None)
-        }
-      }
-      atributosNuevo
-    }
-
     def getObjetoFFF() = {
       val objetoFFF = actor.state.registro match {
-        case None => getBBParams(command.registro)
-        case Some(value) => {
-          getCCParams(command.registro, value)
-        }
+        case None => StateParcialObjeto.stateParcialCC(command.registro, None)
+        case Some(value) => getCCParams(command.registro,value)
       }
       objetoFFF
     }
