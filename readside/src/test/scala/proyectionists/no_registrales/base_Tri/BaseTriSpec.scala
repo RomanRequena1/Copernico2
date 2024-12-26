@@ -400,179 +400,179 @@ abstract class BaseTriSpec(
       }
 
   }
-//  "Test 4 Alta/Modificacion: de obligacion con state parcial" should "End to end, PCS a Readside" in parallelActorSystemRunner {
-//    implicit s =>
-//      implicit val dispatcher = s.dispatcher
-//      val context = getContext(s)
-//      val messageProducer = context.messageProducer
-//
-//      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
-//
-//      val fecha = LocalDateTime.now().minusDays(5).format(formatter)
-//      val fecha2 = LocalDateTime.now().minusMonths(3).format(formatter)
-//
-//      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
-//        val expectedDate = LocalDateTime.parse("2024-11-08T00:00")
-//        val cassandra = context.cassandra
-//        val resultado: AsyncResultSet = cassandra.cassandraWrite
-//          .cqlSelect(
-//            s"SELECT * FROM read_side.buc_obligaciones" +
-//            s" WHERE BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-//            s" AND BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
-//            s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-//            s" AND BOB_OBN_ID = '${testData.obnId}';"
-//          )
-//          .futureValue
-//
-//        val obligacion = resultado.one()
-//
-//        // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
-//        obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(testData.objetoId)
-//        obligacion.getString("BOB_ESTADO") should be("JUDICIAL")
-//        obligacion
-//          .getLocalDate("BOB_VENCIMIENTO")
-//          .atStartOfDay() should be(expectedDate) //TODO SI EL TEST FALLA ES PORQUE HAY QUE ACTUALIZAR LA FECHA <-
-//        obligacion.getFloat("BOB_SALDO").toInt should be(200)
-//        obligacion.getString("BOB_FISCALIZADA") should be("Fiscalizada")
-//
-//        // No persistir BOB_PRORROGA ni BOB_INDICE_INT_PUNIT
-//        obligacion.isNull("BOB_PRORROGA") should be(true)
-//        obligacion.isNull("BOB_INDICE_INT_PUNIT") should be(true)
-//
-//        val bobOtrosAtributos = obligacion.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
-//        val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
-//
-//        decode[List[DetallesObligacion]](bobDetalles) match {
-//          case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
-//          case Right(detalles) =>
-//            // Persistir en bob_detalle el PLAN_MULTIOBJETO
-//            detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
-//        }
-//      }
-//
-//      def verifyCassandra2(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
-//        val expectedDate = LocalDateTime.parse("2024-08-13T00:00")
-//        val cassandra = context.cassandra
-//        val resultado: AsyncResultSet = cassandra.cassandraWrite
-//          .cqlSelect(
-//            s"SELECT * FROM read_side.buc_obligaciones" +
-//            s" WHERE BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-//            s" AND BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
-//            s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-//            s" AND BOB_OBN_ID = '${testData.obnId}';"
-//          )
-//          .futureValue
-//
-//        val obligacion = resultado.one()
-//
-//        // Mantener la bob_estado y bob_saldo
-//        obligacion.getString("BOB_ESTADO") should be("JUDICIAL")
-//        obligacion.getFloat("BOB_SALDO").toInt should be(200)
-//
-//        // Persistir nuevo BOB_FISCALIZADA y BOB_PRORROGA
-//        obligacion.getString("BOB_FISCALIZADA") should be("NO Fiscalizada")
-//        obligacion
-//          .getLocalDate("BOB_PRORROGA")
-//          .atStartOfDay() should be(expectedDate) //TODO SI EL TEST FALLA ES PORQUE HAY QUE ACTUALIZAR LA FECHA <-
-//
-//        //Eliminar el bob_interes_punit, bob_pln_id
-//        obligacion.isNull("BOB_INTERES_PUNIT") should be(true)
-//        obligacion.isNull("BOB_PLN_ID") should be(true)
-//
-//        val bobOtrosAtributos = obligacion.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
-//        val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
-//
-//        decode[List[DetallesObligacion]](bobDetalles) match {
-//          case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
-//          case Right(detalles) =>
-//            // Persistir bob_detalles: BOB_MUNICIPIO y JUICIO_MULTIOBJETO.
-//            detalles.head.BOB_MUNICIPIO.get should be("Municipio")
-//            detalles.head.JUICIO_MULTIOBJETO.get should be("Multiobjeto")
-//
-//            // Mantener bob_detalles: PLAN_MULTIOBJETO
-//            detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
-//        }
-//      }
-//
-//      val testData = TestData(
-//        sujetoId = "CuitTri_T4",
-//        objetoId = "ObjetoTri_T4",
-//        objetoTipo = "A",
-//        obnId = "Obn_T4"
-//      )
-//
-//      val obligacionJsonInicial =
-//        s"""{
-//      "EV_ID": "$deliveryIdAct",
-//      "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
-//      "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
-//      "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
-//      "BOB_OBN_ID": "${testData.obnId}",
-//      "BOB_ESTADO": "JUDICIAL",
-//      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
-//      "BOB_VENCIMIENTO": "$fecha",
-//      "BOB_PERIODO": "2024",
-//      "BOB_FISCALIZADA": "Fiscalizada",
-//      "BOB_CUOTA": "6",
-//      "BOB_CAPITAL": "200",
-//      "BOB_CONCEPTO": "601",
-//      "BOB_IMPUESTO": "600",
-//      "BOB_INTERES_PUNIT": "1000",
-//      "BOB_INDICE_INT_PUNIT": "null",
-//      "BOB_SALDO": "200",
-//      "BOB_TIPO": "tributaria",
-//      "BOB_OGA_ID": null,
-//      "BOB_PLN_ID": "5555",
-//      "BOB_OTROS_ATRIBUTOS": {
-//      "BOB_DETALLES": [
-//      {
-//      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
-//      "RULE_NUMBER": "1"
-//      }]}
-//    }"""
-//
-//      val obligacionModificadoJson =
-//        s"""{
-//          "EV_ID": "$deliveryIdAct",
-//          "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
-//          "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
-//          "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
-//          "BOB_OBN_ID": "${testData.obnId}",
-//          "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
-//          "BOB_PRORROGA": "$fecha2",
-//          "BOB_FISCALIZADA": "NO Fiscalizada",
-//          "BOB_PERIODO": "2024",
-//          "BOB_INTERES_PUNIT": "999",
-//          "BOB_SALDO": "200",
-//          "BOB_PLN_ID": "null",
-//          "BOB_OTROS_ATRIBUTOS": {
-//          "BOB_DETALLES": [
-//          {
-//          "BOB_MUNICIPIO": "Municipio",
-//          "RULE_NUMBER": "1",
-//          "JUICIO_MULTIOBJETO": "Multiobjeto"
-//           }]}
-//        }"""
-//
-//      //todo PRIMER TEST
-//      for {
-//        // 1 - Alta obn
-//        _ <- messageProducer.produceEvento(obligacionJsonInicial, "DGR-COP-OBLIGACIONES-TRI")
-//      } yield ()
-//      eventually(timeout(15.seconds), interval(100.milliseconds)) {
-//        println("Validando...")
-//        verifyCassandra(testData)
-//      }
-//
-//      for {
-//        // - Pago obn en VSOA
-//        _ <- messageProducer.produceEvento(obligacionModificadoJson, "DGR-COP-OBLIGACIONES-TRI")
-//      } yield ()
-//      eventually(timeout(15.seconds), interval(100.milliseconds)) {
-//        println("Validando...")
-//        verifyCassandra2(testData)
-//      }
-//  }
+  "Test 4 Alta/Modificacion: de obligacion con state parcial" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
+
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
+
+      val fecha = LocalDateTime.now().minusDays(5).format(formatter)
+      val fecha2 = LocalDateTime.now().minusMonths(3).format(formatter)
+
+      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val expectedDate = LocalDateTime.parse("2024-11-08T00:00")
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_obligaciones" +
+            s" WHERE BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s" AND BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+            s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s" AND BOB_OBN_ID = '${testData.obnId}';"
+          )
+          .futureValue
+
+        val obligacion = resultado.one()
+
+        // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
+        obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(testData.objetoId)
+        obligacion.getString("BOB_ESTADO") should be("JUDICIAL")
+        obligacion
+          .getLocalDate("BOB_VENCIMIENTO")
+          .atStartOfDay() should be(expectedDate) //TODO SI EL TEST FALLA ES PORQUE HAY QUE ACTUALIZAR LA FECHA <-
+        obligacion.getFloat("BOB_SALDO").toInt should be(200)
+        obligacion.getString("BOB_FISCALIZADA") should be("Fiscalizada")
+
+        // No persistir BOB_PRORROGA ni BOB_INDICE_INT_PUNIT
+        obligacion.isNull("BOB_PRORROGA") should be(true)
+        obligacion.isNull("BOB_INDICE_INT_PUNIT") should be(true)
+
+        val bobOtrosAtributos = obligacion.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+        val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
+
+        decode[List[DetallesObligacion]](bobDetalles) match {
+          case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
+          case Right(detalles) =>
+            // Persistir en bob_detalle el PLAN_MULTIOBJETO
+            detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
+        }
+      }
+
+      def verifyCassandra2(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val expectedDate = LocalDateTime.parse("2024-08-13T00:00")
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_obligaciones" +
+            s" WHERE BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+            s" AND BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+            s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+            s" AND BOB_OBN_ID = '${testData.obnId}';"
+          )
+          .futureValue
+
+        val obligacion = resultado.one()
+
+        // Mantener la bob_estado y bob_saldo
+        obligacion.getString("BOB_ESTADO") should be("JUDICIAL")
+        obligacion.getFloat("BOB_SALDO").toInt should be(200)
+
+        // Persistir nuevo BOB_FISCALIZADA y BOB_PRORROGA
+        obligacion.getString("BOB_FISCALIZADA") should be("NO Fiscalizada")
+        obligacion
+          .getLocalDate("BOB_PRORROGA")
+          .atStartOfDay() should be(expectedDate) //TODO SI EL TEST FALLA ES PORQUE HAY QUE ACTUALIZAR LA FECHA <-
+
+        //Eliminar el bob_interes_punit, bob_pln_id
+        obligacion.isNull("BOB_INTERES_PUNIT") should be(true)
+        obligacion.isNull("BOB_PLN_ID") should be(true)
+
+        val bobOtrosAtributos = obligacion.getMap("BOB_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+        val bobDetalles: String = bobOtrosAtributos.get("BOB_DETALLES")
+
+        decode[List[DetallesObligacion]](bobDetalles) match {
+          case Left(error) => fail(s"Error decoding BOB_OTROS_ATRIBUTOS: $error")
+          case Right(detalles) =>
+            // Persistir bob_detalles: BOB_MUNICIPIO y JUICIO_MULTIOBJETO.
+            detalles.head.BOB_MUNICIPIO.get should be("Municipio")
+            detalles.head.JUICIO_MULTIOBJETO.get should be("Multiobjeto")
+
+            // Mantener bob_detalles: PLAN_MULTIOBJETO
+            detalles.head.PLAN_MULTIOBJETO.get should be("PlanMultiobjeto")
+        }
+      }
+
+      val testData = TestData(
+        sujetoId = "CuitTri_T4",
+        objetoId = "ObjetoTri_T4",
+        objetoTipo = "A",
+        obnId = "Obn_T4"
+      )
+
+      val obligacionJsonInicial =
+        s"""{
+      "EV_ID": "$deliveryIdAct",
+      "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
+      "BOB_OBN_ID": "${testData.obnId}",
+      "BOB_ESTADO": "JUDICIAL",
+      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
+      "BOB_VENCIMIENTO": "$fecha",
+      "BOB_PERIODO": "2024",
+      "BOB_FISCALIZADA": "Fiscalizada",
+      "BOB_CUOTA": "6",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "601",
+      "BOB_IMPUESTO": "600",
+      "BOB_INTERES_PUNIT": "1000",
+      "BOB_INDICE_INT_PUNIT": "null",
+      "BOB_SALDO": "200",
+      "BOB_TIPO": "tributaria",
+      "BOB_OGA_ID": null,
+      "BOB_PLN_ID": "5555",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [
+      {
+      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
+      "RULE_NUMBER": "1"
+      }]}
+    }"""
+
+      val obligacionModificadoJson =
+        s"""{
+          "EV_ID": "$deliveryIdAct",
+          "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+          "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+          "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
+          "BOB_OBN_ID": "${testData.obnId}",
+          "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+          "BOB_PRORROGA": "$fecha2",
+          "BOB_FISCALIZADA": "NO Fiscalizada",
+          "BOB_PERIODO": "2024",
+          "BOB_INTERES_PUNIT": "999",
+          "BOB_SALDO": "200",
+          "BOB_PLN_ID": "null",
+          "BOB_OTROS_ATRIBUTOS": {
+          "BOB_DETALLES": [
+          {
+          "BOB_MUNICIPIO": "Municipio",
+          "RULE_NUMBER": "1",
+          "JUICIO_MULTIOBJETO": "Multiobjeto"
+           }]}
+        }"""
+
+      //todo PRIMER TEST
+      for {
+        // 1 - Alta obn
+        _ <- messageProducer.produceEvento(obligacionJsonInicial, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Validando...")
+        verifyCassandra(testData)
+      }
+
+      for {
+        // - Pago obn en VSOA
+        _ <- messageProducer.produceEvento(obligacionModificadoJson, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Validando...")
+        verifyCassandra2(testData)
+      }
+  }
   "Test 5 Sincro: de cambios masivos sobre misma obn" should "End to end, PCS a Readside" in parallelActorSystemRunner {
     implicit s =>
       implicit val dispatcher: ExecutionContextExecutor = s.dispatcher

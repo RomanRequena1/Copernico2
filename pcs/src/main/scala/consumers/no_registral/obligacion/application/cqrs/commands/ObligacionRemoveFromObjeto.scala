@@ -31,9 +31,15 @@ class ObligacionRemoveFromObjeto(actor: ObligacionActor, requeriment: Monitoring
         command.objetoId,
         command.tipoObjeto,
         command.obligacionId,
-        actor.state.registro.get,
-        actor.state.registro.get.BOB_CUOTA
-      )
+        actor.state.registro match {
+          case Some(value) => value
+          case None     => null
+        },
+        actor.state.registro match {
+          case Some(value) => Some(value.BOB_CUOTA.getOrElse("0"))
+          case None     => Some("0")
+        })
+
 
     if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
       log.warn(
