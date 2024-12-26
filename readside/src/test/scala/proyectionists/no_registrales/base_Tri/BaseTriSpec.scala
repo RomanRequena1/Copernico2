@@ -1403,7 +1403,6 @@ abstract class BaseTriSpec(
         verifyObnRemovedCassandra(testData1)
         verifyObjetoAltaCassandra(testData1)
       }
-
   }
   "Test 10 Mandar un pago de obn sobre una VSO dada de baja " should "End to end, PCS a Readside" in parallelActorSystemRunner {
     implicit s =>
@@ -1494,10 +1493,10 @@ abstract class BaseTriSpec(
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT count(*) FROM read_side.buc_obligaciones" +
-            s" WHERE BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-            s" AND BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
-            s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-            s" AND BOB_OBN_ID = '${testData.obnId}';"
+              s" WHERE BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+              s" AND BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+              s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+              s" AND BOB_OBN_ID = '${testData.obnId}';"
           )
           .futureValue
 
@@ -1509,9 +1508,9 @@ abstract class BaseTriSpec(
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
             s"SELECT COUNT(*) FROM read_side.buc_sujeto_objeto" +
-            s" WHERE SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
-            s" AND SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
-            s" AND SOJ_SUJ_IDENTIFICADOR = '${testData1.sujetoId}';"
+              s" WHERE SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+              s" AND SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
+              s" AND SOJ_SUJ_IDENTIFICADOR = '${testData1.sujetoId}';"
           )
           .futureValue
 
@@ -1533,7 +1532,16 @@ abstract class BaseTriSpec(
         // 3 - Dar baja VSO_A
         _ <- messageProducer.produceEvento(VSO_A_BAJA, "DGR-COP-OBJETOS-TRI")
         // 4 - Pagar la Obn
-//        _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
+        //        _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+
+      Thread.sleep(5000)
+
+      for {
+        // 3 - Dar baja VSO_A
+        _ <- messageProducer.produceEvento(VSO_A_BAJA, "DGR-COP-OBJETOS-TRI")
+        // 4 - Pagar la Obn
+        //        _ <- messageProducer.produceEvento(pagoObligacion, "DGR-COP-OBLIGACIONES-TRI")
       } yield ()
 
       Thread.sleep(5000)
