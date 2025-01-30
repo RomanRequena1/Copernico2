@@ -2010,4 +2010,96 @@ abstract class BaseTriSpec(
         verifyCassandra(testData)
       }
   }
+  "Test 16 Alta/Modificacion: de obligacion Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
+
+      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_obligaciones" +
+              s" WHERE BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+              s" AND BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+              s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+              s" AND BOB_OBN_ID = '${testData.obnId}';"
+          )
+          .futureValue
+
+        val obligacion = resultado.one()
+
+        // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
+        obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(testData.objetoId)
+        obligacion.getString("BOB_ESTADO") should be("ADMINISTRATIVA")
+      }
+
+      val testData = TestData(
+        sujetoId = "30-50279317-5",
+        objetoId = "301000405",
+        objetoTipo = "E",
+        obnId = "20240000000070012852"
+      )
+
+      val obligacionJson =
+        s"""{
+        "EV_ID" : "12",
+        "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+        "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+        "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
+        "BOB_OBN_ID": "${testData.obnId}",
+        "BOB_SALDO" : "-220983145.06",
+        "BOB_CUOTA" : "10",
+        "BOB_ESTADO" : "ADMINISTRATIVA",
+        "BOB_SUB_ESTADO" : null,
+        "BOB_CANAL_ORIGEN" : "OTAX",
+        "BOB_FISCALIZADA" : "N",
+        "BOB_INDICE_INT_PUNIT" : null,
+        "BOB_INDICE_INT_RESAR" : null,
+        "BOB_INTERES_PUNIT" : null,
+        "BOB_INTERES_RESAR" : null,
+        "BOB_JUI_ID" : null,
+        "BOB_PERIODO" : "2024",
+        "BOB_PLN_ID" : null,
+        "BOB_PRORROGA" : "2024-10-24 00:00:00.0",
+        "BOB_TIPO" : "tributaria",
+        "BOB_TOTAL" :  "-220983145.06",
+        "BOB_VENCIMIENTO" : "2024-10-24 00:00:00.0",
+        "BOB_CAPITAL" : "-220983145.06",
+        "BOB_CONCEPTO" : "890",
+        "BOB_IMPUESTO" : "902",
+        "FECHA_BAJA" : null,
+        "BOB_ADHERIDO_DEBITO" : "N",
+        "BOB_OGA_ID" : "90224890",
+        "BOB_VENCIMIENTO_2" : null,
+        "SOJ_ID_EXTERNO" : "173110",
+        "BOB_OTROS_ATRIBUTOS" : {
+          "BOB_DETALLES" : [ {
+            "EVO_OBN_PEO_ID_MATERIAL" : "PTET",
+            "BOB_MUNICIPIO" : null,
+            "BOB_INTERES_FINANCIACION" : null,
+            "JUICIO_MULTIOBJETO" : "N",
+            "RULE_NUMBER" : "22",
+            "EVO_OBN_PEO_ID_FORMAL" : "PC",
+            "PLAN_MULTIOBJETO" : "N"
+          } ]
+        }
+      }"""
+
+      for {
+        // Añadir println antes de producir el evento
+        _ <- {
+          println(s"[DEBUG] Valor BOB_SALDO en mensaje Kafka: ${
+            import spray.json._
+            JsonParser(obligacionJson).asJsObject.fields("BOB_SALDO")
+          }")
+          messageProducer.produceEvento(obligacionJson, "DGR-COP-OBLIGACIONES-TRI")
+        }
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Validando...")
+        verifyCassandra(testData)
+      }
+  }
 }

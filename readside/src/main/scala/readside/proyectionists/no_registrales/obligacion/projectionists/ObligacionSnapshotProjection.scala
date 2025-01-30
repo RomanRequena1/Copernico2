@@ -48,6 +48,7 @@ final case class ObligacionSnapshotProjection(
       "bob_interes_punit" -> registro.BOB_INTERES_PUNIT,
       "bob_interes_resar" -> registro.BOB_INTERES_RESAR,
       "bob_jui_id" -> registro.BOB_JUI_ID,
+      "bob_saldo" -> registro.BOB_SALDO,
       "bob_otros_atributos" -> Some(mao),
       "bob_supresiones" -> Some(mao2),
       "bob_pln_id" -> registro.BOB_PLN_ID,
@@ -67,7 +68,7 @@ final case class ObligacionSnapshotProjection(
   // FIXME: quitar el others y agregar el bob_saldo donde corresponda
   val other: List[(String, BigDecimal)] =
   List(
-    "bob_saldo" -> event.saldo
+    //"bob_saldo" -> event.saldo
     //"bob_porcentaje_exencion" -> event.porcentajeExencion,
     //"bob_exenta" -> event.exenta
     )
