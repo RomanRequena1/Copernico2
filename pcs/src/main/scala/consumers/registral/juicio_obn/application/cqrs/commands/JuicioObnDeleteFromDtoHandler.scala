@@ -24,7 +24,7 @@ class JuicioObnDeleteFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
     if(isIdempotent(command, state.lastDeliveryIdByEvent)){
       log.error(s"[${command.aggregateRoot}] -juicio_obn- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + state.lastDeliveryIdByEvent)
 
-      Effect.reply(replyTo)(Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)))
+      Effect.reply(replyTo)(Success(Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)))
     }
     else {
       Effect

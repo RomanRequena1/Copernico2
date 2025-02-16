@@ -39,7 +39,7 @@ class ObjetoAddExencionHandler(actor: ObjetoActor)(implicit messageProducer: Mes
     val lastDeliveryId = actor.state.lastDeliveryIdByEvents
     if (event.deliveryId <= lastDeliveryId) {
       log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+      sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event

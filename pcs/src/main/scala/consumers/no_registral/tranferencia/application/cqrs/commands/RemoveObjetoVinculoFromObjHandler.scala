@@ -35,7 +35,7 @@ class RemoveObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor,
       log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -objeto- respond internally_idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+      sender ! Response.SuccessProcessing("IDEM-INT-" + command.aggregateRoot, command.deliveryId)
 
     } else {
       implicit val ssytem: ActorSystem = actor.context.system
@@ -47,7 +47,7 @@ class RemoveObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor,
         actor.state.mapVinculo.foreach { e =>
           {
             actorSujetoGeneral.ask[Response.SuccessProcessing](
-              UpdateState30ObjetoFromObjVinculo(command.deliveryId,
+              UpdateState30ObjetoFromObjVinculo(0,
                                                 e._1.sujetoId,
                                                 e._1.objetoId,
                                                 e._1.tipoObj,

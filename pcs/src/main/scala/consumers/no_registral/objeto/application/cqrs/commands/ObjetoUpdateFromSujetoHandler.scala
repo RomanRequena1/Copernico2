@@ -28,9 +28,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
     )
 
     val event = ObjetoUpdatedFromSujeto(
-      //TODO: validar para que se usa el if
-//      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else command.deliveryId,
-      command.deliveryId,
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -41,7 +39,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
       log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -objeto- respond internally_idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+      sender ! Response.SuccessProcessing("IDEM-INT-" + command.aggregateRoot, command.deliveryId)
 
     } else {
       actor.state += event

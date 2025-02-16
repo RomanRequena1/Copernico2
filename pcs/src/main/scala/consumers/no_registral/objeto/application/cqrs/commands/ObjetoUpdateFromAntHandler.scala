@@ -39,7 +39,7 @@ extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromAnt] {
     }
 
     val event = ObjetoEvents.ObjetoUpdatedFromAnt(
-      command.deliveryId,
+      if (command.deliveryId.signum < 0) actor.state.lastDeliveryIdByEvents else command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -54,7 +54,7 @@ extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromAnt] {
       log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+      sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
 
     } else {
       actor.persistEvent(event) { () =>

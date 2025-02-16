@@ -26,11 +26,23 @@ abstract class ActorTransactionMetrics(
   final protected val latency: Histogram = monitoring.histogram(s"$metricPrefix-$controllerId-latency")
   final protected val lag: Histogram = monitoring.histogram(s"$metricPrefix-$controllerId-lag")
 
+  final protected val idempotency: Counter = monitoring.counter(s"$metricPrefix-$controllerId-idempotency")
+  final protected val idempotencyInt: Counter = monitoring.counter(s"$metricPrefix-$controllerId-idempotency-int")
+
+
   @JsonIgnore
   private final val log = LoggerFactory.getLogger(this.getClass)
 
   final protected def recordRequests(): Unit =
     requests.increment()
+
+  final protected def recordIdempotencyInternally(): Unit = {
+    idempotencyInt.increment()
+  }
+
+  final protected def recordIdempotency(): Unit = {
+    idempotency.increment()
+  }
 
   final protected def recordLag(n: Long): Unit =
     lag.record(n)
