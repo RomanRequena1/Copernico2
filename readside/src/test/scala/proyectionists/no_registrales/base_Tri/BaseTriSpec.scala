@@ -1278,8 +1278,6 @@ abstract class BaseTriSpec(
           println(s"Error decodificando JSON testSegundoObjeto30Porciento: $error")
       }
   }
-
-  // Pasar las funciones de verify a un helper comun.
   "Test 9 Pago de Obn sobre una VSO que existe y es valida" should "End to end, PCS a Readside" in parallelActorSystemRunner {
     implicit s =>
       implicit val dispatcher = s.dispatcher
@@ -1916,7 +1914,6 @@ abstract class BaseTriSpec(
         verifyObjetoAltaCassandra(testData1)
       }
   }
-
   "Test 15 de idempotencia externa" should "End to end, PCS a Readside" in parallelActorSystemRunner {
     implicit s =>
       implicit val dispatcher = s.dispatcher
@@ -2101,5 +2098,272 @@ abstract class BaseTriSpec(
         println("Validando...")
         verifyCassandra(testData)
       }
+  }
+
+  "Test 20 Alta: de sujeto Tri con identificador vacío" should "llegar al tópico de error" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
+
+      val testData = TestData(
+        sujetoId = "",
+        objetoId = "ObjetoTri_T1",
+        objetoTipo = "A",
+        obnId = "Obn_T1"
+      )
+
+      val sujetoJsonParcial =
+        s"""
+        {
+          "EV_ID": $deliveryIdAct,
+          "SUJ_IDENTIFICADOR": "",
+          "SUJ_DENOMINACION": "Sujeto-Test1",
+          "SUJ_EMAIL": "test1@ejemplo.com",
+          "SUJ_DIRECCION": "null",
+          "SUJ_CAT_SUJ_ID": "999"
+        }
+        """
+
+      for {
+        _ <- messageProducer.produceEvento(sujetoJsonParcial, "DGR-COP-SUJETO-TRI")
+      } yield ()
+
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+      }
+  }
+  "Test 21 Alta/Modificacion: de objeto Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
+
+      //JSON -> LocalDateTime
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")
+      val fecha = LocalDateTime.now().format(formatter)
+
+      // Assert -> Data (cassandra) transformar en String
+      val formatterCassandra = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+      val fechaCassandra = LocalDate.now().format(formatterCassandra)
+
+      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val expectedDate = fechaCassandra
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+              s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+              s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+          )
+          .futureValue
+
+        val objeto2 = resultado.one()
+
+        // Persistir la descripcion y fecha_inicio
+        objeto2.getString("SOJ_DESCRIPCION") should be("ObjetoPrueba_T2")
+        objeto2.getLocalDate("SOJ_FECHA_INICIO").format(formatterCassandra) should be(expectedDate)
+
+        objeto2.getString("SOJ_SUJ_IDENTIFICADOR") should be(testData.sujetoId)
+
+        // State parcial
+        objeto2.isNull("SOJ_SUBTIPO") should be(true)
+        objeto2.isNull("SOJ_FECHA_ADQ_SUBASTA") should be(true)
+
+        // Persistir el origen, base_imponible
+        objeto2.getString("SOJ_CANAL_ORIGEN") should be("OTAX")
+        objeto2.getFloat("SOJ_BASE_IMPONIBLE") should be(12345)
+
+        val sojOtrosAtributos = objeto2.getMap("SOJ_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+        val sojDetalles: String = sojOtrosAtributos.get("SOJ_DETALLES")
+
+        decode[List[DetallesObjeto]](sojDetalles) match {
+          case Left(error) => fail(s"Error decoding SOJ_OTROS_ATRIBUTOS: $error")
+          case Right(detalles) =>
+            // Persistir soj_detalles: semaforo_marca
+            detalles.head.SOJ_SEMAFORO_MARCA.get should be("P")
+        }
+      }
+
+      def verifyCassandra2(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val expectedDate = fechaCassandra
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+              s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+              s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+          )
+          .futureValue
+
+        val objeto2 = resultado.one()
+
+        // Mantener la descripcion y fecha_inicio
+        objeto2.getString("SOJ_DESCRIPCION") should be("ObjetoPrueba_T2")
+        objeto2.getLocalDate("SOJ_FECHA_INICIO").format(formatterCassandra) should be(expectedDate)
+
+        // Persistir nuevo sutbipo y fecha_adq_subasta
+        objeto2.getString("SOJ_SUJ_IDENTIFICADOR") should be(testData.sujetoId)
+        objeto2.getString("SOJ_SUBTIPO") should be("Urbano")
+        objeto2.getLocalDate("SOJ_FECHA_ADQ_SUBASTA").format(formatterCassandra) should be(expectedDate)
+
+        // Eliminar el origen, base_imponible
+        objeto2.isNull("SOJ_CANAL_ORIGEN") should be(true)
+        objeto2.getFloat("SOJ_BASE_IMPONIBLE") should be(0.0)
+
+        val sojOtrosAtributos = objeto2.getMap("SOJ_OTROS_ATRIBUTOS", classOf[String], classOf[String])
+        val sojDetalles: String = sojOtrosAtributos.get("SOJ_DETALLES")
+
+        decode[List[DetallesObjeto]](sojDetalles) match {
+          case Left(error) => fail(s"Error decoding SOJ_OTROS_ATRIBUTOS: $error")
+          case Right(detalles) =>
+            // Persistir soj_detalles: responsable y porcentaje.
+            detalles.head.RESPONSABLE_OTROS_ATRIBUTOS.get should be("S")
+            detalles.head.PORCENTAJE_OTROS_ATRIBUTOS.get should be(100)
+
+            // No persistir semaforo_color
+            detalles.head.SOJ_SEMAFORO_COLOR should be(None)
+
+            // Mantener soj_detalles: semaforo_marca
+            detalles.head.SOJ_SEMAFORO_MARCA.get should be("P")
+        }
+      }
+
+      val testData = TestData(
+        sujetoId = "CuitTri_T2",
+        objetoId = "ObjetoTri_T2",
+        objetoTipo = "A",
+        obnId = "Obn_T2"
+      )
+
+      val objetoJsonInicial =
+        s"""
+      {
+      "EV_ID": "$deliveryIdAct",
+      "SOJ_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testData.objetoId}",
+      "SOJ_DESCRIPCION": "ObjetoPrueba_T2",
+      "SOJ_ESTADO": null,
+      "SOJ_FECHA_ADQ_SUBASTA": "1000-01-01 00:00:00.0",
+      "SOJ_FECHA_INICIO": "$fecha",
+      "SOJ_BASE_IMPONIBLE": "12345",
+      "SOJ_SUBTIPO": "null",
+      "SOJ_CANAL_ORIGEN": "OTAX",
+      "SOJ_OTROS_ATRIBUTOS": {
+      "SOJ_DETALLES":
+      [{"SOJ_SEMAFORO_MARCA": "P"}]}
+      }
+    """
+
+      val objetoModificadoJson =
+        s"""
+            {
+            "EV_ID": "$deliveryIdAct",
+            "SOJ_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+            "SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+            "SOJ_IDENTIFICADOR": "${testData.objetoId}",
+            "SOJ_ESTADO": null,
+            "SOJ_FECHA_ADQ_SUBASTA": "$fecha",
+            "SOJ_BASE_IMPONIBLE": "999",
+            "SOJ_SUBTIPO": "Urbano",
+            "SOJ_CANAL_ORIGEN": "null",
+            "SOJ_OTROS_ATRIBUTOS": {
+            "SOJ_DETALLES": [
+            {
+            "RESPONSABLE_OTROS_ATRIBUTOS": "S",
+            "PORCENTAJE_OTROS_ATRIBUTOS": "100",
+            "SOJ_SEMAFORO_COLOR": "null"
+            }]}
+          }
+          """
+
+      for {
+        // 1 - Alta OBJETO
+        _ <- messageProducer.produceEvento(objetoJsonInicial, "DGR-COP-OBJETOS-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        verifyCassandra(testData)
+      }
+
+      for {
+        // 2 - Modificar Objeto
+        _ <- messageProducer.produceEvento(objetoModificadoJson, "DGR-COP-OBJETOS-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Validando...")
+        verifyCassandra2(testData)
+      }
+  }
+  "Test 22 Alta/Modificacion: de obligacion Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
+
+      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT * FROM read_side.buc_obligaciones" +
+              s" WHERE BOB_SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
+              s" AND BOB_SOJ_TIPO_OBJETO = '${testData.objetoTipo}'" +
+              s" AND BOB_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
+              s" AND BOB_OBN_ID = '${testData.obnId}';"
+          )
+          .futureValue
+
+        val obligacion = resultado.one()
+
+        // Persistir la BOB_SALDO, BOB_ESTADO, BOB_FISCALIZADA y BOB_VENCIMIENTO
+        obligacion.getString("BOB_SOJ_IDENTIFICADOR") should be(testData.objetoId)
+        obligacion.getString("BOB_ESTADO") should be("JUDICIAL")
+      }
+
+      val testData = TestData(
+        sujetoId = "CuitTri_T3",
+        objetoId = "ObjetoTri_T3",
+        objetoTipo = "A",
+        obnId = "Obn_T3"
+      )
+
+      val obligacionJson =
+        s"""{
+      "EV_ID": "$deliveryIdAct",
+      "BOB_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
+      "BOB_SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
+      "BOB_SOJ_IDENTIFICADOR": "${testData.objetoId}",
+      "BOB_OBN_ID": "${testData.obnId}",
+      "BOB_ESTADO": "JUDICIAL",
+      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
+      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+      "BOB_PERIODO": "2024",
+      "BOB_FISCALIZADA": "Fiscalizada",
+      "BOB_CUOTA": "6",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "601",
+      "BOB_IMPUESTO": "600",
+      "BOB_INTERES_PUNIT": "1000",
+      "BOB_INDICE_INT_PUNIT": "null",
+      "BOB_SALDO": "200",
+      "BOB_TIPO": "tributaria",
+      "BOB_OGA_ID": null,
+      "BOB_PLN_ID": "5555",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [
+      {
+      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
+      "RULE_NUMBER": "1"
+      }]}
+    }"""
+
+      for {
+        // 1 - Alta obn
+        _ <- messageProducer.produceEvento(obligacionJson, "DGR-COP-OBLIGACIONES-TRI")
+      } yield ()
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Validando...")
+        verifyCassandra(testData)
+      }
+
   }
 }

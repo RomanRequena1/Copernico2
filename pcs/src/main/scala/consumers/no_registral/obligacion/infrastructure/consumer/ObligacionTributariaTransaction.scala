@@ -67,46 +67,49 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
 
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
 
-    val command: ObligacionCommands =
-      if (isCancelada(obligacion.BOB_OTROS_ATRIBUTOS).head) {
-        ObligacionCommands.ObligacionRemove(
-          deliveryId = obligacion.EV_ID,
-          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
-          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
-          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
-          obligacionId = obligacion.BOB_OBN_ID,
-          registro = obligacion,
-          cuota = obligacion.BOB_CUOTA
-        )
-      } else if (isNotDeuda(obligacion.BOB_OTROS_ATRIBUTOS).head) {
-        ObligacionCommands.ObligacionRemove(
-          deliveryId = obligacion.EV_ID,
-          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
-          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
-          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
-          obligacionId = obligacion.BOB_OBN_ID,
-          registro = obligacion,
-          cuota = obligacion.BOB_CUOTA
-        )
-      } else {
-        val dmn = isTreintaPorciento(obligacion)
-        ObligacionUpdateFromDto(
-          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
-          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
-          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
-          obligacionId = obligacion.BOB_OBN_ID,
-          deliveryId = obligacion.EV_ID,
-          registro = dmn._1,
-          detallesObligacion = detallesObligacion,
-          detallesSupresiones = detallesSupresiones,
-          isAdheridoDebito = isAdheridoDebito,
-          cuota = obligacion.BOB_CUOTA,
-          resultDmn = Some(dmn._2.toString)
-        )
-      }
-    actorRef.ask[Response.SuccessProcessing](command)
+    if (obligacion.BOB_SUJ_IDENTIFICADOR == "" || obligacion.BOB_SOJ_IDENTIFICADOR == "" || obligacion.BOB_SOJ_TIPO_OBJETO == "" || obligacion.BOB_OBN_ID == "") {
+      Future.successful(Response.SuccessProcessing("Campos obligatorios vacíos, operación omitida", obligacion.EV_ID))
+    } else {
+      val command: ObligacionCommands =
+        if (isCancelada(obligacion.BOB_OTROS_ATRIBUTOS).head) {
+          ObligacionCommands.ObligacionRemove(
+            deliveryId = obligacion.EV_ID,
+            sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+            objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+            tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+            obligacionId = obligacion.BOB_OBN_ID,
+            registro = obligacion,
+            cuota = obligacion.BOB_CUOTA
+          )
+        } else if (isNotDeuda(obligacion.BOB_OTROS_ATRIBUTOS).head) {
+          ObligacionCommands.ObligacionRemove(
+            deliveryId = obligacion.EV_ID,
+            sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+            objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+            tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+            obligacionId = obligacion.BOB_OBN_ID,
+            registro = obligacion,
+            cuota = obligacion.BOB_CUOTA
+          )
+        } else {
+          val dmn = isTreintaPorciento(obligacion)
+          ObligacionUpdateFromDto(
+            sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+            objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+            tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+            obligacionId = obligacion.BOB_OBN_ID,
+            deliveryId = obligacion.EV_ID,
+            registro = dmn._1,
+            detallesObligacion = detallesObligacion,
+            detallesSupresiones = detallesSupresiones,
+            isAdheridoDebito = isAdheridoDebito,
+            cuota = obligacion.BOB_CUOTA,
+            resultDmn = Some(dmn._2.toString)
+          )
+        }
+      actorRef.ask[Response.SuccessProcessing](command)
+    }
   }
-
   private def isTreintaPorciento(obn: ObligacionesTri): (ObligacionesTri, Any) = {
     //todo set deuda30Obligacion en state
     Some(DMNTreintaPorciento.dmn(obn)) match {
