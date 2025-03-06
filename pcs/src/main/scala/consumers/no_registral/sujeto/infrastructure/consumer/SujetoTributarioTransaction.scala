@@ -28,7 +28,6 @@ case class SujetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
     //connOracleKafkaToWriteside(registro.EV_ID.toString(), "sujeto", registro.SUJ_CANAL_ORIGEN.getOrElse("TAX"))
 
     if (registro.SUJ_IDENTIFICADOR == "") {
-      println("entro por el future failed")
       Future.failed(new IllegalArgumentException("Campos obligatorios vacíos, operación omitida"))
     } else {
       val command = registro match {
