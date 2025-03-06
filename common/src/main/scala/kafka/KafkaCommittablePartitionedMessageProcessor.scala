@@ -146,6 +146,7 @@ class KafkaCommittablePartitionedMessageProcessor(
                   } else {
                     ProducerMessage.multi(
                       records = output.map { o =>
+                        println("llegue al consumidor error")
                         new ProducerRecord(
                           ERROR_TOPIC,
                           message.record.key,
