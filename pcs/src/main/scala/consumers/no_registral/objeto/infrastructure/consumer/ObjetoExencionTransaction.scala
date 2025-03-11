@@ -24,6 +24,7 @@ case class ObjetoExencionTransaction(actorRef: ActorRef, monitoring: Monitoring)
   def processInput(input: String): Either[Throwable, Exencion] =
     decode[Exencion](input)
 
+
   def processMessage(exencion: Exencion): Future[Response.SuccessProcessing] = {
     val command = ObjetoCommands.ObjetoAddExencion(
       deliveryId = exencion.EV_ID,

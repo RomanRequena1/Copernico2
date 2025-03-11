@@ -29,7 +29,7 @@ case class SujetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
 
   def processMessage(registro: SujetoAnt): Future[Response.SuccessProcessing] = {
     if (registro.SUJ_IDENTIFICADOR == "") {
-      Future.successful(Response.SuccessProcessing("Campos obligatorios vacíos, operación omitida", registro.EV_ID))
+      Future.failed(new IllegalArgumentException("Campos obligatorios vacíos, operación omitida"))
     } else {
       val command = registro match {
         case _: SujetoAnt =>
