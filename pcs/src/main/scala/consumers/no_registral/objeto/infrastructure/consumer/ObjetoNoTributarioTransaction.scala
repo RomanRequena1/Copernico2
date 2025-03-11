@@ -51,7 +51,7 @@ case class ObjetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
 
     val isAdheridoDebito = Some(registro.SOJ_ADHERIDO_DEBITO.contains("S"))
     if (registro.SOJ_SUJ_IDENTIFICADOR == "" || registro.SOJ_IDENTIFICADOR == "" || registro.SOJ_TIPO_OBJETO == "") {
-      Future.successful(Response.SuccessProcessing("Campos obligatorios vacíos, operación omitida", registro.EV_ID))
+      Future.failed(new IllegalArgumentException("Campos obligatorios vacíos, operación omitida"))
     } else {
       val command: ObjetoCommands =
         if (registro.SOJ_ESTADO.contains("BAJA"))
