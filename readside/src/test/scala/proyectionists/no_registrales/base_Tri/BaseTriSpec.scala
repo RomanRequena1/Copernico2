@@ -2102,4 +2102,81 @@ abstract class BaseTriSpec(
         verifyCassandra(testData)
       }
   }
+  "Test 17 Test para que no se creen VSO" should "End to end, PCS a Readside" in parallelActorSystemRunner {
+    implicit s =>
+      implicit val dispatcher = s.dispatcher
+      val context = getContext(s)
+      val messageProducer = context.messageProducer
+
+      val testData1 = TestData(
+        sujetoId = "CuitTri_T9",
+        objetoId = "ObjetoTri_T9",
+        objetoTipo = "A",
+        obnId = "Obn_T9"
+      )
+
+      val testData2 = TestData(
+        sujetoId = "CuitTri2_T9",
+        objetoId = "ObjetoTri_T9",
+        objetoTipo = "A",
+        obnId = "Obn_T9"
+      )
+
+      val VSO_A =
+        s"""
+      {
+      "EV_ID": "1",
+      "SOJ_SUJ_IDENTIFICADOR": "${testData1.sujetoId}",
+      "SOJ_TIPO_OBJETO": "${testData1.objetoTipo}",
+      "SOJ_IDENTIFICADOR": "${testData1.objetoId}",
+      "SOJ_DESCRIPCION": "PrimerObjetoPrueba_T1",
+      "SOJ_ESTADO": null,
+      "SOJ_FECHA_INICIO": "2024-01-01 00:00:00.0"
+      }
+    """
+
+      val VSO_B =
+        s"""
+      {
+        "EV_ID": "2",
+        "SOJ_SUJ_IDENTIFICADOR": "${testData2.sujetoId}",
+        "SOJ_TIPO_OBJETO": "${testData1.objetoTipo}",
+        "SOJ_IDENTIFICADOR": "${testData1.objetoId}",
+        "SOJ_OTROS_ATRIBUTOS" : {
+          "SOJ_DETALLES" : [ {
+          "RESPONSABLE_OTROS_ATRIBUTOS" : "S",
+          "PORCENTAJE_OTROS_ATRIBUTOS" : "100",
+          "SOJ_SEMAFORO_COLOR" : "R",
+          "SOJ_SEMAFORO_MARCA" : "I"
+        } ]
+        }
+      }
+    """
+
+      def verifyObjetoAltaCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+        val cassandra = context.cassandra
+        val resultado: AsyncResultSet = cassandra.cassandraWrite
+          .cqlSelect(
+            s"SELECT COUNT(*) FROM read_side.buc_sujeto_objeto" +
+              s" WHERE SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
+              s" AND SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
+              s" AND SOJ_SUJ_IDENTIFICADOR = '${testData1.sujetoId}';"
+          )
+          .futureValue
+
+        val objetoResult = resultado.one()
+        objetoResult.getString("SOJ_TIPO_OBJETO") should be("A")
+      }
+
+
+      for {
+        _ <- messageProducer.produceEvento(VSO_A, "DGR-COP-OBJETOS-TRI")
+        _ <- messageProducer.produceEvento(VSO_B, "DGR-COP-OBJETOS-TRI")
+      } yield ()
+
+      Thread.sleep(5000)
+      eventually(timeout(15.seconds), interval(100.milliseconds)) {
+      }
+  }
+
 }
