@@ -28,12 +28,19 @@ case class SujetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
   }
 
   def processMessage(registro: SujetoAnt): Future[Response.SuccessProcessing] = {
-    val command = SujetoCommands.SujetoUpdateFromAnt(
-      sujetoId = registro.SUJ_IDENTIFICADOR,
-      deliveryId = registro.EV_ID,
-      registro = registro
-    )
-    actorRef.ask[Response.SuccessProcessing](command)
+    if (registro.SUJ_IDENTIFICADOR == "") {
+      Future.failed(new IllegalArgumentException("Campos obligatorios vacíos, operación omitida"))
+    } else {
+      val command = registro match {
+        case _: SujetoAnt =>
+          SujetoCommands.SujetoUpdateFromAnt(
+            sujetoId = registro.SUJ_IDENTIFICADOR,
+            deliveryId = registro.EV_ID,
+            registro = registro
+          )
+      }
+      actorRef.ask[Response.SuccessProcessing](command)
+    }
   }
 }
 

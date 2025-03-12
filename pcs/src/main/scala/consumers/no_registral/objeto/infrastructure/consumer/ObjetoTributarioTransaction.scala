@@ -45,28 +45,32 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
 
     val isAdheridoDebito = Some(registro.SOJ_ADHERIDO_DEBITO.contains("S"))
 
-    val command: ObjetoCommands =
-      if (registro.SOJ_ESTADO.contains("BAJA"))
-        ObjetoCommands.SetBajaObjeto(
-          sujetoId = registro.SOJ_SUJ_IDENTIFICADOR,
-          objetoId = registro.SOJ_IDENTIFICADOR,
-          tipoObjeto = registro.SOJ_TIPO_OBJETO,
-          deliveryId = registro.EV_ID,
-          registro = registro,
-          isResponsable = Some(isResponsable(registro.SOJ_OTROS_ATRIBUTOS).head),
-          sujetoResponsable = sujetoResponsable.head
-        )
-      else
-        ObjetoCommands.ObjetoUpdateFromTri(
-          sujetoId = registro.SOJ_SUJ_IDENTIFICADOR,
-          objetoId = registro.SOJ_IDENTIFICADOR,
-          tipoObjeto = registro.SOJ_TIPO_OBJETO,
-          deliveryId = registro.EV_ID,
-          registro = registro,
-          isResponsable = Some(isResponsable(registro.SOJ_OTROS_ATRIBUTOS).head),
-          sujetoResponsable = sujetoResponsable.head,
-          isAdheridoDebito = isAdheridoDebito
-        )
-    actorRef.ask[Response.SuccessProcessing](command)
+    if (registro.SOJ_SUJ_IDENTIFICADOR == "" || registro.SOJ_IDENTIFICADOR == "" || registro.SOJ_TIPO_OBJETO == "") {
+      Future.failed(new IllegalArgumentException("Campos obligatorios vacíos, operación omitida"))
+    } else {
+      val command: ObjetoCommands =
+        if (registro.SOJ_ESTADO.contains("BAJA"))
+          ObjetoCommands.SetBajaObjeto(
+            sujetoId = registro.SOJ_SUJ_IDENTIFICADOR,
+            objetoId = registro.SOJ_IDENTIFICADOR,
+            tipoObjeto = registro.SOJ_TIPO_OBJETO,
+            deliveryId = registro.EV_ID,
+            registro = registro,
+            isResponsable = Some(isResponsable(registro.SOJ_OTROS_ATRIBUTOS).head),
+            sujetoResponsable = sujetoResponsable.head
+          )
+        else
+          ObjetoCommands.ObjetoUpdateFromTri(
+            sujetoId = registro.SOJ_SUJ_IDENTIFICADOR,
+            objetoId = registro.SOJ_IDENTIFICADOR,
+            tipoObjeto = registro.SOJ_TIPO_OBJETO,
+            deliveryId = registro.EV_ID,
+            registro = registro,
+            isResponsable = Some(isResponsable(registro.SOJ_OTROS_ATRIBUTOS).head),
+            sujetoResponsable = sujetoResponsable.head,
+            isAdheridoDebito = isAdheridoDebito
+          )
+      actorRef.ask[Response.SuccessProcessing](command)
+    }
   }
 }

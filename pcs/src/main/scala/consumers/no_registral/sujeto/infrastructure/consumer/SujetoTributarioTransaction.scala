@@ -26,15 +26,19 @@ case class SujetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
 
   def processMessage(registro: SujetoTri): Future[Response.SuccessProcessing] = {
     //connOracleKafkaToWriteside(registro.EV_ID.toString(), "sujeto", registro.SUJ_CANAL_ORIGEN.getOrElse("TAX"))
-    val command = registro match {
-      case _: SujetoTri =>
-        SujetoCommands.SujetoUpdateFromTri(
-          sujetoId = registro.SUJ_IDENTIFICADOR,
-          deliveryId = registro.EV_ID,
-          registro = registro
-        )
-    }
-    actorRef.ask[Response.SuccessProcessing](command)
 
+    if (registro.SUJ_IDENTIFICADOR == "") {
+      Future.failed(new IllegalArgumentException("Campos obligatorios vacíos, operación omitida"))
+    } else {
+      val command = registro match {
+        case _: SujetoTri =>
+          SujetoCommands.SujetoUpdateFromTri(
+            sujetoId = registro.SUJ_IDENTIFICADOR,
+            deliveryId = registro.EV_ID,
+            registro = registro
+          )
+      }
+      actorRef.ask[Response.SuccessProcessing](command)
+    }
   }
 }

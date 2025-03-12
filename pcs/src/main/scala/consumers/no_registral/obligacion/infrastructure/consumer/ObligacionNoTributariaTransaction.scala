@@ -71,41 +71,45 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
 
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
 
-    val command: ObligacionCommands =
-      if (isCancelada(obligacion.BOB_OTROS_ATRIBUTOS).head) {
-        ObligacionCommands.ObligacionRemove(
-          deliveryId = obligacion.EV_ID,
-          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
-          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
-          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
-          obligacionId = obligacion.BOB_OBN_ID,
-          registro = obligacion,
-          cuota = obligacion.BOB_CUOTA
-        )
-      } else if (isNotDeuda(obligacion.BOB_OTROS_ATRIBUTOS).head) {
-        ObligacionCommands.ObligacionRemove(
-          deliveryId = obligacion.EV_ID,
-          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
-          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
-          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
-          obligacionId = obligacion.BOB_OBN_ID,
-          registro = obligacion,
-          cuota = obligacion.BOB_CUOTA
-        )
-      } else {
-        ObligacionAntUpdateFromDto(
-          sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
-          objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
-          tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
-          obligacionId = obligacion.BOB_OBN_ID,
-          deliveryId = obligacion.EV_ID,
-          registro = obligacion,
-          detallesObligacion = detallesObligacion,
-          detallesSupresiones = detallesSupresiones,
-          isAdheridoDebito = isAdheridoDebito,
-          cuota = obligacion.BOB_CUOTA
-        )
-      }
-    actorRef.ask[Response.SuccessProcessing](command)
+    if (obligacion.BOB_SUJ_IDENTIFICADOR == "" || obligacion.BOB_SOJ_IDENTIFICADOR == "" || obligacion.BOB_SOJ_TIPO_OBJETO == "" || obligacion.BOB_OBN_ID == "") {
+      Future.failed(new IllegalArgumentException("Campos obligatorios vacíos, operación omitida"))
+    } else {
+      val command: ObligacionCommands =
+        if (isCancelada(obligacion.BOB_OTROS_ATRIBUTOS).head) {
+          ObligacionCommands.ObligacionRemove(
+            deliveryId = obligacion.EV_ID,
+            sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+            objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+            tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+            obligacionId = obligacion.BOB_OBN_ID,
+            registro = obligacion,
+            cuota = obligacion.BOB_CUOTA
+          )
+        } else if (isNotDeuda(obligacion.BOB_OTROS_ATRIBUTOS).head) {
+          ObligacionCommands.ObligacionRemove(
+            deliveryId = obligacion.EV_ID,
+            sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+            objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+            tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+            obligacionId = obligacion.BOB_OBN_ID,
+            registro = obligacion,
+            cuota = obligacion.BOB_CUOTA
+          )
+        } else {
+          ObligacionAntUpdateFromDto(
+            sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
+            objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
+            tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
+            obligacionId = obligacion.BOB_OBN_ID,
+            deliveryId = obligacion.EV_ID,
+            registro = obligacion,
+            detallesObligacion = detallesObligacion,
+            detallesSupresiones = detallesSupresiones,
+            isAdheridoDebito = isAdheridoDebito,
+            cuota = obligacion.BOB_CUOTA
+          )
+        }
+      actorRef.ask[Response.SuccessProcessing](command)
+    }
   }
 }
