@@ -3,12 +3,30 @@ package consumers.no_registral.objeto.application.helper
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{DetallesObjeto, ListDetallesObjeto}
 import cqrs.untyped.command.StateParcial
+import org.slf4j.{Logger, LoggerFactory}
 
 import java.lang.reflect.Field
 import java.time.LocalDateTime
 
 class StateParcialObjeto extends StateParcial {
+  private val log: Logger = LoggerFactory.getLogger(this.getClass)
 
+  /**
+   * Determina si un evento proviene de semáforo y es de tipo INMUEBLE
+   */
+  def esEventoSemaforoInmueble(objetoDto: ObjetoExternalDto): Boolean = {
+    // Solo validar si es tipo INMUEBLE
+    if (objetoDto.SOJ_TIPO_OBJETO != "I") {
+      return false
+    }
+
+    // Verificar si es evento de semáforo (tiene SOJ_SEMAFORO_COLOR)
+    objetoDto.SOJ_OTROS_ATRIBUTOS.exists { atributos =>
+      atributos.SOJ_DETALLES.exists { detalle =>
+        detalle.SOJ_SEMAFORO_COLOR.isDefined
+      }
+    }
+  }
 
   /**
    * Casos de otros atributos para Objeto:
@@ -29,27 +47,12 @@ class StateParcialObjeto extends StateParcial {
       case e: ObjetoExternalDto => e
     }
 
-//    estado match {
-//      case None => {
-//        val otrosAtributosEvento = miEvento.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES.head
-//        val otrosAtributosUpdated = super.stateParcialCC(otrosAtributosEvento, None)
-//        campoActualizar.set(eventoNuevo, Some(ListDetallesObjeto(List(otrosAtributosUpdated.asInstanceOf[DetallesObjeto]))))
-//      }
-//
-//      case Some(e: ObjetoExternalDto) => {
-//        e.SOJ_OTROS_ATRIBUTOS match {
-//          case None => ()
-//          case Some(value) if value.SOJ_DETALLES.nonEmpty => {
-//            val otrosAtributosEvento = miEvento.SOJ_OTROS_ATRIBUTOS.get.SOJ_DETALLES.head
-//            val otrosAtributosEstado = value.SOJ_DETALLES.head
-//            val otrosAtributosUpdated = super.stateParcialCC(otrosAtributosEvento, Some(otrosAtributosEstado))
-//            campoActualizar.set(eventoNuevo, Some(ListDetallesObjeto(List(otrosAtributosUpdated.asInstanceOf[DetallesObjeto]))))
-//          }
-//        }
-//      }
-//      case _ => ()
-//    }
-
+    // Validación solo para eventos de semáforo de INMUEBLES: solo actualizar si hay estado previo
+    val hayEstadoPrevio = estado.isDefined
+    if (esEventoSemaforoInmueble(miEvento) && !hayEstadoPrevio) {
+      log.warn(s"Descartando actualización de evento de semáforo para INMUEBLE sin vínculo existente")
+      return
+    }
 
     miEvento.SOJ_OTROS_ATRIBUTOS match {
       case None =>
@@ -85,20 +88,41 @@ class StateParcialObjeto extends StateParcial {
                 val otrosAtributosUpdated = super.stateParcialCC(otrosAtributosEvento, Some(otrosAtributosEstado))
                 campoActualizar.set(eventoNuevo, Some(ListDetallesObjeto(List(otrosAtributosUpdated.asInstanceOf[DetallesObjeto]))))
               }
-          }
+            }
           case _ => ()
         }
     }
-
-
-
-
   }
 }
 
 object StateParcialObjeto {
   val SPO = new StateParcialObjeto()
+
   def stateParcialCC(evento: ObjetoExternalDto, estado: Option[ObjetoExternalDto]): ObjetoExternalDto = {
-    SPO.stateParcialCC(evento, estado).asInstanceOf[ObjetoExternalDto]
+    // Validamos si el evento debe procesarse antes de continuar
+    if (SPO.esEventoSemaforoInmueble(evento) && estado.isEmpty) {
+      // Si es evento de semáforo para INMUEBLE y no hay estado previo, retornar una copia del evento original
+      // para no procesarlo y que será descartado en niveles superiores
+      evento
+    } else {
+      SPO.stateParcialCC(evento, estado).asInstanceOf[ObjetoExternalDto]
+    }
+  }
+
+  /**
+   * Determina si un evento debe ser procesado o descartado
+   *
+   * @param evento Evento a validar
+   * @param estado Estado previo (opcional)
+   * @return true si debe procesarse, false si debe descartarse
+   */
+  def debeProceserEvento(evento: ObjetoExternalDto, estado: Option[ObjetoExternalDto]): Boolean = {
+    // Si no es un evento de semáforo de INMUEBLE, siempre procesar
+    if (!SPO.esEventoSemaforoInmueble(evento)) {
+      return true
+    }
+
+    // Si es evento de semáforo de INMUEBLE, solo procesar si existe estado previo
+    estado.isDefined
   }
 }

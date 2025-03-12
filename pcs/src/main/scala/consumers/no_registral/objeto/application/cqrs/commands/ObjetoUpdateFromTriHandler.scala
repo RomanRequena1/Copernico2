@@ -26,7 +26,7 @@ import java.time.LocalDateTime
 import scala.util.{Failure, Success, Try}
 
 class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
-    extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromTri] {
+  extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromTri] {
 
   /**
    * Si el objeto es tipo M y actor.state.tiene30Objeto es false, entonces informParentTreintaPorciento y si actor.state.tiene30Objeto es true, entonces informParent.
@@ -34,8 +34,8 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
    * En el caso del else, se envía el objeto a objeto vinculo.
    */
   override def handle(
-      command: ObjetoCommands.ObjetoUpdateFromTri
-  ): Try[Response.SuccessProcessing] = {
+                       command: ObjetoCommands.ObjetoUpdateFromTri
+                     ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
     val log: Logger = LoggerFactory.getLogger(this.getClass)
 
@@ -58,7 +58,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
     }
 
     def isTipo(cmd: ObjetoUpdateFromTri) = {
-
       val result = DMNTreintaPorcientoTipo.calcularDmn(
         DmnObjeto(
           cmd.registro.SOJ_TIPO_OBJETO,
@@ -76,28 +75,43 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
           ("2", 2)
         case f if f.equals(-1) =>
           ("1", -1)
-
         case f if f.equals(1) =>
           ("1", 1)
-
       }
     }
 
-    val dmn = isTipo(command)
+    // Verificar idempotencia
+    if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
+      log.warn(
+        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
+      )
+      sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
+
+      return Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
+    }
+
+    // Validación: Si es un evento de semáforo para INMUEBLE y no hay registro previo, descartar
+    if (StateParcialObjeto.SPO.esEventoSemaforoInmueble(command.registro) && actor.state.registro.isEmpty) {
+      log.warn(s"Descartando evento de semáforo para INMUEBLE sin vínculo existente: sujetoId=${command.sujetoId}, objetoId=${command.objetoId}")
+      sender ! Response.SuccessProcessing(s"DESCARTADO-${command.aggregateRoot}", command.deliveryId)
+      return Success(Response.SuccessProcessing(s"DESCARTADO-${command.aggregateRoot}", command.deliveryId))
+    }
 
     def getCCParams(evento: ObjetoExternalDto, estado: ObjetoExternalDto): ObjetoExternalDto = {
       StateParcialObjeto.stateParcialCC(evento, Some(estado))
     }
+
     def getObjetoFFF() = {
       val objetoFFF = actor.state.registro match {
         case None => StateParcialObjeto.stateParcialCC(command.registro, None)
-        case Some(value) => getCCParams(command.registro,value)
+        case Some(value) => getCCParams(command.registro, value)
       }
       objetoFFF
     }
 
+    val dmn = isTipo(command)
+
     val event = ObjetoEvents.ObjetoUpdatedFromTri(
-      //TODO: validar para que esta este If
       if (command.deliveryId.signum < 0) actor.state.lastDeliveryIdByEvents else command.deliveryId,
       command.sujetoId,
       command.objetoId,
@@ -110,16 +124,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       Some(dmn._2)
     )
 
-    if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(
-        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
-      )
-      sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
-
-      Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
-    } else {
-      persistSnapshotEvent(event, actor, command, requeriment)
-    }
+    persistSnapshotEvent(event, actor, command, requeriment)
   }
 }
 
@@ -160,7 +165,7 @@ object test {
       //todo juicio persiste, pero no se us apara el calculo del 30%?
 
       if (actor.state.registro.get.SOJ_TIPO_OBJETO
-            .equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
+        .equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
         if (actor.state.tiene30Objeto.equals(false)) {
           val res = actor.context.parent.ask[Response.SuccessProcessing](
             SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
@@ -212,16 +217,14 @@ object test {
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }
       } else {
-
-
         SendObjetoToObjetoVinculo(Obje,
-                                  actor,
-                                  command.sujetoId,
-                                  command.objetoId,
-                                  command.tipoObjeto,
-                                  command.registro.SOJ_ESTADO,
-                                  requeriment,
-                                  command)
+          actor,
+          command.sujetoId,
+          command.objetoId,
+          command.tipoObjeto,
+          command.registro.SOJ_ESTADO,
+          requeriment,
+          command)
       }
       //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler
       if (actor.state.eventCounter == eventCounterMax) {

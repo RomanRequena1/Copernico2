@@ -2155,7 +2155,7 @@ abstract class BaseTriSpec(
         val cassandra = context.cassandra
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
-            s"SELECT COUNT(*) FROM read_side.buc_sujeto_objeto" +
+            s"SELECT * FROM read_side.buc_sujeto_objeto" +
               s" WHERE SOJ_TIPO_OBJETO = '${testData1.objetoTipo}'" +
               s" AND SOJ_IDENTIFICADOR = '${testData1.objetoId}'" +
               s" AND SOJ_SUJ_IDENTIFICADOR = '${testData1.sujetoId}';"
