@@ -90,9 +90,13 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       return Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     }
 
-    // Validación: Si es un evento de semáforo y no hay registro previo, descartar
-    if (StateParcialObjeto.SPO.esEventoSemaforo(command.registro) && actor.state.registro.isEmpty) {
-      log.warn(s"Descartando evento de semáforo sin vínculo existente: sujetoId=${command.sujetoId}, objetoId=${command.objetoId}")
+    // Validación: Si es un evento de semáforo o state parcial y no hay registro previo, descartar
+    if ((StateParcialObjeto.SPO.esEventoSemaforo(command.registro) ||
+      StateParcialObjeto.SPO.esStateParcial(command.registro)) &&
+      actor.state.registro.isEmpty) {
+
+      val tipoEvento = if (StateParcialObjeto.SPO.esEventoSemaforo(command.registro)) "semáforo" else "state parcial"
+      log.warn(s"Descartando evento de $tipoEvento sin vínculo existente: sujetoId=${command.sujetoId}, objetoId=${command.objetoId}")
       sender ! Response.SuccessProcessing(s"DESCARTADO-${command.aggregateRoot}", command.deliveryId)
       return Success(Response.SuccessProcessing(s"DESCARTADO-${command.aggregateRoot}", command.deliveryId))
     }

@@ -13,7 +13,6 @@ class StateParcialObjeto extends StateParcial {
 
   /**
    * Determina si un evento proviene de semáforo
-   * Nota: Ahora aplica a todos los tipos de objeto, no solo INMUEBLE
    */
   def esEventoSemaforo(objetoDto: ObjetoExternalDto): Boolean = {
     // Verificar si es evento de semáforo (tiene SOJ_SEMAFORO_COLOR)
@@ -22,6 +21,18 @@ class StateParcialObjeto extends StateParcial {
         detalle.SOJ_SEMAFORO_COLOR.isDefined
       }
     }
+  }
+
+  /**
+   * Determina si un evento es un state parcial (no tiene todos los campos)
+   * Esta lógica puede ajustarse según los campos que se consideren obligatorios
+   */
+  def esStateParcial(objetoDto: ObjetoExternalDto): Boolean = {
+    // Aquí definimos qué hace que un objeto sea considerado "parcial"
+    // Por ejemplo, si faltan ciertos campos críticos
+    objetoDto.SOJ_SUBTIPO.isEmpty ||
+      objetoDto.SOJ_ESTADO.isEmpty ||
+      objetoDto.SOJ_TITULARIDAD.isEmpty
   }
 
   /**
@@ -43,10 +54,11 @@ class StateParcialObjeto extends StateParcial {
       case e: ObjetoExternalDto => e
     }
 
-    // Validación para eventos de semáforo: solo actualizar si hay estado previo
     val hayEstadoPrevio = estado.isDefined
-    if (esEventoSemaforo(miEvento) && !hayEstadoPrevio) {
-      log.warn(s"Descartando actualización de evento de semáforo sin vínculo existente")
+
+    // Si es evento de semáforo o state parcial y no hay estado previo, descartar
+    if ((esEventoSemaforo(miEvento) || esStateParcial(miEvento)) && !hayEstadoPrevio) {
+      log.warn(s"Descartando actualización de evento sin vínculo existente: ${if(esEventoSemaforo(miEvento)) "semáforo" else "state parcial"}")
       return
     }
 
@@ -96,11 +108,17 @@ object StateParcialObjeto {
 
   def stateParcialCC(evento: ObjetoExternalDto, estado: Option[ObjetoExternalDto]): ObjetoExternalDto = {
     // Validamos si el evento debe procesarse antes de continuar
-    if (SPO.esEventoSemaforo(evento) && estado.isEmpty) {
-      // Si es evento de semáforo y no hay estado previo, retornar una copia del evento original
-      // para no procesarlo y que será descartado en niveles superiores
+    // Un evento debe descartarse si:
+    // 1. Es un evento de semáforo sin vínculo existente, o
+    // 2. Es un state parcial sin vínculo existente
+    val debeDescartar = (SPO.esEventoSemaforo(evento) || SPO.esStateParcial(evento)) && estado.isEmpty
+
+    if (debeDescartar) {
+      // Si debe descartarse, retornar el evento original sin cambios
+      // Este será descartado en niveles superiores
       evento
     } else {
+      // Caso contrario, aplicar la lógica normal de state parcial
       SPO.stateParcialCC(evento, estado).asInstanceOf[ObjetoExternalDto]
     }
   }
@@ -113,12 +131,12 @@ object StateParcialObjeto {
    * @return true si debe procesarse, false si debe descartarse
    */
   def debeProceserEvento(evento: ObjetoExternalDto, estado: Option[ObjetoExternalDto]): Boolean = {
-    // Si no es un evento de semáforo, siempre procesar
-    if (!SPO.esEventoSemaforo(evento)) {
+    // Si no es un evento de semáforo ni un state parcial, siempre procesar
+    if (!SPO.esEventoSemaforo(evento) && !SPO.esStateParcial(evento)) {
       return true
     }
 
-    // Si es evento de semáforo, solo procesar si existe estado previo
+    // Si es evento de semáforo o state parcial, solo procesar si existe estado previo
     estado.isDefined
   }
 }
