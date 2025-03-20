@@ -1,5 +1,5 @@
 {
-  "start-time" : "2025-03-06T15:00:07.388",
+  "start-time" : "2025-03-20T13:59:34.897",
   "akka-version" : "2.6.15",
   "akka-diagnostics-version" : "1.1.16",
   "akka-http-version" : "10.2.0",
@@ -28,15 +28,15 @@
   "system-metrics" : {
     "heap-init" : 390070272,
     "heap-max" : 6224347136,
-    "heap-used" : 125165568,
-    "heap-committed" : 468713472,
+    "heap-used" : 188743680,
+    "heap-committed" : 620756992,
     "os-processors" : 12,
     "mem-pool-0" : {
       "name" : "CodeHeap 'non-nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 5836800,
-      "used" : 1552896,
+      "used" : 1559552,
       "committed" : 2555904
     },
     "mem-pool-1" : {
@@ -44,7 +44,7 @@
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 82138480,
+      "used" : 82149680,
       "committed" : 85536768
     },
     "mem-pool-2" : {
@@ -52,7 +52,7 @@
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122908672,
-      "used" : 15302784,
+      "used" : 15286528,
       "committed" : 15335424
     },
     "mem-pool-3" : {
@@ -60,7 +60,7 @@
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : 1073741824,
-      "used" : 10515200,
+      "used" : 10509824,
       "committed" : 12189696
     },
     "mem-pool-4" : {
@@ -68,32 +68,32 @@
       "type" : "Heap memory",
       "init" : 27262976,
       "max" : -1,
-      "used" : 6291456,
-      "committed" : 227540992
+      "used" : 71303168,
+      "committed" : 276824064
     },
     "mem-pool-5" : {
       "name" : "G1 Old Gen",
       "type" : "Heap memory",
       "init" : 362807296,
       "max" : 6224347136,
-      "used" : 107339776,
-      "committed" : 228589568
+      "used" : 108003328,
+      "committed" : 334495744
     },
     "mem-pool-6" : {
       "name" : "G1 Survivor Space",
       "type" : "Heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 12582912,
-      "committed" : 12582912
+      "used" : 9437184,
+      "committed" : 9437184
     },
     "mem-pool-7" : {
       "name" : "CodeHeap 'non-profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122912768,
-      "used" : 5529344,
-      "committed" : 5570560
+      "used" : 5498112,
+      "committed" : 5505024
     }
   },
   "configuration" : {
@@ -1593,7 +1593,7 @@
             }
         },
         "java" : {
-            "command" : "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner -s proyectionists.no_registrales.base_Tri.acceptance.BaseTri -testName Test 20 Alta: de sujeto Tri con identificador vacío should llegar al tópico de error -showProgressMessages true",
+            "command" : "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner -s proyectionists.no_registrales.base_Tri.acceptance.BaseTri -testName Test 21 Alta/Modificacion: de objeto Tri should End to end, PCS a Readside -showProgressMessages true",
             "launcher" : "SUN_STANDARD"
         },
         "jnu" : {
