@@ -100,7 +100,7 @@ class StateParcialObjeto extends StateParcial {
       case _ => None
     }
 
-    log.warn(s"INICIO spOtrosAtributos para objetoId: ${miEvento.SOJ_IDENTIFICADOR}" +
+    log.debug(s"INICIO spOtrosAtributos para objetoId: ${miEvento.SOJ_IDENTIFICADOR}" +
       s"\n  - SUJ_ID: ${miEvento.SOJ_SUJ_IDENTIFICADOR}" +
       s"\n  - TIPO: ${miEvento.SOJ_TIPO_OBJETO}" +
       s"\n  - Estado existe: ${miEstado.isDefined}" +
@@ -109,7 +109,7 @@ class StateParcialObjeto extends StateParcial {
     // VERIFICACIÓN ADICIONAL: Verificar si este es el objeto de test que nos interesa
     if (miEvento.SOJ_IDENTIFICADOR == "EKY031" && miEvento.SOJ_TIPO_OBJETO == "A" &&
       miEvento.SOJ_SUJ_IDENTIFICADOR == "27-23280107-2") {
-      log.warn(s"*** PROCESANDO OBJETO DE TEST EKY031 ***" +
+      log.debug(s"*** PROCESANDO OBJETO DE TEST EKY031 ***" +
         s"\n  - Estado existe: ${miEstado.isDefined}" +
         s"\n  - Es state parcial: ${isStateParcial(miEvento)}" +
         s"\n  - Otros atributos: ${miEvento.SOJ_OTROS_ATRIBUTOS}")
@@ -120,12 +120,12 @@ class StateParcialObjeto extends StateParcial {
       // Verificar si el evento debe procesarse según nuestra lógica simplificada
       if (shouldFilterEvent(miEvento, miEstado)) {
         // No realizar ninguna actualización para eventos state parcial sin estado existente
-        log.warn(s"Ignorando spOtrosAtributos para evento state parcial sin vínculo existente | objetoId: ${miEvento.SOJ_IDENTIFICADOR}")
+        log.debug(s"Ignorando spOtrosAtributos para evento state parcial sin vínculo existente | objetoId: ${miEvento.SOJ_IDENTIFICADOR}")
         return
       }
     }
 
-    log.warn(s"PROCESANDO spOtrosAtributos para evento | objetoId: ${miEvento.SOJ_IDENTIFICADOR} | isStateParcial: ${isStateParcial(miEvento)}")
+    log.debug(s"PROCESANDO spOtrosAtributos para evento | objetoId: ${miEvento.SOJ_IDENTIFICADOR} | isStateParcial: ${isStateParcial(miEvento)}")
 
     miEvento.SOJ_OTROS_ATRIBUTOS match {
       case None =>
@@ -183,7 +183,7 @@ object StateParcialObjeto {
     // 2. Si es un state parcial y ya existe en BD: siempre procesar
     // 3. Si es un state parcial y no existe en BD: no procesar
 
-    SPO.log.warn(s"INICIO stateParcialCC para objetoId: ${evento.SOJ_IDENTIFICADOR}" +
+    SPO.log.debug(s"INICIO stateParcialCC para objetoId: ${evento.SOJ_IDENTIFICADOR}" +
       s"\n  - Claves: SUJ_ID=${evento.SOJ_SUJ_IDENTIFICADOR}, TIPO=${evento.SOJ_TIPO_OBJETO}" +
       s"\n  - Estado previo existe: ${estado.isDefined}" +
       s"\n  - Contenido evento: ${evento.toString.take(100)}...")
@@ -191,7 +191,7 @@ object StateParcialObjeto {
     // IMPORTANTE: Verificar si el estado realmente corresponde al mismo objeto
     if (estado.isDefined) {
       val estadoObj = estado.get
-      SPO.log.warn(s"ESTADO ENCONTRADO:" +
+      SPO.log.debug(s"ESTADO ENCONTRADO:" +
         s"\n  - SUJ_ID evento: ${evento.SOJ_SUJ_IDENTIFICADOR} vs estado: ${estadoObj.SOJ_SUJ_IDENTIFICADOR}" +
         s"\n  - TIPO evento: ${evento.SOJ_TIPO_OBJETO} vs estado: ${estadoObj.SOJ_TIPO_OBJETO}" +
         s"\n  - ID evento: ${evento.SOJ_IDENTIFICADOR} vs estado: ${estadoObj.SOJ_IDENTIFICADOR}")
@@ -199,20 +199,20 @@ object StateParcialObjeto {
 
     // Si debemos filtrar el evento según nuestra lógica simplificada
     if (SPO.shouldFilterEvent(evento, estado)) {
-      SPO.log.warn(s"FILTRANDO state parcial sin estado existente para objetoId: ${evento.SOJ_IDENTIFICADOR}")
+      SPO.log.debug(s"FILTRANDO state parcial sin estado existente para objetoId: ${evento.SOJ_IDENTIFICADOR}")
       return evento  // Retorna el evento sin cambios (no se persistirá)
     }
 
     // CASO ESPECIAL: Si es state parcial pero tiene estado, asegurarse de que se procese
     if (SPO.isStateParcial(evento) && estado.isDefined) {
-      SPO.log.warn(s"PROCESANDO EXPLÍCITAMENTE state parcial CON estado existente para objetoId: ${evento.SOJ_IDENTIFICADOR}")
+      SPO.log.debug(s"PROCESANDO EXPLÍCITAMENTE state parcial CON estado existente para objetoId: ${evento.SOJ_IDENTIFICADOR}")
       // En este punto, debemos asegurarnos de que se procese correctamente
     }
 
     try {
       // Procesar normalmente si pasa la validación
       val result = SPO.stateParcialCC(evento, estado).asInstanceOf[ObjetoExternalDto]
-      SPO.log.warn(s"StateParcialCC COMPLETADO EXITOSAMENTE para objetoId: ${evento.SOJ_IDENTIFICADOR}")
+      SPO.log.debug(s"StateParcialCC COMPLETADO EXITOSAMENTE para objetoId: ${evento.SOJ_IDENTIFICADOR}")
       result
     } catch {
       case e: Exception =>
@@ -243,7 +243,7 @@ object StateParcialObjeto {
       val mismoTipo = evento.SOJ_TIPO_OBJETO == estadoObj.SOJ_TIPO_OBJETO
       val mismoId = evento.SOJ_IDENTIFICADOR == estadoObj.SOJ_IDENTIFICADOR
 
-      SPO.log.warn(s"VERIFICACIÓN DE IDENTIDAD DEL OBJETO:" +
+      SPO.log.debug(s"VERIFICACIÓN DE IDENTIDAD DEL OBJETO:" +
         s"\n  - Mismo sujeto: $mismoSujeto (${evento.SOJ_SUJ_IDENTIFICADOR} vs ${estadoObj.SOJ_SUJ_IDENTIFICADOR})" +
         s"\n  - Mismo tipo: $mismoTipo (${evento.SOJ_TIPO_OBJETO} vs ${estadoObj.SOJ_TIPO_OBJETO})" +
         s"\n  - Mismo ID: $mismoId (${evento.SOJ_IDENTIFICADOR} vs ${estadoObj.SOJ_IDENTIFICADOR})")
@@ -256,7 +256,7 @@ object StateParcialObjeto {
     // Lógica inversa a shouldFilterEvent
     val shouldProcess = !isPartial || existsInDB
 
-    SPO.log.warn(s"DECISIÓN shouldProcessEvent para objetoId: ${evento.SOJ_IDENTIFICADOR}" +
+    SPO.log.debug(s"DECISIÓN shouldProcessEvent para objetoId: ${evento.SOJ_IDENTIFICADOR}" +
       s"\n  - RESULTADO FINAL: ${if(shouldProcess) "PROCESAR" else "NO PROCESAR"}" +
       s"\n  - Es state parcial: $isPartial" +
       s"\n  - Existe en base de datos: $existsInDB")
