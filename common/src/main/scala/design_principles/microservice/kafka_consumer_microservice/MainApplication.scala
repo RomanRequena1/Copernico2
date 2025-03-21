@@ -21,12 +21,12 @@ import scala.util.Try
 object MainApplication {
 
   def startMicroservices(
-      microservicesFactory: KafkaConsumerMicroserviceRequirements => Seq[KafkaConsumerMicroservice],
-      ip: String,
-      port: Int,
-      actorSystemName: String,
-      extraConfigurations: Config = ConfigFactory.empty
-  ): Unit = {
+                          microservicesFactory: KafkaConsumerMicroserviceRequirements => Seq[KafkaConsumerMicroservice],
+                          ip: String,
+                          port: Int,
+                          actorSystemName: String,
+                          extraConfigurations: Config = ConfigFactory.empty
+                        ): Unit = {
 
     val mainConfig = ConfigFactory.load()
     lazy val config = Seq(

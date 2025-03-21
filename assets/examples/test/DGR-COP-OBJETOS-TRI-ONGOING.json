@@ -1,9 +1,9 @@
 {
-        "EV_ID": "18",
+        "EV_ID": "4",
         "SOJ_SUJ_IDENTIFICADOR": "27-23280107-2",
-	    "SOJ_TIPO_OBJETO": "A",
-	    "SOJ_IDENTIFICADOR": "EKY031",
-        "SOJ_ESTADO" : "BAJA",
+        "SOJ_TIPO_OBJETO": "A",
+        "SOJ_IDENTIFICADOR": "EKY031",
+        "SOJ_ESTADO": "BAJA",
         "SOJ_OTROS_ATRIBUTOS" : {
           "SOJ_DETALLES" : [ {
           "RESPONSABLE_OTROS_ATRIBUTOS" : "S",
