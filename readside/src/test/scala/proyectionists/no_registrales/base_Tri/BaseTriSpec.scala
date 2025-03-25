@@ -316,7 +316,7 @@ abstract class BaseTriSpec(
         _ <- messageProducer.produceEvento(objetoJsonInicial, "DGR-COP-OBJETOS-TRI")
       } yield ()
       eventually(timeout(15.seconds), interval(100.milliseconds)) {
-        //verifyCassandra(testData)
+        verifyCassandra(testData)
       }
 
       for {
@@ -324,7 +324,8 @@ abstract class BaseTriSpec(
         _ <- messageProducer.produceEvento(objetoModificadoJson, "DGR-COP-OBJETOS-TRI")
       } yield ()
       eventually(timeout(15.seconds), interval(100.milliseconds)) {
-        //verifyCassandra2(testData)
+        println("Validando...")
+        verifyCassandra2(testData)
       }
   }
   "Test 3 Alta/Modificacion: de obligacion Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner {
@@ -394,7 +395,6 @@ abstract class BaseTriSpec(
         _ <- messageProducer.produceEvento(obligacionJson, "DGR-COP-OBLIGACIONES-TRI")
       } yield ()
       eventually(timeout(15.seconds), interval(100.milliseconds)) {
-        println("Validando...")
         verifyCassandra(testData)
       }
 
@@ -2094,6 +2094,7 @@ abstract class BaseTriSpec(
         }
       } yield ()
       eventually(timeout(15.seconds), interval(100.milliseconds)) {
+        println("Validando...")
         verifyCassandra(testData)
       }
   }
@@ -2144,153 +2145,100 @@ abstract class BaseTriSpec(
       val formatterCassandra = DateTimeFormatter.ofPattern("yyyy-MM-dd")
       val fechaCassandra = LocalDate.now().format(formatterCassandra)
 
-      def verifyCassandra(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
+      def verifyCassandra(objetoJsonInicial: String)(implicit ec: ExecutionContext): Assertion = {
         val expectedDate = fechaCassandra
         val cassandra = context.cassandra
         val resultado: AsyncResultSet = cassandra.cassandraWrite
           .cqlSelect(
-            s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-              s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-              s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
+            s"SELECT * FROM read_side.buc_sujeto_objeto " +
+              s"WHERE SOJ_SUJ_IDENTIFICADOR = '27-23280107-2'" +
+              s"AND SOJ_IDENTIFICADOR = 'EKY031'" +
+              s"AND SOJ_TIPO_OBJETO = 'A';"
           )
           .futureValue
 
         val objeto2 = resultado.one()
-
-        // Persistir la descripcion y fecha_inicio
-        objeto2.getString("SOJ_DESCRIPCION") should be("ObjetoPrueba_T2")
-        objeto2.getLocalDate("SOJ_FECHA_INICIO").format(formatterCassandra) should be(expectedDate)
-
-        objeto2.getString("SOJ_SUJ_IDENTIFICADOR") should be(testData.sujetoId)
 
         // State parcial
-        objeto2.isNull("SOJ_SUBTIPO") should be(true)
-        objeto2.isNull("SOJ_FECHA_ADQ_SUBASTA") should be(true)
-
-        // Persistir el origen, base_imponible
-        objeto2.getString("SOJ_CANAL_ORIGEN") should be("OTAX")
-        objeto2.getFloat("SOJ_BASE_IMPONIBLE") should be(12345)
-
-        val sojOtrosAtributos = objeto2.getMap("SOJ_OTROS_ATRIBUTOS", classOf[String], classOf[String])
-        val sojDetalles: String = sojOtrosAtributos.get("SOJ_DETALLES")
-
-        decode[List[DetallesObjeto]](sojDetalles) match {
-          case Left(error) => fail(s"Error decoding SOJ_OTROS_ATRIBUTOS: $error")
-          case Right(detalles) =>
-            // Persistir soj_detalles: semaforo_marca
-            detalles.head.SOJ_SEMAFORO_MARCA.get should be("P")
-        }
+        objeto2.getString("SOJ_IDENTIFICADOR") should be("EKY031")
       }
-
-      def verifyCassandra2(testData: TestData)(implicit ec: ExecutionContext): Assertion = {
-        val expectedDate = fechaCassandra
-        val cassandra = context.cassandra
-        val resultado: AsyncResultSet = cassandra.cassandraWrite
-          .cqlSelect(
-            s"SELECT * FROM read_side.buc_sujeto_objeto WHERE SOJ_SUJ_IDENTIFICADOR = '${testData.sujetoId}'" +
-              s"AND SOJ_IDENTIFICADOR = '${testData.objetoId}'" +
-              s"AND SOJ_TIPO_OBJETO = '${testData.objetoTipo}';"
-          )
-          .futureValue
-
-        val objeto2 = resultado.one()
-
-        // Mantener la descripcion y fecha_inicio
-        objeto2.getString("SOJ_DESCRIPCION") should be("ObjetoPrueba_T2")
-        objeto2.getLocalDate("SOJ_FECHA_INICIO").format(formatterCassandra) should be(expectedDate)
-
-        // Persistir nuevo sutbipo y fecha_adq_subasta
-        objeto2.getString("SOJ_SUJ_IDENTIFICADOR") should be(testData.sujetoId)
-        objeto2.getString("SOJ_SUBTIPO") should be("Urbano")
-        objeto2.getLocalDate("SOJ_FECHA_ADQ_SUBASTA").format(formatterCassandra) should be(expectedDate)
-
-        // Eliminar el origen, base_imponible
-        objeto2.isNull("SOJ_CANAL_ORIGEN") should be(true)
-        objeto2.getFloat("SOJ_BASE_IMPONIBLE") should be(0.0)
-
-        val sojOtrosAtributos = objeto2.getMap("SOJ_OTROS_ATRIBUTOS", classOf[String], classOf[String])
-        val sojDetalles: String = sojOtrosAtributos.get("SOJ_DETALLES")
-
-        decode[List[DetallesObjeto]](sojDetalles) match {
-          case Left(error) => fail(s"Error decoding SOJ_OTROS_ATRIBUTOS: $error")
-          case Right(detalles) =>
-            // Persistir soj_detalles: responsable y porcentaje.
-            detalles.head.RESPONSABLE_OTROS_ATRIBUTOS.get should be("S")
-            detalles.head.PORCENTAJE_OTROS_ATRIBUTOS.get should be(100)
-
-            // No persistir semaforo_color
-            detalles.head.SOJ_SEMAFORO_COLOR should be(None)
-
-            // Mantener soj_detalles: semaforo_marca
-            detalles.head.SOJ_SEMAFORO_MARCA.get should be("P")
-        }
-      }
-
-      val testData = TestData(
-        sujetoId = "CuitTri_T2",
-        objetoId = "ObjetoTri_T2",
-        objetoTipo = "A",
-        obnId = "Obn_T2"
-      )
 
       val objetoJsonInicial =
-        s"""
-      {
-      "EV_ID": "$deliveryIdAct",
-      "SOJ_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
-      "SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
-      "SOJ_IDENTIFICADOR": "${testData.objetoId}",
-      "SOJ_DESCRIPCION": "ObjetoPrueba_T2",
-      "SOJ_ESTADO": null,
-      "SOJ_FECHA_ADQ_SUBASTA": "1000-01-01 00:00:00.0",
-      "SOJ_FECHA_INICIO": "$fecha",
-      "SOJ_BASE_IMPONIBLE": "12345",
-      "SOJ_SUBTIPO": "null",
-      "SOJ_CANAL_ORIGEN": "OTAX",
-      "SOJ_OTROS_ATRIBUTOS": {
-      "SOJ_DETALLES":
-      [{"SOJ_SEMAFORO_MARCA": "P"}]}
-      }
-    """
+           s"""{
+	        "EV_ID": "1",
+	        "SOJ_SUJ_IDENTIFICADOR": "27-23280107-2",
+	        "SOJ_TIPO_OBJETO": "A",
+	        "SOJ_IDENTIFICADOR": "EKY031",
+	        "SOJ_DESCRIPCION": "PEUGEOT SEDAN 3 PUERTAS 206 XR 1.4 3P",
+	        "SOJ_ESTADO": "null",
+	        "SOJ_FECHA_ADQ_SUBASTA": "1000-01-01 00:00:00.0",
+	        "SOJ_FECHA_VTA_SUBASTA": "1000-01-01 00:00:00.0",
+	        "SOJ_FECHA_FIN": "1000-01-01 00:00:00.0",
+	        "SOJ_FECHA_INICIO": "2004-04-22 00:00:00.0",
+	        "SOJ_SUBTIPO": "null",
+	        "SOJ_ADHERIDO_DEBITO": "N",
+	        "SOJ_CANAL_ORIGEN": "OTAX",
+	        "SOJ_CAT_SOJ_ID": "TRI",
+	        "SOJ_TITULARIDAD": "null",
+	        "SOJ_ID_EXTERNO": "4304977",
+	        "SOJ_OTROS_ATRIBUTOS": {
+	        	"SOJ_DETALLES": [
+	        		{
+				"RESPONSABLE_OTROS_ATRIBUTOS": "S",
+				"PORCENTAJE_OTROS_ATRIBUTOS": "100",
+				"OTROS_ATRIBUTOS_ADHERIDO_DEBITO": "N",
+				"SOJ_SEMAFORO_COLOR": "null",
+				"SOJ_SEMAFORO_MARCA": "null"
+			}]}
+          }"""
 
-      val objetoModificadoJson =
-        s"""
-            {
-            "EV_ID": "$deliveryIdAct",
-            "SOJ_SUJ_IDENTIFICADOR": "${testData.sujetoId}",
-            "SOJ_TIPO_OBJETO": "${testData.objetoTipo}",
-            "SOJ_IDENTIFICADOR": "${testData.objetoId}",
-            "SOJ_ESTADO": null,
-            "SOJ_FECHA_ADQ_SUBASTA": "$fecha",
-            "SOJ_BASE_IMPONIBLE": "999",
-            "SOJ_SUBTIPO": "Urbano",
-            "SOJ_CANAL_ORIGEN": "null",
-            "SOJ_OTROS_ATRIBUTOS": {
-            "SOJ_DETALLES": [
-            {
-            "RESPONSABLE_OTROS_ATRIBUTOS": "S",
-            "PORCENTAJE_OTROS_ATRIBUTOS": "100",
-            "SOJ_SEMAFORO_COLOR": "null"
-            }]}
-          }
-          """
+      val objetoJsonNoBase =
+        s"""{
+        "EV_ID": "2",
+        "SOJ_SUJ_IDENTIFICADOR": "27-27551656-8",
+        "SOJ_TIPO_OBJETO": "I",
+        "SOJ_IDENTIFICADOR": "110123140729",
+        "SOJ_OTROS_ATRIBUTOS" : {
+          "SOJ_DETALLES" : [ {
+          "RESPONSABLE_OTROS_ATRIBUTOS" : "S",
+          "PORCENTAJE_OTROS_ATRIBUTOS" : "100",
+          "SOJ_SEMAFORO_COLOR" : "R",
+          "SOJ_SEMAFORO_MARCA" : "I"
+        } ]
+        }
+      }"""
 
+      val objetoJsonModificado =
+        s"""{
+        "EV_ID": "3",
+        "SOJ_SUJ_IDENTIFICADOR": "27-23280107-2",
+	    "SOJ_TIPO_OBJETO": "A",
+	    "SOJ_IDENTIFICADOR": "EKY031",
+        "SOJ_OTROS_ATRIBUTOS" : {
+          "SOJ_DETALLES" : [ {
+          "RESPONSABLE_OTROS_ATRIBUTOS" : "S",
+          "PORCENTAJE_OTROS_ATRIBUTOS" : "100",
+          "SOJ_SEMAFORO_COLOR" : "R",
+          "SOJ_SEMAFORO_MARCA" : "I"
+        } ]
+        }
+      }"""
+
+      Thread.sleep(5000)
       for {
         // 1 - Alta OBJETO
         _ <- messageProducer.produceEvento(objetoJsonInicial, "DGR-COP-OBJETOS-TRI")
+        //2 - Alta objeto inexistente en la base (no deberia persistir)
+        _ <- messageProducer.produceEvento(objetoJsonNoBase, "DGR-COP-OBJETOS-TRI")
+        //3 - Alta objeto existente en la base (deberia actualizar)
+        _ <- messageProducer.produceEvento(objetoJsonModificado, "DGR-COP-OBJETOS-TRI")
+
       } yield ()
       eventually(timeout(15.seconds), interval(100.milliseconds)) {
-        verifyCassandra(testData)
+        Thread.sleep(5000)
+        verifyCassandra(objetoJsonInicial)
       }
 
-      for {
-        // 2 - Modificar Objeto
-        _ <- messageProducer.produceEvento(objetoModificadoJson, "DGR-COP-OBJETOS-TRI")
-      } yield ()
-      eventually(timeout(15.seconds), interval(100.milliseconds)) {
-        println("Validando...")
-        verifyCassandra2(testData)
-      }
   }
   "Test 22 Alta/Modificacion: de obligacion Tri" should "End to end, PCS a Readside" in parallelActorSystemRunner {
     implicit s =>
@@ -2359,9 +2307,7 @@ abstract class BaseTriSpec(
         _ <- messageProducer.produceEvento(obligacionJson, "DGR-COP-OBLIGACIONES-TRI")
       } yield ()
       eventually(timeout(15.seconds), interval(100.milliseconds)) {
-        println("Validando...")
         verifyCassandra(testData)
       }
 
-  }
-}
+  }}

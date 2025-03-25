@@ -57,6 +57,16 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       case None => ""
     }
 
+    // Validar si el evento debe ser procesado (eventos de semáforo o VDO state parcial sin vínculo existente)
+    if (!StateParcialObjeto.shouldProcessEvent(command.registro, actor.state.registro)) {
+      log.warn(
+        s"[${actor.name} | ${actor.persistenceId}] -objeto- rechazando evento de state parcial del semáforo/VDO porque el vínculo no existe | sujetoId: ${command.sujetoId}, objetoId: ${command.objetoId}"
+      )
+      sender ! Response.SuccessProcessing(s"VINCULO_INEXISTENTE-${command.aggregateRoot}", command.deliveryId)
+
+      return Success(Response.SuccessProcessing(s"VINCULO_INEXISTENTE-${command.aggregateRoot}", command.deliveryId))
+    }
+
     def isTipo(cmd: ObjetoUpdateFromTri) = {
       val result = DMNTreintaPorcientoTipo.calcularDmn(
         DmnObjeto(
@@ -80,27 +90,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       }
     }
 
-    // Verificar idempotencia
-    if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(
-        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
-      )
-      sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
-
-      return Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
-    }
-
-    // Validación: Si es un evento de semáforo o state parcial y no hay registro previo, descartar
-    if ((StateParcialObjeto.SPO.esEventoSemaforo(command.registro) ||
-      StateParcialObjeto.SPO.esStateParcial(command.registro)) &&
-      actor.state.registro.isEmpty) {
-
-      val tipoEvento = if (StateParcialObjeto.SPO.esEventoSemaforo(command.registro)) "semáforo" else "state parcial"
-      log.warn(s"Descartando evento de $tipoEvento sin vínculo existente: sujetoId=${command.sujetoId}, objetoId=${command.objetoId}")
-      sender ! Response.SuccessProcessing(s"DESCARTADO-${command.aggregateRoot}", command.deliveryId)
-      return Success(Response.SuccessProcessing(s"DESCARTADO-${command.aggregateRoot}", command.deliveryId))
-    }
-
     def getCCParams(evento: ObjetoExternalDto, estado: ObjetoExternalDto): ObjetoExternalDto = {
       StateParcialObjeto.stateParcialCC(evento, Some(estado))
     }
@@ -116,6 +105,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
     val dmn = isTipo(command)
 
     val event = ObjetoEvents.ObjetoUpdatedFromTri(
+      //TODO: validar para que esta este If
       if (command.deliveryId.signum < 0) actor.state.lastDeliveryIdByEvents else command.deliveryId,
       command.sujetoId,
       command.objetoId,
@@ -128,7 +118,16 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       Some(dmn._2)
     )
 
-    persistSnapshotEvent(event, actor, command, requeriment)
+    if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
+      log.warn(
+        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
+      )
+      sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
+
+      Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
+    } else {
+      persistSnapshotEvent(event, actor, command, requeriment)
+    }
   }
 }
 
@@ -158,6 +157,14 @@ object test {
     val sender = actor.context.sender()
     @JsonIgnore
     val log: Logger = LoggerFactory.getLogger(this.getClass)
+
+    // Validación adicional antes de persistir el evento
+    if (!StateParcialObjeto.shouldProcessEvent(command.registro, actor.state.registro)) {
+      log.warn(
+        s"[${actor.name} | ${actor.persistenceId}] -objeto- rechazando evento de state parcial en persistSnapshotEvent porque el vínculo no existe | sujetoId: ${command.sujetoId}, objetoId: ${command.objetoId}"
+      )
+      return Success(Response.SuccessProcessing(s"VINCULO_INEXISTENTE-${command.aggregateRoot}", command.deliveryId))
+    }
 
     implicit val ac: ActorSystem = actor.context.system
     val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
