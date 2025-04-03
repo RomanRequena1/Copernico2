@@ -11,7 +11,7 @@
     <option name="workingDir" value="$PROJECT_DIR$" />
     <envs>
       <env name="CASSANDRA_CONTACT_POINTS_UNO" value="0.0.0.0:9042" />
-      <env name="LOCAL_DEBUG_LOGS" value="INFO" />
+      <env name="LOCAL_DEBUG_LOGS" value="DEBUG" />
       <env name="AKKA_DEBUG_MODE" value="INFO" />
       <env name="CASSANDRA_USERNAME" value="cassandra" />
       <env name="HTTP_PORT" value="8081" />
@@ -47,8 +47,8 @@
       <env name="APACHE_ZOOKEEPER_DEBUG_MODE" value="OFF" />
       <env name="CLUSTER_PORT" value="2551" />
       <env name="CASSANDRA_CONTACT_POINTS_DOS" value="" />
-      <env name="LOG_ROOT_LEVEL_DEBUG_MODE" value="OFF" />
       <env name="CASSANDRA_METRICS_PORT" value="9089" />
+      <env name="LOG_ROOT_LEVEL_DEBUG_MODE" value="OFF" />
       <env name="APACHE_KAFKA_APP_INFO_PARSER_DEBUG_MODE" value="OFF" />
       <env name="CASSANDRA_PASSWORD" value="cassandra" />
       <env name="PASSIVATE" value="50000s" />

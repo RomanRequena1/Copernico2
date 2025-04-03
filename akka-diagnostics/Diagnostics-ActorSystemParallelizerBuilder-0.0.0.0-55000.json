@@ -1,5 +1,5 @@
 {
-  "start-time" : "2025-03-20T13:59:34.897",
+  "start-time" : "2025-03-28T18:35:06.240",
   "akka-version" : "2.6.15",
   "akka-diagnostics-version" : "1.1.16",
   "akka-http-version" : "10.2.0",
@@ -28,15 +28,15 @@
   "system-metrics" : {
     "heap-init" : 390070272,
     "heap-max" : 6224347136,
-    "heap-used" : 188743680,
-    "heap-committed" : 620756992,
+    "heap-used" : 254111744,
+    "heap-committed" : 612368384,
     "os-processors" : 12,
     "mem-pool-0" : {
       "name" : "CodeHeap 'non-nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 5836800,
-      "used" : 1559552,
+      "used" : 1424128,
       "committed" : 2555904
     },
     "mem-pool-1" : {
@@ -44,56 +44,56 @@
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 82149680,
-      "committed" : 85536768
+      "used" : 72715432,
+      "committed" : 75886592
     },
     "mem-pool-2" : {
       "name" : "CodeHeap 'profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122908672,
-      "used" : 15286528,
-      "committed" : 15335424
+      "used" : 12358144,
+      "committed" : 12386304
     },
     "mem-pool-3" : {
       "name" : "Compressed Class Space",
       "type" : "Non-heap memory",
       "init" : 0,
       "max" : 1073741824,
-      "used" : 10509824,
-      "committed" : 12189696
+      "used" : 9357352,
+      "committed" : 11010048
     },
     "mem-pool-4" : {
       "name" : "G1 Eden Space",
       "type" : "Heap memory",
       "init" : 27262976,
       "max" : -1,
-      "used" : 71303168,
-      "committed" : 276824064
+      "used" : 152043520,
+      "committed" : 339738624
     },
     "mem-pool-5" : {
       "name" : "G1 Old Gen",
       "type" : "Heap memory",
       "init" : 362807296,
       "max" : 6224347136,
-      "used" : 108003328,
-      "committed" : 334495744
+      "used" : 55930880,
+      "committed" : 226492416
     },
     "mem-pool-6" : {
       "name" : "G1 Survivor Space",
       "type" : "Heap memory",
       "init" : 0,
       "max" : -1,
-      "used" : 9437184,
-      "committed" : 9437184
+      "used" : 46137344,
+      "committed" : 46137344
     },
     "mem-pool-7" : {
       "name" : "CodeHeap 'non-profiled nmethods'",
       "type" : "Non-heap memory",
       "init" : 2555904,
       "max" : 122912768,
-      "used" : 5498112,
-      "committed" : 5505024
+      "used" : 3794432,
+      "committed" : 3801088
     }
   },
   "configuration" : {
@@ -1593,7 +1593,7 @@
             }
         },
         "java" : {
-            "command" : "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner -s proyectionists.no_registrales.base_Tri.acceptance.BaseTri -testName Test 21 Alta/Modificacion: de objeto Tri should End to end, PCS a Readside -showProgressMessages true",
+            "command" : "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner -s proyectionists.no_registrales.base_Tri.acceptance.BaseTri -testName Test 1 Alta/Modificacion: de sujeto Tri should End to end, PCS a Readside -showProgressMessages true",
             "launcher" : "SUN_STANDARD"
         },
         "jnu" : {
