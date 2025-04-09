@@ -20,7 +20,7 @@ class SujetoUpdateFromObjetoAntHandler(actor: SujetoActor) extends SyncCommandHa
           |""".stripMargin
     )
     val event = SujetoEvents.SujetoUpdatedFromObjetoAnt(
-      command.deliveryId,
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,

@@ -25,7 +25,7 @@ class SujetoUpdateFromObjetoTreintaProcientoHandler(actor: SujetoActor)
           |""".stripMargin
     )
     val event = SujetoEvents.SujetoUpdatedFromObjetoTreintaPorciento(
-      command.deliveryId,
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
