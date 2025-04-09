@@ -6,7 +6,6 @@ import akka.util.Timeout
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import design_principles.actor_model.Response
 import org.slf4j.LoggerFactory
-
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.concurrent.Await

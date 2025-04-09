@@ -1,25 +1,28 @@
 {
-  "EV_ID": "20240923120300971428775999138",
-  "BOB_SUJ_IDENTIFICADOR": "20-31735799-3",
-  "BOB_SOJ_TIPO_OBJETO": "SALUD",
-  "BOB_SOJ_IDENTIFICADOR": "0123-00018855",
-  "BOB_OBN_ID": "3286858953",
-  "BOB_SUPRESIONES": {
-    "BOB_DETALLES_SUPRESIONES": [
+      "EV_ID": "3",
+      "BOB_SUJ_IDENTIFICADOR": "43694835",
+      "BOB_SOJ_TIPO_OBJETO": "A",
+      "BOB_SOJ_IDENTIFICADOR": "AAA111",
+      "BOB_OBN_ID": "200000000",
+      "BOB_ESTADO": "JUDICIAL",
+      "BOB_PRORROGA": "1000-01-01 00:00:00.0",
+      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+      "BOB_PERIODO": "2024",
+      "BOB_FISCALIZADA": "Fiscalizada",
+      "BOB_CUOTA": "6",
+      "BOB_CAPITAL": "200",
+      "BOB_CONCEPTO": "601",
+      "BOB_IMPUESTO": "600",
+      "BOB_INTERES_PUNIT": "1000",
+      "BOB_INDICE_INT_PUNIT": "null",
+      "BOB_SALDO": "200",
+      "BOB_TIPO": "tributaria",
+      "BOB_OGA_ID": null,
+      "BOB_PLN_ID": "5555",
+      "BOB_OTROS_ATRIBUTOS": {
+      "BOB_DETALLES": [
       {
-        "BOB_TIPO_SUP": "CMPAMI",
-        "BOB_DESCRIPCION": null,
-        "BOB_ESTADO_SUP": "REALESED",
-        "BOB_FECHA_INICIO_SUP": "2024-11-15 00:00:00.0",
-        "BOB_FECHA_FIN_SUP": "2024-11-30 00:00:00.0"
-      },
-      {
-        "BOB_TIPO_SUP": "CMYPLAN",
-        "BOB_DESCRIPCION": null,
-        "BOB_ESTADO_SUP": "ACTIVE",
-        "BOB_FECHA_INICIO_SUP": "2025-05-22 00:00:00.0",
-        "BOB_FECHA_FIN_SUP": null
-      }
-    ]
-  }
-}
+      "PLAN_MULTIOBJETO": "PlanMultiobjeto",
+      "RULE_NUMBER": "1"
+      }]}
+    }
