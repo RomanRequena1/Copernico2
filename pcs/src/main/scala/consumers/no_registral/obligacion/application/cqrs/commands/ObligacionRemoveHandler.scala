@@ -38,17 +38,12 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
         s"[${actor.name} | ${actor.persistenceId}] -obligacion- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
 
-      // Informs that operation has been ignored */
-      //todo check if this is desirable, why? signal the sender??
-
-      // In this case the sender is "EL OBJETO"
       sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
 
       Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event
-        // Propaga actualizaciones al padre (Objeto)
         actor.informRemoveToParent(command)
         actor.lastDeliveryId = command.deliveryId
         actor.deleteSnapshot(event) { () =>
@@ -60,11 +55,4 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
     }
   }
 }
-/*val stateIsEmpty = state.equals(state.empty)
-    //todo warning !
-    val kafkaTopic = (if(stateIsEmpty) {
-      "ObligacionDeletedSnapshot"
-    }
-    else {
-      "ObligacionPersistedSnapshot"
-    })*/
+

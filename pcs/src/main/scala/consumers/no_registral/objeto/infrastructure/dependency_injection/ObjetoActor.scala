@@ -297,7 +297,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
                    tipoObjeto: String,
                    state: ObjetoState): Unit = {
     context.parent ! SujetoCommands.SujetoUpdateFromObjeto(
-      deliveryId,
+      deliveryId, //este?
       sujetoId,
       objetoId,
       tipoObjeto,

@@ -11,6 +11,7 @@
     <option name="workingDir" value="$PROJECT_DIR$" />
     <envs>
       <env name="CASSANDRA_CONTACT_POINTS_UNO" value="0.0.0.0:9042" />
+      <env name="ENVIRONMENT_EXECUTION" value="LOCAL" />
       <env name="LOCAL_DEBUG_LOGS" value="DEBUG" />
       <env name="AKKA_DEBUG_MODE" value="INFO" />
       <env name="CASSANDRA_USERNAME" value="cassandra" />

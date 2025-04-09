@@ -7,8 +7,6 @@ import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoA
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
-import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotentInternally
-
 import scala.util.{Success, Try}
 
 class SujetoUpdateFromObjetoAntHandler(actor: SujetoActor) extends SyncCommandHandler[SujetoUpdateFromObjetoAnt] {
@@ -31,19 +29,14 @@ class SujetoUpdateFromObjetoAntHandler(actor: SujetoActor) extends SyncCommandHa
       command.clasificacionObjeto
     )
 
-    if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(s"[${actor.name} | ${actor.persistenceId}] respond internally_idempotent because of old delivery id | $command")
-      sender ! Response.SuccessProcessing("IDEM-INT-" + command.aggregateRoot, command.deliveryId)
-    } else {
-      actor.persistEvent(event) { () =>
-        actor.state += event
+    actor.persistEvent(event) { () =>
+      actor.state += event
 
-        if (actor.state.eventCounter == eventCounterMax) {
-          actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
-          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
-        }
-        actor.persistSnapshot() { _ =>
-        }
+      if (actor.state.eventCounter == eventCounterMax) {
+        actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
+        actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+      }
+      actor.persistSnapshot() { _ =>
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

@@ -9,16 +9,16 @@ object DeliveryIdManagement {
     command.deliveryId <= lastDeliveryIdByEvents
   }
 
-  val interno: String = Try(System.getenv("INTERNALLY_IDEMPOTENCY")).getOrElse("OFF")
-
-  def isIdempotentInternally(command: Command, lastDeliveryIdByEvents: BigInt): Boolean = {
-    //TODO: quitar esta validación luego de truncar el writeside
-    if (lastDeliveryIdByEvents == null) {
-      false
-    } else if (interno.equals("ON")) {
-      command.deliveryId < lastDeliveryIdByEvents
-    } else {
-      false
-    }
-  }
+//  val interno: String = Try(System.getenv("INTERNALLY_IDEMPOTENCY")).getOrElse("OFF")
+//
+//  def isIdempotentInternally(command: Command, lastDeliveryIdByEvents: BigInt): Boolean = {
+//    //TODO: quitar esta validación luego de truncar el writeside
+//    if (lastDeliveryIdByEvents == null) {
+//      false
+//    } else if (interno.equals("ON")) {
+//      command.deliveryId < lastDeliveryIdByEvents
+//    } else {
+//      false
+//    }
+//  }
 }
