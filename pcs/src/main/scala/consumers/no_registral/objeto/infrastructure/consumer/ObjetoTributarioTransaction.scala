@@ -1,19 +1,21 @@
 package consumers.no_registral.objeto.infrastructure.consumer
 
 import akka.actor.{ActorRef, ActorSystem}
-import akka.pattern.ask
+//import akka.pattern.ask
 import akka.util.Timeout
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{ListDetallesObjeto, ObjetosTri}
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
+import consumers.no_registral.objeto.infrastructure.sorter.ObjetoCommandRouter
 import design_principles.actor_model.Response
 import io.circe.parser.decode
 import monitoring.Monitoring
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
+import scala.util.Try
 
 // Consumer modificado para usar el router
 case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitoring)(
@@ -26,6 +28,7 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
   implicit val ec: ExecutionContext = actorTransactionRequirements.executionContext
 
   // Crear o recuperar el router
+  val sorterEnabled: String = Try(System.getenv("BETTER_SORTER")).getOrElse("OFF")
   private val commandRouter = ObjetoCommandRouter.getOrCreate(system, actorRef)
 
   def topic = "DGR-COP-OBJETOS-TRI"
@@ -86,8 +89,13 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
 
       // Enviar el comando al router en lugar del actor directamente
       // El router se encargará de garantizar el procesamiento secuencial
-      import akka.pattern.ask
-      (commandRouter ? command).mapTo[Response.SuccessProcessing]
+      sorterEnabled.equals("ON") match {
+        case true => {
+          recordBetterSorter()
+          commandRouter.ask[Response.SuccessProcessing](command)
+        }
+        case false => actorRef.ask[Response.SuccessProcessing](command)
+      }
     }
   }
 }
