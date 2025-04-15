@@ -29,6 +29,7 @@ import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits
 }
 
 class MessageTestkitUtils(sujeto: ActorRef) {
+  implicit val system = s
   implicit val actorTransactionRequirements: ActorTransactionRequirements = ActorTransactionRequirements(
     executionContext = scala.concurrent.ExecutionContext.Implicits.global,
     config = ConfigFactory.empty
