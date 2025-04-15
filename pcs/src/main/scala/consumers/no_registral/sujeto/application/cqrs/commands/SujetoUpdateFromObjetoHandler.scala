@@ -8,8 +8,6 @@ import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoA
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
-import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotentInternally
-
 import scala.util.{Success, Try}
 
 class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandler[SujetoUpdateFromObjeto] {
@@ -23,7 +21,7 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
           |""".stripMargin
     )
     val event = SujetoEvents.SujetoUpdatedFromObjeto(
-      command.deliveryId,
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
@@ -32,21 +30,16 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
       command.clasificacionObjeto
     )
 
-    if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(s"[${actor.name} | ${actor.persistenceId}] respond internally_idempotent because of old delivery id | $command")
-      sender ! Response.SuccessProcessing("IDEM-INT-" + command.aggregateRoot, command.deliveryId)
-    } else {
-      actor.persistEvent(event) { () =>
-        actor.state += event
-        SendToObjeto(actor.state, sender, actor.context, event.sujetoId, command.objetoId, command.tipoObjeto)
+    actor.persistEvent(event) { () =>
+      actor.state += event
+      SendToObjeto(actor.state, sender, actor.context, event.sujetoId, command.objetoId, command.tipoObjeto)
 
-        if (actor.state.eventCounter == eventCounterMax) {
-          actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
-          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
-        }
-        actor.persistSnapshot() { _ =>
-          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-        }
+      if (actor.state.eventCounter == eventCounterMax) {
+        actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
+        actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+      }
+      actor.persistSnapshot() { _ =>
+        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

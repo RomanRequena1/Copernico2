@@ -8,7 +8,6 @@ import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoA
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
-import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotentInternally
 
 import scala.util.{Success, Try}
 
@@ -31,7 +30,6 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
     val sender = actor.context.sender()
 
     val event = UpdatedState30ObjetoFromObjVinculo(
-      //TODO: validar para que esta este If
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
@@ -40,25 +38,17 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
       command.exclusionObjetoVinculo
     )
 
-    if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(
-        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond internally_idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
-      )
-      sender ! Response.SuccessProcessing("IDEM-INT-" + command.aggregateRoot, command.deliveryId)
+    actor.persistEvent(event) { () =>
+      actor.state += event
+      if (actor.state.eventCounter == eventCounterMax) {
+        actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+      }
 
-    } else {
-      actor.persistEvent(event) { () =>
-        actor.state += event
-        if (actor.state.eventCounter == eventCounterMax) {
-          actor.saveSnapshot(actor.state.copy(eventCounter = 0))
-        }
+      if (actor.state.tiene30Objeto.equals(false)) {
+        SendToSujeto(actor, requeriment, event)
 
-        if (actor.state.tiene30Objeto.equals(false)) {
-          SendToSujeto(actor, requeriment, event)
-
-        } else {
-          SendToSujeto1(actor, requeriment, event)
-        }
+      } else {
+        SendToSujeto1(actor, requeriment, event)
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

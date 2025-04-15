@@ -10,7 +10,6 @@ import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoA
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
-import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotentInternally
 
 import scala.util.{Success, Try}
 
@@ -38,30 +37,20 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
       command.cuota
     )
 
-    if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(
-        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond internally_idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
-      )
-      sender ! Response.SuccessProcessing("IDEM-INT-" + command.aggregateRoot, command.deliveryId)
 
-    } else {
-
-      implicit val ac: ActorSystem = actor.context.system
-      val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
-      actor.persistEvent(event) { () =>
-        actor.state += event
-        if (!actor.state.isBaja && actor.state.registro.isDefined) {
-          //actor.informParent(command, actor.state)
-          //actor.persistSnapshot(event, actor.state)(() => ())
-          SendObjetoToObjetoVinculo(vinculoActor,
-                                    actor,
-                                    command.sujetoId,
-                                    command.objetoId,
-                                    command.tipoObjeto,
-                                    actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
-                                    requeriment,
-                                    command)
-        }
+    implicit val ac: ActorSystem = actor.context.system
+    val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
+    actor.persistEvent(event) { () =>
+      actor.state += event
+      if (!actor.state.isBaja && actor.state.registro.isDefined) {
+        SendObjetoToObjetoVinculo(vinculoActor,
+          actor,
+          command.sujetoId,
+          command.objetoId,
+          command.tipoObjeto,
+          actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
+          requeriment,
+          command)
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

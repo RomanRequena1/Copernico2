@@ -30,6 +30,7 @@
       <env name="DMN_ID_OBJETO_CUPON" value="'Decision_0tsof3f'" />
       <env name="PROMETHEUS_PORT" value="9099" />
       <env name="LOG_ROOT_LEVEL_DEBUG_MODE" value="WARN" />
+      <env name="CASSANDRA_METRICS_PORT" value="9079" />
       <env name="APACHE_KAFKA_APP_INFO_PARSER_DEBUG_MODE" value="OFF" />
       <env name="PASSIVATE" value="'20s'" />
       <env name="NET_LOGSTASH_DEBUG_MODE" value="OFF" />
@@ -43,7 +44,7 @@
       <env name="PATH_DMN_CLASIF_OBJETO" value="'/opt/docker/bin/decision_30_descuento.dmn'" />
       <env name="DMN_ID_CLASIF_OBJETO" value="&quot;Decision_Clasificacion_Objeto&quot;" />
       <env name="MAX_REQUESTS_PER_CONNECTION" value="1024" />
-      <env name="KAMON_STATUS_PAGE" value="5268" />
+      <env name="KAMON_STATUS_PAGE" value="5278" />
       <env name="IO_NETTY_DEBUG_MODE" value="OFF" />
       <env name="PATH_DMN_OBJETO_CUPON" value="'/opt/docker/bin/objetoCupon.dmn'" />
       <env name="REFLECTION_DEBUG_MODE" value="OFF" />
@@ -53,7 +54,7 @@
       <env name="SEED_NODES" value="akka://PersonClassificationServiceReadSide@0.0.0.0:2554" />
       <env name="ZIPKIN_PORT" value="9411" />
       <env name="PASSWORD_POSTGRES" value="'password'" />
-      <env name="CINNAMON_PORT" value="9091" />
+      <env name="CINNAMON_PORT" value="9081" />
       <env name="NAME_TABLE2" value="'table_kafka_to_pcs'" />
       <env name="NAME_TABLE3" value="'table_pcs_to_kafka'" />
       <env name="NAME_TABLE4" value="'table_readsie_to_cass'" />

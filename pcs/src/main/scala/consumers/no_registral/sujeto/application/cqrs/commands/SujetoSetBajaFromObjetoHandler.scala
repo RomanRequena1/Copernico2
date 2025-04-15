@@ -6,8 +6,6 @@ import consumers.no_registral.sujeto.domain.SujetoEvents
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
-import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotentInternally
-
 import scala.util.{Success, Try}
 
 class SujetoSetBajaFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandler[SujetoSetBajaFromObjeto] {
@@ -27,16 +25,11 @@ class SujetoSetBajaFromObjetoHandler(actor: SujetoActor) extends SyncCommandHand
       command.tipoObjeto
     )
 
-    if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
-      log.warn(s"[${actor.name} | ${actor.persistenceId}] respond internally_idempotent because of old delivery id | $command")
-      sender ! Response.SuccessProcessing("IDEM-INT-" + command.aggregateRoot, command.deliveryId)
-    } else {
-      actor.persistEvent(event, Set("Sujeto")) { () =>
+    actor.persistEvent(event, Set("Sujeto")) { () =>
 
-        actor.state += event
-        SendToObjeto(actor.state, sender, actor.context, event.sujetoId, command.objetoId, command.tipoObjeto)
-        actor.persistSnapshot()(_ => ())
-      }
+      actor.state += event
+      SendToObjeto(actor.state, sender, actor.context, event.sujetoId, command.objetoId, command.tipoObjeto)
+      actor.persistSnapshot()(_ => ())
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

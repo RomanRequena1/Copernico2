@@ -3,7 +3,7 @@
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %message%n</pattern>
+            <pattern>[%d{"yyyy-MM-dd'T'HH:mm:ss,SSS"}] | [${ENVIRONMENT_EXECUTION}] | [PCS] | [%-5level] | [%logger{36}] | [%msg]%n</pattern>
         </encoder>
     </appender>
 
@@ -29,6 +29,7 @@
 
         <logger name="akka" level="${AKKA_DEBUG_MODE}"/>
         <logger name="consumers" level="${LOCAL_DEBUG_LOGS}"/>
+        <logger name="consumers.no_registral.objeto.infrastructure.sorter" level="${SORTER_DEBUG_LOGS}"/>
         <logger name="akka.kafka" level="${AKKA_KAFKA_DEBUG_MODE}"/>
         <logger name="org.apache.zookeeper" level="${APACHE_ZOOKEEPER_DEBUG_MODE}"/>
         <logger name="org.I0Itec.zkclient" level="${I0ITEC_ZKCLIENT_DEBUG_MODE}"/>

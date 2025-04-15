@@ -52,22 +52,15 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       command.cuota,
       command.resultDmn
     )
-    // check whether we are in initialization mode or not
     val initialization: String = {
       Try(System.getenv("INITIALIZATION")).getOrElse(null)
     }
-
-    //val eventCounterMax = Try(System.getenv("EVENT-COUNTER-MAX")).getOrElse(9)
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
       log.error(
         s"[${actor.name} | ${actor.persistenceId}] -obligacion- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
 
-      // Informs that operation has been ignored */
-      //todo check if this is desirable, why? signal the sender??
-
-      // In this case the sender is "EL OBJETO"
       sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
 
       Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

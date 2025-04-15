@@ -57,7 +57,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       case None => ""
     }
 
-    // Validar si el evento debe ser procesado (eventos de semáforo o VDO state parcial sin vínculo existente)
     if (!StateParcialObjeto.shouldProcessEvent(command.registro, actor.state.registro)) {
       log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -objeto- rechazando evento de state parcial del semáforo/VDO porque el vínculo no existe | sujetoId: ${command.sujetoId}, objetoId: ${command.objetoId}"
@@ -158,7 +157,6 @@ object test {
     @JsonIgnore
     val log: Logger = LoggerFactory.getLogger(this.getClass)
 
-    // Validación adicional antes de persistir el evento
     if (!StateParcialObjeto.shouldProcessEvent(command.registro, actor.state.registro)) {
       log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -objeto- rechazando evento de state parcial en persistSnapshotEvent porque el vínculo no existe | sujetoId: ${command.sujetoId}, objetoId: ${command.objetoId}"
@@ -173,10 +171,8 @@ object test {
     actor.persistEvent(event) { () =>
       actor.state += event
 
-      //todo juicio persiste, pero no se us apara el calculo del 30%?
 
-      if (actor.state.registro.get.SOJ_TIPO_OBJETO
-        .equals("M")) { // todo tipo M , pero si para el calculo de deuda para un sujeto. Objeto juicio queda atado a cuit, pero no se va a teber en cuanta cuando se calcule el 30%, no se guarda el vinculo.
+      if (actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) {
         if (actor.state.tiene30Objeto.equals(false)) {
           val res = actor.context.parent.ask[Response.SuccessProcessing](
             SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
@@ -237,7 +233,6 @@ object test {
           requeriment,
           command)
       }
-      //actor.informParent(command, actor.state) //todo saque el infoparent, deberia hacer el nuevo handler
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))

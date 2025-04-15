@@ -81,8 +81,6 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
       sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
     } else {
 
-//      Sujeto: estado.exclusionSujeto = E , evento.exclusionSujeto = "". Cambio, informa al objeto
-//      Sujeto: estado.exclusionSujeto = "", evento.exclusionSujeto = "E". Cambio, informa al objeto
       if (command.registro.SUJ_TIPO_EXCLUSION != actor.state.exclusionSujeto) {
         SendToObjetoFromSujeto(actor.state,
                                sender,
