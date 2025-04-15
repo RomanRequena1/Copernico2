@@ -30,7 +30,7 @@ import design_principles.external_pub_sub.kafka.KafkaProduction.MessageProcessor
 import readside.proyectionists.no_registrales.transferencia.TransferenciaSnapshotPersistedHandler
 
 class MessageTestkitUtils(s: ActorSystem, sujeto: ActorRef) {
-
+  implicit val system = s
   implicit class StartMessageProcessor(messageBroker: MessageProcessor with MessageProducer) {
     val monitoring = new DummyMonitoring
     def startProcessing(topics: Set[ActorTransaction[_]] = Set.empty): Unit = {
