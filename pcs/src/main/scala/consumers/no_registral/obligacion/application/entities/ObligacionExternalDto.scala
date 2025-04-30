@@ -187,5 +187,6 @@ case class DetallesObligacion(
     JUICIO_MULTIOBJETO: Option[String],
     BOB_INTERES_FINANCIACION: Option[String],
     EVO_OBN_PEO_ID_FORMAL: Option[String],
-    PLAN_MULTIOBJETO: Option[String]
+    PLAN_MULTIOBJETO: Option[String],
+    FLAG_OCULTA_WEB: Option[String]
 ) extends CbroSerialization

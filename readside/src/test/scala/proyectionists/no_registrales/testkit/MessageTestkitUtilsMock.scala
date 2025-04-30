@@ -69,6 +69,7 @@ class MessageTestkitUtilsMock(sujeto: ActorRef) {
       implicit val mockMonitoringAndCassandraWrite = MockMonitoringAndCassandraWrite(monitoring, new CassandraWriteMock(), actorTransactionRequirements)
 
 
+      implicit val actorSystem = sys
       (if (topics.isEmpty) {
         Set(
           ObjetoTributarioTransaction(sujeto, monitoring),
