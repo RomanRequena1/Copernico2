@@ -31,8 +31,6 @@ class JuicioObnDeletedSnapshotHandler(
 
   override def processMessage(registro: JuicioObnDeletedFromDto): Future[Response.SuccessProcessing] = {
 
-
-
       val cassandra = new CassandraWriteProduction()
       for {
         done <- cassandra

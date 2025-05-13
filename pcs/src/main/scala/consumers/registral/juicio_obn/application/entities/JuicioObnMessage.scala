@@ -4,15 +4,11 @@ import consumers.registral.juicio_obn.application.entities.JuicioObnMessage.Juic
 import design_principles.actor_model.ShardedMessage
 
 trait JuicioObnMessage extends ShardedMessage{
+
   val juicioObnId: String
-
   val tipoObjeto: String
-
   val objetoId: String
-
   val obligacionId: String
-
-
 
   override def  aggregateRoot: String = {
     JuicioObnMessageRoot(

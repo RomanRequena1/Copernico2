@@ -7,29 +7,29 @@ trait ObjetoJuicioMessage extends ShardedMessage {
 
   val objetoId: String
   val tipoObjeto: String
-  val juicioId: String
-  val planId: String
+  val idRel: String
+  val tipoObjetoRel: String
 
   override def aggregateRoot: String =
     ObjetoJuicioMessageRoots(
       objetoId,
       tipoObjeto,
-      juicioId,
-      planId
+      idRel,
+      tipoObjetoRel
     ).toString
 }
 
 object ObjetoJuicioMessage {
 
-  case class ObjetoJuicioMessageRoots(objetoId: String, tipoObjeto: String, juicioId: String, planId: String) {
-    override def toString = s"Objeto-$objetoId-$tipoObjeto-Juicio-$juicioId-Plan-$planId"
+  case class ObjetoJuicioMessageRoots(objetoId: String, tipoObjeto: String, idRel: String, tipoObjetoRel: String) {
+    override def toString = s"Objeto-$objetoId-TipoObjeto-$tipoObjeto-IdRelacion-$idRel-TipoObjetoRel-$tipoObjetoRel"
   }
   object ObjetoJuicioMessageRoots {
 
     def extractor(persistenceId: String): ObjetoJuicioMessageRoots =
       persistenceId match {
-        case s"Objeto-$objetoId-$tipoObjeto-Juicio-$juicioId-Plan-$planId" =>
-          ObjetoJuicioMessageRoots(objetoId, tipoObjeto, juicioId, planId)
+        case s"Objeto-$objetoId-TipoObjeto-$tipoObjeto-IdRelacion-$idRel-TipoObjetoRel-$tipoObjetoRel" =>
+          ObjetoJuicioMessageRoots(objetoId, tipoObjeto, idRel, tipoObjetoRel)
       }
   }
 }

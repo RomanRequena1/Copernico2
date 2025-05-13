@@ -46,7 +46,6 @@ class JuicioObnDeleteFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
             Seq(
               KafkaKeyValue(
                 command.aggregateRoot,
-
                   JuicioObnDeletedFromDto(
                     command.deliveryId,
                     command.juicioObnId,
@@ -65,6 +64,5 @@ class JuicioObnDeleteFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
           Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
         }
     }
-
   }
 }

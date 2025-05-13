@@ -21,6 +21,6 @@ class GetStateObjetoJuicioHandler(actor: ObjetoJuicioActor)(implicit messageProd
       ObjetoJuicioEvents,
       ObjetoJuicioState
     ](replyTo)(
-      GetObjetoJuicioResponse(state.registro, state.fechaUltMod)
+      GetObjetoJuicioResponse(state.registro, state.lastDeliveryIdByEvent, state.fechaUltMod)
     )
 }

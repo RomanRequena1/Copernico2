@@ -5,7 +5,9 @@ import cqrs.base_actor.typed.AbstractStateWithCQRS
 import serialization.CbroSerialization
 import java.time.LocalDateTime
 
-case class ObjetoJuicioState(
-    registro: Option[ObjetoJuicioExternalDto] = None,
-    fechaUltMod: LocalDateTime = LocalDateTime.MIN
-) extends AbstractStateWithCQRS[ObjetoJuicioMessage, ObjetoJuicioEvents, ObjetoJuicioState] with CbroSerialization
+final case class ObjetoJuicioState(
+                                    registro: Option[ObjetoJuicioExternalDto] = None,
+                                    lastDeliveryIdByEvent: BigInt = 0,
+                                    fechaUltMod: LocalDateTime = LocalDateTime.MIN,
+                                    eventCounter:Int = 0,
+                                  ) extends AbstractStateWithCQRS[ObjetoJuicioMessage, ObjetoJuicioEvents, ObjetoJuicioState] with CbroSerialization

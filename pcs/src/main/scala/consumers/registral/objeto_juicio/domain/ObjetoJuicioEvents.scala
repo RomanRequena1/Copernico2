@@ -4,15 +4,38 @@ import consumers.registral.objeto_juicio.application.entities.{ObjetoJuicioExter
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
+
 sealed trait ObjetoJuicioEvents extends Event with ObjetoJuicioMessage with CbroSerialization
 
 object ObjetoJuicioEvents {
   case class ObjetoJuicioUpdatedFromDto(
-      deliveryId: BigInt,
-      objetoId: String,
-      tipoObjeto: String,
-      juicioId: String,
-      planId: String,
-      registro: ObjetoJuicioExternalDto,
-  ) extends ObjetoJuicioEvents
+                                         objetoId: String,
+                                         tipoObjeto: String,
+                                         idRel: String,
+                                         tipoObjetoRel: String,
+                                         tipoRel: String,
+                                         idExterno: String,
+                                         idExterno2: String,
+                                         estado: String,
+                                         deliveryId: BigInt,
+                                         registro: ObjetoJuicioExternalDto
+                                       ) extends ObjetoJuicioEvents
+
+  case class ObjetoJuicioRemovedFromDto(
+                                         objetoId: String,
+                                         tipoObjeto: String,
+                                         idRel: String,
+                                         tipoObjetoRel: String,
+                                         tipoRel: String,
+                                         idExterno: String,
+                                         idExterno2: String,
+                                         estado: String,
+                                         deliveryId: BigInt,
+                                         registro: ObjetoJuicioExternalDto
+                                       ) extends ObjetoJuicioEvents
 }
+
+
+
+
+

@@ -15,5 +15,4 @@ object JuicioObnResponses {
                                   lastDeliveryIdByEvent: BigInt = 0,
                                   fechasUltMod: LocalDateTime
                                   ) extends Response with CbroSerialization
-
 }
