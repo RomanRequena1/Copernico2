@@ -7,11 +7,11 @@ sealed trait ObjetoJuicioQueries extends Query with ObjetoJuicioMessage
 
 object ObjetoJuicioQueries {
   case class GetStateObjetoJuicio(
-      objetoId: String,
-      tipoObjeto: String,
-      juicioId: String,
-      planId: String
-  ) extends ObjetoJuicioQueries {
+                                   objetoId: String,
+                                   tipoObjeto: String,
+                                   idRel: String,
+                                   tipoObjetoRel: String
+                                 ) extends ObjetoJuicioQueries with Query {
     override type ReturnType = GetObjetoJuicioResponse
   }
 }

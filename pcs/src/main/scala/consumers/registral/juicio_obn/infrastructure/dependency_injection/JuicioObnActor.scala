@@ -16,7 +16,11 @@ case class JuicioObnActor(state: JuicioObnState = JuicioObnState())(
                          implicit
                           messageProducer: MessageProducer,
                          system: ActorSystem[Nothing]
-) extends BasePersistentShardedTypedActorWithCQRS[JuicioObnMessage, JuicioObnEvents, JuicioObnState](state){
+) extends BasePersistentShardedTypedActorWithCQRS[
+  JuicioObnMessage,
+  JuicioObnEvents,
+  JuicioObnState
+](state){
     this.state.copy(registro = state.registro, lastDeliveryIdByEvent = state.lastDeliveryIdByEvent)
 
     commandBus.subscribe[JuicioObnDeleteFromDto](new JuicioObnDeleteFromDtoHandler(this).handle)

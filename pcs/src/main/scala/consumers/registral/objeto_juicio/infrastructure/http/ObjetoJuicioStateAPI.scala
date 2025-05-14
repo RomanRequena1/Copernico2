@@ -17,9 +17,9 @@ case class ObjetoJuicioStateAPI(actor: ObjetoJuicioActor, monitoring: Monitoring
   def getState: Route =
       withObjeto { objetoId =>
         withTipoObjeto { tipoObjeto =>
-          withJuicio { juicioId =>
-            withPlan { planId =>
-              queryState(actor, GetStateObjetoJuicio(objetoId, tipoObjeto, juicioId, planId))(
+          withIdRel { idRel =>
+            withTipoObjetoRel { tipoObjetoRel =>
+              queryState(actor, GetStateObjetoJuicio(objetoId, tipoObjeto, idRel, tipoObjetoRel))(
                 GetObjetoJuicioResponseEncoder,
                 state => state.fechaUltMod == LocalDateTime.MIN
               )
@@ -36,7 +36,7 @@ object ObjetoJuicioStateAPI {
   def nestedRoute(name: String)(andThen: String => Route): Route = pathPrefix(name / Segment)(andThen)
   def withObjeto: (String => Route) => Route = nestedRoute("objeto") _
   def withTipoObjeto: (String => Route) => Route = nestedRoute("tipo") _
-  def withJuicio = path("juicio" / Segment)
-  def withPlan = path("plan" / Segment)
+  def withIdRel = path("idRel" / Segment)
+  def withTipoObjetoRel = path("tipoObjetoRel" / Segment)
 
 }
