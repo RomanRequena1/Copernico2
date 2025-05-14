@@ -20,9 +20,9 @@ case class ObjetoJuicioTributarioTransaction(actor: ObjetoJuicioActor, monitorin
 ) extends ActorTransaction[ObjetoJuicioTri](monitoring) {
 
   private val log = LoggerFactory.getLogger(this.getClass)
-  def topic = "DGR-COP-OBJETOJUICIOS-TRI"
-  def topicRetry = "DGR-COP-OBJETOJUICIOS-TRI_retry"
-  def topicError = "DGR-COP-OBJETOJUICIOS-TRI_error"
+  def topic = "DGR-COP-OBJETO-JUICIOS-TRI"
+  def topicRetry = "DGR-COP-OBJETO-JUICIOS-TRI_retry"
+  def topicError = "DGR-COP-OBJETO-JUICIOS-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObjetoJuicioTri] = {
     decode[ObjetoJuicioTri](input)
