@@ -24,7 +24,7 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
   implicit val timeout: Timeout = Timeout(30.seconds)
   implicit val ec: ExecutionContext = actorTransactionRequirements.executionContext
 
-  val sorterEnabled: String = Try(System.getenv("BETTER_SORTER")).getOrElse("OFF")
+  val sorterEnabled: String = Option(System.getenv("BETTER_SORTER_OBLIGACION_ANT")).getOrElse("OFF")
   private val commandRouter = ObligacionCommandRouter.getOrCreate(system, actorRef)
 
   def topic = "DGR-COP-OBLIGACIONES-ANT"

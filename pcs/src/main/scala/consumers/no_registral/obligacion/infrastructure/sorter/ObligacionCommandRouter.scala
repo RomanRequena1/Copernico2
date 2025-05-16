@@ -18,7 +18,7 @@ class ObligacionCommandRouter(targetGlobalActor: ActorRef) extends Actor {
   implicit val ec = context.dispatcher
 
   // Mapa para almacenar actores por obligacionId
-  private var obligationActors = Map.empty[String, ActorRef]
+  private var obligacionActors = Map.empty[String, ActorRef]
 
   def receive: Receive = {
     case cmd: ObligacionCommands =>
@@ -27,13 +27,13 @@ class ObligacionCommandRouter(targetGlobalActor: ActorRef) extends Actor {
       logger.debug(s"Router recibió comando para obligacionId: $obligacionId")
 
       // Obtener o crear un actor para este obligacionId
-      val actor = obligationActors.getOrElse(obligacionId, {
+      val actor = obligacionActors.getOrElse(obligacionId, {
         logger.debug(s"Creando nuevo actor para obligacionId: $obligacionId")
         val newActor = context.actorOf(
-          Props(new SingleObligationProcessor(targetGlobalActor, obligacionId)),
-          s"obligation-processor-$obligacionId"
+          Props(new SingleObligacionProcessor(targetGlobalActor, obligacionId)),
+          s"obligacion-processor-$obligacionId"
         )
-        obligationActors += (obligacionId -> newActor)
+        obligacionActors += (obligacionId -> newActor)
         newActor
       })
 
