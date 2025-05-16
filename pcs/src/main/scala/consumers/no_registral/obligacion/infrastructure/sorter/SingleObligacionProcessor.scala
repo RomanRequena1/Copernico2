@@ -13,7 +13,7 @@ import scala.language.postfixOps
  * Actor que procesa comandos para un único obligacionId específico.
  * Esto garantiza procesamiento secuencial para el mismo objetoId.
  */
-class SingleObligationProcessor(targetGlobalActor: ActorRef, obligacionId: String) extends Actor {
+class SingleObligacionProcessor(targetGlobalActor: ActorRef, obligacionId: String) extends Actor {
   private val logger = LoggerFactory.getLogger(this.getClass)
   implicit val timeout: Timeout = 30 seconds
   implicit val ec = context.dispatcher
