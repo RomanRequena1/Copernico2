@@ -46,7 +46,8 @@ class Examples(testName: String) {
           PLAN_MULTIOBJETO = None,
           tiene30Obligaciones = None,
           BAND_BATCH = None,
-          SOJ_ID_EXTERNO = None
+          SOJ_ID_EXTERNO = None,
+          FLAG_OCULTA_WEB = None
         )
       )
     )
@@ -66,7 +67,8 @@ class Examples(testName: String) {
           JUICIO_MULTIOBJETO = None,
           BOB_INTERES_FINANCIACION = None,
           EVO_OBN_PEO_ID_FORMAL = None,
-          PLAN_MULTIOBJETO = None
+          PLAN_MULTIOBJETO = None,
+          FLAG_OCULTA_WEB = None
         )
       )
     )
@@ -86,7 +88,8 @@ class Examples(testName: String) {
           PLAN_MULTIOBJETO = None,
           tiene30Obligaciones = None,
           BAND_BATCH = None,
-          SOJ_ID_EXTERNO = None
+          SOJ_ID_EXTERNO = None,
+          FLAG_OCULTA_WEB = None
         )
       )
     )
@@ -465,7 +468,8 @@ class Examples(testName: String) {
             JUICIO_MULTIOBJETO = None,
             BOB_INTERES_FINANCIACION = None,
             EVO_OBN_PEO_ID_FORMAL = None,
-            PLAN_MULTIOBJETO = None
+            PLAN_MULTIOBJETO = None,
+            FLAG_OCULTA_WEB = None
           )
         )
       )
