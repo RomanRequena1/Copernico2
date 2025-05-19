@@ -40,8 +40,8 @@ class MessageTestkitUtils(sujeto: ActorRef) {
       (if (topics.isEmpty)
          Set(
            //ObjetoTributarioTransaction(sujeto, monitoring),
-           ObligacionNoTributariaTransaction(sujeto, monitoring),
-           ObligacionTributariaTransaction(sujeto, monitoring),
+//           ObligacionNoTributariaTransaction(sujeto, monitoring),
+ //          ObligacionTributariaTransaction(sujeto, monitoring),
            SujetoTributarioTransaction(sujeto, monitoring)
          ) // if no filter is set, then allow passthrough
        else topics)
