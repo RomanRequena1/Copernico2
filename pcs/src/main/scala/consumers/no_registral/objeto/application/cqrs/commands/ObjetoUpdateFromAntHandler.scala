@@ -38,12 +38,17 @@ extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromAnt] {
       objetoFFF
     }
 
+    val stateParcialEnabled: String = Option(System.getenv("STATE_PARCIAL_OBJETO_ANT")).getOrElse("OFF")
+
     val event = ObjetoEvents.ObjetoUpdatedFromAnt(
       if (command.deliveryId.signum < 0) actor.state.lastDeliveryIdByEvents else command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
-      getObjetoFFF(),
+      stateParcialEnabled.equals("ON") match {
+        case true => getObjetoFFF()
+        case false => command.registro
+      },
       command.isResponsable,
       command.sujetoResponsable,
       command.isAdheridoDebito

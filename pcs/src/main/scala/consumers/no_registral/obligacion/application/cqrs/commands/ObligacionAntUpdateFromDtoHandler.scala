@@ -39,13 +39,18 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
       obligacionFFF
     }
 
+    val stateParcialEnabled: String = Option(System.getenv("STATE_PARCIAL_OBLIGACION_ANT")).getOrElse("OFF")
+
     val event = ObligacionAntUpdatedFromDto(
       command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
       command.obligacionId,
-      getObligacionAntFFF(),
+      stateParcialEnabled.equals("ON") match {
+        case true => getObligacionAntFFF()
+        case false => command.registro
+      },
       command.detallesObligacion,
       command.detallesSupresiones,
       command.isAdheridoDebito,
