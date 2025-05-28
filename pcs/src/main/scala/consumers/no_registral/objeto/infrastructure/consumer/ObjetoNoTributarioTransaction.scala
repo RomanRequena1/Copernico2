@@ -1,26 +1,37 @@
 package consumers.no_registral.objeto.infrastructure.consumer
 
-import akka.actor.ActorRef
+import akka.actor.{ActorRef, ActorSystem}
+import akka.util.Timeout
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{ObjetosAnt,ListDetallesObjeto}
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{ListDetallesObjeto, ObjetosAnt}
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
+import consumers.no_registral.objeto.infrastructure.sorter.ObjetoCommandRouter
 import design_principles.actor_model.Response
 import io.circe.parser.decode
 import monitoring.Monitoring
 
-import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 case class ObjetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
-    actorTransactionRequirements: ActorTransactionRequirements
+    actorTransactionRequirements: ActorTransactionRequirements,
+    system: ActorSystem
+
 ) extends ActorTransaction[ObjetosAnt](monitoring) {
 
+  implicit val timeout: Timeout = Timeout(30.seconds)
+  implicit val ec: ExecutionContext = actorTransactionRequirements.executionContext
+
+  // Crear o recuperar el router
+  val sorterEnabled: String = Option(System.getenv("BETTER_SORTER_OBJETO_ANT")).getOrElse("OFF")
+  private val commandRouter = ObjetoCommandRouter.getOrCreate(system, actorRef)
+
   def topic = "DGR-COP-OBJETOS-ANT"
-
   def topicRetry = "DGR-COP-OBJETOS-ANT_retry"
-
   def topicError = "DGR-COP-OBJETOS-ANT_error"
 
   def processInput(input: String): Either[Throwable, ObjetosAnt] = {
@@ -75,7 +86,13 @@ case class ObjetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
             sujetoResponsable = sujetoResponsable.head,
             isAdheridoDebito = isAdheridoDebito
           )
-      actorRef.ask[Response.SuccessProcessing](command)
+      sorterEnabled.equals("ON") match {
+        case true => {
+          recordBetterSorter()
+          commandRouter.ask[Response.SuccessProcessing](command)
+        }
+        case false => actorRef.ask[Response.SuccessProcessing](command)
+      }
     }
   }
 }

@@ -103,13 +103,18 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
 
     val dmn = isTipo(command)
 
+    val stateParcialEnabled: String = Option(System.getenv("STATE_PARCIAL_OBJETO_TRI")).getOrElse("OFF")
+
     val event = ObjetoEvents.ObjetoUpdatedFromTri(
       //TODO: validar para que esta este If
       if (command.deliveryId.signum < 0) actor.state.lastDeliveryIdByEvents else command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
-      getObjetoFFF(),
+      stateParcialEnabled.equals("ON") match {
+        case true => getObjetoFFF()
+        case false => command.registro
+      },
       command.isResponsable,
       command.sujetoResponsable,
       command.isAdheridoDebito,

@@ -28,7 +28,7 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
   implicit val ec: ExecutionContext = actorTransactionRequirements.executionContext
 
   // Crear o recuperar el router
-  val sorterEnabled: String = Try(System.getenv("BETTER_SORTER")).getOrElse("OFF")
+  val sorterEnabled: String = Option(System.getenv("BETTER_SORTER_OBJETO_TRI")).getOrElse("OFF")
   private val commandRouter = ObjetoCommandRouter.getOrCreate(system, actorRef)
 
   def topic = "DGR-COP-OBJETOS-TRI"
