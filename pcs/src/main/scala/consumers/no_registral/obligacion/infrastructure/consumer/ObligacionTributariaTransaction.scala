@@ -1,41 +1,43 @@
 package consumers.no_registral.obligacion.infrastructure.consumer
-import akka.actor.ActorRef
+import akka.actor.{ActorRef, ActorSystem}
+import akka.util.Timeout
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
-import consumers.no_registral.obligacion.application.entities.{
-  DetallesObligacion,
-  DetallesSupresiones,
-  ListDetallesObligaciones,
-  ObligacionCommands,
-  ObligacionesTri
-}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesSupresiones, ListDetallesObligaciones, ObligacionCommands, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
+import consumers.no_registral.obligacion.infrastructure.sorter.ObligacionCommandRouter
 import design_principles.actor_model.Response
 import io.circe.parser.decode
 import io.circe.syntax.EncoderOps
 import monitoring.Monitoring
-import org.camunda.dmn.{logger, DmnEngine}
+import org.camunda.dmn.{DmnEngine, logger}
 import org.camunda.dmn.parser.ParsedDmn
 import scalaz.\/
 
 import java.io.FileInputStream
-import scala.concurrent.Future
-import scala.util.Either
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Either, Try}
 
 case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monitoring)(
     implicit
-    actorTransactionRequirements: ActorTransactionRequirements
-) extends ActorTransaction[ObligacionesTri](monitoring) {
+    actorTransactionRequirements: ActorTransactionRequirements,
+    system: ActorSystem
+  ) extends ActorTransaction[ObligacionesTri](monitoring) {
+
+  implicit val timeout: Timeout = Timeout(30.seconds)
+  implicit val ec: ExecutionContext = actorTransactionRequirements.executionContext
+
+  val sorterEnabled: String = Option(System.getenv("BETTER_SORTER_OBLIGACION_TRI")).getOrElse("OFF")
+  private val commandRouter = ObligacionCommandRouter.getOrCreate(system, actorRef)
+
   def topic = "DGR-COP-OBLIGACIONES-TRI"
-
   def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
-
   def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-//    logger.error(input)
     val x = decode[ObligacionesTri](input)
     decode[ObligacionesTri](input)
   }
@@ -107,8 +109,13 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
             resultDmn = Some(dmn._2.toString)
           )
         }
-      actorRef.ask[Response.SuccessProcessing](command)
-    }
+      sorterEnabled.equals("ON") match {
+        case true => {
+          recordBetterSorter()
+          commandRouter.ask[Response.SuccessProcessing](command)
+        }
+        case false => actorRef.ask[Response.SuccessProcessing](command)
+      }    }
   }
   private def isTreintaPorciento(obn: ObligacionesTri): (ObligacionesTri, Any) = {
     //todo set deuda30Obligacion en state
