@@ -43,13 +43,8 @@ class StartStopSingleton() extends Actor with ActorLogging with CbroSerializatio
     case message @ StopByTopic(topic) if !phonebook.keys.toSet.contains(topic) =>
       log.error(s"You are trying to start a topic ($topic) who does not exist in the codebase")
 
-    case Start() => {
-      println("STARTING ALL CONSUMERS")
-      phonebook.values foreach {a => {
-        println("Cons:" + a.path)
-        a ! Start()
-      }}
-    }
+    case Start() =>
+      phonebook.values foreach { _ ! Start() }
     case Stop() =>
       phonebook.values foreach { _ ! Stop() }
 
