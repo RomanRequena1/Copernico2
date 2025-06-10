@@ -43,22 +43,23 @@ object DMNTreintaPorciento {
           log.error("ERROR DMN OBLIGACION::" + e); None
         },
         value => value.value match {
-          case map: Map[String, Any] =>
-            val numero = map.get("decision_30_descuento")
-              .orElse(map.values.collectFirst { case i: Int => i })
+          case map: Map[_, _] =>
+            val m = map.asInstanceOf[Map[String, Any]]
+            val numero = m.get("decision_30_descuento")
+              .orElse(m.values.collectFirst { case i: Int => i })
               .collect { case i: java.lang.Number => i.intValue }
-            val desc = map.get("descripcion")
-              .orElse(map.values.collectFirst { case s: String if s.nonEmpty => s })
+            val desc = m.get("descripcion")
+              .orElse(m.values.collectFirst { case s: String if s.nonEmpty => s })
               .map(_.toString)
               .getOrElse("")
             numero.map(n => (n, desc))
-          case l: List[Map[String, Any]] if l.nonEmpty =>
-            val map = l.head
-            val numero = map.get("decision_30_descuento")
-              .orElse(map.values.collectFirst { case i: Int => i })
+          case list: List[_] if list.nonEmpty && list.head.isInstanceOf[Map[_, _]] =>
+            val m = list.head.asInstanceOf[Map[String, Any]]
+            val numero = m.get("decision_30_descuento")
+              .orElse(m.values.collectFirst { case i: Int => i })
               .collect { case i: java.lang.Number => i.intValue }
-            val desc = map.get("descripcion")
-              .orElse(map.values.collectFirst { case s: String if s.nonEmpty => s })
+            val desc = m.get("descripcion")
+              .orElse(m.values.collectFirst { case s: String if s.nonEmpty => s })
               .map(_.toString)
               .getOrElse("")
             numero.map(n => (n, desc))

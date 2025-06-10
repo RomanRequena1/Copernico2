@@ -137,7 +137,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
         (newO, (numero, descripcion))
       }
-      case Some((numero, descripcion)) if numero.equals(1) => {
+      case Some((numero, descripcion)) if !numero.equals(1) => {
         val detalles: Option[List[DetallesObligacion]] = Some(
           obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m =>
             m.copy(tiene30Obligaciones = Some(false),
