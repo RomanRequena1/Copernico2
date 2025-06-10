@@ -10,7 +10,8 @@ import scalaz.concurrent.Task.Try
 object DMNTreintaPorciento {
 
   private val log = LoggerFactory.getLogger(this.getClass)
-  def dmn(actor: ObligacionExternalDto): Any = {
+
+  def dmn(actor: ObligacionExternalDto): Option[(Int, String)] = {
 
     val dmnId: String = Try(System.getenv("DMN_ID_DECISION_30")).getOrElse("id")
 
@@ -32,20 +33,39 @@ object DMNTreintaPorciento {
 
     val isVencida = if (diffDaysOblligaciones > 10) true else false
 
-    val engine = new DmnEngine()
+    val inputMap = Utils.mapsToDMN(actor, isVencida, diffDaysOblligaciones, diffYearsOblligaciones, diffDaysOblligacionesVen2, dias_prescripcion)
 
     dmnStream
       .flatMap(dmn =>
-        engine.eval(dmn,
-                    dmnId,
-                    Utils.mapsToDMN(actor,
-                                    isVencida,
-                                    diffDaysOblligaciones,
-                                    diffYearsOblligaciones,
-                                    diffDaysOblligacionesVen2,
-                                    dias_prescripcion))
+        new DmnEngine().eval(dmn, dmnId, inputMap)
+      ).fold(
+        e => {
+          log.error("ERROR DMN OBLIGACION::" + e); None
+        },
+        value => value.value match {
+          case map: Map[String, Any] =>
+            val numero = map.get("decision_30_descuento")
+              .orElse(map.values.collectFirst { case i: Int => i })
+              .collect { case i: java.lang.Number => i.intValue }
+            val desc = map.get("descripcion")
+              .orElse(map.values.collectFirst { case s: String if s.nonEmpty => s })
+              .map(_.toString)
+              .getOrElse("")
+            numero.map(n => (n, desc))
+          case l: List[Map[String, Any]] if l.nonEmpty =>
+            val map = l.head
+            val numero = map.get("decision_30_descuento")
+              .orElse(map.values.collectFirst { case i: Int => i })
+              .collect { case i: java.lang.Number => i.intValue }
+            val desc = map.get("descripcion")
+              .orElse(map.values.collectFirst { case s: String if s.nonEmpty => s })
+              .map(_.toString)
+              .getOrElse("")
+            numero.map(n => (n, desc))
+          case otro =>
+            log.error(s"Formato inesperado: $otro")
+            None
+        }
       )
-      .fold(e => log.error("ERROR DMN OBLIGACION::" + e), value => value.value)
   }
-
 }
