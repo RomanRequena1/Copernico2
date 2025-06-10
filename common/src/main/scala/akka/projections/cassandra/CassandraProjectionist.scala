@@ -20,6 +20,15 @@ object CassandraProjectionist {
     val shardingSettings = ClusterShardingSettings(system)
     val shardedDaemonProcessSettings = ShardedDaemonProcessSettings(system).withShardingSettings(shardingSettings)
 
+    println("CHECK iniciar pryec")
+
+    println(s"projectionSettings.name: ${projectionSettings.name}")
+    println(s"projectionSettings.parallelism: ${projectionSettings.parallelism}")
+    println(s"shardedDaemonProcessSettings: ${shardedDaemonProcessSettings.toString}")
+    println(s"system: ${system.name}")
+    println(s"projectionSettings.projectionId: ${projectionSettings.projectionId}")
+    println(s"projectionHandler: ${projectionHandler.getClass.toString}")
+
     ShardedDaemonProcess(system).init(
       projectionSettings.name,
       projectionSettings.parallelism,

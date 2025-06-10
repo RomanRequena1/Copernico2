@@ -17,13 +17,14 @@ abstract class CassandraProjectionHandler[T](settings: ProjectionSettings, syste
     extends ProjectionHandler[T](settings, system) {
 
   private val sessionSettings = CassandraSessionSettings.create()
-  private implicit val session: CassandraSession = CassandraSessionRegistry.get(system).sessionFor(sessionSettings)
+  val session: CassandraSession = CassandraSessionRegistry.get(system).sessionFor(sessionSettings)
 
   val cassandra: CassandraWrite = new CassandraWriteProduction()
 
   protected val log = LoggerFactory.getLogger(this.getClass)
 
   def run(): Unit = {
+    print("CHECK llego CassProj " + this.getClass.toString)
     Try(
       CassandraProjectionist.startProjection(
         CassandraProjectionistRequirements(
@@ -36,7 +37,7 @@ abstract class CassandraProjectionHandler[T](settings: ProjectionSettings, syste
       case Failure(exception) =>
         log.error(s"CassandraProjection ${settings.name} started with Failure(${exception.getMessage})")
       case Success(value) =>
-        log.info(s"CassandraProjection ${settings.name} started with Success($value)")
+        log.info(s"CHECK CassandraProjection ${settings.name} started with Success($value)")
     }
   }
 

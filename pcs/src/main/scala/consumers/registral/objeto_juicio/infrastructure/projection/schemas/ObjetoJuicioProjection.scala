@@ -1,11 +1,10 @@
-package readside.proyectionists.registrales.objeto_juicio.projections
+package consumers.registral.objeto_juicio.infrastructure.projection.schemas
 
 import cassandra.mechanism.UpdateReadSideProjection
 import consumers.registral.objeto_juicio.domain.ObjetoJuicioEvents
 
-trait ObjetoJuicioProjection extends UpdateReadSideProjection[ObjetoJuicioEvents] {
+trait ObjetoJuicioProjection extends UpdateReadSideProjection[ObjetoJuicioEvents.ObjetoJuicioUpdatedFromDto] {
   def collectionName: String = "read_side.buc_objeto_rel"
-
   val keys: List[(String, Object)] = List(
     "rjp_soj_identificador" -> event.objetoId,
     "rjp_soj_tipo_objeto" -> event.tipoObjeto,

@@ -28,7 +28,6 @@ abstract class ActorTransactionMetrics(
 
   final protected val idempotency: Counter = monitoring.counter(s"$metricPrefix-$controllerId-idempotency")
   final protected val idempotencyInt: Counter = monitoring.counter(s"$metricPrefix-$controllerId-idempotency-int")
-  final protected val betterSorterEvents: Counter = monitoring.counter(s"$metricPrefix-$controllerId-better-sorter")
 
 
   @JsonIgnore
@@ -36,9 +35,6 @@ abstract class ActorTransactionMetrics(
 
   final protected def recordRequests(): Unit =
     requests.increment()
-
-  final protected def recordBetterSorter(): Unit =
-    betterSorterEvents.increment()
 
   final protected def recordIdempotencyInternally(): Unit = {
     idempotencyInt.increment()

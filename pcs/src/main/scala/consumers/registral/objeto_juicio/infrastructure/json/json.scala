@@ -5,6 +5,7 @@ import consumers.registral.objeto_juicio.application.entities.ObjetoJuicioExtern
 import consumers.registral.objeto_juicio.application.entities.ObjetoJuicioExternalDto.ObjetoJuicioTri
 import consumers.registral.objeto_juicio.application.entities.ObjetoJuicioResponses.GetObjetoJuicioResponse
 import consumers.registral.objeto_juicio.domain.ObjetoJuicioEvents.{ObjetoJuicioRemovedFromDto, ObjetoJuicioUpdatedFromDto}
+import consumers.registral.objeto_juicio.domain.ObjetoJuicioState
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}
 
@@ -32,6 +33,9 @@ package object json {
 
 
   //RESPONSES
+  implicit val ObjetoJuicioStateDecoder: Decoder[ObjetoJuicioState] = deriveDecoder
+  implicit val ObjetoJuicioStateEncoder: Encoder[ObjetoJuicioState] = deriveEncoder
+
   implicit val GetObjetoJuicioResponseDecoder: Decoder[GetObjetoJuicioResponse] = deriveDecoder
   implicit val GetObjetoJuicioResponseEncoder: Encoder[GetObjetoJuicioResponse] = deriveEncoder
 
