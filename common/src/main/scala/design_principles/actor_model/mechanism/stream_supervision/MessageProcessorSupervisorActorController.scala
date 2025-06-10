@@ -25,6 +25,15 @@ class MessageProcessorSupervisorActorController(
 
   def startAll(): Unit = startStopSingleton ! StartStopSingleton.Start()
 
+  Option(System.getenv("ENVIRONMENT_EXECUTION")) match {
+    case Some("LOCAL") => {
+      println("Starting consumers because ENVIRONMENT_EXECUTION is LOCAL")
+      streamsSupervisor ! StartStopSingleton.Start()
+    }
+    case Some(_) => ()
+    case None => ()
+  }
+
   def stopAll(): Unit = startStopSingleton ! StartStopSingleton.Stop()
 
   def startByTopic(topic: String): Unit =

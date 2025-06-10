@@ -33,6 +33,7 @@ object ObjetoJuicioEvents {
                                          deliveryId: BigInt,
                                          registro: ObjetoJuicioExternalDto
                                        ) extends ObjetoJuicioEvents
+
 }
 
 

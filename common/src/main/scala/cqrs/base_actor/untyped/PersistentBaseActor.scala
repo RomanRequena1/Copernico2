@@ -1,22 +1,18 @@
 package cqrs.base_actor.untyped
 
 import akka.actor.ActorLogging
-import akka.persistence.{
-  PersistentActor,
-  Recovery,
-  RecoveryCompleted,
-  SaveSnapshotFailure,
-  SaveSnapshotSuccess,
-  SnapshotOffer
-}
+import akka.actor.typed.ActorSystem
+import akka.persistence.{PersistentActor, Recovery, RecoveryCompleted, SaveSnapshotFailure, SaveSnapshotSuccess, SnapshotOffer}
+import akka.projections.ProjectionSettings
 import cqrs.untyped.event.{EventBus, SyncEventBus}
 import ddd.AbstractState
 import design_principles.actor_model.{Command, Event, Query}
 import monitoring.{Counter, Monitoring}
-
+import akka.actor.typed.scaladsl.adapter._
 import scala.concurrent.ExecutionContext
 import scala.reflect.ClassTag
 import scala.util.Try
+import akka.persistence.journal.Tagged
 
 abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[E]: ClassTag](monitoring: Monitoring)
     extends BaseActor[E, State](monitoring)
@@ -24,6 +20,14 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
     with ActorLogging {
 
   val persistedCounter: Counter = monitoring.counter(s"$name-persisted")
+
+//  val typed: ActorSystem[_] = this.context.system.toTyped
+//  val projSettings1: ProjectionSettings = ProjectionSettings.default("obligacion-updated", 1)(monitoring)
+//  val projHandler1 = new ObligacionMockProjectionHandler(projSettings1, typed)
+
+
+  // Método a implementar por clases hijas
+  def tagsFor(event: Event): Set[String] = Set.empty
 
   val eventBus: EventBus[Try] = new SyncEventBus(logger)
 
@@ -71,6 +75,17 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
   def persistEvent(event: E, tags: Set[String] = Set.empty)(handler: () => Unit = () => ()): Unit = {
     //todo review the use of persistAsync
     persistAsync(event) { _ =>
+      logger.debug(s"[$persistenceId] Persist event | $event")
+      persistedCounter.increment()
+      monitoring.counter(s"$name-persisted-${utils.Inference.getSimpleName(event.getClass.getName)}").increment()
+      handler()
+    }
+  }
+
+  def persistEventTags(event: E, tags: Set[String] = Set.empty)(handler: () => Unit = () => ()): Unit = {
+    val tags1 = Set("obligacion-updated", "obligacion-updated")
+
+    persistAsync(Tagged(event, tags1)) { _ =>
       logger.debug(s"[$persistenceId] Persist event | $event")
       persistedCounter.increment()
       monitoring.counter(s"$name-persisted-${utils.Inference.getSimpleName(event.getClass.getName)}").increment()

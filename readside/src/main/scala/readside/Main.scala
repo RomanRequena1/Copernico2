@@ -44,7 +44,6 @@ object  Main extends App {
       new JuicioObnProjectionstMicroservice,
       new ExclusionesSujetoProjectionistMicroservice,
       new readside.proyectionists.no_registrales.transferencia.infrastructure.TransferenciaProjectionistMicroservice,
-      new readside.proyectionists.registrales.objeto_juicio.infrastructure.main.ObjetoJuicioProjectionistMicroservice,
 
     )
   }

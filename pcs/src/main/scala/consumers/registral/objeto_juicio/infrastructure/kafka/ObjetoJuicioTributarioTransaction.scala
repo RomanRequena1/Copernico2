@@ -41,7 +41,7 @@ case class ObjetoJuicioTributarioTransaction(actor: ObjetoJuicioActor, monitorin
           idExterno = registro.RJP_ID_EXTERNO,
           idExterno2 = registro.RJP_ID_EXTERNO_2,
           estado = registro.RJP_ESTADO,
-          deliveryId = BigInt(registro.EV_ID),
+          deliveryId = registro.EV_ID,
           registro = registro
         )
       } else {
@@ -54,7 +54,7 @@ case class ObjetoJuicioTributarioTransaction(actor: ObjetoJuicioActor, monitorin
           idExterno = registro.RJP_ID_EXTERNO,
           idExterno2 = registro.RJP_ID_EXTERNO_2,
           estado = registro.RJP_ESTADO,
-          deliveryId = BigInt(registro.EV_ID),
+          deliveryId = registro.EV_ID,
           registro = registro
         )
       }
