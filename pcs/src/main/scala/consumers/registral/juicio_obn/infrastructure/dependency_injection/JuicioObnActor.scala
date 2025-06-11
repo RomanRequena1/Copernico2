@@ -29,5 +29,9 @@ case class JuicioObnActor(state: JuicioObnState = JuicioObnState())(
     eventBus.subscribe[JuicioObnUpdatedFromDto](new JuicioObnUpdatedFromDtoHandler().handle)
     eventBus.subscribe[JuicioObnDeletedFromDto](new JuicioObnDeletedFromDtoHandler().handle)
 
-
+  override def getTags(event: JuicioObnEvents): Set[String] = {
+    event match {
+      case _ => Set("JuicioObn-updated")
+    }
+  }
 }

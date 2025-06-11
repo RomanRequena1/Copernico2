@@ -25,4 +25,11 @@ case class ComponenteIActor(state: ComponenteIState =  ComponenteIState())(
   commandBus.subscribe[ComponenteIUpdateFromDto](new ComponenteIUpdateFromDtoHandler().handle)
   queryBus.subscribe[GetStateComponenteI](new GetStateComponenteIHandler().handle)
   eventBus.subscribe[ComponenteIUpdatedFromDto](new ComponenteIUpdatedFromDtoHandler().handle)
+
+
+  override def getTags(event: ComponenteIEvents): Set[String] = {
+    event match {
+      case _ => Set("ComponenteI-updated")
+    }
+  }
 }
