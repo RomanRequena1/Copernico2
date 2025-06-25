@@ -4,10 +4,11 @@ import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal.DmnFinal
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromSujeto
+import consumers.no_registral.objeto.domain.ObjetoEvents.{DmnResumen, ObjetoUpdatedFromSujeto}
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
+
 import scala.util.{Success, Try}
 
 class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
@@ -35,6 +36,39 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
     )
 
     actor.state += event
+
+    def enviarEvento(): Unit = {
+      if(actor.state.ultimo30Objeto.size > 1){
+        val penultimoElemento = actor.state.ultimo30Objeto.toSeq.reverse.tail.head._2
+        if(!penultimoElemento.equals(actor.state.tiene30Objeto)){
+          val eventDmn = DmnResumen(
+            if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
+            command.sujetoId,
+            command.objetoId,
+            command.tipoObjeto,
+            actor.state.registro.get.SOJ_ID_EXTERNO,
+            Some(actor.state.fechaUltMod),
+            actor.state.aplicarDescuento,
+            actor.state.dmnNumero,
+            actor.state.dmnDescripcion
+          )
+        }
+      }
+    }
+
+
+    val eventDmn = DmnResumen(
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
+      command.sujetoId,
+      command.objetoId,
+      command.tipoObjeto,
+      actor.state.registro.get.SOJ_ID_EXTERNO,
+      Some(actor.state.fechaUltMod),
+      actor.state.aplicarDescuento,
+      actor.state.dmnNumero,
+      actor.state.dmnDescripcion
+    )
+
     val obj_default = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), None, None)
 
     val result = DMNTreintaPorcientoFinal.calcularDmnFinal(
@@ -57,7 +91,9 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
           .getOrElse("")
           .equals("BAJA") && newState.aplicarDescuento.isDefined) {
           actor.persistSnapshot(event, newState) { () =>
-            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+            actor.dmnresumenpersistSnapshot(eventDmn, newState) { () =>
+              sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+            }
           }
         }
       case _ =>
@@ -68,7 +104,9 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
           .getOrElse("")
           .equals("BAJA") && newState.aplicarDescuento.isDefined) {
           actor.persistSnapshot(event, newState) { () =>
-            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+            actor.dmnresumenpersistSnapshot(eventDmn, newState) { () =>
+              sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+            }
           }
         }
     }

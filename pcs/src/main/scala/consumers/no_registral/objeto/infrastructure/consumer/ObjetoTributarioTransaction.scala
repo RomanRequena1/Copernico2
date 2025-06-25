@@ -21,7 +21,7 @@ import scala.util.Try
 case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitoring)(
   implicit
   actorTransactionRequirements: ActorTransactionRequirements,
-  system: ActorSystem  // Recibir el ActorSystem como parámetro implícito
+  system: ActorSystem
 ) extends ActorTransaction[ObjetosTri](monitoring) {
 
   implicit val timeout: Timeout = Timeout(30.seconds)
@@ -87,8 +87,7 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
             isAdheridoDebito = isAdheridoDebito
           )
 
-      // Enviar el comando al router en lugar del actor directamente
-      // El router se encargará de garantizar el procesamiento secuencial
+
       sorterEnabled.equals("ON") match {
         case true => {
           recordBetterSorter()

@@ -33,6 +33,9 @@ object ObjetoImplicits {
   implicit val ObjetoRemoveObligacionDecoder: Decoder[ObjetoRemoveObligacion] = deriveDecoder
   implicit val ObjetoRemoveObligacionEncoder: Encoder[ObjetoRemoveObligacion] = deriveEncoder
 
+  implicit val dmnResumenSnapshotPersistedDecoder: Decoder[DmnResumenSnapshotPersisted] = deriveDecoder
+  implicit val dmnResumenSnapshotPersistedEncoder: Encoder[DmnResumenSnapshotPersisted] = deriveEncoder
+
   implicit val ObjetoTagAddDecoder: Decoder[ObjetoTagAdd] = deriveDecoder
   implicit val ObjetoTagAddEncoder: Encoder[ObjetoTagAdd] = deriveEncoder
 

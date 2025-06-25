@@ -41,7 +41,9 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: Monitor
       command.obligacionExenta,
       command.porcentajeExencion,
       command.idExterno,
-      command.couta
+      command.couta,
+      command.dmnNumero,
+      command.dmnDescripcion
     )
     val initialization: String = {
       Try(System.getenv("INITIALIZATION")).getOrElse(null)

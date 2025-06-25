@@ -8,7 +8,7 @@ import consumers.no_registral.obligacion.application.cqrs.queries.{ObligacionGet
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionRemove
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage.ObligacionMessageRoots
 import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionQueries}
-import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionPersistedSnapshot, ObligacionUpdatedFromDto}
+import consumers.no_registral.obligacion.domain.ObligacionEvents.{DMNResumenPersisted, ObligacionPersistedSnapshot, ObligacionUpdatedFromDto}
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import cqrs.base_actor.untyped.PersistentBaseActor
@@ -56,7 +56,9 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       state.exenta,
       state.porcentajeExencion,
       state.idExterno,
-      state.registro.get.BOB_CUOTA
+      state.registro.get.BOB_CUOTA,
+      state.registro.get.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnNumero,
+      state.registro.get.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnDescripcion,
     )
   }
 
@@ -79,7 +81,9 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       state.exenta,
       state.porcentajeExencion,
       state.idExterno,
-      evt.cuota
+      evt.cuota,
+      evt.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnNumero,
+      evt.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnDescripcion
     )
   }
 
@@ -125,6 +129,32 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
 
         }
       }
+  }
+
+  def persistSnapshotDmnResumen(evt: ObligacionEvents.ObligacionUpdatedFromDto): Unit = {
+    val kafkaTopic = "DMNResumenPersistedSnapshot"
+
+    val detallesOpt = evt.detallesObligacion.headOption
+    detallesOpt.foreach { detalle =>
+      (detalle.dmnNumero, detalle.dmnDescripcion) match {
+        case (Some(numero), Some(descripcion)) =>
+          val resumen = DMNResumenPersisted(
+            deliveryId = evt.deliveryId,
+            sujetoId = evt.sujetoId,
+            objetoId = evt.objetoId,
+            tipoObjeto = evt.tipoObjeto,
+            obligacionId = evt.obligacionId,
+            dmnNumero = numero,
+            dmnDescripcion = descripcion
+          )
+          val event = resumen.asJson.toString()
+          requirements.messageProducer
+            .produce(
+              data = Seq(KafkaKeyValue(persistenceId, event)),
+              topic = kafkaTopic
+            )(_ => ())
+      }
+    }
   }
 
   def deleteSnapshot(evt: ObligacionEvents)(handler: () => Unit): Unit = {

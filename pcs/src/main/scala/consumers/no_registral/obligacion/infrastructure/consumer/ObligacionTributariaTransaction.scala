@@ -115,7 +115,8 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
           commandRouter.ask[Response.SuccessProcessing](command)
         }
         case false => actorRef.ask[Response.SuccessProcessing](command)
-      }    }
+      }
+    }
   }
   private def isTreintaPorciento(obn: ObligacionesTri): (ObligacionesTri, Any) = {
     val dmnResult = DMNTreintaPorciento.dmn(obn)
