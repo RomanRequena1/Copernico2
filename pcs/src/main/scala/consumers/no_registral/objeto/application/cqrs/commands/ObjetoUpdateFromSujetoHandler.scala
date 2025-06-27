@@ -44,6 +44,8 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
       } else false
     }
 
+    def esTipoObjetoPermitido(tipo: String): Boolean =
+      Set("A", "I", "N").contains(tipo)
 
     val eventDmn = DmnResumen(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
@@ -92,7 +94,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
           .getOrElse("")
           .equals("BAJA") && newState.aplicarDescuento.isDefined) {
           actor.persistSnapshot(event, newState) { () =>
-            if (debeEnviarResumen) {
+            if (debeEnviarResumen && esTipoObjetoPermitido(command.tipoObjeto)) {
               actor.dmnresumenpersistSnapshot(eventDmn, newState) { () =>
                 sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
               }
