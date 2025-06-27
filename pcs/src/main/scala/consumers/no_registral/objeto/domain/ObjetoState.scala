@@ -177,7 +177,7 @@ case class ObjetoState(
       case ObjetoEvents.ObjetoUpdatedFromObligacion(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, _, dmnNumero, dmnDescripcion) =>
         val _obnVencidas = validExitsObnVencidas(obligacionId)
         val obligacionesSaldo_ = obligacionesSaldo + (obligacionId -> saldoObligacion)
-        val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
+        val diff: Boolean = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
         copy(
           saldo = obligacionesSaldo_.values.sum,
           obligaciones = obligaciones + obligacionId,
@@ -186,7 +186,7 @@ case class ObjetoState(
           isBaja = false,
           obnVencidas = _obnVencidas,
           tiene30Objeto = diff,
-          ultimo30Objeto = ultimo30Objeto + (event.deliveryId, diff),
+          ultimo30Objeto = ultimo30Objeto + ((event.deliveryId.toString, diff)),
           dmnNumero = dmnNumero,
           dmnDescripcion = dmnDescripcion
         )

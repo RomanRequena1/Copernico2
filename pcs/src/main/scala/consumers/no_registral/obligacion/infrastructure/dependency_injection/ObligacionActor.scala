@@ -131,31 +131,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       }
   }
 
-  def persistSnapshotDmnResumen(evt: ObligacionEvents.ObligacionUpdatedFromDto): Unit = {
-    val kafkaTopic = "DMNResumenPersistedSnapshot"
-
-    val detallesOpt = evt.detallesObligacion.headOption
-    detallesOpt.foreach { detalle =>
-      (detalle.dmnNumero, detalle.dmnDescripcion) match {
-        case (Some(numero), Some(descripcion)) =>
-          val resumen = DMNResumenPersisted(
-            deliveryId = evt.deliveryId,
-            sujetoId = evt.sujetoId,
-            objetoId = evt.objetoId,
-            tipoObjeto = evt.tipoObjeto,
-            obligacionId = evt.obligacionId,
-            dmnNumero = numero,
-            dmnDescripcion = descripcion
-          )
-          val event = resumen.asJson.toString()
-          requirements.messageProducer
-            .produce(
-              data = Seq(KafkaKeyValue(persistenceId, event)),
-              topic = kafkaTopic
-            )(_ => ())
-      }
-    }
-  }
 
   def deleteSnapshot(evt: ObligacionEvents)(handler: () => Unit): Unit = {
     import io.circe.syntax.EncoderOps

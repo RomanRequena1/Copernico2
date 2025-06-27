@@ -37,23 +37,11 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
 
     actor.state += event
 
-    def enviarEvento(): Unit = {
-      if(actor.state.ultimo30Objeto.size > 1){
+    def debeEnviarResumen: Boolean = {
+      if (actor.state.ultimo30Objeto.size > 1) {
         val penultimoElemento = actor.state.ultimo30Objeto.toSeq.reverse.tail.head._2
-        if(!penultimoElemento.equals(actor.state.tiene30Objeto)){
-          val eventDmn = DmnResumen(
-            if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
-            command.sujetoId,
-            command.objetoId,
-            command.tipoObjeto,
-            actor.state.registro.get.SOJ_ID_EXTERNO,
-            Some(actor.state.fechaUltMod),
-            actor.state.aplicarDescuento,
-            actor.state.dmnNumero,
-            actor.state.dmnDescripcion
-          )
-        }
-      }
+        !penultimoElemento.equals(actor.state.tiene30Objeto)
+      } else false
     }
 
 
@@ -104,7 +92,11 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
           .getOrElse("")
           .equals("BAJA") && newState.aplicarDescuento.isDefined) {
           actor.persistSnapshot(event, newState) { () =>
-            actor.dmnresumenpersistSnapshot(eventDmn, newState) { () =>
+            if (debeEnviarResumen) {
+              actor.dmnresumenpersistSnapshot(eventDmn, newState) { () =>
+                sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+              }
+            } else {
               sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
             }
           }
