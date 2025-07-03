@@ -142,6 +142,13 @@ case class ObjetoState(
           exclusionObjeto = evt.exclusionObjetoVinculo
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
+        val dmnDescripcion_ = dmnDescripcion
+        def cambiarRazon(tipo: String, dmnDescripcion: String): Option[String] = tipo match {
+          case x if x.contains("E")  => Some("Objeto Excluido")
+          case x if x.contains("NE") => Some("Objeto No Excluido")
+          case x if x.contains("C")  => Some("Objeto Condicional")
+          case _                     => Some(dmnDescripcion)
+        }
         copy(
           sujetoResponsable = evt.sujetoResponsable match {
             case Some(value) => Some(value)
@@ -155,11 +162,12 @@ case class ObjetoState(
           clasificacionObjeto = evt.clasificacionObjeto.getOrElse("2"),
           resulDmn = evt.resultDmn,
           exclusionObjeto = evt.registro.SOJ_TIPO_EXCLUSION match {
-            case x if x.contains("E") => Some("E")
+            case x if x.contains("E") =>Some("E")
             case x if x.contains("NE") => Some("NE")
             case x if x.contains("C") => Some("C")
             case _ => None
-          }
+          },
+          dmnDescripcion = cambiarRazon(evt.registro.SOJ_TIPO_EXCLUSION.getOrElse(""), dmnDescripcion_.getOrElse(""))
         )
 
       case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>

@@ -47,19 +47,21 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
     def esTipoObjetoPermitido(tipo: String): Boolean =
       Set("A", "I", "N").contains(tipo)
 
+    val obj_default = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), None, None)
+
+
     val eventDmn = DmnResumen(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
-      actor.state.registro.get.SOJ_ID_EXTERNO,
+      actor.state.registro.getOrElse(obj_default).SOJ_ID_EXTERNO.orElse(Some("None")),
       Some(actor.state.fechaUltMod),
       actor.state.aplicarDescuento,
       actor.state.dmnNumero,
       actor.state.dmnDescripcion
     )
 
-    val obj_default = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), None, None)
 
     val result = DMNTreintaPorcientoFinal.calcularDmnFinal(
       DmnFinal(

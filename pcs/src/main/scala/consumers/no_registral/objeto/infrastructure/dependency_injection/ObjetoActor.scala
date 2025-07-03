@@ -175,7 +175,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         evt.sujetoId,
         evt.objetoId,
         evt.tipoObjeto,
-        consolidatedState.registro.get.SOJ_ID_EXTERNO,
+        consolidatedState.registro.flatMap(_.SOJ_ID_EXTERNO).orElse(Some("None")),
         Some(consolidatedState.fechaUltMod),
         consolidatedState.aplicarDescuento,
         consolidatedState.dmnNumero,
