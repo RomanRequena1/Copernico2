@@ -27,6 +27,7 @@ case class ObjetoState(
       List(false, false, false, false, false, false, false, false, false, false, false, false, false),
     tiene30Objeto: Boolean = true,
     tiene30ObjetoVinculo: Boolean = true,
+    ultimo30Objeto: Map[String, Boolean] = Map.empty,  //aca vemos cuando cambia el tiene30
     clasificacionObjeto: String = "2",
     tiene30Sujeto: Option[Boolean] = None,
     aplicarDescuento: Option[Boolean] = None,
@@ -35,7 +36,9 @@ case class ObjetoState(
     deuda30Objeto: Boolean = true,
     tipoExclusion: String = "",
     exclusionObjeto: Option[String] = None,
-    exclusionObjetoVinculo: Option[String] = None
+    exclusionObjetoVinculo: Option[String] = None,
+    dmnNumero: Option[Int] = None,
+    dmnDescripcion : Option[String] = None
 ) extends AbstractState[ObjetoEvents]
     with CbroSerialization {
 
@@ -139,6 +142,13 @@ case class ObjetoState(
           exclusionObjeto = evt.exclusionObjetoVinculo
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
+        val dmnDescripcion_ = dmnDescripcion
+        def cambiarRazon(tipo: String, dmnDescripcion: String): Option[String] = tipo match {
+          case x if x.contains("E")  => Some("Objeto Excluido")
+          case x if x.contains("NE") => Some("Objeto No Excluido")
+          case x if x.contains("C")  => Some("Objeto Condicional")
+          case _                     => Some(dmnDescripcion)
+        }
         copy(
           sujetoResponsable = evt.sujetoResponsable match {
             case Some(value) => Some(value)
@@ -152,11 +162,12 @@ case class ObjetoState(
           clasificacionObjeto = evt.clasificacionObjeto.getOrElse("2"),
           resulDmn = evt.resultDmn,
           exclusionObjeto = evt.registro.SOJ_TIPO_EXCLUSION match {
-            case x if x.contains("E") => Some("E")
+            case x if x.contains("E") =>Some("E")
             case x if x.contains("NE") => Some("NE")
             case x if x.contains("C") => Some("C")
             case _ => None
-          }
+          },
+          dmnDescripcion = cambiarRazon(evt.registro.SOJ_TIPO_EXCLUSION.getOrElse(""), dmnDescripcion_.getOrElse(""))
         )
 
       case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
@@ -171,10 +182,10 @@ case class ObjetoState(
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
           isBaja = false
         )
-      case ObjetoEvents.ObjetoUpdatedFromObligacion(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, _) =>
+      case ObjetoEvents.ObjetoUpdatedFromObligacion(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, _, dmnNumero, dmnDescripcion) =>
         val _obnVencidas = validExitsObnVencidas(obligacionId)
         val obligacionesSaldo_ = obligacionesSaldo + (obligacionId -> saldoObligacion)
-        val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
+        val diff: Boolean = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
         copy(
           saldo = obligacionesSaldo_.values.sum,
           obligaciones = obligaciones + obligacionId,
@@ -182,7 +193,10 @@ case class ObjetoState(
           sujetos = sujetos + sujetoId,
           isBaja = false,
           obnVencidas = _obnVencidas,
-          tiene30Objeto = diff
+          tiene30Objeto = diff,
+          ultimo30Objeto = ultimo30Objeto + ((event.deliveryId.toString, diff)),
+          dmnNumero = dmnNumero,
+          dmnDescripcion = dmnDescripcion
         )
 
       case evt: ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento =>
@@ -191,7 +205,9 @@ case class ObjetoState(
         copy(
           obnVencidas = _obnVencidas,
           tiene30Objeto = diff,
-          tiene30ObjetoVinculo = tiene30ObjetoVinculo //todo agregue aca
+          tiene30ObjetoVinculo = tiene30ObjetoVinculo, //todo agregue aca
+          dmnNumero = evt.dmnNumero,
+          dmnDescripcion = evt.dmnDescripcion
         )
       case evt: ObjetoEvents.ObjetoSnapshotPersisted =>
         copy(

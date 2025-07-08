@@ -5,13 +5,9 @@ import akka.actor.{ActorRef, Props}
 import akka.entity.ShardedEntity
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.cqrs.commands._
-import consumers.no_registral.objeto.application.cqrs.queries.{
-  GetSnapshotObjetoHandler,
-  GetStateExencionHandler,
-  GetStateObjetoHandler
-}
+import consumers.no_registral.objeto.application.cqrs.queries.{GetSnapshotObjetoHandler, GetStateExencionHandler, GetStateObjetoHandler}
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoQueries}
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
+import consumers.no_registral.objeto.domain.ObjetoEvents.{DmnResumenSnapshotPersisted, ObjetoSnapshotPersisted}
 import consumers.no_registral.objeto.domain.{ObjetoEvents, ObjetoState}
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
@@ -158,6 +154,33 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         Some(consolidatedState.tiene30ObjetoVinculo)
       )
 
+    requirements.messageProducer.produce(
+      data = Seq(
+        KafkaKeyValue(
+          snapshot.aggregateRoot,
+          snapshot.asJson.toString()
+        )
+      ),
+      topic = kafkaTopic
+    ) { _ =>
+      handler()
+    }
+  }
+
+  def dmnresumenpersistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
+    val kafkaTopic = "DmnResumenSnapshotPersistedReadside"
+    val snapshot =
+      DmnResumenSnapshotPersisted(
+        evt.deliveryId,
+        evt.sujetoId,
+        evt.objetoId,
+        evt.tipoObjeto,
+        consolidatedState.registro.flatMap(_.SOJ_ID_EXTERNO).orElse(Some("None")),
+        Some(consolidatedState.fechaUltMod),
+        consolidatedState.aplicarDescuento,
+        consolidatedState.dmnNumero,
+        consolidatedState.dmnDescripcion
+      )
     requirements.messageProducer.produce(
       data = Seq(
         KafkaKeyValue(

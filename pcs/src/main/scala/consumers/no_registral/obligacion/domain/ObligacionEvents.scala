@@ -34,6 +34,16 @@ object ObligacionEvents {
                                           resultDmn: Option[String]
   ) extends ObligacionEvents
 
+  case class DMNResumenPersisted(
+                                  deliveryId: BigInt,
+                                  sujetoId: String,
+                                  objetoId: String,
+                                  tipoObjeto: String,
+                                  obligacionId: String,
+                                  dmnNumero: Int,
+                                  dmnDescripcion: String
+                                ) extends ObligacionEvents
+
 
   case class ObligacionUpdatedFromDto(
       deliveryId: BigInt,
@@ -46,7 +56,8 @@ object ObligacionEvents {
       detallesSupresiones: Seq[DetallesSupresiones],
       isAdheridoDebito: Option[Boolean],
       cuota: Option[String],
-      resultDmn: Option[String]
+      resultDmn: Option[String],
+
   ) extends ObligacionEvents
 
   case class ObligacionRemovedInfoFromObjeto(

@@ -3,6 +3,7 @@ package consumers.no_registral.objeto.domain
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
 import design_principles.actor_model.Event
+import org.camunda.feel.LocalDateTime
 import serialization.CbroSerialization
 
 sealed trait ObjetoEvents extends Event with CbroSerialization {
@@ -32,6 +33,30 @@ object ObjetoEvents {
       tiene30Sujeto: Boolean,
       exclusionSUjeto: Option[String]
   ) extends ObjetoEvents
+
+  case class DmnResumen(
+                                      deliveryId: BigInt,
+                                      sujetoId: String,
+                                      objetoId: String,
+                                      tipoObjeto: String,
+                                      idExterno: Option[String],
+                                      fecha: Option[LocalDateTime],
+                                      aplicarDescuento: Option[Boolean],
+                                      dmnNumero: Option[Int],
+                                      dmnDescripcion: Option[String]
+                       ) extends ObjetoEvents
+
+  case class DmnResumenSnapshotPersisted(
+                                          deliveryId: BigInt,
+                                          sujetoId: String,
+                                          objetoId: String,
+                                          tipoObjeto: String,
+                                          idExterno: Option[String],
+                                          fecha: Option[LocalDateTime],
+                                          aplicarDescuento: Option[Boolean],
+                                          dmnNumero: Option[Int],
+                                          dmnDescripcion: Option[String]
+                                        ) extends ObjetoEvents
 
   case class ObjetoSnapshotPersisted(
       deliveryId: BigInt,
@@ -116,7 +141,9 @@ object ObjetoEvents {
       obligacionExenta: Boolean,
       porcentajeExencion: Option[BigDecimal],
       idExterno: Option[String],
-      cuota: Option[String]
+      cuota: Option[String],
+      dmnNumero: Option[Int],
+      dmnDescripcion: Option[String]
   ) extends ObjetoEvents
 
   case class ObjetoUpdatedFromObligacionBajaSet(
@@ -173,7 +200,9 @@ object ObjetoEvents {
       obligacionExenta: Boolean,
       porcentajeExencion: Option[BigDecimal],
       idExterno: Option[String],
-      cuota: Option[String]
+      cuota: Option[String],
+      dmnNumero: Option[Int],
+      dmnDescripcion: Option[String]
   ) extends ObjetoEvents
 
 }

@@ -42,7 +42,9 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
       command.obligacionExenta,
       command.porcentajeExencion,
       command.idExterno,
-      command.cuota
+      command.cuota,
+      command.dmnNumero,
+      command.dmnDescripcion
     )
     val initialization: String = {
       Try(System.getenv("INITIALIZATION")).getOrElse(null)
@@ -57,7 +59,8 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
-      SendObjetoToObjetoVinculo(vinculoActor,
+      SendObjetoToObjetoVinculo(
+        vinculoActor,
         actor,
         command.sujetoId,
         command.objetoId,
@@ -65,7 +68,6 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
         actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
         requeriment,
         command)
-
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
