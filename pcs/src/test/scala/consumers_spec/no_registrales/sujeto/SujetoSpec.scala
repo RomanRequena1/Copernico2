@@ -1,26 +1,22 @@
-package consumers_spec.no_registrales.sujeto
-
-import akka.actor.ActorSystem
-import consumers_spec.no_registrales.obligacion.ObligacionSpec
-import consumers_spec.no_registrales.testkit.Examples
-import consumers_spec.no_registrales.testkit.query.NoRegistralesQueryTestKit
-import design_principles.actor_model.ActorSpec
-import design_principles.external_pub_sub.kafka.MessageProcessorLogging
-import kafka.{MessageProcessor, MessageProducer}
-import utils.generators.Model.deliveryId
-import consumers_spec.no_registrales.testkit.MessageTestkitUtils._
-import consumers_spec.no_registrales.testkit.NoRegistralesImplicitConversions
-
-object SujetoSpec {
-  case class TestContext(messageProducer: MessageProducer,
-                         messageProcessor: MessageProcessor with MessageProcessorLogging,
-                         Query: NoRegistralesQueryTestKit)
-}
-abstract class SujetoSpec(
-    getContext: ActorSystem => SujetoSpec.TestContext
-) extends ActorSpec
-    with NoRegistralesImplicitConversions {
-  val examples = new Examples("SujetoSpec")
+//package consumers_spec.no_registrales.sujeto
+//
+//import akka.actor.ActorSystem
+//import consumers_spec.no_registrales.testkit.NoRegistralesImplicitConversions
+//import consumers_spec.no_registrales.testkit.query.NoRegistralesQueryTestKit
+//import design_principles.actor_model.ActorSpec
+//import design_principles.external_pub_sub.kafka.MessageProcessorLogging
+//import kafka.{MessageProcessor, MessageProducer}
+//
+//object SujetoSpec {
+//  case class TestContext(messageProducer: MessageProducer,
+//                         messageProcessor: MessageProcessor with MessageProcessorLogging,
+//                         Query: NoRegistralesQueryTestKit)
+//}
+//abstract class SujetoSpec(
+//    getContext: ActorSystem => SujetoSpec.TestContext
+//) extends ActorSpec
+//    with NoRegistralesImplicitConversions {
+//  val examples = new Examples("SujetoSpec")
 
 //  "un sujeto" should
 //  "pisar una obligacion con otra nueva que llegue desde Kafka para el mismo ID" in parallelActorSystemRunner {
@@ -89,4 +85,4 @@ abstract class SujetoSpec(
 //    }
 
 //  }
-}
+//}
