@@ -22,6 +22,15 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
                      ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
+
+
     val obj_default = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), None, None)
 
     val estado = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("")
