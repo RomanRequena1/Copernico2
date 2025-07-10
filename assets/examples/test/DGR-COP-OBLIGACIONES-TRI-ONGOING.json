@@ -1,12 +1,12 @@
 {
-      "EV_ID": "5",
-      "BOB_SUJ_IDENTIFICADOR": "44653640",
+      "EV_ID": "21",
+      "BOB_SUJ_IDENTIFICADOR": "88-888-88",
       "BOB_SOJ_TIPO_OBJETO": "A",
-      "BOB_SOJ_IDENTIFICADOR": "AB418ZY",
+      "BOB_SOJ_IDENTIFICADOR": "BB222BB",
       "BOB_OBN_ID": "44",
       "BOB_ESTADO": "ADMINISTRATIVA",
-      "BOB_PRORROGA": "2024-01-01 00:00:00.0",
-      "BOB_VENCIMIENTO": "2024-01-01 00:00:00.0",
+      "BOB_PRORROGA": "2026-01-01 00:00:00.0",
+      "BOB_VENCIMIENTO": "2026-01-01 00:00:00.0",
       "BOB_PERIODO": "2024",
       "BOB_FISCALIZADA": "Fiscalizada",
       "BOB_CUOTA": "6",
@@ -23,6 +23,6 @@
       "BOB_DETALLES": [
       {
       "PLAN_MULTIOBJETO": "PlanMultiobjeto",
-      "RULE_NUMBER": "-1"
+      "RULE_NUMBER": "1"
       }]}
     }
