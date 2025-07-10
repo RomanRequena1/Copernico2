@@ -12,10 +12,14 @@ import design_principles.actor_model.Response
 import scala.util.{Success, Try}
 
 class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
-    extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromSujeto] {
+  extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromSujeto] {
+
+  def debeEnviarResumen(anterior: Option[Boolean], nuevo: Option[Boolean]): Boolean =
+    anterior != nuevo
+
   override def handle(
-      command: ObjetoCommands.ObjetoUpdateFromSujeto
-  ): Try[Response.SuccessProcessing] = {
+                       command: ObjetoCommands.ObjetoUpdateFromSujeto
+                     ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
     log.debug(
@@ -25,6 +29,18 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
           |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
           |""".stripMargin
     )
+
+
+    val obj_default = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), None, None)
+
+    val estado = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("")
+
+    if (estado == "TRANSF") {
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+      return Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
+    }
+
+    val aplicarDescuentoAnterior = actor.state.aplicarDescuento
 
     val event = ObjetoUpdatedFromSujeto(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
@@ -37,18 +53,8 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
 
     actor.state += event
 
-    def debeEnviarResumen: Boolean = {
-      if (actor.state.ultimo30Objeto.size > 1) {
-        val penultimoElemento = actor.state.ultimo30Objeto.toSeq.reverse.tail.head._2
-        !penultimoElemento.equals(actor.state.tiene30Objeto)
-      } else false
-    }
-
     def esTipoObjetoPermitido(tipo: String): Boolean =
       Set("A", "I", "N").contains(tipo)
-
-    val obj_default = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), None, None)
-
 
     val eventDmn = DmnResumen(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
@@ -62,7 +68,6 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
       actor.state.dmnDescripcion
     )
 
-
     val result = DMNTreintaPorcientoFinal.calcularDmnFinal(
       DmnFinal(
         command.exclusionSUjeto,
@@ -73,30 +78,36 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
         actor.state.tiene30ObjetoVinculo
       )
     )
-    result match {
 
+    result match {
       case d if d.equals(true) =>
-        val newState = actor.state.copy(aplicarDescuento = Some(true))
+        val aplicarDescuentoNuevo = Some(true)
+        val newState = actor.state.copy(aplicarDescuento = aplicarDescuentoNuevo)
         if (!actor.state.registro
           .getOrElse(obj_default)
           .SOJ_ESTADO
           .getOrElse("")
           .equals("BAJA") && newState.aplicarDescuento.isDefined) {
           actor.persistSnapshot(event, newState) { () =>
-            actor.dmnresumenpersistSnapshot(eventDmn, newState) { () =>
+            if (debeEnviarResumen(aplicarDescuentoAnterior, aplicarDescuentoNuevo) && esTipoObjetoPermitido(command.tipoObjeto)) {
+              actor.dmnresumenpersistSnapshot(eventDmn, newState) { () =>
+                sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+              }
+            } else {
               sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
             }
           }
         }
       case _ =>
-        val newState = actor.state.copy(aplicarDescuento = Some(false))
+        val aplicarDescuentoNuevo = Some(false)
+        val newState = actor.state.copy(aplicarDescuento = aplicarDescuentoNuevo)
         if (!actor.state.registro
           .getOrElse(obj_default)
           .SOJ_ESTADO
           .getOrElse("")
           .equals("BAJA") && newState.aplicarDescuento.isDefined) {
           actor.persistSnapshot(event, newState) { () =>
-            if (debeEnviarResumen && esTipoObjetoPermitido(command.tipoObjeto)) {
+            if (debeEnviarResumen(aplicarDescuentoAnterior, aplicarDescuentoNuevo) && esTipoObjetoPermitido(command.tipoObjeto)) {
               actor.dmnresumenpersistSnapshot(eventDmn, newState) { () =>
                 sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
               }
