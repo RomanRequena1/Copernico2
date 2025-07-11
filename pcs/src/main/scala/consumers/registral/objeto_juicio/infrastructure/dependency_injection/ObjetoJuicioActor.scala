@@ -35,12 +35,12 @@ case class ObjetoJuicioActor(state: ObjetoJuicioState = ObjetoJuicioState(), pro
   eventBus.subscribe[ObjetoJuicioRemovedFromDto](new ObjetoJuicioRemovedFromDtoHandler().handle)
 
 
-  override def getTags(event: ObjetoJuicioEvents): Set[String] = {
-    event match {
-      case _: ObjetoJuicioUpdatedFromDto => Set("ObjetoJuicio-updated")
-      case _ => Set("ObjetoJuicio-updated")
-    }
-  }
+//  override def getTags(event: ObjetoJuicioEvents): Set[String] = {
+//    event match {
+//      case _: ObjetoJuicioUpdatedFromDto => Set("ObjetoJuicio-updated")
+//      case _ => Set("ObjetoJuicio-updated")
+//    }
+//  }
 
   if (projFlag) {
     val projSettings1: ProjectionSettings = ProjectionSettings.default("ObjetoJuicio-updated", 1)(this.monitoring)

@@ -14,7 +14,6 @@ abstract class ProjectionHandler[T](val settings: ProjectionSettings, system: Ac
 
   def processMessage(envelope: EventEnvelope[T]): Future[Done]
   final override def process(envelope: EventEnvelope[T]): Future[Done] = {
-    println("CHECK process")
     val future = processMessage(envelope)
     recordLatency(future)
     recordRequests(future)

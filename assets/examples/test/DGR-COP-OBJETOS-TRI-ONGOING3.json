@@ -1,34 +1,83 @@
 {
-  "EV_ID": "4",
-  "SOJ_SUJ_IDENTIFICADOR": "Scala2",
-  "SOJ_TIPO_OBJETO": "A",
-  "SOJ_IDENTIFICADOR": "AutomotorPrueba2",
-  "SOJ_DESCRIPCION": "Vehiculo de prueba Local",
-  "SOJ_ESTADO": null,
-  "SOJ_FECHA_ADQ_SUBASTA": "2024-08-16 00:00:00.0",
-  "SOJ_FECHA_VTA_SUBASTA": "1000-01-01 00:00:00.0",
-  "SOJ_TITULARIDAD": null,
-  "SOJ_FECHA_FIN": null,
-  "SOJ_FECHA_INICIO": "2013-01-01 00:00:00.0",
-  "SOJ_ID_EXTERNO": "676384",
-  "SOJ_ADHERIDO_DEBITO": "S",
-  "SOJ_BASE_IMPONIBLE": "999",
-  "SOJ_SUBTIPO": "Utilitario",
-  "SOJ_CANAL_ORIGEN": "Local",
-  "SOJ_CAT_SOJ_ID": "TRI",
-  "SOJ_OTROS_ATRIBUTOS": {
-    "SOJ_DETALLES": [
-      {
-        "RESPONSABLE_OTROS_ATRIBUTOS": "null",
-        "PORCENTAJE_OTROS_ATRIBUTOS": "999",
-        "OTROS_ATRIBUTOS_ADHERIDO_DEBITO": "S",
-        "CUENTA_SOJ_OTROS_ATRIBUTOS": null,
-        "PERIODO_SOJ_OTROS_ATRIBUTOS": null,
-        "IMPORTE_SOJ_OTROS_ATRIBUTOS": null,
-        "SOJ_SEMAFORO_COLOR": "R",
-        "SOJ_SEMAFORO_MARCA": "P",
-        "FECHA_BAJA": null
-      }
-    ]}
-}
+  "deliveryId" : 20250702153425100000004274305555,
+  "sujetoId" : "27-32735799-6",
+  "objetoId" : "PREUBADescuento",
+  "objetoId2" : null,
+  "tipoObjeto" : "I",
+  "saldo" : 0,
+  "cotitulares" : [
+    "27-32735799-6"
+  ],
+  "tags" : [
+  ],
+  "sujetoResponsable" : "27-32735799-6",
+  "porcentajeResponsabilidad" : 0,
+  "registro" : {
+    "ObjetosTri" : {
+      "RULE_NUMBER" : null,
+      "EV_ID" : 20250702153425100000004274305555,
+      "SOJ_SUJ_IDENTIFICADOR" : "27-32735799-6",
+      "SOJ_TIPO_OBJETO" : "I",
+      "SOJ_IDENTIFICADOR" : "PREUBADescuento",
+      "SOJ_CAT_SOJ_ID" : "TRI",
+      "SOJ_DESCRIPCION" : "TEST",
+      "SOJ_ESTADO" : "TRANSF",
+      "SOJ_FECHA_INICIO" : "2015-01-01 00:00:00.0",
+      "SOJ_FECHA_FIN" : null,
+      "SOJ_ID_EXTERNO" : "267140789",
+      "SOJ_OTROS_ATRIBUTOS" : {
+        "SOJ_DETALLES" : [
+          {
+            "RESPONSABLE_OTROS_ATRIBUTOS" : "S",
+            "PORCENTAJE_OTROS_ATRIBUTOS" : 100,
+            "CUENTA_SOJ_OTROS_ATRIBUTOS" : null,
+            "OTROS_ATRIBUTOS_ADHERIDO_DEBITO" : "N",
+            "PERIODO_SOJ_OTROS_ATRIBUTOS" : null,
+            "IMPORTE_SOJ_OTROS_ATRIBUTOS" : null,
+            "SOJ_SEMAFORO_COLOR" : "V",
+            "SOJ_SEMAFORO_MARCA" : null,
+            "SOJ_ADQUIRIDO_SUBASTA" : null,
+            "FECHA_SUBASTA" : null,
+            "SOJ_OWNER" : null
+          }
+        ]
+      },
+      "SOJ_BASE_IMPONIBLE" : null,
+      "SOJ_ADHERIDO_DEBITO" : "N",
+      "SOJ_CANT_CUOTAS_PAGADAS" : null,
+      "SOJ_CANAL_ORIGEN" : "OTAX",
+      "SOJ_SUBTIPO" : null,
+      "SOJ_IDENTIFICADOR_2" : null,
+      "SOJ_TITULARIDAD" : null,
+      "SOJ_TIPO_EXCLUSION" : "E",
+      "SOJ_FECHA_VTA_SUBASTA" : null,
+      "SOJ_FECHA_ADQ_SUBASTA" : null
+    }
+  },
+  "obligacionesSaldo" : {
 
+  },
+  "cuotas" : [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "bandTipo" : "1",
+  "operacion" : "U",
+  "idExterno" : null,
+  "tiene30Objeto" : false,
+  "aplicarDescuento" : true,
+  "resultDmn" : 1,
+  "exclusionObjeto" : "E",
+  "tiene30ObjetoVinculo" : false
+}

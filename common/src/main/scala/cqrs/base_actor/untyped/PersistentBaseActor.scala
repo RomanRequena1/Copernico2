@@ -21,14 +21,6 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
 
   val persistedCounter: Counter = monitoring.counter(s"$name-persisted")
 
-//  val typed: ActorSystem[_] = this.context.system.toTyped
-//  val projSettings1: ProjectionSettings = ProjectionSettings.default("obligacion-updated", 1)(monitoring)
-//  val projHandler1 = new ObligacionMockProjectionHandler(projSettings1, typed)
-
-
-  // Método a implementar por clases hijas
-  def tagsFor(event: Event): Set[String] = Set.empty
-
   val eventBus: EventBus[Try] = new SyncEventBus(logger)
 
   override def receive: Receive = super[PersistentActor].receive

@@ -26,9 +26,9 @@ case class CuponDescuentoActor(state: CuponDescuentoState =  CuponDescuentoState
   queryBus.subscribe[GetStateCuponDescuento](new GetStateCuponDescuentoHandler().handle)
   eventBus.subscribe[CuponDescuentoUpdatedFromDto](new CuponDescuentoUpdatedFromDtoHandler().handle)
 
-  override def getTags(event: CuponDescuentoEvents): Set[String] = {
-    event match {
-      case _ => Set("CuponDescuento-updated")
-    }
-  }
+//  override def getTags(event: CuponDescuentoEvents): Set[String] = {
+//    event match {
+//      case _ => Set("CuponDescuento-updated")
+//    }
+//  }
 }

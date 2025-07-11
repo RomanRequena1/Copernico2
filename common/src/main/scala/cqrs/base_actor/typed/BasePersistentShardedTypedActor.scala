@@ -26,7 +26,7 @@ abstract class BasePersistentShardedTypedActor[
     utils.Inference.getSimpleName(this.getClass.getName)
   )
   val NR_PARTITIONS: Int = Try(System.getenv("NR_PARTITIONS")).map(_.toInt).getOrElse(90)
-  def getTags(event: ActorEvents): Set[String] = Set("")
+  //def getTags(event: ActorEvents): Set[String] = Set("")
 
   val shardActor: ActorRef[ActorMessages] = sharding.init(
     Entity(TypeKey) { context =>
@@ -54,13 +54,12 @@ abstract class BasePersistentShardedTypedActor[
 
   def persistentEntity(entityId: String, shardedId: ActorRef[ClusterSharding.ShardCommand]): Behavior[ActorMessages] =
     Behaviors.setup { a =>
-      println("CHECK Llego persis entity")
       EventSourcedBehavior[ActorMessages, ActorEvents, State](
         PersistenceId(TypeKey.name, entityId),
         emptyState = state,
         commandHandler = (state, message) => commandHandler(state, message),
         eventHandler = (state, evt) => eventHandler(state, evt)
-      ).withTagger(event => getTags(event))
+      )
     }
 
   def getEntityRef(entityId: String): EntityRef[ActorMessages] =
