@@ -2,10 +2,11 @@ package consumers.registral.objeto_juicio.infrastructure.projection.schemas
 
 import consumers.registral.objeto_juicio.application.entities.ObjetoJuicioExternalDto
 import consumers.registral.objeto_juicio.domain.ObjetoJuicioEvents
+import consumers.registral.objeto_juicio.infrastructure.projection.schemas.ObjetoJuicioProjectionW
 
-final case class ObjetoJuicioSnapshotProjection(
+final case class ObjetoJuicioSnapshotProjectionW(
                                                  event: ObjetoJuicioEvents.ObjetoJuicioUpdatedFromDto
-                                               ) extends ObjetoJuicioProjection {
+                                               ) extends ObjetoJuicioProjectionW {
 
   val registro: Option[ObjetoJuicioExternalDto] = Some(event.registro)
 

@@ -12,7 +12,7 @@ import consumers.registral.objeto_juicio.application.entities.ObjetoJuicioRespon
 import consumers.registral.objeto_juicio.domain.ObjetoJuicioEvents
 import consumers.registral.objeto_juicio.domain.ObjetoJuicioEvents.{ObjetoJuicioRemovedFromDto, ObjetoJuicioUpdatedFromDto}
 import consumers.registral.objeto_juicio.infrastructure.dependency_injection.ObjetoJuicioActor
-import consumers.registral.objeto_juicio.infrastructure.projection.schemas.ObjetoJuicioSnapshotProjection
+import consumers.registral.objeto_juicio.infrastructure.projection.schemas.ObjetoJuicioSnapshotProjectionW
 import design_principles.actor_model.mechanism.AbstractOverReplyTo.MessageWithAutomaticReplyTo
 
 import scala.concurrent.Future
@@ -78,7 +78,7 @@ class ObjetoJuicioProjectionHandler(settings: ProjectionSettings, system: ActorS
               registro = value.state.get.registro.get
             )
             println("SS: " + miSnapshot.toString)
-            cas.writeState(ObjetoJuicioSnapshotProjection(miSnapshot))
+            cas.writeState(ObjetoJuicioSnapshotProjectionW(miSnapshot))
           }
           case Failure(exception) => log.error("Error Projection: " + exception.getMessage)
         }
