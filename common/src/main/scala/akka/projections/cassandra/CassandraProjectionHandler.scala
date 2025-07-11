@@ -24,7 +24,6 @@ abstract class CassandraProjectionHandler[T](settings: ProjectionSettings, syste
   protected val log = LoggerFactory.getLogger(this.getClass)
 
   def run(): Unit = {
-    print("CHECK llego CassProj " + this.getClass.toString)
     Try(
       CassandraProjectionist.startProjection(
         CassandraProjectionistRequirements(

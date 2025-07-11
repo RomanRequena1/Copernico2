@@ -17,7 +17,6 @@ private[cassandra] object CassandraProjectionFactory {
       projectionHandler: ProjectionHandler[T]
   ): AtLeastOnceCassandraProjection[EventEnvelope[T]] = {
     val tag = s"${projectionHandler.settings.tag}"
-    println(s"CHECK factory ${system.name} - $tag - ${projectionHandler.getClass.toString}")
     val sourceProvider =
       EventSourcedProvider
       .eventsByTag[T](system = system, readJournalPluginId = CassandraReadJournal.Identifier, tag = tag)

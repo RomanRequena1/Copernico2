@@ -10,7 +10,7 @@ import consumers.registral.objeto_juicio.infrastructure.kafka.ObjetoJuicioTribut
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 class ObjetoJuicioMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
-  implicit val actor: ObjetoJuicioActor = ObjetoJuicioActor(ObjetoJuicioState(), projFlag = true)
+  implicit val actor: ObjetoJuicioActor = ObjetoJuicioActor(ObjetoJuicioState(), projFlag = false)
 
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(

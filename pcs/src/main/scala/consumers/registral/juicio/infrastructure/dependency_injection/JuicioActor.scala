@@ -27,9 +27,9 @@ case class JuicioActor(state: JuicioState = JuicioState())(
   queryBus.subscribe[GetStateJuicio](new GetStateJuicioHandler(this).handle)
   eventBus.subscribe[JuicioUpdatedFromDto](new JuicioUpdatedFromDtoHandler().handle)
 
-  override def getTags(event: JuicioEvents): Set[String] = {
-    event match {
-      case _ => Set("Juicio-updated")
-    }
-  }
+//  override def getTags(event: JuicioEvents): Set[String] = {
+//    event match {
+//      case _ => Set("Juicio-updated")
+//    }
+//  }
 }
