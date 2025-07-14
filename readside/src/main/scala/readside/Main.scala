@@ -16,8 +16,8 @@ object  Main extends App {
   startMicroservices(microservices, ip, port, actorSystemName)
 
   def microservices(
-      microserviceProvisioning: KafkaConsumerMicroserviceRequirements
-  ): Seq[KafkaConsumerMicroservice] = {
+                     microserviceProvisioning: KafkaConsumerMicroserviceRequirements
+                   ): Seq[KafkaConsumerMicroservice] = {
     // localImplicit @deprecated | in Scala 3 we will be able to send first order functions with implicit parameters
     implicit val localImplicit: KafkaConsumerMicroserviceRequirements = microserviceProvisioning
 
@@ -25,8 +25,8 @@ object  Main extends App {
       new readside.proyectionists.no_registrales.obligacion.infrastructure.main.ObligacionProjectionistMicroservice,
       new readside.proyectionists.no_registrales.objeto.infrastructure.main.ObjetoProjectionistMicroservice,
       new readside.proyectionists.no_registrales.sujeto.infrastructure.main.SujetoProjectionistMicroservice,
-//      new readside.proyectionists.registrales.componente_i.infrastructure.main.ComponenteIProjectionistMicroservice,
-//      new readside.proyectionists.registrales.cupon_descuento.infrastructure.main.CuponDescuentoProjectionistMicroservice,
+      new readside.proyectionists.registrales.componente_i.infrastructure.main.ComponenteIProjectionistMicroservice,
+      new readside.proyectionists.registrales.cupon_descuento.infrastructure.main.CuponDescuentoProjectionistMicroservice,
       new readside.proyectionists.registrales.actividad_sujeto.infrastructure.main.ActividadSujetoProjectionistMicroservice,
       new readside.proyectionists.registrales.declaracion_jurada.infrastructure.main.DeclaracionJuradaProjectionistMicroservice,
       new readside.proyectionists.registrales.domicilio_objeto.infrastructure.main.DomicilioObjetoProjectionistMicroservice,
@@ -44,6 +44,7 @@ object  Main extends App {
       new JuicioObnProjectionstMicroservice,
       new ExclusionesSujetoProjectionistMicroservice,
       new readside.proyectionists.no_registrales.transferencia.infrastructure.TransferenciaProjectionistMicroservice,
+      new readside.proyectionists.registrales.objeto_juicio.infrastructure.main.ObjetoJuicioProjectionistMicroservice,
 
     )
   }
