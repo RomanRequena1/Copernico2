@@ -20,7 +20,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: Monitor
       command: ObjetoCommands.ObjetoUpdateFromObligacion
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
+    val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"),Some("None"), Some("None"), Some("None"),None,None)
 
     log.debug(
       f"""|CUMBIA

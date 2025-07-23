@@ -24,6 +24,7 @@ case class ObjetoSnapshotPersistedProjection(
       Some(
         List(
           "soj_identificador_2" -> r.SOJ_IDENTIFICADOR_2,
+          "soj_documento" -> r.SOJ_DOCUMENTO,
           "soj_subtipo" -> r.SOJ_SUBTIPO,
           "soj_canal_origen" -> r.SOJ_CANAL_ORIGEN,
           "soj_cat_soj_id" -> r.SOJ_CAT_SOJ_ID,
