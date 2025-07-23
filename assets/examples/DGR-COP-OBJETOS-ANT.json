@@ -1,5 +1,5 @@
 {
-  "EV_ID" : "20",
+  "EV_ID" : "200",
   "SOJ_SUJ_IDENTIFICADOR" : "5",
   "SOJ_TIPO_OBJETO" : "I",
   "SOJ_IDENTIFICADOR" : "5",
@@ -20,11 +20,7 @@
       "CUENTA_SOJ_OTROS_ATRIBUTOS" : null,
       "PERIODO_SOJ_OTROS_ATRIBUTOS" : null,
       "IMPORTE_SOJ_OTROS_ATRIBUTOS" : null,
-      "SOJ_OWNER": "Maria Rodriguez",
-      "SOJ_FECHA_LABRADO": "2011-05-23 08:00:00.0",
-      "SOJ_FECHA_SENTENCIA": "2023-02-10 16:45:00.0",
-      "SOJ_FECHA_RESOLUCION": "2023-03-05 11:20:00.0",
-      "SOJ_DESCUENTO_VIGENTE": "15"
+      "SOJ_OWNER": "Maria Rodriguez"
     } ]
   }
 }

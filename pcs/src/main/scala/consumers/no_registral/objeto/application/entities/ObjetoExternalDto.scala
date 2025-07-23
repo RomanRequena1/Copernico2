@@ -131,10 +131,6 @@ object ObjetoExternalDto{
                              SOJ_ADQUIRIDO_SUBASTA: Option[String],
                              FECHA_SUBASTA: Option[LocalDateTime],
                              SOJ_OWNER: Option[String],
-                             SOJ_FECHA_LABRADO: Option[LocalDateTime],
-                             SOJ_FECHA_SENTENCIA: Option[LocalDateTime],
-                             SOJ_FECHA_RESOLUCION: Option[LocalDateTime],
-                             SOJ_DESCUENTO_VIGENTE: Option[String],
                              EV_ID: Option[BigInt]
                            ) extends CbroSerialization
 

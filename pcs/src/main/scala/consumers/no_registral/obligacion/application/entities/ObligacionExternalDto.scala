@@ -190,5 +190,9 @@ case class DetallesObligacion(
     PLAN_MULTIOBJETO: Option[String],
     FLAG_OCULTA_WEB: Option[String],
     dmnNumero: Option[Int],
-    dmnDescripcion: Option[String]
+    dmnDescripcion: Option[String],
+    SOJ_FECHA_LABRADO: Option[LocalDateTime],
+    SOJ_FECHA_SENTENCIA: Option[LocalDateTime],
+    SOJ_FECHA_RESOLUCION: Option[LocalDateTime],
+    SOJ_DESCUENTO_VIGENTE: Option[String]
 ) extends CbroSerialization
