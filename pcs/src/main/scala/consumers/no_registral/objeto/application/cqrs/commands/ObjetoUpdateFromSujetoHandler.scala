@@ -31,7 +31,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
     )
 
 
-    val obj_default = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), None, None)
+    val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"),Some("None"), Some("None"), Some("None"),None,None)
 
     val estado = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("")
 

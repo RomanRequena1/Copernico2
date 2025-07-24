@@ -15,7 +15,7 @@ import scala.util.{Failure, Success}
 //todo --------------------------- REFACTORIZAR ----------------------------------
 object SendObjetoToObjetoVinculo {
   //FIXME: revisar obj_default si es necesario y que deliveryId tendria
-  val obj_default: ObjetosTri = ObjetosTri(Some("None"), 99, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
+  val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"),Some("None"), Some("None"), Some("None"),None,None)
   /**
    * 1. Crear actor
    * Si el actor ya existe, se envía el mensaje al actor existente que entra por el catch y si no existe se crea el actor
@@ -39,7 +39,7 @@ object SendObjetoToObjetoVinculo {
 object testIfObjVinculo {
 
   def apply(vinculoActor: ActorRef, actor: ObjetoActor, sujetoId: String, objetoId: String, tipoObjeto: String, estado: Option[String], requeriment: MonitoringAndMessageProducer, command: Command): Unit = {
-    val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
+    val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"),Some("None"), Some("None"), Some("None"),None,None)
 
     val log: Logger = LoggerFactory.getLogger(this.getClass)
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global

@@ -1,5 +1,5 @@
 {
-  "EV_ID" : "6",
+  "EV_ID" : "200",
   "SOJ_SUJ_IDENTIFICADOR" : "5",
   "SOJ_TIPO_OBJETO" : "I",
   "SOJ_IDENTIFICADOR" : "5",
@@ -11,6 +11,7 @@
   "SOJ_ID_EXTERNO" : "731159",
   "SOJ_CANAL_ORIGEN" : null,
   "SOJ_BASE_IMPONIBLE" : null,
+  "SOJ_DOCUMENTO": "DNI-23456789",
   "SOJ_OTROS_ATRIBUTOS" : {
     "SOJ_DETALLES" : [ {
       "RESPONSABLE_OTROS_ATRIBUTOS" : "S",
@@ -18,7 +19,8 @@
       "OTROS_ATRIBUTOS_ADHERIDO_DEBITO" : "N",
       "CUENTA_SOJ_OTROS_ATRIBUTOS" : null,
       "PERIODO_SOJ_OTROS_ATRIBUTOS" : null,
-      "IMPORTE_SOJ_OTROS_ATRIBUTOS" : null
+      "IMPORTE_SOJ_OTROS_ATRIBUTOS" : null,
+      "SOJ_OWNER": "Maria Rodriguez"
     } ]
   }
 }
