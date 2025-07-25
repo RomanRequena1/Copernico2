@@ -2,7 +2,8 @@ package consumers.no_registral.objeto.domain
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import ddd.{eventCounterMax, AbstractState}
+import consumers.no_registral.objeto.domain.ObjetoEvents.AplicarDescuentoUpdated
+import ddd.{AbstractState, eventCounterMax}
 import serialization.CbroSerialization
 
 import java.time.LocalDateTime
@@ -133,6 +134,9 @@ case class ObjetoState(
       // TODO: check si agregamos el deliveryId en objeto desde sujeto
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
         copy(tiene30Sujeto = Some(evt.tiene30Sujeto))
+
+      case evt: AplicarDescuentoUpdated =>
+        copy(aplicarDescuento = evt.aplicarDescuento)
       // TODO: check when an object with multiple owners changes its exclusions.
       case evt: ObjetoEvents.UpdatedState30ObjetoFromObjVinculo =>
         copy(
@@ -244,7 +248,9 @@ case class ObjetoState(
             obligaciones = obligaciones - evt.obligacionId,
             obligacionesSaldo = obligacionesSaldo_,
             obnVencidas = _obnVencidas,
-            tiene30Objeto = diff
+            tiene30Objeto = diff,
+            dmnNumero = evt.dmnNumero,
+            dmnDescripcion = evt.dmnDescripcion
           ) //todo ver aca como es para cuando pago la obligacion se cambie el state de los objetos
         } else {
           val cuotaIndex_ = evt.cuota.get.toInt
@@ -257,7 +263,9 @@ case class ObjetoState(
             obligacionesSaldo = obligacionesSaldo_,
             cuotas = cuotasPagadas_,
             obnVencidas = _obnVencidas,
-            tiene30Objeto = diff
+            tiene30Objeto = diff,
+            dmnNumero = evt.dmnNumero,
+            dmnDescripcion = evt.dmnDescripcion
           )
         }
       case evt: ObjetoEvents.RemovedObjetoFromObligacion =>

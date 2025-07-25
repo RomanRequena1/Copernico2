@@ -94,7 +94,9 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       cmd.objetoId,
       cmd.tipoObjeto,
       cmd.obligacionId,
-      cmd.cuota
+      cmd.cuota,
+      cmd.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnNumero,
+      cmd.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnDescripcion
     )
   }
   def persistSnapshot(evt: ObligacionEvents)(handler: () => Unit): Unit = {

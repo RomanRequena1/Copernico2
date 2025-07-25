@@ -100,7 +100,9 @@ object ObjetoCommands {
       objetoId: String,
       tipoObjeto: String,
       obligacionId: String,
-      cuota: Option[String]
+      cuota: Option[String],
+      dmnNumero: Option[Int],
+      dmnDescripcion: Option[String]
   ) extends ObjetoCommands
 
   case class ObjetoTagAdd(

@@ -34,7 +34,9 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
       command.objetoId,
       command.tipoObjeto,
       command.obligacionId,
-      command.cuota
+      command.cuota,
+      command.dmnNumero,
+      command.dmnDescripcion
     )
 
 

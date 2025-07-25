@@ -34,6 +34,14 @@ object ObjetoEvents {
       exclusionSUjeto: Option[String]
   ) extends ObjetoEvents
 
+  case class AplicarDescuentoUpdated(
+                                         deliveryId: BigInt,
+                                         sujetoId: String,
+                                         objetoId: String,
+                                         tipoObjeto: String,
+                                         aplicarDescuento: Option[Boolean]
+                                       ) extends ObjetoEvents
+
   case class DmnResumen(
                                       deliveryId: BigInt,
                                       sujetoId: String,
@@ -178,7 +186,9 @@ object ObjetoEvents {
       objetoId: String,
       tipoObjeto: String,
       obligacionId: String,
-      cuota: Option[String]
+      cuota: Option[String],
+      dmnNumero: Option[Int],
+      dmnDescripcion: Option[String]
   ) extends ObjetoEvents
   case class RemovedObjetoFromObligacion(
       deliveryId: BigInt,

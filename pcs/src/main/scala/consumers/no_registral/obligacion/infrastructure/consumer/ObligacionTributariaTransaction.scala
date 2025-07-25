@@ -74,23 +74,47 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
     } else {
       val command: ObligacionCommands =
         if (isCancelada(obligacion.BOB_OTROS_ATRIBUTOS).head) {
+          val obligacionPago = obligacion.copy(
+            BOB_OTROS_ATRIBUTOS = obligacion.BOB_OTROS_ATRIBUTOS.map { detalles =>
+              detalles.copy(
+                BOB_DETALLES = detalles.BOB_DETALLES.map { d =>
+                  d.copy(
+                    dmnNumero = None,
+                    dmnDescripcion = Some("no deuda")
+                  )
+                }
+              )
+            }
+          )
           ObligacionCommands.ObligacionRemove(
             deliveryId = obligacion.EV_ID,
             sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
             objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
             tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
             obligacionId = obligacion.BOB_OBN_ID,
-            registro = obligacion,
+            registro = obligacionPago,
             cuota = obligacion.BOB_CUOTA
           )
         } else if (isNotDeuda(obligacion.BOB_OTROS_ATRIBUTOS).head) {
+          val obligacionPago = obligacion.copy(
+            BOB_OTROS_ATRIBUTOS = obligacion.BOB_OTROS_ATRIBUTOS.map { detalles =>
+              detalles.copy(
+                BOB_DETALLES = detalles.BOB_DETALLES.map { d =>
+                  d.copy(
+                    dmnNumero = None,
+                    dmnDescripcion = Some("no deuda")
+                  )
+                }
+              )
+            }
+          )
           ObligacionCommands.ObligacionRemove(
             deliveryId = obligacion.EV_ID,
             sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
             objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
             tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
             obligacionId = obligacion.BOB_OBN_ID,
-            registro = obligacion,
+            registro = obligacionPago,
             cuota = obligacion.BOB_CUOTA
           )
         } else {
