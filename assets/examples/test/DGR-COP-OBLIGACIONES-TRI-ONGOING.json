@@ -1,5 +1,5 @@
 {
-      "EV_ID": "5",
+      "EV_ID": "1",
       "BOB_SUJ_IDENTIFICADOR": "44653640",
       "BOB_SOJ_TIPO_OBJETO": "A",
       "BOB_SOJ_IDENTIFICADOR": "AB418ZY",
@@ -23,6 +23,6 @@
       "BOB_DETALLES": [
       {
       "PLAN_MULTIOBJETO": "PlanMultiobjeto",
-      "RULE_NUMBER": "-1"
+      "RULE_NUMBER": "1"
       }]}
     }

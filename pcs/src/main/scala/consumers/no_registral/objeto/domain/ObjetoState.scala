@@ -39,8 +39,9 @@ case class ObjetoState(
     exclusionObjeto: Option[String] = None,
     exclusionObjetoVinculo: Option[String] = None,
     dmnNumero: Option[Int] = None,
-    dmnDescripcion : Option[String] = None
-) extends AbstractState[ObjetoEvents]
+    dmnDescripcion : Option[String] = None,
+    dmnDescripcionAnterior: Option[String] = None
+                      ) extends AbstractState[ObjetoEvents]
     with CbroSerialization {
 
   override def +(event: ObjetoEvents): ObjetoState = {
@@ -147,12 +148,21 @@ case class ObjetoState(
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>
         val dmnDescripcion_ = dmnDescripcion
-        def cambiarRazon(tipo: String, dmnDescripcion: String): Option[String] = tipo match {
-          case x if x.contains("E")  => Some("Objeto Excluido")
-          case x if x.contains("NE") => Some("Objeto No Excluido")
-          case x if x.contains("C")  => Some("Objeto Condicional")
-          case _                     => Some(dmnDescripcion)
+        val exclusionAnterior = exclusionObjeto
+        val exclusionNueva = evt.registro.SOJ_TIPO_EXCLUSION.getOrElse("")
+
+        def cambiarRazon(tipo: String, dmnDescripcionActual: String, exclusionAnterior: Option[String]): Option[String] = {
+          tipo match {
+            case x if x.contains("E")  => Some("Objeto Excluido")
+            case x if x.contains("NE") => Some("Objeto No Excluido")
+            case x if x.contains("C")  => Some("Objeto Condicional")
+            case "" if exclusionAnterior.isDefined => {
+              dmnDescripcionAnterior.orElse(Some(dmnDescripcionActual))
+            }
+            case _ => Some(dmnDescripcionActual)
+          }
         }
+
         copy(
           sujetoResponsable = evt.sujetoResponsable match {
             case Some(value) => Some(value)
@@ -166,12 +176,19 @@ case class ObjetoState(
           clasificacionObjeto = evt.clasificacionObjeto.getOrElse("2"),
           resulDmn = evt.resultDmn,
           exclusionObjeto = evt.registro.SOJ_TIPO_EXCLUSION match {
-            case x if x.contains("E") =>Some("E")
+            case x if x.contains("E") => Some("E")
             case x if x.contains("NE") => Some("NE")
             case x if x.contains("C") => Some("C")
             case _ => None
           },
-          dmnDescripcion = cambiarRazon(evt.registro.SOJ_TIPO_EXCLUSION.getOrElse(""), dmnDescripcion_.getOrElse(""))
+          dmnDescripcionAnterior = {
+            if (exclusionNueva.nonEmpty && exclusionAnterior.isEmpty) {
+              dmnDescripcion
+            } else {
+              dmnDescripcionAnterior
+            }
+          },
+          dmnDescripcion = cambiarRazon(exclusionNueva, dmnDescripcion_.getOrElse(""), exclusionAnterior)
         )
 
       case evt: ObjetoEvents.ObjetoUpdatedFromAnt =>
