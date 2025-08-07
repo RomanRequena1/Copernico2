@@ -25,8 +25,8 @@ CREATE TABLE read_side.buc_objeto_documento(
     soj_resultDmn int,
     soj_fecha_vta_subasta date,
     soj_fecha_adq_subasta date,
-    PRIMARY KEY (soj_documento, soj_tipo_objeto, soj_identificador, soj_suj_identificador)
-) WITH CLUSTERING ORDER BY (soj_documento ASC, soj_tipo_objeto ASC, soj_identificador ASC)
+    PRIMARY KEY ((soj_tipo_objeto, soj_documento), soj_identificador, soj_suj_identificador)
+) WITH CLUSTERING ORDER BY (soj_tipo_objeto ASC, soj_documento ASC, soj_identificador ASC)
     AND bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
     AND comment = ''
