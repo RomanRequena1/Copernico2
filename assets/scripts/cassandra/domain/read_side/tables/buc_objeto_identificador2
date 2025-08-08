@@ -1,4 +1,4 @@
-CREATE TABLE read_side.buc_objeto_identificador2 (
+CREATE TABLE read_side.buc_objeto_patente (
     soj_suj_identificador text,
     soj_tipo_objeto text,
     soj_identificador text,
@@ -40,4 +40,4 @@ CREATE TABLE read_side.buc_objeto_identificador2 (
     AND memtable_flush_period_in_ms = 0
     AND min_index_interval = 128
     AND read_repair_chance = 0.0
-    AND speculative_retry = '99PERCENTILE'; 
+    AND speculative_retry = '99PERCENTILE';
