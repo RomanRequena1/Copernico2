@@ -40,7 +40,9 @@ case class ObjetoState(
     exclusionObjetoVinculo: Option[String] = None,
     dmnNumero: Option[Int] = None,
     dmnDescripcion : Option[String] = None,
-    dmnDescripcionAnterior: Option[String] = None
+    dmnDescripcionAnterior: Option[String] = None,
+    dmnDescripcionAnteriorPorSujeto: Option[String] = None,
+    exclusionSujeto: Option[String] = None,
                       ) extends AbstractState[ObjetoEvents]
     with CbroSerialization {
 
@@ -134,7 +136,39 @@ case class ObjetoState(
         )
       // TODO: check si agregamos el deliveryId en objeto desde sujeto
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>
-        copy(tiene30Sujeto = Some(evt.tiene30Sujeto))
+        val dmnDescripcion_ = dmnDescripcion
+        val exclusionAnteriorSujeto = exclusionSujeto
+        val exclusionNuevaSujeto = evt.exclusionSUjeto
+
+        def cambiarRazonPorSujeto(exclusionNueva: Option[String],
+                                  exclusionAnterior: Option[String],
+                                  dmnDescripcionActual: Option[String],
+                                  dmnDescripcionSujeto: Option[String]): Option[String] = {
+          (exclusionNueva, exclusionAnterior) match {
+            case (Some(_), None) => dmnDescripcionSujeto
+            case (Some(_), Some(_)) => dmnDescripcionSujeto
+            case (None, Some(_)) => dmnDescripcionAnteriorPorSujeto.orElse(dmnDescripcionActual)
+            case _ => dmnDescripcionActual
+          }
+        }
+
+        copy(
+          tiene30Sujeto = Some(evt.tiene30Sujeto),
+          exclusionSujeto = evt.exclusionSUjeto,
+          dmnDescripcionAnteriorPorSujeto = {
+            if (exclusionNuevaSujeto.isDefined && exclusionAnteriorSujeto.isEmpty) {
+              dmnDescripcion_
+            } else {
+              dmnDescripcionAnteriorPorSujeto
+            }
+          },
+          dmnDescripcion = cambiarRazonPorSujeto(
+            exclusionNuevaSujeto,
+            exclusionAnteriorSujeto,
+            dmnDescripcion_,
+            evt.dmnDescripcionSujeto
+          )
+        )
 
       case evt: AplicarDescuentoUpdated =>
         copy(aplicarDescuento = evt.aplicarDescuento)

@@ -23,7 +23,8 @@ object SendToObjeto {
               objetoId = objetoId,
               tipoObjeto = tipoObjeto,
               tiene30Sujeto = currentState.tiene30Sujeto,
-              exclusionSUjeto = currentState.exclusionSujeto
+              exclusionSUjeto = currentState.exclusionSujeto,
+              currentState.dmnDescripcion
             )
           )
         case _ => ()
@@ -42,7 +43,7 @@ object SendToObjeto {
             actor.path.toString.last.toString,
             currentState.tiene30Sujeto,
             currentState.exclusionSujeto,
-
+            currentState.dmnDescripcion
           )
         )
       })
@@ -67,7 +68,8 @@ object SendToObjetoFromSujeto {
           },
           actor.path.toString.last.toString,
           currentState.tiene30Sujeto,
-          exclusionSujeto
+          exclusionSujeto,
+          currentState.dmnDescripcion
         )
       )
     })

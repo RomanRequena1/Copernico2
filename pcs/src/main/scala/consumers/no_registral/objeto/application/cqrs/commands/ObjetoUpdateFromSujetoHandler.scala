@@ -41,7 +41,8 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
       command.objetoId,
       command.tipoObjeto,
       command.tiene30Sujeto,
-      command.exclusionSUjeto
+      command.exclusionSUjeto,
+      command.dmnDescripcionSujeto
     )
 
     actor.state += event
