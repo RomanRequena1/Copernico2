@@ -39,7 +39,8 @@ object ObjetoCommands {
       objetoId: String,
       tipoObjeto: String,
       tiene30Sujeto: Boolean,
-      exclusionSUjeto: Option[String]
+      exclusionSUjeto: Option[String],
+      dmnDescripcionSujeto: Option[String]
   ) extends ObjetoCommands
 
   case class ObjetoSnapshot(
