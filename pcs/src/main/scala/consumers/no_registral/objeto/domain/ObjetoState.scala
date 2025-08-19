@@ -35,7 +35,8 @@ case class ObjetoState(
     deuda30Objeto: Boolean = true,
     tipoExclusion: String = "",
     exclusionObjeto: Option[String] = None,
-    exclusionObjetoVinculo: Option[String] = None
+    exclusionObjetoVinculo: Option[String] = None,
+    isDeleted: Boolean = false
 ) extends AbstractState[ObjetoEvents]
     with CbroSerialization {
 
@@ -126,6 +127,15 @@ case class ObjetoState(
         copy(
           exenciones = exenciones + exencion,
           isBaja = false
+        )
+      case evt: ObjetoEvents.ObjetoDeleted =>
+        copy(
+          isDeleted = true,
+          obligacionesSaldo = Map.empty,
+          obligaciones = Set.empty,
+          saldo = BigDecimal(0),
+          obnVencidas = Map.empty,
+          isBaja = true
         )
       // TODO: check si agregamos el deliveryId en objeto desde sujeto
       case evt: ObjetoEvents.ObjetoUpdatedFromSujeto =>

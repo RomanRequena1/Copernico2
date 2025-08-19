@@ -175,5 +175,10 @@ object ObjetoEvents {
       idExterno: Option[String],
       cuota: Option[String]
   ) extends ObjetoEvents
-
+  case class ObjetoDeleted(
+                            deliveryId: BigInt,
+                            sujetoId: String,
+                            objetoId: String,
+                            tipoObjeto: String
+                          ) extends ObjetoEvents
 }
