@@ -3,6 +3,7 @@ package consumers.no_registral.objeto.application.cqrs.commands
 import akka.actor.{ActorRef, ActorSystem}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosAnt
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.sujeto.application.entity.SujetoCommands
@@ -18,14 +19,12 @@ class DeleteObjectIfNoObligacionesHandler(actor: ObjetoActor, requirements: Moni
   override def handle(command: ObjetoCommands.DeleteObjectIfNoObligaciones): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
-    // Verificar si el objeto ya fue eliminado
-    if (actor.state.isDeleted) {
+    if (actor.state.isBaja) {
       log.warn(s"El objeto ${command.objetoId} ya fue eliminado previamente")
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       return Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     }
 
-    // Primero removemos la obligación del estado del objeto
     val eventRemove = ObjetoEvents.ObjetoRemovedObligacion(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
@@ -38,40 +37,32 @@ class DeleteObjectIfNoObligacionesHandler(actor: ObjetoActor, requirements: Moni
     actor.persistEvent(eventRemove) { () =>
       actor.state += eventRemove
 
-      // Verificar las obligaciones restantes DESPUÉS de remover
+
       val obligacionesRestantes = actor.state.obligacionesSaldo
 
-      // Si no quedan obligaciones y el tipo es PPP o PM26, eliminar completamente el objeto
+
       if (obligacionesRestantes.isEmpty && (command.tipoObjeto == "PPP" || command.tipoObjeto == "PM26")) {
-
         log.info(s"Eliminando objeto ANT ${command.tipoObjeto} ${command.objetoId} - No quedan obligaciones")
+        val obj_default: ObjetosAnt = ObjetosAnt(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
 
-        // Crear evento de eliminación completa
-        val eventDelete = ObjetoEvents.ObjetoDeleted(
-          actor.state.lastDeliveryIdByEvents + 1,
-          command.sujetoId,
-          command.objetoId,
-          command.tipoObjeto
+        actor.self ! ObjetoCommands.SetBajaObjeto(
+          sujetoId = command.sujetoId,
+          objetoId = command.objetoId,
+          tipoObjeto = command.tipoObjeto,
+          deliveryId = command.deliveryId,
+          registro = actor.state.registro match {
+            case Some(reg) =>
+              reg match {
+                case ant: ObjetosAnt => ant.copy(SOJ_ESTADO = Some("BAJA"))
+                case other => obj_default
+              }
+            case None => obj_default
+          },
+          isResponsable = None,
+          sujetoResponsable = None
         )
+        sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
 
-        actor.persistEvent(eventDelete) { () =>
-          actor.state += eventDelete
-
-          // Informar al sujeto padre que el objeto fue eliminado
-          actor.context.parent ! SujetoCommands.SujetoRemoveObjeto(
-            command.deliveryId,
-            command.sujetoId,
-            command.objetoId,
-            command.tipoObjeto
-          )
-
-          // Eliminar completamente el objeto de la base de datos
-          actor.deleteObjetoObligacionesSnapshot(eventDelete, actor.state) { () =>
-            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-            // Detener el actor después de la eliminación
-            actor.context.stop(actor.self)
-          }
-        }
       } else {
         // Si no se elimina, actualizamos el snapshot con la obligación removida
         actor.persistSnapshot(eventRemove, actor.state) { () =>

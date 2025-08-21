@@ -100,8 +100,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
       evt match {
         case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
           obligaciones((evt.sujetoId, evt.objetoId, evt.tipoObjeto, evt.obligacionId))
-        case evt: ObjetoEvents.ObjetoDeleted =>
-          log.info(s"Recuperando evento de eliminación para objeto ${evt.objetoId}")
         case _ =>
       }
   }
