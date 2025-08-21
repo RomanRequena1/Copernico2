@@ -73,8 +73,5 @@ class JuicioObnUpdateFromDtoHandler(actor: JuicioObnActor)(implicit messageProdu
           Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
         }
     }
-
-
   }
-
 }

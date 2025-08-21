@@ -175,5 +175,4 @@ object ObjetoEvents {
       idExterno: Option[String],
       cuota: Option[String]
   ) extends ObjetoEvents
-
 }

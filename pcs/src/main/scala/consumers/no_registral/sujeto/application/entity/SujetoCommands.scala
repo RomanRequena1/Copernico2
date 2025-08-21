@@ -56,5 +56,10 @@ object SujetoCommands {
       objetoId: String,
       tipoObjeto: String
   ) extends SujetoCommands
-
+  case class SujetoRemoveObjeto(
+                                 deliveryId: BigInt,
+                                 sujetoId: String,
+                                 objetoId: String,
+                                 tipoObjeto: String
+                               ) extends SujetoCommands
 }

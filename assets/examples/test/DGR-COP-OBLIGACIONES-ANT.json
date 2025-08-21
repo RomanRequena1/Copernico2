@@ -1,24 +1,14 @@
 {
-  "EV_ID" : "20240916080307929956939972103",
-  "BOB_SUJ_IDENTIFICADOR" : "27-37777777-2",
-  "BOB_SOJ_TIPO_OBJETO" : "SALUD",
-  "BOB_SOJ_IDENTIFICADOR" : "1244-12635911",
-  "BOB_OBN_ID" : "9569392592",
-  "BOB_PERIODO" : "2024",
-  "BOB_CUOTA" : "00",
-  "BOB_SUPRESIONES" : {
-    "BOB_DETALLES_SUPRESIONES" : [ {
-      "BOB_TIPO_SUP" : "CMSSS",
-      "BOB_DESCRIPCION" : null,
-      "BOB_ESTADO_SUP" : "ACTIVE",
-      "BOB_FECHA_INICIO_SUP" : "2024-05-22 00:00:00.0",
-      "BOB_FECHA_FIN_SUP" : null
-    }, {
-      "BOB_TIPO_SUP" : "CMYPLAN",
-      "BOB_DESCRIPCION" : "Plan de pago",
-      "BOB_ESTADO_SUP" : "ACTIVE",
-      "BOB_FECHA_INICIO_SUP" : "2024-05-23 00:00:00.0",
-      "BOB_FECHA_FIN_SUP" : null
-    } ]
-  }
+    "EV_ID": "1254501124108",
+    "BOB_SUJ_IDENTIFICADOR": "4001",
+    "BOB_SOJ_TIPO_OBJETO": "PPP",
+    "BOB_SOJ_IDENTIFICADOR": "4001",
+    "BOB_OBN_ID": "OBN_PPP",
+      "BOB_OTROS_ATRIBUTOS": {
+        "BOB_DETALLES": [
+            {
+                "RULE_NUMBER": "-1"
+            }
+        ]
+    }
 }

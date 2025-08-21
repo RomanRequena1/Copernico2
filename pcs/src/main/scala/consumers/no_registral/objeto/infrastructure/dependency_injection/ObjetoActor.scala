@@ -57,6 +57,9 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento](
       new ObjetoUpdateFromObligacionTreintaProcientoHandler(this, requirements).handle
     )
+    commandBus.subscribe[ObjetoCommands.DeleteObjectIfNoObligaciones](
+      new DeleteObjectIfNoObligacionesHandler(this, requirements).handle
+    )
     queryBus.subscribe[ObjetoQueries.GetStateObjeto](new GetStateObjetoHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetStateExencion](new GetStateExencionHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetSnapshotObjeto](new GetSnapshotObjetoHandler(this).handle)
@@ -96,10 +99,11 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
       state += evt
       evt match {
         case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
-          obligaciones((evt.sujetoId, evt.objetoId, evt.tipoObjeto, evt.obligacionId)) // waking up child
+          obligaciones((evt.sujetoId, evt.objetoId, evt.tipoObjeto, evt.obligacionId))
         case _ =>
       }
   }
+
 // TODO: Validar que es lo q esta haciendo, para Objetos ANT?
   def processObligacionMessages: Receive = {
     case childMessage: ObligacionMessage =>
@@ -331,6 +335,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
       cmd.tipoObjeto
     )
   }
+
 }
 
 object ObjetoActor extends ShardedEntity[MonitoringAndMessageProducer] {
