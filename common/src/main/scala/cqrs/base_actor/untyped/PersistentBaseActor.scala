@@ -74,13 +74,13 @@ abstract class PersistentBaseActor[E <: Event: ClassTag, State <: AbstractState[
     }
   }
 
-  def persistEventTags(event: E, tags: Set[String] = Set.empty)(handler: () => Unit = () => ()): Unit = {
-    val tags1 = Set("obligacion-updated", "obligacion-updated")
+  def persistEventTagsSujeto(event: E, tags: Set[String] = Set.empty)(handler: () => Unit = () => ()): Unit = {
+    val tags1 = Set("sujeto-update")
 
     persistAsync(Tagged(event, tags1)) { _ =>
       logger.debug(s"[$persistenceId] Persist event | $event")
       persistedCounter.increment()
-      monitoring.counter(s"$name-persisted-${utils.Inference.getSimpleName(event.getClass.getName)}").increment()
+      monitoring.counter(s"$name-persisted-tagged-${utils.Inference.getSimpleName(event.getClass.getName)}").increment()
       handler()
     }
   }
