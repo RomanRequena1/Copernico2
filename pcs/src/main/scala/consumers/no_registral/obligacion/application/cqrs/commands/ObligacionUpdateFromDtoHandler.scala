@@ -68,7 +68,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
 
       Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     } else {
-      actor.persistEvent(event) { () =>
+      actor.persistEventTagsSujeto(event) { () =>
         actor.state += event
         if (!(initialization == "true" && command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {}
         if (event.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.tiene30Obligaciones.get.equals(true)) {
