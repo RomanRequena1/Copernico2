@@ -42,7 +42,7 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
 
       Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     } else {
-      actor.persistEvent(event) { () =>
+      actor.persistEventTagsSujeto(event) { () =>
         actor.state += event
         actor.informRemoveToParent(command)
         actor.lastDeliveryId = command.deliveryId
