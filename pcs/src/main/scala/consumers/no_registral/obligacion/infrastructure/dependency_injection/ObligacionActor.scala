@@ -27,14 +27,11 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     queryBus.subscribe[ObligacionQueries.GetStateObligacion](new ObligacionGetStateHandler(this).handle)
     queryBus.subscribe[ObligacionQueries.GetSnapshotObligacion](new ObligacionSnapshotHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateFromDto](new ObligacionUpdateFromDtoHandler(this).handle)
-    commandBus.subscribe[ObligacionCommands.ObligacionAntUpdateFromDto](
-      new ObligacionAntUpdateFromDtoHandler(this).handle
-    )
+    commandBus.subscribe[ObligacionCommands.ObligacionAntUpdateFromDto](new ObligacionAntUpdateFromDtoHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateExencion](new ObligacionUpdateExencionHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionRemove](new ObligacionRemoveHandler(this).handle)
-    commandBus.subscribe[ObligacionCommands.ObligacionRemoveInfoFromObjeto](
-      new ObligacionRemoveFromObjeto(this, requirements).handle
-    )
+    commandBus.subscribe[ObligacionCommands.ObligacionRemoveInfoFromObjeto](new ObligacionRemoveFromObjeto(this, requirements).handle)
+    commandBus.subscribe[ObligacionCommands.ObligacionReprocess](new ObligacionReprocessHandler(this).handle)
   }
 
   def informParent(cmd: ObligacionCommands): Unit = {
