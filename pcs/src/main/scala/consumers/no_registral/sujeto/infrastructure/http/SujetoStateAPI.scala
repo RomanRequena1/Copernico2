@@ -23,6 +23,8 @@ case class SujetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
   implicit val system: ActorSystem = queryStateApiRequirements.system
   implicit val ec: ExecutionContext = queryStateApiRequirements.executionContext
 
+  private var allObnActors: Option[ActorRef] = None
+
   def developerTools: Route =
     withSujeto { sujetoId =>
       withDeveloperTools { command =>
@@ -32,6 +34,36 @@ case class SujetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
             actor ! PoisonPill
         }
         complete { HttpResponse(OK) }
+      }
+    }
+
+  def getAllActorObn: Route =
+    path("sujeto" / Segment / "getallactorobn") {
+      case "1" => {
+        if (allObnActors.isEmpty) {
+          val actorRef = system.actorOf(
+            ObligacionTaggingActor.props(actor),
+            "obligacion-tagging-actor"
+          )
+          allObnActors = Some(actorRef)
+          actorRef ! StartReprocessing()
+          complete(HttpResponse(OK, entity = "Tagging process started"))
+        } else {
+          complete(HttpResponse(OK, entity = "Tagging process already running"))
+        }
+      }
+      case "0" => {
+        allObnActors match {
+          case Some(actorRef) =>
+            actorRef ! StopReprocessing()
+            allObnActors = None
+            complete(HttpResponse(OK, entity = "Tagging process stopped"))
+          case None =>
+            complete(HttpResponse(OK, entity = "No tagging process running"))
+        }
+      }
+      case _ => complete {
+        HttpResponse(OK)
       }
     }
 
@@ -51,6 +83,6 @@ case class SujetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
       )
     }
 
-  def route: Route = GET(getState) ~ GET(developerTools) ~ GET(getSnapshot)
+  def route: Route = GET(getState) ~ GET(developerTools) ~ GET(getSnapshot) ~ GET(getAllActorObn)
   def withDeveloperTools = path("developer" / "tools" / Segment)
 }
