@@ -9,6 +9,9 @@ object ObjetoQueries {
   case class GetStateObjeto(sujetoId: String, objetoId: String, tipoObjeto: String) extends ObjetoQueries {
     override type ReturnType = GetObjetoResponse
   }
+  case class GetAllObnObjeto(sujetoId: String, objetoId: String, tipoObjeto: String) extends ObjetoQueries {
+    override type ReturnType = GetObjetoResponse
+  }
   case class GetStateExencion(sujetoId: String, objetoId: String, tipoObjeto: String, exencion: String)
       extends ObjetoQueries {
     override type ReturnType = GetExencionResponse
