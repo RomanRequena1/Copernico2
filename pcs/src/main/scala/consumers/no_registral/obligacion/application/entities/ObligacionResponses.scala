@@ -24,4 +24,9 @@ object ObligacionResponses {
       resultDmn: Option[String] = None
   ) extends Response
       with CbroSerialization
+
+  case class GetMiniObligacionResponse(id: String,
+                                       saldo:Option[BigDecimal],
+                                       vencimiento: Option[LocalDateTime],
+                                       estado: Option[String]) extends Response with CbroSerialization
 }

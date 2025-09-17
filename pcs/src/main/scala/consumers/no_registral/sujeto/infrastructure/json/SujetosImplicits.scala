@@ -1,9 +1,10 @@
 package consumers.no_registral.sujeto.infrastructure.json
 
+import consumers.no_registral.objeto.application.entities.ObjetoResponses.{GetAllObnResponse, Obligacion}
 import consumers.no_registral.sujeto.application.entity.SujetoCommands.{SujetoSetBajaFromObjeto, SujetoUpdateFromAnt, SujetoUpdateFromObjeto, SujetoUpdateFromTri}
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto.{SujetoAnt, SujetoTri}
-import consumers.no_registral.sujeto.application.entity.SujetoResponses.GetSujetoResponse
+import consumers.no_registral.sujeto.application.entity.SujetoResponses.{GetAllObnSujetoResponse, GetSujetoResponse}
 import consumers.no_registral.sujeto.domain.SujetoEvents._
 import io.circe._
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
@@ -37,6 +38,15 @@ object SujetosImplicits {
 
   implicit val SujetoTriDecoder: Decoder[SujetoTri] = deriveDecoder
   implicit val SujetoTriEncoder: Encoder[SujetoTri] = deriveEncoder
+
+  implicit val GetAllObnSujetoResponseDecoder: Decoder[GetAllObnSujetoResponse] = deriveDecoder
+  implicit val GetAllObnSujetoResponseEncoder: Encoder[GetAllObnSujetoResponse] = deriveEncoder
+
+  implicit val GetAllObnResponseDecoder: Decoder[GetAllObnResponse] = deriveDecoder
+  implicit val GetAllObnResponseEncoder: Encoder[GetAllObnResponse] = deriveEncoder
+
+  implicit val ObligacionDecoder: Decoder[Obligacion] = deriveDecoder
+  implicit val ObligacionEncoder: Encoder[Obligacion] = deriveEncoder
 
   implicit val GetSujetoResponseDecoder: Decoder[GetSujetoResponse] = deriveDecoder
   implicit val GetSujetoResponseEncoder: Encoder[GetSujetoResponse] = deriveEncoder

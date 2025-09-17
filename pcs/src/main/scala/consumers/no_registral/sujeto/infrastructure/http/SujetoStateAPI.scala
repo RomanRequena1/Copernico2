@@ -6,8 +6,8 @@ import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.no_registral.obligacion.infrastructure.http.ObligacionStateAPI.withSujeto
-import consumers.no_registral.sujeto.application.entity.SujetoQueries.{GetSnapshotSujeto, GetStateSujeto}
-import consumers.no_registral.sujeto.application.entity.SujetoResponses.GetSujetoResponse
+import consumers.no_registral.sujeto.application.entity.SujetoQueries.{GetAllObnSujeto, GetSnapshotSujeto, GetStateSujeto}
+import consumers.no_registral.sujeto.application.entity.SujetoResponses.{GetAllObnSujetoResponse, GetSujetoResponse}
 import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 import design_principles.actor_model.mechanism.QueryStateAPI
 import design_principles.actor_model.mechanism.QueryStateAPI.QueryStateApiRequirements
@@ -75,6 +75,14 @@ case class SujetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
       )
     }
 
+  def getStateAll: Route =
+    path("sujeto" / Segment / "all") { sujetoId =>
+      queryState[GetAllObnSujetoResponse](actor, GetAllObnSujeto(sujetoId))(
+        GetAllObnSujetoResponseEncoder,
+        state => state.fechaUltMod == LocalDateTime.MIN
+      )
+    }
+
   def getSnapshot: Route =
     path("sujeto" / Segment / "snapshot") { sujetoId =>
       queryState[GetSujetoResponse](actor, GetSnapshotSujeto(sujetoId))(
@@ -83,6 +91,6 @@ case class SujetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
       )
     }
 
-  def route: Route = GET(getState) ~ GET(developerTools) ~ GET(getSnapshot) ~ GET(getAllActorObn)
+  def route: Route = GET(getState) ~ GET(developerTools) ~ GET(getSnapshot) ~ GET(getAllActorObn) ~ GET(getStateAll)
   def withDeveloperTools = path("developer" / "tools" / Segment)
 }

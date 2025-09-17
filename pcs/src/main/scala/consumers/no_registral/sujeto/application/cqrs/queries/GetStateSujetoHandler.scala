@@ -10,7 +10,7 @@ import scala.util.{Success, Try}
 class GetStateSujetoHandler(actor: SujetoActor) extends SyncQueryHandler[GetStateSujeto] {
   override def handle(query: GetStateSujeto): Try[GetStateSujeto#ReturnType] = {
     val sender = actor.context.sender()
-
+//    println(s"Child ${actor.state.objetos.size}")
     val response =
       GetSujetoResponse(
         actor.state.saldo,

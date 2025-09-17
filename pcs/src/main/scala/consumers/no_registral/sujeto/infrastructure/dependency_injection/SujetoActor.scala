@@ -9,7 +9,7 @@ import consumers.no_registral.objeto.application.entities.ObjetoMessage.ObjetoMe
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage
 import consumers.no_registral.sujeto.application.cqrs.commands._
-import consumers.no_registral.sujeto.application.cqrs.queries.{GetSnapshotSujetoHandler, GetStateSujetoHandler}
+import consumers.no_registral.sujeto.application.cqrs.queries.{GetAllObnSujetoHandler, GetSnapshotSujetoHandler, GetStateSujetoHandler}
 import consumers.no_registral.sujeto.application.entity.SujetoMessage.SujetoMessageRoots
 import consumers.no_registral.sujeto.application.entity.{SujetoCommands, SujetoQueries}
 import consumers.no_registral.sujeto.domain.SujetoEvents.SujetoSnapshotPersisted
@@ -52,6 +52,7 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
     commandBus.subscribe[SujetoCommands.SujetoSetBajaFromObjeto](new SujetoSetBajaFromObjetoHandler(this).handle)
     queryBus.subscribe[SujetoQueries.GetStateSujeto](new GetStateSujetoHandler(this).handle)
     queryBus.subscribe[SujetoQueries.GetSnapshotSujeto](new GetSnapshotSujetoHandler(this).handle)
+    queryBus.subscribe[SujetoQueries.GetAllObnSujeto](new GetAllObnSujetoHandler(this).handle)
   }
 
   override def receiveCommand: Receive = {
@@ -62,6 +63,7 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
     case childMessage: ObligacionMessage =>
       objetos((childMessage.sujetoId, childMessage.objetoId, childMessage.tipoObjeto)) forward childMessage
     case childMessage: ObjetoMessage =>
+//      println(s"ChildMessage: ${childMessage.objetoId}-${childMessage.tipoObjeto}")
       objetos((childMessage.sujetoId, childMessage.objetoId, childMessage.tipoObjeto)) forward childMessage
   }
 

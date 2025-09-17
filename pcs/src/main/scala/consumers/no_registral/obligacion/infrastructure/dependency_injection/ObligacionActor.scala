@@ -4,7 +4,7 @@ import akka.actor.Props
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.obligacion.application.cqrs.commands._
-import consumers.no_registral.obligacion.application.cqrs.queries.{ObligacionGetStateHandler, ObligacionSnapshotHandler}
+import consumers.no_registral.obligacion.application.cqrs.queries.{ObligacionGetMiniStateHandler, ObligacionGetStateHandler, ObligacionSnapshotHandler}
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionRemove
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage.ObligacionMessageRoots
 import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionQueries}
@@ -26,6 +26,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   override def setupHandlers(): Unit = {
     queryBus.subscribe[ObligacionQueries.GetStateObligacion](new ObligacionGetStateHandler(this).handle)
     queryBus.subscribe[ObligacionQueries.GetSnapshotObligacion](new ObligacionSnapshotHandler(this).handle)
+    queryBus.subscribe[ObligacionQueries.GetMiniStateObligacion](new ObligacionGetMiniStateHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateFromDto](new ObligacionUpdateFromDtoHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionAntUpdateFromDto](new ObligacionAntUpdateFromDtoHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateExencion](new ObligacionUpdateExencionHandler(this).handle)
