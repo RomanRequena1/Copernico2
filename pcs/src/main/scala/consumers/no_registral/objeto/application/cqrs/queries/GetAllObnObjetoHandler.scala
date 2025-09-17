@@ -1,43 +1,74 @@
 package consumers.no_registral.objeto.application.cqrs.queries
 
+import akka.pattern.ask
+import akka.util.Timeout
 import consumers.no_registral.objeto.application.entities.ObjetoQueries.{GetAllObnObjeto, GetStateObjeto}
 import consumers.no_registral.objeto.application.entities.ObjetoResponses
 import consumers.no_registral.objeto.application.entities.ObjetoResponses.{GetAllObnResponse, GetObjetoResponse, Obligacion}
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
+import consumers.no_registral.obligacion.application.entities.ObligacionQueries.GetMiniStateObligacion
+import consumers.no_registral.obligacion.application.entities.ObligacionResponses.GetMiniObligacionResponse
+import consumers.no_registral.sujeto.application.entity.SujetoResponses.GetAllObnSujetoResponse
 import cqrs.untyped.query.QueryHandler.SyncQueryHandler
 import serialization.CbroSerialization
 
-import scala.util.{Success, Try}
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration.DurationInt
+import scala.util.{Failure, Success, Try}
 
 class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAllObnObjeto] {
   override def handle(query: GetAllObnObjeto): Try[GetAllObnObjeto#ReturnType] = {
     val sender = actor.context.sender()
+    implicit val ec = actor.context.dispatcher
 
+//    println(s"Llego ${query.objetoId} - ${query.tipoObjeto}")
 
-    GetAllObnResponse(
+    implicit val timeout: Timeout = 50.seconds
+
+    val obligacionesFutures: Set[Future[Obligacion]] = actor.state.obligaciones.map { actorObn =>
+      actor.self.ask(GetMiniStateObligacion(
+        query.sujetoId,
+        query.objetoId,
+        query.tipoObjeto,
+        actorObn
+      )).mapTo[GetMiniObligacionResponse].map { response =>
+        Obligacion(
+          id = actorObn,
+          saldo = response.saldo,
+          vencimiento = response.vencimiento,
+          estado = response.estado
+        )
+      }
+    }
+//
+//    val obligaciones: Set[Obligacion] = Try {
+//      val futures = Future.sequence(obligacionesFutures)
+//      Await.result(futures, 50.seconds).toSet[Obligacion]
+//    }.get
+
+    var lista: Set[Obligacion] = Set.empty
+
+    Future.sequence(obligacionesFutures) onComplete {
+      case Success(value) => {
+        lista = value
+        //println(s"Mi lista: $lista")
+        val response = GetAllObnResponse(
+          objetoId = query.objetoId,
+          objetoTipo = query.tipoObjeto,
+          saldo = actor.state.saldo,
+          obligaciones = lista)
+        sender ! response
+      }
+      case Failure(ex) => println(ex.toString)
+    }
+
+    val response = GetAllObnResponse(
       objetoId = query.objetoId,
       objetoTipo = query.tipoObjeto,
       saldo = actor.state.saldo,
-      obligaciones = )
+      obligaciones = Set.empty)
 
-
-
-    val response = GetObjetoResponse(
-      lastDeliveryIdByEvents = actor.state.lastDeliveryIdByEvents,
-      saldo = actor.state.saldo,
-      tags = actor.state.tags,
-      obligaciones = actor.state.obligaciones,
-      sujetos = actor.state.sujetos,
-      sujetoResponsable = actor.state.sujetoResponsable,
-      fechaUltMod = actor.state.fechaUltMod,
-      registro = actor.state.registro,
-      exenciones = actor.state.exenciones,
-      bandTipo = actor.state.clasificacionObjeto,
-      treinta = actor.state.tiene30Objeto,
-      treintaFinal = actor.state.aplicarDescuento.getOrElse(true)
-    )
-    log.info(s"[${actor.persistenceId}] GetState | $response")
-    sender ! response
+//    log.info(s"[${actor.persistenceId}] GetState | $response")
     Success(response)
   }
 }
