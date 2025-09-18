@@ -23,8 +23,9 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
 
 //    println(s"Llego ${query.objetoId} - ${query.tipoObjeto}")
 
-    implicit val timeout: Timeout = 50.seconds
+    implicit val timeout: Timeout = 300.seconds
 
+//    println(s"ChildObjeto ${query.objetoId}: ${actor.state.obligaciones.size}")
     val obligacionesFutures: Set[Future[Obligacion]] = actor.state.obligaciones.map { actorObn =>
       actor.self.ask(GetMiniStateObligacion(
         query.sujetoId,

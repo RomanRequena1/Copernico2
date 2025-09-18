@@ -22,95 +22,37 @@ class GetAllObnSujetoHandler(actor: SujetoActor) extends SyncQueryHandler[GetAll
     implicit val ec = actor.context.dispatcher
     implicit val timeout: Timeout = 50.seconds
     println(s"Child ${actor.state.objetos.size}")
-//    println(s"Cantidad hijos para ${query.sujetoId} = ${actor.context.children.size}")
-//    println(s"Child ${actor.state.objetos}")
 
-//    actor.state.objetos.map { actorObn =>
-//      println(s"CUMBIAb ${actorObn._1} - ${actorObn._2}")
-//      actor.context.parent.ask(GetAllObnObjeto(
-//        query.sujetoId,
-//        actorObn._1,
-//        actorObn._2
-//      )).mapTo[GetAllObnResponse].map { response =>
-//        println(s"CUMBIA- ${response.objetoId}-${response.objetoTipo}")
-//        response
-//      }
-//    }.toSeq
-
-//    actor.state.objetos.foreach { actorObn =>
-//      println(s"Antes ${actorObn._1} - ${actorObn._2}")
-//      actor.self ! (GetAllObnObjeto(
+//    val getAllObjetosFuture: Set[Future[GetAllObnResponse]] = actor.state.objetos.map { actorObn =>
+////      println(s"Antes ${actorObn._1} - ${actorObn._2}")
+//      actor.self.ask[GetAllObnResponse](GetAllObnObjeto(
 //        query.sujetoId,
 //        actorObn._1,
 //        actorObn._2
 //      ))
 //    }
-/*    val getAllObjetosFuture: Seq[Future[GetAllObnResponse]] = actor.state.objetos.map { actorObn =>
-      println(s"Antes ${actorObn._1} - ${actorObn._2}")
+
+
+  val getAllObjetosFutureList: Future[Set[GetAllObnResponse]] =  Future.traverse(actor.state.objetos)(obj => {
       actor.self.ask[GetAllObnResponse](GetAllObnObjeto(
         query.sujetoId,
-        actorObn._1,
-        actorObn._2
-      )).map { response =>
-        println(s"Dsp- ${response.objetoId}-${response.objetoTipo} - ${response.saldo}")
-        response
-      }
-    }.toSeq*/
-//    actor.objetos.map { actorObn =>
-//
-//      //      val actorSelection = actor.context.actorSelection(actorObn.path)
-//      //      val objetoId = actorObn.path.name.split("Objeto-")(1).dropRight(2)
-//      //      val tipoObjeto = actorObn.path.name.last.toString
-//      println(s"CUMBIAb ${actorObn._1._2} - ${actorObn._1._3}")
-//      actorObn._2.ask(GetAllObnObjeto(
-//        query.sujetoId,
-//        actorObn._1._2,
-//        actorObn._1._3
-//      )).mapTo[GetAllObnResponse].map { response =>
-//        println(s"CUMBIA- ${response.objetoId}-${response.objetoTipo}")
-//        response
-//      }
-//    }
-
-//    val getAllObjetosFuture: Seq[Future[GetAllObnResponse]] = actor.objetos.map { actorObn =>
-//
-////      val actorSelection = actor.context.actorSelection(actorObn.path)
-////      val objetoId = actorObn.path.name.split("Objeto-")(1).dropRight(2)
-////      val tipoObjeto = actorObn.path.name.last.toString
-//      println(s"CUMBIAb ${actorObn._1._2} - ${actorObn._1._3}")
-//      actorObn._2.ask(GetAllObnObjeto(
-//        query.sujetoId,
-//        actorObn._1._2,
-//        actorObn._1._3
-//      )).mapTo[GetAllObnResponse].map { response =>
-//        println(s"CUMBIA- ${response.objetoId}-${response.objetoTipo}")
-//        response
-//      }
-//    }.toSeq
-
-
-    val getAllObjetosFuture: Set[Future[GetAllObnResponse]] = actor.state.objetos.map { actorObn =>
-//      println(s"Antes ${actorObn._1} - ${actorObn._2}")
-      actor.self.ask[GetAllObnResponse](GetAllObnObjeto(
-        query.sujetoId,
-        actorObn._1,
-        actorObn._2
+        obj._1,
+        obj._2
       ))
-    }
-
+    })
 //    val objetos: Set[GetAllObnResponse] = Try {
 //      val futures = Future.sequence(getAllObjetosFuture)
 //      Await.result(futures, 50.seconds).toSet[GetAllObnResponse]
 //    }.get
 
-    var lista: Set[GetAllObnResponse] = Set.empty
-    Future.sequence(getAllObjetosFuture) onComplete {
+    var list: Set[GetAllObnResponse] = Set.empty
+    getAllObjetosFutureList onComplete {
       case Success(value) => {
-        lista = value
-//        println(s"Mi lista: $lista")
+        list = value
+        //        println(s"Mi lista: $lista")
         val response = GetAllObnSujetoResponse(
           saldo = actor.state.saldo,
-          objetos = lista,
+          objetos = list,
           fechaUltMod = actor.state.fechaUltMod,
           registro = actor.state.registro,
           treinta = actor.state.tiene30Sujeto
@@ -119,6 +61,21 @@ class GetAllObnSujetoHandler(actor: SujetoActor) extends SyncQueryHandler[GetAll
       }
       case Failure(ex) => println(ex.toString)
     }
+//    Future.sequence(getAllObjetosFuture) onComplete {
+//      case Success(value) => {
+//        lista = value
+////        println(s"Mi lista: $lista")
+//        val response = GetAllObnSujetoResponse(
+//          saldo = actor.state.saldo,
+//          objetos = lista,
+//          fechaUltMod = actor.state.fechaUltMod,
+//          registro = actor.state.registro,
+//          treinta = actor.state.tiene30Sujeto
+//        )
+//        sender ! response
+//      }
+//      case Failure(ex) => println(ex.toString)
+//    }
 
     val response = GetAllObnSujetoResponse(
       saldo = actor.state.saldo,

@@ -45,7 +45,7 @@ object TypedAsk {
    */
   implicit class AkkaClassicTypedAsk(actorRef: akka.actor.ActorRef) extends TypedAsk {
     import scala.concurrent.duration._
-    implicit val timeout: Timeout = Timeout(20 seconds)
+    implicit val timeout: Timeout = Timeout(300 seconds)
     import akka.pattern.{ask => classicAsk}
     def ask[Response: ClassTag](command: Any): Future[Response] =
       (actorRef ? command).mapTo[Response]
