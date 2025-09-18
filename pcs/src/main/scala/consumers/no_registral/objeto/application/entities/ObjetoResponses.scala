@@ -24,6 +24,19 @@ object ObjetoResponses {
                                 treintaFinal: Boolean
                               ) extends ObjetoResponses with CbroSerialization
 
+  case class GetAllObnResponse(
+                                objetoId: String,
+                                objetoTipo: String,
+                                saldo: BigDecimal,
+                                obligaciones: Set[Obligacion] = Set.empty,
+                              ) extends ObjetoResponses with CbroSerialization
+
+  case class Obligacion(id: String,
+                        saldo:Option[BigDecimal],
+                        vencimiento: Option[LocalDateTime],
+                        estado: Option[String])
+
+
 
   case class GetExencionResponse(
                                   exencion: Option[Exencion]

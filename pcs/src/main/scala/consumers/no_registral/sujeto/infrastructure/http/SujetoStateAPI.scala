@@ -6,8 +6,8 @@ import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import consumers.no_registral.obligacion.infrastructure.http.ObligacionStateAPI.withSujeto
-import consumers.no_registral.sujeto.application.entity.SujetoQueries.{GetSnapshotSujeto, GetStateSujeto}
-import consumers.no_registral.sujeto.application.entity.SujetoResponses.GetSujetoResponse
+import consumers.no_registral.sujeto.application.entity.SujetoQueries.{GetAllObnSujeto, GetSnapshotSujeto, GetStateSujeto}
+import consumers.no_registral.sujeto.application.entity.SujetoResponses.{GetAllObnSujetoResponse, GetSujetoResponse}
 import consumers.no_registral.sujeto.infrastructure.json.SujetosImplicits._
 import design_principles.actor_model.mechanism.QueryStateAPI
 import design_principles.actor_model.mechanism.QueryStateAPI.QueryStateApiRequirements
@@ -23,6 +23,8 @@ case class SujetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
   implicit val system: ActorSystem = queryStateApiRequirements.system
   implicit val ec: ExecutionContext = queryStateApiRequirements.executionContext
 
+  private var allObnActors: Option[ActorRef] = None
+
   def developerTools: Route =
     withSujeto { sujetoId =>
       withDeveloperTools { command =>
@@ -35,10 +37,48 @@ case class SujetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
       }
     }
 
+//  def getAllActorObn: Route =
+//    path("sujeto" / Segment / "getallactorobn") {
+//      case "1" => {
+//        if (allObnActors.isEmpty) {
+//          val actorRef = system.actorOf(
+//            ObligacionTaggingActor.props(actor),
+//            "obligacion-tagging-actor"
+//          )
+//          allObnActors = Some(actorRef)
+//          actorRef ! StartReprocessing()
+//          complete(HttpResponse(OK, entity = "Tagging process started"))
+//        } else {
+//          complete(HttpResponse(OK, entity = "Tagging process already running"))
+//        }
+//      }
+//      case "0" => {
+//        allObnActors match {
+//          case Some(actorRef) =>
+//            actorRef ! StopReprocessing()
+//            allObnActors = None
+//            complete(HttpResponse(OK, entity = "Tagging process stopped"))
+//          case None =>
+//            complete(HttpResponse(OK, entity = "No tagging process running"))
+//        }
+//      }
+//      case _ => complete {
+//        HttpResponse(OK)
+//      }
+//    }
+
   def getState: Route =
     path("sujeto" / Segment) { sujetoId =>
       queryState[GetSujetoResponse](actor, GetStateSujeto(sujetoId))(
         GetSujetoResponseEncoder,
+        state => state.fechaUltMod == LocalDateTime.MIN
+      )
+    }
+
+  def getStateAll: Route =
+    path("sujeto" / Segment / "all") { sujetoId =>
+      queryState[GetAllObnSujetoResponse](actor, GetAllObnSujeto(sujetoId))(
+        GetAllObnSujetoResponseEncoder,
         state => state.fechaUltMod == LocalDateTime.MIN
       )
     }
@@ -51,6 +91,6 @@ case class SujetoStateAPI(actor: ActorRef, monitoring: Monitoring)(
       )
     }
 
-  def route: Route = GET(getState) ~ GET(developerTools) ~ GET(getSnapshot)
+  def route: Route = GET(getState) ~ GET(developerTools) ~ GET(getSnapshot) ~ GET(getStateAll)
   def withDeveloperTools = path("developer" / "tools" / Segment)
 }

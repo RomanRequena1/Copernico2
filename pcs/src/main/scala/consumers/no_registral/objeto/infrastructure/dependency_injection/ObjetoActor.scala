@@ -5,11 +5,7 @@ import akka.actor.{ActorRef, Props}
 import akka.entity.ShardedEntity
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.cqrs.commands._
-import consumers.no_registral.objeto.application.cqrs.queries.{
-  GetSnapshotObjetoHandler,
-  GetStateExencionHandler,
-  GetStateObjetoHandler
-}
+import consumers.no_registral.objeto.application.cqrs.queries.{GetAllObnObjetoHandler, GetSnapshotObjetoHandler, GetStateExencionHandler, GetStateObjetoHandler}
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoQueries}
 import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
 import consumers.no_registral.objeto.domain.{ObjetoEvents, ObjetoState}
@@ -63,6 +59,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
     queryBus.subscribe[ObjetoQueries.GetStateObjeto](new GetStateObjetoHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetStateExencion](new GetStateExencionHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetSnapshotObjeto](new GetSnapshotObjetoHandler(this).handle)
+    queryBus.subscribe[ObjetoQueries.GetAllObnObjeto](new GetAllObnObjetoHandler(this).handle)
   }
 
   val obligaciones: ObjetoActorRefMap = {
