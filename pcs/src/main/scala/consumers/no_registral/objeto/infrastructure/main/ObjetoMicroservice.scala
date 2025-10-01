@@ -27,5 +27,4 @@ class ObjetoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) exte
         ObjetoStateAPI(actor, monitoring).route
       ) ++ actorTransactions.map(_.route)
     ).reduce(_ ~ _)
-
 }

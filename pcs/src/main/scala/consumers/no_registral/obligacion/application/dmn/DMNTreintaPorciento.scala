@@ -4,7 +4,6 @@ import consumers.no_registral.obligacion.application.entities.ObligacionExternal
 import consumers.no_registral.obligacion.application.helper.FileStreamDmn.dmnStream
 import org.camunda.dmn.DmnEngine
 import org.slf4j.LoggerFactory
-import scalaz.Scalaz.ToValidationOps
 import scalaz.concurrent.Task.Try
 
 object DMNTreintaPorciento {

@@ -21,7 +21,7 @@ import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 
-class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPropsOption: Option[Props] = None)
+class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[ObjetoEvents, ObjetoState](requirements.monitoring) {
   import ObjetoActor._
 
@@ -169,7 +169,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
   }
 
   def dmnresumenpersistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
-    val kafkaTopic = "DmnResumenSnapshotPersistedReadside"
+    val kafkaTopic = "dgr-cop-beneficio-objeto-cambio-estado-v1"
     val snapshot =
       DmnResumenSnapshotPersisted(
         evt.deliveryId,
@@ -182,7 +182,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
         consolidatedState.dmnNumero,
         consolidatedState.dmnDescripcion
       )
-    requirements.messageProducer.produce(
+    requirements.psrmMessageProducer.produce(
       data = Seq(
         KafkaKeyValue(
           snapshot.aggregateRoot,

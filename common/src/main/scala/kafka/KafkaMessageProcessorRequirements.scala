@@ -20,6 +20,7 @@ object KafkaMessageProcessorRequirements {
   private val config = ConfigFactory.load()
   private val appConfig = new KafkaConfig(config)
   val bootstrapServers: String = appConfig.KAFKA_BROKER
+  val PSRMbootstrapServers: String = appConfig.KAFKA_PSRM_BROKER
 
   private implicit def consumerSettings(system: akka.actor.ActorSystem): ConsumerSettings[String, String] =
     ConsumerSettings(system, new StringDeserializer, new StringDeserializer)

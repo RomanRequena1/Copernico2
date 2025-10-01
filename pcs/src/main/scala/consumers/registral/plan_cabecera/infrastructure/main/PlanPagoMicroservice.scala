@@ -10,7 +10,7 @@ import consumers.registral.plan_cabecera.infrastructure.kafka.{PlanCabeceraNoTri
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 class PlanPagoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
-  implicit val actor: PlanCabeceraActor = PlanCabeceraActor(PlanCabeceraState())
+  implicit val actor: PlanCabeceraActor = PlanCabeceraActor(PlanCabeceraState())(monitoringAndMessageProducer.messageProducer, system)
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       PlanCabeceraNoTributarioTransaction(actor, monitoring),

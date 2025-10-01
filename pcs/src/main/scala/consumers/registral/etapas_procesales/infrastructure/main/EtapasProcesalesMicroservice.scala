@@ -11,7 +11,7 @@ import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumer
 
 class EtapasProcesalesMicroservice(implicit m: KafkaConsumerMicroserviceRequirements)
     extends KafkaConsumerMicroservice {
-  implicit val actor: EtapasProcesalesActor = EtapasProcesalesActor(EtapasProcesalesState())
+  implicit val actor: EtapasProcesalesActor = EtapasProcesalesActor(EtapasProcesalesState())(monitoringAndMessageProducer.messageProducer, system)
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       EtapasProcesalesNoTributarioTransaction(actor, monitoring),

@@ -22,9 +22,14 @@
           <text>bob_estado</text>
         </inputExpression>
       </input>
-      <input id="InputClause_0uuineo" label="bob_capital">
-        <inputExpression id="LiteralExpression_138l024" typeRef="double">
+      <input id="InputClause_1h3oa09" label="bob_capital">
+        <inputExpression id="LiteralExpression_1boo6f0" typeRef="double">
           <text>bob_capital</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0uuineo" label="bob_saldo">
+        <inputExpression id="LiteralExpression_138l024" typeRef="double">
+          <text>bob_saldo</text>
         </inputExpression>
       </input>
       <input id="InputClause_190iar5" label="is_vencida">
@@ -73,6 +78,9 @@
         <inputEntry id="UnaryTests_1v30bf2">
           <text>"JUDICIAL"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_01ejwyr">
+          <text></text>
+        </inputEntry>
         <inputEntry id="UnaryTests_1oe48kw">
           <text></text>
         </inputEntry>
@@ -115,6 +123,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_1qgl5n7">
           <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02e40f8">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1lqhk82">
           <text>&gt;=10</text>
@@ -159,6 +170,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         <inputEntry id="UnaryTests_169xgab">
           <text>"ADMINISTRATIVA"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0nlcofg">
+          <text>&lt;=0</text>
+        </inputEntry>
         <inputEntry id="UnaryTests_187fujz">
           <text>&lt;=0</text>
         </inputEntry>
@@ -200,6 +214,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0hht905">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1xgir0i">
+          <text>&gt;=0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1bb4frw">
           <text>&gt;=10</text>
@@ -243,6 +260,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         <inputEntry id="UnaryTests_1rnau32">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1wc62pv">
+          <text>&gt;0</text>
+        </inputEntry>
         <inputEntry id="UnaryTests_1rwhget">
           <text>&gt;=10</text>
         </inputEntry>
@@ -284,6 +304,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0bzziol">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1lzz5pz">
+          <text>&gt;=0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0tc8woy">
           <text>&gt;=10</text>
@@ -327,6 +350,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         <inputEntry id="UnaryTests_05d3tz9">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1q9xh81">
+          <text>&gt;0</text>
+        </inputEntry>
         <inputEntry id="UnaryTests_1p96ej5">
           <text>&gt;=10</text>
         </inputEntry>
@@ -368,6 +394,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1r4ywc9">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1cqdjq2">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1v9krzp">
           <text>&gt;=10</text>
@@ -411,6 +440,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         <inputEntry id="UnaryTests_1hp16dm">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0ygyk8w">
+          <text>&gt;0</text>
+        </inputEntry>
         <inputEntry id="UnaryTests_0y20ovb">
           <text>&gt;=10</text>
         </inputEntry>
@@ -452,6 +484,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1uzf09t">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0zo98y9">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1q9ry1j">
           <text>&gt;=10</text>
@@ -495,6 +530,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         <inputEntry id="UnaryTests_1aazv6n">
           <text>"ADMINISTRATIVA"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0kxk1nf">
+          <text>&lt;=0</text>
+        </inputEntry>
         <inputEntry id="UnaryTests_1wh3qw5">
           <text>&lt;=0</text>
         </inputEntry>
@@ -536,6 +574,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1y8fvbr">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0m4998e">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0dl25zw">
           <text>&gt;=10</text>
@@ -579,6 +620,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         <inputEntry id="UnaryTests_1h6nopz">
           <text>"ADMINISTRATIVA"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_1xmsglt">
+          <text>&lt;=0</text>
+        </inputEntry>
         <inputEntry id="UnaryTests_183i538">
           <text>&lt;=0</text>
         </inputEntry>
@@ -620,6 +664,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         </inputEntry>
         <inputEntry id="UnaryTests_122qayr">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18m0zux">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1htrsvk">
           <text>&gt;=10</text>
@@ -663,6 +710,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         <inputEntry id="UnaryTests_0ffdooo">
           <text>"ADMINISTRATIVA"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_133oak0">
+          <text>&lt;=0</text>
+        </inputEntry>
         <inputEntry id="UnaryTests_1f28tqv">
           <text>&lt;=0</text>
         </inputEntry>
@@ -704,6 +754,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         </inputEntry>
         <inputEntry id="UnaryTests_083b7t4">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1l613zs">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1wwo95s">
           <text>&gt;=10</text>
@@ -747,6 +800,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         <inputEntry id="UnaryTests_126lzpx">
           <text>"ADMINISTRATIVA"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_03fkvcd">
+          <text>&lt;=0</text>
+        </inputEntry>
         <inputEntry id="UnaryTests_1bq34aq">
           <text>&lt;=0</text>
         </inputEntry>
@@ -789,6 +845,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
         <inputEntry id="UnaryTests_0qvhtt2">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
         </inputEntry>
+        <inputEntry id="UnaryTests_0fo69ea">
+          <text>&gt;0</text>
+        </inputEntry>
         <inputEntry id="UnaryTests_1y2hkxy">
           <text>&gt;=10</text>
         </inputEntry>
@@ -817,48 +876,6 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
           <text>"Multas vencidas de Agentes de Retención, Percepción y Recaudación del Impuesto sobre los Ingresos Brutos , en instancia de gestión administrativa o prejudicial."</text>
         </outputEntry>
       </rule>
-      <rule id="DecisionRule_1klt1j8">
-        <description>Obligaciones vencidas origen PSRM del impuesto Inmobiliario, Automotor y Embarcaciones en instancia de gestión administrativa.</description>
-        <inputEntry id="UnaryTests_1a1kr56">
-          <text>"tributaria"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_070bmf4">
-          <text>"5","600","58"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1qmxrrx">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1m0tpxu">
-          <text>"ADMINISTRATIVA"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_0x3wli7">
-          <text>&gt;=10</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1fw2ofe">
-          <text>true</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1exv6rs">
-          <text>&gt;10</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1lybqrj">
-          <text>&lt;=5</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_11ipdn8">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_0p9p7mt">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1yqcpro">
-          <text></text>
-        </inputEntry>
-        <outputEntry id="LiteralExpression_0msgdg9">
-          <text>-19</text>
-        </outputEntry>
-        <outputEntry id="LiteralExpression_0je3tku">
-          <text>"Obligaciones vencidas origen PSRM del impuesto Inmobiliario, Automotor y Embarcaciones en instancia de gestión administrativa."</text>
-        </outputEntry>
-      </rule>
       <rule id="DecisionRule_1l94ocv">
         <description>No Deuda</description>
         <inputEntry id="UnaryTests_1teyh3x">
@@ -871,6 +888,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1f9s02o">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_08ycu7e">
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1ufgeye">

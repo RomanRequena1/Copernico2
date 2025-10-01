@@ -7,7 +7,7 @@ import akka.actor.{ActorRef, ActorSystem}
 import akka.kafka.ProducerSettings
 import akka.kafka.scaladsl.Producer
 import akka.stream.scaladsl.Source
-import kafka.KafkaMessageProcessorRequirements.bootstrapServers
+import kafka.KafkaMessageProcessorRequirements.{PSRMbootstrapServers, bootstrapServers}
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import monitoring.Monitoring
 import org.apache.kafka.clients.producer.{ProducerConfig, ProducerRecord}
@@ -66,6 +66,18 @@ object KafkaMessageProducer {
       ProducerSettings(system, new StringSerializer, new StringSerializer)
         .withBootstrapServers(bootstrapServers)
         .withProperty(ProducerConfig.BUFFER_MEMORY_CONFIG, "100663296") //TODO changed the buffer memory config to reduce the latency
+        .withProperty(ProducerConfig.ACKS_CONFIG, "0")
+        .withProperty(ProducerConfig.LINGER_MS_CONFIG, "5")
+        .withProperty(ProducerConfig.MAX_BLOCK_MS_CONFIG, "120000")
+    new KafkaMessageProducer()
+  }
+
+  def psrmProducer(monitoring: Monitoring,
+                   rebalancerListener: ActorRef)(implicit system: ActorSystem): KafkaMessageProducer = {
+    implicit def producerSettings: ProducerSettings[String, String] =
+      ProducerSettings(system, new StringSerializer, new StringSerializer)
+        .withBootstrapServers(PSRMbootstrapServers) // Usar el broker PSRM
+        .withProperty(ProducerConfig.BUFFER_MEMORY_CONFIG, "100663296")
         .withProperty(ProducerConfig.ACKS_CONFIG, "0")
         .withProperty(ProducerConfig.LINGER_MS_CONFIG, "5")
         .withProperty(ProducerConfig.MAX_BLOCK_MS_CONFIG, "120000")

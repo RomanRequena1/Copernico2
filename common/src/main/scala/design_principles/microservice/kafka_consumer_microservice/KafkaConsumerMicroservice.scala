@@ -21,10 +21,13 @@ abstract class KafkaConsumerMicroservice(implicit m: KafkaConsumerMicroserviceRe
   implicit final val actorTransactionR: ActorTransaction.ActorTransactionRequirements = m.actorTransactionRequirements
   implicit val messageProducer: KafkaMessageProducer =
     KafkaMessageProducer(monitoring, m.kafkaMessageProcessorRequirements.rebalancerListener)
+  implicit val psrmMessageProducer: KafkaMessageProducer =
+    KafkaMessageProducer.psrmProducer(monitoring, m.kafkaMessageProcessorRequirements.rebalancerListener)
   implicit final val monitoringAndMessageProducer: ProductionMonitoringAndMessageProducer =
     ProductionMonitoringAndMessageProducer(
       monitoring,
-      messageProducer
+      messageProducer,
+      psrmMessageProducer
     )
   implicit final val monitoringAndMessageProducerTransf: ProductionMonitoringAndMessageProducerTransf =
     ProductionMonitoringAndMessageProducerTransf(
