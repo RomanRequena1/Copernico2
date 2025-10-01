@@ -63,6 +63,7 @@ object ShardedEntity {
   trait MonitoringAndMessageProducer {
     val monitoring: Monitoring
     val messageProducer: MessageProducer
+    val psrmMessageProducer: MessageProducer
   }
 
   trait MonitoringAndMessageProducerTranf {
@@ -70,7 +71,8 @@ object ShardedEntity {
   }
   case class ProductionMonitoringAndMessageProducer(
       monitoring: KamonMonitoring,
-      messageProducer: KafkaMessageProducer
+      messageProducer: KafkaMessageProducer,
+      psrmMessageProducer: KafkaMessageProducer
   ) extends MonitoringAndMessageProducer
 
   case class ProductionMonitoringAndMessageProducerTransf(

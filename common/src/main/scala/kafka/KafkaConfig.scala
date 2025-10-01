@@ -6,6 +6,10 @@ import com.typesafe.config.Config
 
 class KafkaConfig(config: Config) {
   lazy val KAFKA_BROKER: String = Try { config.getString("kafka.brokers") }.getOrElse("0.0.0.0:9092")
+  lazy val KAFKA_PSRM_BROKER: String = Try {
+    config.getString("kafka.psrm.brokers")
+  }.getOrElse(sys.env.getOrElse("KAFKA_BROKERS_LIST_PSRM", "0.0.0.0:9092"))
+
   lazy val CONSUMER_GROUP: String = Try {
     config.getString("kafka.CONSUMER_GROUP")
   }.getOrElse("CONSUMER_GROUP")

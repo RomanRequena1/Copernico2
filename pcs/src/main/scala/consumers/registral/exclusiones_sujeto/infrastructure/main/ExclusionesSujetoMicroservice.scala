@@ -11,7 +11,7 @@ import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumer
 
 class ExclusionesSujetoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements)
   extends KafkaConsumerMicroservice {
-  implicit val actor: ExclusionesSujetoActor = ExclusionesSujetoActor(ExclusionesSujetoState())
+  implicit val actor: ExclusionesSujetoActor = ExclusionesSujetoActor(ExclusionesSujetoState())(monitoringAndMessageProducer.messageProducer, system)
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       //ExclusionesSujetoNoTributarioTransaction(actor, monitoring),
