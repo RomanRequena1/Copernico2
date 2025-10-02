@@ -7,7 +7,7 @@ import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.cqrs.commands._
 import consumers.no_registral.objeto.application.cqrs.queries.{GetAllObnObjetoHandler, GetSnapshotObjetoHandler, GetStateExencionHandler, GetStateObjetoHandler}
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoQueries}
-import consumers.no_registral.objeto.domain.ObjetoEvents.{DmnResumenSnapshotPersisted, ObjetoSnapshotPersisted}
+import consumers.no_registral.objeto.domain.ObjetoEvents.{Beneficio, DmnResumenSnapshotPersisted, ObjetoSnapshotPersisted}
 import consumers.no_registral.objeto.domain.{ObjetoEvents, ObjetoState}
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
@@ -169,7 +169,14 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
   }
 
   def dmnresumenpersistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
-    val kafkaTopic = "dgr-cop-beneficio-objeto-cambio-estado-v1"
+    val kafkaTopic = "dgr-cop-objeto-beneficios-v1"
+
+    val beneficio = Beneficio(
+      codigo = "DTO30",
+      aplicarDescuento = consolidatedState.aplicarDescuento,
+      dmnNumero = consolidatedState.dmnNumero,
+      dmnDescripcion = consolidatedState.dmnDescripcion
+    )
     val snapshot =
       DmnResumenSnapshotPersisted(
         evt.deliveryId,
@@ -178,9 +185,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
         evt.tipoObjeto,
         consolidatedState.registro.flatMap(_.SOJ_ID_EXTERNO).orElse(Some("None")),
         Some(consolidatedState.fechaUltMod),
-        consolidatedState.aplicarDescuento,
-        consolidatedState.dmnNumero,
-        consolidatedState.dmnDescripcion
+        beneficios = Seq(beneficio)
       )
     requirements.psrmMessageProducer.produce(
       data = Seq(

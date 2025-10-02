@@ -62,10 +62,16 @@ object ObjetoEvents {
                                           tipoObjeto: String,
                                           idExterno: Option[String],
                                           fecha: Option[LocalDateTime],
-                                          aplicarDescuento: Option[Boolean],
-                                          dmnNumero: Option[Int],
-                                          dmnDescripcion: Option[String]
+                                          beneficios: Seq[Beneficio]
                                         ) extends ObjetoEvents
+
+
+  case class Beneficio(
+                        codigo: String,
+                        aplicarDescuento: Option[Boolean],
+                        dmnNumero: Option[Int],
+                        dmnDescripcion: Option[String]
+                      )
 
   case class ObjetoSnapshotPersisted(
       deliveryId: BigInt,
