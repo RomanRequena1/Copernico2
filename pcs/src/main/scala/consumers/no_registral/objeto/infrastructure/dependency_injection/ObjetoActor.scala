@@ -185,7 +185,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
         evt.tipoObjeto,
         consolidatedState.registro.flatMap(_.SOJ_ID_EXTERNO).orElse(Some("None")),
         Some(consolidatedState.fechaUltMod),
-        beneficios = Seq(beneficio)
+        Seq(beneficio)
       )
     requirements.psrmMessageProducer.produce(
       data = Seq(
@@ -199,6 +199,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
       handler()
     }
   }
+
   def deleteSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
     val kafkaTopic = "ObjetoSnapshotPersistedReadside"
     val snapshot =

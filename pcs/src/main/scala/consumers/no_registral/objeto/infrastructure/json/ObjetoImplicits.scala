@@ -129,4 +129,7 @@ object ObjetoImplicits {
   implicit val ObjetoUpdatedFromObnTreintaProcientoDecoder: Decoder[ObjetoUpdatedFromObnTreintaProciento] = deriveDecoder
   implicit val ObjetoUpdatedFromObnTreintaProcientoEncoder: Encoder[ObjetoUpdatedFromObnTreintaProciento] = deriveEncoder
 
+  implicit val BeneficioDecoder: Decoder[Beneficio] = deriveDecoder
+  implicit val BeneficioEncoder: Encoder[Beneficio] = deriveEncoder
+
 }
