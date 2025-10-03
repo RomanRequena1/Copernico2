@@ -29,7 +29,7 @@ class SingleObjectProcessor(targetGlobalActor: ActorRef, objetoId: String) exten
     case cmd: ObjetoCommands if cmd.objetoId == objetoId =>
       if (busy) {
         // Si estamos ocupados, encolar para procesar después
-        logger.debug(s"Actor para objetoId $objetoId está ocupado, encolando comando")
+//        logger.debug(s"Actor para objetoId $objetoId está ocupado, encolando comando")
         queue = queue :+ ((cmd, sender()))
       } else {
         processCommand(cmd, sender())
@@ -41,7 +41,7 @@ class SingleObjectProcessor(targetGlobalActor: ActorRef, objetoId: String) exten
 
       // Procesar el siguiente comando en la cola si existe
       if (queue.nonEmpty) {
-        logger.debug(s"Procesando siguiente comando en cola para objetoId $objetoId")
+//        logger.debug(s"Procesando siguiente comando en cola para objetoId $objetoId")
         val (nextCmd, originalSender) = queue.head
         queue = queue.tail
         processCommand(nextCmd, originalSender)
@@ -53,17 +53,23 @@ class SingleObjectProcessor(targetGlobalActor: ActorRef, objetoId: String) exten
     currentStateId += 1
 
     // Log antes de enviar
-    logger.debug(
-      f"""|CUMBIA
-          |  | command_id: ${cmd.deliveryId}%-20s | state_id: ${currentStateId}%-5s
-          |  | sender    : ${sender().path}
-          |  | self      : ${self.path}
-          |""".stripMargin
-    )
+//    logger.debug(
+//      f"""|CUMBIA
+//          |  | command_id: ${cmd.deliveryId}%-20s | state_id: ${currentStateId}%-5s
+//          |  | sender    : ${sender().path}
+//          |  | self      : ${self.path}
+//          |""".stripMargin
+//    )
 
     // Enviar el comando al actor global y pipe la respuesta al remitente original
     (targetGlobalActor ? cmd)
       .mapTo[Response.SuccessProcessing]
+      .recover {
+        case e: Exception => {
+          println(s"Doing recover of better sorter Obligacion: $objetoId, (queue: ${queue.size})")
+          self ! "CommandProcessed"
+        }
+      }
       .map { response =>
         // Notificar a este actor que ha terminado de procesar
         self ! "CommandProcessed"

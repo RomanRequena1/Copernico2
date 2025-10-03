@@ -78,8 +78,8 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
     actor.state += event1
 
 
-    println(s"aplicar anterior: $aplicarDescuentoAnterior, nuevo: ${actor.state.aplicarDescuento}")
-    println("state: " + actor.state)
+    //println(s"aplicar anterior: $aplicarDescuentoAnterior, nuevo: ${actor.state.aplicarDescuento}")
+    //println("state: " + actor.state)
 
     val eventDmn = DmnResumen(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
