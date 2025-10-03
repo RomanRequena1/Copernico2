@@ -27,11 +27,11 @@ class ObjetoCommandRouter(targetGlobalActor: ActorRef) extends Actor {
     case cmd: ObjetoCommands =>
       val objetoId = cmd.objetoId
 
-      logger.debug(s"Router recibió comando para objetoId: $objetoId")
+//      logger.debug(s"Router recibió comando para objetoId: $objetoId")
 
       // Obtener o crear un actor para este objetoId
       val actor = objectActors.getOrElse(objetoId, {
-        logger.debug(s"Creando nuevo actor para objetoId: $objetoId")
+//        logger.debug(s"Creando nuevo actor para objetoId: $objetoId")
         val newActor = context.actorOf(
           Props(new SingleObjectProcessor(targetGlobalActor, objetoId)),
           s"object-processor-$objetoId"

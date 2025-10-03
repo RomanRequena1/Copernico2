@@ -46,16 +46,21 @@ class SingleObligacionProcessor(targetGlobalActor: ActorRef, obligacionId: Strin
     busy = true
     currentStateId += 1
 
-    logger.debug(
-      f"""|CUMBIA
-          |  | command_id: ${cmd.deliveryId}%-20s | state_id: ${currentStateId}%-5s
-          |  | sender    : ${sender().path}
-          |  | self      : ${self.path}
-          |""".stripMargin
-    )
+//    logger.debug(
+//      f"""|CUMBIA
+//          |  | command_id: ${cmd.deliveryId}%-20s | state_id: ${currentStateId}%-5s
+//          |  | sender    : ${sender().path}
+//          |  | self      : ${self.path}
+//          |""".stripMargin
+//    )
 
     (targetGlobalActor ? cmd)
-      .mapTo[Response.SuccessProcessing]
+      .mapTo[Response.SuccessProcessing].recover {
+        case e: Exception => {
+          println(s"Doing recover of better sorter Obligacion: $obligacionId, (queue: ${queue.size})")
+          self ! "CommandProcessed"
+        }
+      }
       .map { response =>
         self ! "CommandProcessed"
         response
