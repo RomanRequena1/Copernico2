@@ -55,7 +55,12 @@ class SingleObligacionProcessor(targetGlobalActor: ActorRef, obligacionId: Strin
     )
 
     (targetGlobalActor ? cmd)
-      .mapTo[Response.SuccessProcessing]
+      .mapTo[Response.SuccessProcessing].recover {
+        case e: Exception => {
+          logger.error(s"Doing recover of better sorter Obligacion: $obligacionId, (queue: ${queue.size}) - ${e.getMessage}")
+          self ! "CommandProcessed"
+        }
+      }
       .map { response =>
         self ! "CommandProcessed"
         response
