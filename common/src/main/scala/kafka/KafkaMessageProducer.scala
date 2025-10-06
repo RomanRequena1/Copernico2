@@ -74,6 +74,10 @@ object KafkaMessageProducer {
 
   def psrmProducer(monitoring: Monitoring,
                    rebalancerListener: ActorRef)(implicit system: ActorSystem): KafkaMessageProducer = {
+    println(s"========================================")
+    println(s"[PSRM_PRODUCER] 🚀 Iniciando creación de producer PSRM")
+    println(s"[PSRM_PRODUCER] 🔍 Broker PSRM: $PSRMbootstrapServers")
+    println(s"========================================")
     implicit def producerSettings: ProducerSettings[String, String] =
       ProducerSettings(system, new StringSerializer, new StringSerializer)
         .withBootstrapServers(PSRMbootstrapServers) // Usar el broker PSRM

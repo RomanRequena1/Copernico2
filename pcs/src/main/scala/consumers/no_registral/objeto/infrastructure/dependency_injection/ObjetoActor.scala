@@ -187,6 +187,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
         Some(consolidatedState.fechaUltMod),
         Seq(beneficio)
       )
+    println("estoy en el ObjetoActor")
     requirements.psrmMessageProducer.produce(
       data = Seq(
         KafkaKeyValue(

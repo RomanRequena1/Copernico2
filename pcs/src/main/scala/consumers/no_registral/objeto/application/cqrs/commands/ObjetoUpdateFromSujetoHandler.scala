@@ -96,6 +96,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
     if (!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA") && actor.state.aplicarDescuento.isDefined) {
       actor.persistSnapshot(event, actor.state) { () =>
         if (debeEnviarResumen(aplicarDescuentoAnterior, actor.state.aplicarDescuento) && esTipoObjetoPermitido(command.tipoObjeto)) {
+          println("estoy en el Handler")
           actor.dmnresumenpersistSnapshot(eventDmn, actor.state) { () =>
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
