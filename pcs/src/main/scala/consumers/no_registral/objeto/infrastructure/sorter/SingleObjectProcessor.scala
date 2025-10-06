@@ -62,7 +62,7 @@ class SingleObjectProcessor(targetGlobalActor: ActorRef, objetoId: String) exten
     )
 
     // Enviar el comando al actor global y pipe la respuesta al remitente original
-    (targetGlobalActor ? cmd)
+    (targetGlobalActor ? cmd)(400 seconds)
       .mapTo[Response.SuccessProcessing]
       .recover {
         case e: Exception => {
