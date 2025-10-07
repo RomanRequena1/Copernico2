@@ -42,6 +42,7 @@
       <env name="PATH_DMN_CLASIF_OBJETO" value="$PROJECT_DIR$/clasificacion_objeto.dmn" />
       <env name="DMN_ID_CLASIF_OBJETO" value="Decision_Clasificacion_Objeto" />
       <env name="MAX_REQUESTS_PER_CONNECTION" value="4096" />
+      <env name="KAFKA_PSRM_ENABLED" value="true" />
       <env name="KAMON_STATUS_PAGE" value="5266" />
       <env name="INTERNALLY_IDEMPOTENCY" value="OFF" />
       <env name="IO_NETTY_DEBUG_MODE" value="OFF" />
