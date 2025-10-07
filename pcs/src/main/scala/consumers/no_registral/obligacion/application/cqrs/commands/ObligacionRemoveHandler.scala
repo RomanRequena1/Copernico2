@@ -16,6 +16,14 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
   override def handle(command: ObligacionRemove): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
+    log.debug(
+      f"""|CUMBIA
+          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
+          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
+          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
+          |""".stripMargin
+    )
+
     // Función helper para verificar si es una baja por pago (RULE_NUMBER = -1)
     def isPagoObligacion(registro: ObligacionExternalDto): Boolean = {
       registro match {
