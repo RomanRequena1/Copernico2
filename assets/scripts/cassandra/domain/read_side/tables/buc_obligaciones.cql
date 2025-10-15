@@ -20,6 +20,7 @@ CREATE TABLE read_side.buc_obligaciones (
     bob_jui_id int,
     bob_oga_id text,
     bob_otros_atributos map<text, text>,
+    bob_caracteristicas map<text, text>,
     bob_periodo text,
     bob_pln_id text,
     bob_porcentaje_exencion float,

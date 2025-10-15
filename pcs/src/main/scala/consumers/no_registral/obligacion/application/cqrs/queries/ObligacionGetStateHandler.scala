@@ -23,6 +23,7 @@ class ObligacionGetStateHandler(actor: ObligacionActor) extends SyncQueryHandler
       actor.state.registro,
       actor.state.lastDeliveryIdByEvents,
       actor.state.detallesObligacion,
+      actor.state.detallesObligacionCaracteristicas,
       actor.state.detallesSupresiones,
       actor.state.juicioId,
       actor.state.isAdheridoDebito,

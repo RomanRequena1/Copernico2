@@ -52,6 +52,7 @@ class ObligacionAntUpdateFromDtoHandler(actor: ObligacionActor) extends SyncComm
         case false => command.registro
       },
       command.detallesObligacion,
+      command.detallesCaracteristicas,
       command.detallesSupresiones,
       command.isAdheridoDebito,
       command.cuota
