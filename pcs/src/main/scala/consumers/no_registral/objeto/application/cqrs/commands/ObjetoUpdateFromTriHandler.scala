@@ -176,7 +176,6 @@ object test {
     actor.persistEvent(event) { () =>
       actor.state += event
 
-
       if (actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) {
         if (actor.state.tiene30Objeto.equals(false)) {
           val res = actor.context.parent.ask[Response.SuccessProcessing](
@@ -193,11 +192,11 @@ object test {
           res.onComplete {
             case Failure(exception) =>
               log.error(
-                "Error to send event to sujeto tipo M false " + exception + " objID: " + command.objetoId + "sujID: " + command.sujetoId
+                "Error to send event to sujeto tipo M true " + exception + " objID: " + command.objetoId + "sujID: " + command.sujetoId
               )
             case Success(value) =>
               log.debug(
-                "Sent event to sujeto tipo M false " + " objID: " + command.objetoId + " sujID: " + command.sujetoId
+                "Sent event to sujeto tipo M true " + " objID: " + command.objetoId + " sujID: " + command.sujetoId
               )
           }
         } else {
@@ -229,20 +228,25 @@ object test {
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }
       } else {
-        SendObjetoToObjetoVinculo(Obje,
-          actor,
-          command.sujetoId,
-          command.objetoId,
-          command.tipoObjeto,
-          command.registro.SOJ_ESTADO,
-          requeriment,
-          command)
+        actor.persistSnapshot(event, actor.state) { () =>
+
+          SendObjetoToObjetoVinculo(
+            Obje,
+            actor,
+            command.sujetoId,
+            command.objetoId,
+            command.tipoObjeto,
+            command.registro.SOJ_ESTADO,
+            requeriment,
+            command
+          )
+          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+        }
       }
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 2))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
       }
-      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

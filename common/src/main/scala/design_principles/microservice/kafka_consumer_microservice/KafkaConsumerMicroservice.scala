@@ -8,11 +8,14 @@ import monitoring.KamonMonitoring
 import akka.actor.typed.scaladsl.adapter._
 import akka.entity.ShardedEntity.{ProductionMonitoringAndCassandraWrite, ProductionMonitoringAndMessageProducer, ProductionMonitoringAndMessageProducerTransf}
 import design_principles.actor_model.mechanism.stream_supervision.UniqueTopicPerNode.uniqueTopicPerNode
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.{Failure, Success}
 
 abstract class KafkaConsumerMicroservice(implicit m: KafkaConsumerMicroserviceRequirements)
   extends Microservice[KafkaConsumerMicroserviceRequirements] {
+  val log: Logger = LoggerFactory.getLogger(this.getClass)
+
 
   implicit final val classicSystem: akka.actor.ActorSystem = m.ctx
   implicit final val system: akka.actor.typed.ActorSystem[Nothing] = m.ctx.toTyped
@@ -22,25 +25,17 @@ abstract class KafkaConsumerMicroservice(implicit m: KafkaConsumerMicroserviceRe
   implicit final val kafkaMessageProcessorR: KafkaMessageProcessorRequirements = m.kafkaMessageProcessorRequirements
   implicit final val actorTransactionR: ActorTransaction.ActorTransactionRequirements = m.actorTransactionRequirements
 
-  println(s"========================================")
-  println(s"[MICROSERVICE] 🚀 Iniciando KafkaConsumerMicroservice")
-  println(s"========================================")
-
   implicit val messageProducer: KafkaMessageProducer =
     KafkaMessageProducer(monitoring, m.kafkaMessageProcessorRequirements.rebalancerListener)
-
-  println(s"[MICROSERVICE] ✅ MessageProducer principal creado")
 
   // PSRM Producer con fallback seguro
   implicit val psrmMessageProducer: KafkaMessageProducer = {
     KafkaMessageProducer.psrmProducer(monitoring, m.kafkaMessageProcessorRequirements.rebalancerListener) match {
       case Success(producer) =>
-        println(s"[MICROSERVICE] ✅ PSRM MessageProducer creado exitosamente")
         producer
 
       case Failure(exception) =>
-        println(s"[MICROSERVICE] ⚠️ No se pudo crear PSRM producer: ${exception.getMessage}")
-        println(s"[MICROSERVICE] ⚠️ FALLBACK: Usando producer principal para PSRM")
+        log.debug("Error: " + exception)
         messageProducer // Usa el producer principal como fallback
     }
   }
@@ -51,9 +46,6 @@ abstract class KafkaConsumerMicroservice(implicit m: KafkaConsumerMicroserviceRe
       messageProducer,
       psrmMessageProducer
     )
-
-  println(s"[MICROSERVICE] ✅ ProductionMonitoringAndMessageProducer configurado")
-  println(s"========================================")
 
   implicit final val monitoringAndMessageProducerTransf: ProductionMonitoringAndMessageProducerTransf =
     ProductionMonitoringAndMessageProducerTransf(

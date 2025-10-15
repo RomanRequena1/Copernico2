@@ -5,22 +5,24 @@ import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.UpdateState30ObjetoFromObjVinculo
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands.UpdateVinculoObjetoFromObj
-import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent
+import consumers.no_registral.tranferencia.domain.{ObjetoVinculoEvent, Vinculo}
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
-//import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotentInternally
 
-import scala.util.{Success, Try}
+import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success, Try}
 
-class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor,
-                                        tranferenciaActorRequirements: MonitoringAndMessageProducer)
-    extends SyncCommandHandler[UpdateVinculoObjetoFromObj] {
+class UpdateObjetoVinculoFromObjHandler(
+                                         actor: ObjetoVinculoActor,
+                                         tranferenciaActorRequirements: MonitoringAndMessageProducer
+                                       ) extends SyncCommandHandler[UpdateVinculoObjetoFromObj] {
+
   override def handle(command: UpdateVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
     log.debug(
-      f"""|CUMBIA
+      f"""|CUMBIA - UpdateVinculoObjetoFromObj
           |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
           |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
           |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
@@ -40,20 +42,31 @@ class UpdateObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor,
     )
 
     implicit val ssytem: ActorSystem = actor.context.system
-    //todo para mandar mensajes a todos los objetos de los distintos vinculos
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
+    implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
     actor.persistEvent(event) { () =>
       actor.state += event
-      actor.state.mapVinculo.foreach { e =>
-      {
-        actorSujetoGeneral.ask[Response.SuccessProcessing](
-          UpdateState30ObjetoFromObjVinculo(0,
+
+      val tieneDeuadEnTransf = actor.state.mapTransf.exists(_._2.tiene30Objeto == false)
+      val todosLosVinculos = actor.state.mapVinculo ++ actor.state.mapTransf
+
+      todosLosVinculos.foreach { e => {
+        val tiene30Final = if (tieneDeuadEnTransf) {
+          false
+        } else {
+          actor.state.tiene30ObjetoVinculo
+        }
+
+        val updateResult = actorSujetoGeneral.ask[Response.SuccessProcessing](
+          UpdateState30ObjetoFromObjVinculo(
+            0,
             e._1.sujetoId,
             e._1.objetoId,
             e._1.tipoObj,
-            actor.state.tiene30ObjetoVinculo,
-            command.exclusionObjeto)
+            tiene30Final,
+            command.exclusionObjeto
+          )
         )
       }
       }

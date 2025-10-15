@@ -64,7 +64,6 @@ object ShardedEntity {
     val monitoring: Monitoring
     val messageProducer: MessageProducer
     val psrmMessageProducer: MessageProducer
-    println("estoy en el MonitoringAndMessageProducer")
   }
 
   trait MonitoringAndMessageProducerTranf {

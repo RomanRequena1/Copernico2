@@ -9,13 +9,15 @@ import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
-//import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotentInternally
 
-import scala.util.{Success, Try}
+import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success, Try}
 
-class CreateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor,
-                                             tranferenciaActorRequirements: MonitoringAndMessageProducer)
-    extends SyncCommandHandler[CreateTransfVinculoObjetoFromObj] {
+class CreateVinculoObjetoFromObjTranfHandler(
+                                              actor: ObjetoVinculoActor,
+                                              tranferenciaActorRequirements: MonitoringAndMessageProducer
+                                            ) extends SyncCommandHandler[CreateTransfVinculoObjetoFromObj] {
+
   override def handle(command: CreateTransfVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
@@ -30,58 +32,35 @@ class CreateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor,
       command.exclusionObjeto,
       command.deliveryId
     )
-//    if (isIdempotentInternally(command, actor.state.lastDeliveryIdByEvents)) {
-//      log.warn(
-//        s"[${actor.name} | ${actor.persistenceId}] -objeto- respond internally_idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
-//      )
-//      sender ! Response.SuccessProcessing("IDEM-INT-" + command.aggregateRoot, command.deliveryId)
-//
-//    } else {
-//      implicit val system: ActorSystem = actor.context.system
-//      implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
-//
-//      actor.persistEvent(event) { () =>
-//        actor.state += event
-//
-//        //Recorre el map de vinculos y manda mensaje a los objetos
-//        actor.state.mapVinculo.foreach { e =>
-//          {
-//
-//            actorSujetoGeneral.ask[Response.SuccessProcessing](
-//              UpdateState30ObjetoFromObjVinculo(0,
-//                                                e._1.sujetoId,
-//                                                e._1.objetoId,
-//                                                e._1.tipoObj,
-//                                                actor.state.tiene30ObjetoVinculo,
-//                                                command.exclusionObjeto)
-//            )
-//          }
-//        }
-//        actor.persistSnapshot(event, actor.state) { () =>
-//          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-//        }
-//      }
-//    }
 
     implicit val system: ActorSystem = actor.context.system
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
+    implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
+
 
     actor.persistEvent(event) { () =>
       actor.state += event
+      val tieneDeuadEnTransf = actor.state.mapTransf.exists(_._2.tiene30Objeto == false)
 
-      //Recorre el map de vinculos y manda mensaje a los objetos
       actor.state.mapVinculo.foreach { e =>
       {
+        // si hay deuda de una transferencia hay que pasar la marca a false para nuevos titulares
+        val tiene30Final = if (tieneDeuadEnTransf) {
+          false  // responsabilidad solidaria adquirir deuda
+        } else {
+          actor.state.tiene30ObjetoVinculo  // sino dejar la marca como estaba
+        }
 
-        actorSujetoGeneral.ask[Response.SuccessProcessing](
-          UpdateState30ObjetoFromObjVinculo(0,
+        val updateResult = actorSujetoGeneral.ask[Response.SuccessProcessing](
+          UpdateState30ObjetoFromObjVinculo(
+            0,
             e._1.sujetoId,
             e._1.objetoId,
             e._1.tipoObj,
-            actor.state.tiene30ObjetoVinculo,
-            command.exclusionObjeto)
-        )
-      }
+            tiene30Final,  // valor calculado según deuda
+            command.exclusionObjeto
+          )
+        )}
       }
       actor.persistSnapshot(event, actor.state) { () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
@@ -91,4 +70,3 @@ class CreateVinculoObjetoFromObjTranfHandler(actor: ObjetoVinculoActor,
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }
-

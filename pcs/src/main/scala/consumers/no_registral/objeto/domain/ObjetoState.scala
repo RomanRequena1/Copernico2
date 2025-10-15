@@ -174,10 +174,15 @@ case class ObjetoState(
         copy(aplicarDescuento = evt.aplicarDescuento)
       // TODO: check when an object with multiple owners changes its exclusions.
       case evt: ObjetoEvents.UpdatedState30ObjetoFromObjVinculo =>
+        // Si tiene30ObjetoVinculo = false Y no tiene obligaciones propias heredar la penalizacion
+        val tiene30ObjetoCalculado = if (!evt.tiene30ObjetoVinculo && obligaciones.isEmpty) {
+          false
+        } else {
+          tiene30Objeto // Sino mantener la marca actual
+        }
         copy(
-          tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo, //todo CAMBIE ACA
-          // Este pisaba a todos los tiene30objeto de los VSO, deberia guardarse solo en tiene30ObjVinculo
-          //          tiene30Objeto = diffCurrentStateAndNewStateTest(obnVencidas, _tiene30ObjetoVinculo),
+          tiene30ObjetoVinculo = evt.tiene30ObjetoVinculo,
+          tiene30Objeto = tiene30ObjetoCalculado,  // ← ACTUALIZAR tiene30Objeto
           exclusionObjeto = evt.exclusionObjetoVinculo
         )
       case evt: ObjetoEvents.ObjetoUpdatedFromTri =>

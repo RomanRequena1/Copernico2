@@ -138,7 +138,6 @@ case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitori
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
         (newO, n.get)
       }
-
     }
   }
 }

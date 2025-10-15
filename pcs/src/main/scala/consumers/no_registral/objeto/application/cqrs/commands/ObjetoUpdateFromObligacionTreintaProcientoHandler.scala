@@ -45,9 +45,6 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
       command.dmnNumero,
       command.dmnDescripcion
     )
-    val initialization: String = {
-      Try(System.getenv("INITIALIZATION")).getOrElse(null)
-    }
 
     implicit val ac: ActorSystem = actor.context.system
     val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)

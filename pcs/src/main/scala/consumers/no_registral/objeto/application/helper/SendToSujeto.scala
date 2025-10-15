@@ -26,5 +26,4 @@ object SendToSujeto {
       ))
       actor.context.sender ! Response.SuccessProcessing(event.aggregateRoot, event.deliveryId)
     }
-
 }
