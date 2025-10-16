@@ -37,27 +37,14 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
 
     actor.persistEvent(event) { () =>
       actor.state += event
-      actor.persistSnapshot(event, actor.state) { () =>
 
-        val tiene30ObjetoFinal = if (!command.tiene30ObjetoVinculo && actor.state.obligaciones.isEmpty) {
-          false
-        } else if (command.tiene30ObjetoVinculo && actor.state.obligaciones.isEmpty) {
-          true
-        } else {
-          actor.state.tiene30Objeto
-        }
-
-        actor.state = actor.state.copy(tiene30Objeto = tiene30ObjetoFinal)
-        actor.persistSnapshot(event, actor.state) { () =>
-
-          if (tiene30ObjetoFinal) {
-            SendToSujeto1(actor, requeriment, event)
-          } else {
-            SendToSujeto(actor, requeriment, event)
-          }
-          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-        }
+      if (actor.state.tiene30Objeto) {
+        SendToSujeto1(actor, requeriment, event)
+      } else {
+        SendToSujeto(actor, requeriment, event)
       }
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+
 
       if (actor.state.eventCounter == eventCounterMax) {
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))

@@ -101,7 +101,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       objetoFFF
     }
 
-    val dmn = isTipo(command)
+    val clasificacionObj = isTipo(command)
 
     val stateParcialEnabled: String = Option(System.getenv("STATE_PARCIAL_OBJETO_TRI")).getOrElse("OFF")
 
@@ -118,8 +118,8 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       command.isResponsable,
       command.sujetoResponsable,
       command.isAdheridoDebito,
-      Some(dmn._1),
-      Some(dmn._2)
+      Some(clasificacionObj._1),
+      Some(clasificacionObj._2)
     )
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {

@@ -43,22 +43,23 @@ class UpdateObjetoVinculoFromObjHandler(
 
     implicit val ssytem: ActorSystem = actor.context.system
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
-    implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
     actor.persistEvent(event) { () =>
       actor.state += event
 
-      val tieneDeuadEnTransf = actor.state.mapTransf.exists(_._2.tiene30Objeto == false)
+      val tieneDeudaEnTransf = actor.state.mapTransf.exists(_._2.tiene30Objeto == false)
       val todosLosVinculos = actor.state.mapVinculo ++ actor.state.mapTransf
 
       todosLosVinculos.foreach { e => {
-        val tiene30Final = if (tieneDeuadEnTransf) {
-          false
-        } else {
-          actor.state.tiene30ObjetoVinculo
+        val tiene30Final: Boolean = {
+          if (tieneDeudaEnTransf) {
+            false
+          } else {
+            actor.state.tiene30ObjetoVinculo
+          }
         }
 
-        val updateResult = actorSujetoGeneral.ask[Response.SuccessProcessing](
+        actorSujetoGeneral.ask[Response.SuccessProcessing](
           UpdateState30ObjetoFromObjVinculo(
             0,
             e._1.sujetoId,
@@ -68,7 +69,7 @@ class UpdateObjetoVinculoFromObjHandler(
             command.exclusionObjeto
           )
         )
-      }
+       }
       }
       actor.persistSnapshot(event, actor.state) { () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)

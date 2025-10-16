@@ -17,6 +17,8 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
   def debeEnviarResumen(anterior: Option[Boolean], nuevo: Option[Boolean]): Boolean =
     anterior != nuevo
 
+  private val resumenEnabled: Option[String] = Option(System.getenv("KAFKA_BROKERS_LIST_PSRM"))
+
   override def handle(command: ObjetoCommands.ObjetoUpdateFromSujeto): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
@@ -94,9 +96,8 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
     )
 
     if (!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA") && actor.state.aplicarDescuento.isDefined) {
-      actor.persistSnapshot(event, actor.state) { () =>
-        if (debeEnviarResumen(aplicarDescuentoAnterior, actor.state.aplicarDescuento) && esTipoObjetoPermitido(command.tipoObjeto)) {
-          println("estoy en el Handler")
+        actor.persistSnapshot(event, actor.state) { () =>
+        if (debeEnviarResumen(aplicarDescuentoAnterior, actor.state.aplicarDescuento) && esTipoObjetoPermitido(command.tipoObjeto) && resumenEnabled.isDefined) {
           actor.dmnresumenpersistSnapshot(eventDmn, actor.state) { () =>
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
