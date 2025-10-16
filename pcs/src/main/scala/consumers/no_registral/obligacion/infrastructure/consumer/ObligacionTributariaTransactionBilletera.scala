@@ -107,37 +107,47 @@ case class ObligacionTributariaTransactionBilletera(actorRef: ActorRef, monitori
     }
   }
 
-  private def isTreintaPorciento(obn: ObligacionesTri): (ObligacionesTri, Any) = {
-    //todo set tiene30Obligacion en state
-    Some(DMNTreintaPorciento.dmn(obn)) match {
-      case f if f.get.equals(1) => { //case 0
+  private def isTreintaPorciento(obn: ObligacionesTri): (ObligacionesTri, (Int, String)) = {
+    val dmnResult = DMNTreintaPorciento.dmn(obn)
+
+    dmnResult match {
+      case Some((numero, descripcion)) if numero.equals(1) => {
         val detalles: Option[List[DetallesObligacion]] = Some(
           obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m =>
-            m.copy(tiene30Obligaciones = Some(true),
-                   BAND_BATCH = Some(false),
-                   EV_ID = Some(obn.EV_ID),
-                   SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)
+            m.copy(
+              tiene30Obligaciones = Some(true),
+              BAND_BATCH = Some(false),
+              EV_ID = Some(obn.EV_ID),
+              SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO,
+              dmnNumero = Some(numero),
+              dmnDescripcion = Some(descripcion)
+            )
           )
         )
         val newDetails =
           decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
-        (newO, f.get)
+        (newO, (numero, descripcion))  // ← Retornar tupla tipada
       }
-      case n => {
+      case Some((numero, descripcion)) if !numero.equals(1) => {
         val detalles: Option[List[DetallesObligacion]] = Some(
           obn.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.map(m =>
-            m.copy(tiene30Obligaciones = Some(false),
-                   BAND_BATCH = Some(false),
-                   EV_ID = Some(obn.EV_ID),
-                   SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO)
+            m.copy(
+              tiene30Obligaciones = Some(false),
+              BAND_BATCH = Some(false),
+              EV_ID = Some(obn.EV_ID),
+              SOJ_ID_EXTERNO = obn.SOJ_ID_EXTERNO,
+              dmnNumero = Some(numero),
+              dmnDescripcion = Some(descripcion)
+            )
           )
         )
         val newDetails =
           decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
-        (newO, n.get)
+        (newO, (numero, descripcion))  // ← Retornar tupla tipada
       }
+      case None => (obn, (-999, "Error en DMN"))  // ← Retornar tupla tipada
     }
   }
 }
