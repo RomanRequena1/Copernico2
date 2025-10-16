@@ -1,8 +1,17 @@
 {
-      "EV_ID": "1",
-      "SUJ_IDENTIFICADOR": "44653640",
-      "SUJ_DENOMINACION": "Roman Requena",
-      "SUJ_EMAIL": "roman.requena.nores@gmail.com",
-      "SUJ_DIRECCION": "null",
-      "SUJ_CAT_SUJ_ID": "999"
-    }
+  "EV_ID": "4",
+  "SUJ_IDENTIFICADOR": "20-03034779-2",
+  "SUJ_CAT_SUJ_ID": "016",
+  "SUJ_DENOMINACION": "TEST Sujeto Nuevo Transferencia",
+  "SUJ_ID_EXTERNO": "0303779",
+  "SUJ_TIPO": "F",
+  "SUJ_CANAL_ORIGEN": "OTAX",
+  "SUJ_DIRECCION": null,
+  "SUJ_EMAIL": null,
+  "SUJ_TELEFONO": null,
+  "SUJ_DFE": null,
+  "SUJ_SITUACION_FISCAL": null,
+  "SUJ_RIESGO_FISCAL": null,
+  "SUJ_TIPO_EXCLUSION": null,
+  "SUJ_OTROS_ATRIBUTOS": null
+}

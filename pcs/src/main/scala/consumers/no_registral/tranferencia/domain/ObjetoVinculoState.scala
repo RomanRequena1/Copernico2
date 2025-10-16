@@ -34,11 +34,6 @@ final case class ObjetoVinculoState(
           lastDeliveryIdByEvents = event.deliveryId
         )
     }
-    /*changeState(event).copy(
-      fechaUltMod = LocalDateTime.now,
-      lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
-      eventCounter = eventCounter + 1
-    )*/
   }
 
   /**
@@ -56,15 +51,6 @@ final case class ObjetoVinculoState(
       if (_mapVinculo.forall(_._2.tiene30Objeto) && _mapTransf.forall(_._2.tiene30Objeto)) true else false
     }
   }
-
-// fuction that update the mapVinculo with the new vinculo and return the new map, but if the vinculo is already in the map, it update the vinculo
-// def UpdateObjVinculo(vinculo: Vinculo, vinculoCotitular: VinculoCotitular): Map[Vinculo, VinculoCotitular] = {
-//   if (mapVinculo.contains(vinculo))
-//     mapVinculo.updated(vinculo, vinculoCotitular)
-//   else
-//     mapVinculo + (vinculo -> vinculoCotitular)
-//
-// }
 
   /**
    *  1. Si el vinculo ya existe en el map, se actualiza el valor del vinculo
@@ -111,28 +97,65 @@ final case class ObjetoVinculoState(
   private def changeState(event: ObjetoVinculoEvent): ObjetoVinculoState =
     event match {
       case evt: ObjetoVinculoEvent.UpdatedVinculoObjetoFromObj =>
-        val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj) // se arma la clave del map
-        val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj) // se arma el valor del map
-        val _mapVinculo = UpdateObjVinculo(_vinculo, _vinculoCotitular)
-        val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(_mapVinculo, mapTransf)
-        copy(
-          tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
-          mapVinculo = _mapVinculo,
-          exclusionObjetoVinculo = evt.exclusionObjeto
-        )
-
-      case evt: ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj =>
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
         val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj)
-        val _mapVinculo = mapVinculo.filterNot(x => x._1.sujetoId.equals(evt.sujetoId)) //todo por ahora lo vamos a eliminar
-        val _mapTransf = updateMapTransf(_vinculo, _vinculoCotitular)
+
+        val estaEnVinculo = mapVinculo.contains(_vinculo)
+        val estaEnTransf = mapTransf.contains(_vinculo)
+
+        val _mapVinculo = if (estaEnVinculo) {
+          // si existe actualizar
+          UpdateObjVinculo(_vinculo, _vinculoCotitular)
+        } else if (!estaEnTransf) {
+          // sino existe en ningún map crear en mapVinculo
+          mapVinculo + (_vinculo -> _vinculoCotitular)
+        } else {
+          // si existe en mapTransf no tocar mapVinculo
+          mapVinculo
+        }
+
+        // Actualizar mapTransf si el vínculo está ahí
+        val _mapTransf = if (estaEnTransf) {
+          mapTransf.updated(_vinculo, _vinculoCotitular)
+        } else {
+          mapTransf
+        }
         val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(_mapVinculo, _mapTransf)
         copy(
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
           mapVinculo = _mapVinculo,
-          mapTransf = _mapTransf
+          mapTransf = _mapTransf,
+          exclusionObjetoVinculo = evt.exclusionObjeto
         )
+      case evt: ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj =>
+        val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
+        val _vinculoCotitular = VinculoCotitular(evt.tiene30Objeto, evt.isResponsable, evt.titularidad, evt.estadoObj)
 
+        // tengo que tener todos los vinculos anteriores
+        val vinculosAnteriores = mapVinculo.filter(v => v._1.objetoId.equals(evt.objetoId))
+        val (nuevoMapTransf, nuevoMapVinculo) = evt.estadoObj match {
+          case Some("TRANSF") =>
+            val _mapTransf = vinculosAnteriores.foldLeft(mapTransf) {
+              case (acc, (vinculo, cotitular)) =>
+                acc + (vinculo -> cotitular.copy(estado = Some("TRANSF")))
+            }
+
+            val _mapVinculoLimpio = mapVinculo.filterNot(v => v._1.objetoId.equals(evt.objetoId))
+            val _mapVinculo = _mapVinculoLimpio + (_vinculo -> _vinculoCotitular)
+
+            (_mapTransf, _mapVinculo)
+
+          case _ =>
+            val _mapVinculo = mapVinculo + (_vinculo -> _vinculoCotitular)
+            (mapTransf, _mapVinculo)
+        }
+        val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(nuevoMapVinculo, nuevoMapTransf)
+        copy(
+          tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
+          mapVinculo = nuevoMapVinculo,
+          mapTransf = nuevoMapTransf,
+          exclusionObjetoVinculo = evt.exclusionObjeto
+        )
       case evt: ObjetoVinculoEvent.RemovedVinculoObjetoFromObj =>
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
         val _mapVinculo = if (mapVinculo.contains(_vinculo)) mapVinculo - _vinculo else mapVinculo //todo por ahora lo vamos a eliminar
@@ -143,13 +166,6 @@ final case class ObjetoVinculoState(
           mapVinculo = _mapVinculo,
           mapTransf = _mapTransf
         )
-//      case evt: ObjetoVinculoEvent.ObjetoVinculoSnapshotPersisted =>
-//        copy(
-//          objetoId = evt.objetoId,
-//          tipoObj = evt.tipoObj,
-//          mapTransf = evt.mapTransf,
-//          mapVinculo = evt.mapVinculo
-//        )
       case _ =>
         log.warn(s"Unexpected event at ObjetoVinculoState ")
         this
