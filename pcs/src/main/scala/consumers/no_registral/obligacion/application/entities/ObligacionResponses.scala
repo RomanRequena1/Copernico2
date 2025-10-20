@@ -16,6 +16,7 @@ object ObligacionResponses {
       registro: Option[ObligacionExternalDto] = None,
       lastDeliveryIdByEvents: BigInt = 0,
       detallesObligacion: Seq[DetallesObligacion] = Seq.empty,
+      detallesCaracteristicas: Seq[DetallesObligacionCaracteristicas] = Seq.empty,
       detallesSupresiones: Option[Seq[DetallesSupresiones]] = None,
       juicioId: Option[BigInt] = None,
       isAdheridoDebito: Boolean = false,

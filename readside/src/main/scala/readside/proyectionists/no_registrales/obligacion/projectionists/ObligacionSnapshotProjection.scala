@@ -1,16 +1,12 @@
 package readside.proyectionists.no_registrales.obligacion.projectionists
-import consumers.no_registral.obligacion.application.entities.{
-  DetallesObligacion,
-  DetallesSupresiones,
-  ObligacionExternalDto
-}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesObligacionCaracteristicas, DetallesSupresiones, ObligacionExternalDto}
 import consumers.no_registral.obligacion.domain.ObligacionEvents
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import io.circe.parser._
 import io.circe.syntax.EncoderOps
 final case class ObligacionSnapshotProjection(
-    event: ObligacionEvents.ObligacionPersistedSnapshot
-) extends ObligacionProjection {
+                                               event: ObligacionEvents.ObligacionPersistedSnapshot
+                                             ) extends ObligacionProjection {
 
   val registro: Option[ObligacionExternalDto] = event.registro
 
@@ -21,6 +17,7 @@ final case class ObligacionSnapshotProjection(
     case Some(value) => Map("BOB_DETALLES" -> value.get("BOB_DETALLES").asJson.noSpaces)
     case None => None
   }
+
   val bobOtrosAtributos: Option[Boolean] = registro.get.BOB_OTROS_ATRIBUTOS match {
     case Some(value) => value.BOB_DETALLES.head.tiene30Obligaciones
     case None => Some(true)
@@ -33,6 +30,18 @@ final case class ObligacionSnapshotProjection(
     case Some(value) => Map("BOB_DETALLES_SUPRESIONES" -> value.get("BOB_DETALLES_SUPRESIONES").asJson.noSpaces)
     case None => None
   }
+
+  val bobCaracteristicasResult: Option[Map[String, List[DetallesObligacionCaracteristicas]]] =
+    registro.get.BOB_CARACTERISTICAS match {
+      case Some(caracteristicas) => decode[Map[String, List[DetallesObligacionCaracteristicas]]](caracteristicas.asJson.toString()).toOption
+      case None => None
+    }
+
+  val mao3 = bobCaracteristicasResult match {
+    case Some(value) => Map("BOB_DETALLES_CARACTERISTICAS" -> value.get("BOB_DETALLES_CARACTERISTICAS").asJson.noSpaces)
+    case None => None
+  }
+
   val fromRegistro = registro map { registro =>
     List(
       "bob_adherido_debito" -> registro.BOB_ADHERIDO_DEBITO,
@@ -50,6 +59,7 @@ final case class ObligacionSnapshotProjection(
       "bob_jui_id" -> registro.BOB_JUI_ID,
       "bob_saldo" -> registro.BOB_SALDO,
       "bob_otros_atributos" -> Some(mao),
+      "bob_caracteristicas" -> Some(mao3),
       "bob_supresiones" -> Some(mao2),
       "bob_pln_id" -> registro.BOB_PLN_ID,
       "bob_prorroga" -> registro.BOB_PRORROGA,
@@ -67,10 +77,10 @@ final case class ObligacionSnapshotProjection(
   }
   // FIXME: quitar el others y agregar el bob_saldo donde corresponda
   val other: List[(String, BigDecimal)] =
-  List(
-    //"bob_saldo" -> event.saldo
-    //"bob_porcentaje_exencion" -> event.porcentajeExencion,
-    //"bob_exenta" -> event.exenta
+    List(
+      //"bob_saldo" -> event.saldo
+      //"bob_porcentaje_exencion" -> event.porcentajeExencion,
+      //"bob_exenta" -> event.exenta
     )
   val bindings: List[(String, Serializable)] = fromRegistro match {
     case Some(fromRegistro) => fromRegistro ++ other

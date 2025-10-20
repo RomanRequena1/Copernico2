@@ -55,6 +55,10 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
       case Some(r) => r.BOB_DETALLES
       case None => null
     }
+    val detallesObligacionCaracteristicas: Seq[DetallesObligacionCaracteristicas] = obligacion.BOB_CARACTERISTICAS match {
+      case Some(r) => r.BOB_DETALLES_CARACTERISTICAS
+      case None => null
+    }
 
     val detallesSupresiones: Seq[DetallesSupresiones] = obligacion.BOB_SUPRESIONES match {
       case Some(r) => r.BOB_DETALLES_SUPRESIONES
@@ -96,6 +100,7 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
             deliveryId = obligacion.EV_ID,
             registro = obligacion,
             detallesObligacion = detallesObligacion,
+            detallesCaracteristicas = detallesObligacionCaracteristicas,
             detallesSupresiones = detallesSupresiones,
             isAdheridoDebito = isAdheridoDebito,
             cuota = obligacion.BOB_CUOTA
