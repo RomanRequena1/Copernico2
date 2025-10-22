@@ -32,6 +32,10 @@ class KafkaConfig(config: Config) {
     config.getString("kafka.CONSUMER_GROUP")
   }.getOrElse("CONSUMER_GROUP")
 
+  lazy val CONSUMER_GROUP_SINCRO: String = Try {
+    config.getString("kafka.CONSUMER_GROUP_SINCRO")
+  }.getOrElse("CONSUMER_GROUP_SINCRO")
+
   lazy val SOURCE_TOPIC: String = "SOURCE_TOPIC"
   lazy val SINK_TOPIC: String = "SINK_TOPIC"
   lazy val PARTITIONS_NUMBER: Int = Try {
