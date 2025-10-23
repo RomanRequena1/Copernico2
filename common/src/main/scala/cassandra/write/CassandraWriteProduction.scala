@@ -15,9 +15,7 @@ class CassandraWriteProduction extends CassandraWrite {
   private val logger = LoggerFactory.getLogger(this.getClass)
   private val session = CqlSessionSingleton.session
 
-  def writeState[E <: Event](
-      state: ReadSideProjection[E]
-  )(implicit ec: ExecutionContext): Future[Done] = {
+  def writeState[E <: Event](state: ReadSideProjection[E])(implicit ec: ExecutionContext): Future[Done] = {
     val result = for {
       done <- state.updateReadside()
     } yield done

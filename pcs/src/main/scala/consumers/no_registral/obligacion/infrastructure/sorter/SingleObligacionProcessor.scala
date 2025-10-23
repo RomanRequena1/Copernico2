@@ -46,13 +46,13 @@ class SingleObligacionProcessor(targetGlobalActor: ActorRef, obligacionId: Strin
     busy = true
     currentStateId += 1
 
-    logger.debug(
-      f"""|CUMBIA
-          |  | command_id: ${cmd.deliveryId}%-20s | state_id: ${currentStateId}%-5s
-          |  | sender    : ${sender().path}
-          |  | self      : ${self.path}
-          |""".stripMargin
-    )
+//    logger.debug(
+//      f"""|CUMBIA
+//          |  | command_id: ${cmd.deliveryId}%-20s | state_id: ${currentStateId}%-5s
+//          |  | sender    : ${sender().path}
+//          |  | self      : ${self.path}
+//          |""".stripMargin
+//    )
 
     (targetGlobalActor ? cmd)(400 seconds)
       .mapTo[Response.SuccessProcessing].recover {

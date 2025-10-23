@@ -20,8 +20,7 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
       command: ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    val obj_default: ObjetosTri = ObjetosTri(
-      Some("None"),0,"None","None","None",Some("None"),Some("None"),Some("None"),None,None,Some("None"),None,Some(0),Some("None"),Some(0),Some("None"),Some("None"),Some("None"),Some("None"),Some("None"),None,None)
+    val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"),Some("None"), Some("None"), Some("None"),None,None)
 
     log.debug(
       f"""|CUMBIA
@@ -42,11 +41,10 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
       command.obligacionExenta,
       command.porcentajeExencion,
       command.idExterno,
-      command.cuota
+      command.cuota,
+      command.dmnNumero,
+      command.dmnDescripcion
     )
-    val initialization: String = {
-      Try(System.getenv("INITIALIZATION")).getOrElse(null)
-    }
 
     implicit val ac: ActorSystem = actor.context.system
     val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
@@ -56,8 +54,10 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+        actor.deleteMessages(actor.lastSequenceNr - 201)
       }
-      SendObjetoToObjetoVinculo(vinculoActor,
+      SendObjetoToObjetoVinculo(
+        vinculoActor,
         actor,
         command.sujetoId,
         command.objetoId,
@@ -65,7 +65,6 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
         actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
         requeriment,
         command)
-
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

@@ -1,12 +1,9 @@
 package consumers.no_registral.obligacion.application.helper
 
-import org.camunda.bpm.model.dmn.Dmn
 import org.camunda.dmn.DmnEngine
 import org.camunda.dmn.parser.ParsedDmn
-import scalaz.\/
 import scalaz.concurrent.Task.Try
 
-import java.io.InputStream
 import java.io.FileInputStream
 
 object FileStreamDmn {

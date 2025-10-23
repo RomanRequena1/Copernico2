@@ -8,7 +8,7 @@ import consumers.no_registral.obligacion.application.cqrs.queries.{ObligacionGet
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionRemove
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage.ObligacionMessageRoots
 import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionQueries}
-import consumers.no_registral.obligacion.domain.ObligacionEvents.{ObligacionPersistedSnapshot, ObligacionUpdatedFromDto}
+import consumers.no_registral.obligacion.domain.ObligacionEvents.{DMNResumenPersisted, ObligacionPersistedSnapshot, ObligacionUpdatedFromDto}
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import cqrs.base_actor.untyped.PersistentBaseActor
@@ -28,14 +28,11 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
     queryBus.subscribe[ObligacionQueries.GetSnapshotObligacion](new ObligacionSnapshotHandler(this).handle)
     queryBus.subscribe[ObligacionQueries.GetMiniStateObligacion](new ObligacionGetMiniStateHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateFromDto](new ObligacionUpdateFromDtoHandler(this).handle)
-    commandBus.subscribe[ObligacionCommands.ObligacionAntUpdateFromDto](
-      new ObligacionAntUpdateFromDtoHandler(this).handle
-    )
+    commandBus.subscribe[ObligacionCommands.ObligacionAntUpdateFromDto](new ObligacionAntUpdateFromDtoHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionUpdateExencion](new ObligacionUpdateExencionHandler(this).handle)
     commandBus.subscribe[ObligacionCommands.ObligacionRemove](new ObligacionRemoveHandler(this).handle)
-    commandBus.subscribe[ObligacionCommands.ObligacionRemoveInfoFromObjeto](
-      new ObligacionRemoveFromObjeto(this, requirements).handle
-    )
+    commandBus.subscribe[ObligacionCommands.ObligacionRemoveInfoFromObjeto](new ObligacionRemoveFromObjeto(this, requirements).handle)
+    commandBus.subscribe[ObligacionCommands.ObligacionReprocess](new ObligacionReprocessHandler(this).handle)
   }
 
   def informParent(cmd: ObligacionCommands): Unit = {
@@ -57,7 +54,9 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       state.exenta,
       state.porcentajeExencion,
       state.idExterno,
-      state.registro.get.BOB_CUOTA
+      state.registro.get.BOB_CUOTA,
+      state.registro.get.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnNumero,
+      state.registro.get.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnDescripcion,
     )
   }
 
@@ -80,7 +79,9 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       state.exenta,
       state.porcentajeExencion,
       state.idExterno,
-      evt.cuota
+      evt.cuota,
+      evt.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnNumero,
+      evt.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnDescripcion
     )
   }
 
@@ -91,7 +92,9 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       cmd.objetoId,
       cmd.tipoObjeto,
       cmd.obligacionId,
-      cmd.cuota
+      cmd.cuota,
+      cmd.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnNumero,
+      cmd.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnDescripcion
     )
   }
   def persistSnapshot(evt: ObligacionEvents)(handler: () => Unit): Unit = {
@@ -127,6 +130,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
         }
       }
   }
+
 
   def deleteSnapshot(evt: ObligacionEvents)(handler: () => Unit): Unit = {
     import io.circe.syntax.EncoderOps

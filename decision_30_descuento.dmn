@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="decision_30_descuento" name="decision_30_descuento" namespace="http://camunda.org/schema/1.0/dmn" exporter="dmn-js (https://demo.bpmn.io/dmn)" exporterVersion="16.4.0">
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="decision_30_descuento" name="decision_30_descuento" namespace="http://camunda.org/schema/1.0/dmn" exporter="dmn-js (https://demo.bpmn.io/dmn)" exporterVersion="16.4.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.7.0">
   <decision id="Decision_descuento" name="decision_30_descuento">
     <decisionTable id="DecisionTable_19dum3t" hitPolicy="FIRST">
       <input id="InputClause_0die5ek" label="bob_tipo">
@@ -22,9 +22,14 @@
           <text>bob_estado</text>
         </inputExpression>
       </input>
-      <input id="InputClause_0uuineo" label="bob_capital">
-        <inputExpression id="LiteralExpression_138l024" typeRef="double">
+      <input id="InputClause_1h3oa09" label="bob_capital">
+        <inputExpression id="LiteralExpression_1boo6f0" typeRef="double">
           <text>bob_capital</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0uuineo" label="bob_saldo">
+        <inputExpression id="LiteralExpression_138l024" typeRef="double">
+          <text>bob_saldo</text>
         </inputExpression>
       </input>
       <input id="InputClause_190iar5" label="is_vencida">
@@ -58,6 +63,7 @@
         </inputExpression>
       </input>
       <output id="OutputClause_1if0ej5" label="30_descuento" name="decision_30_descuento" typeRef="integer" />
+      <output id="OutputClause_0deo91b" label="30_razon" name="30_razon" typeRef="string" />
       <rule id="DecisionRule_1hx7ux2">
         <description>Regla general de obligaciones en estado judicial.</description>
         <inputEntry id="UnaryTests_0cbpnno">
@@ -71,6 +77,9 @@
         </inputEntry>
         <inputEntry id="UnaryTests_1v30bf2">
           <text>"JUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_01ejwyr">
+          <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1oe48kw">
           <text></text>
@@ -96,6 +105,9 @@
         <outputEntry id="LiteralExpression_0h4qze5">
           <text>-1</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_095l2nc">
+          <text>"Regla general de obligaciones en estado judicial."</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_0osnlsw">
         <description>Cuotas de planes de pagos vencidas (Planes debito y no debito). 
@@ -111,6 +123,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_1qgl5n7">
           <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02e40f8">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1lqhk82">
           <text>&gt;=10</text>
@@ -136,6 +151,10 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_1ti4l8w">
           <text>-2</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_0p7epr5">
+          <text>"Cuotas de planes de pagos vencidas (Planes debito y no debito). 
+Incluye a los planes de pago multi-Impuesto y multi-instancia."</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_080sm4j">
         <description>Falta de presentación de la declaración jurada mensual de Contribuyentes Locales y de Convenio Multirateral y DDJJ anual de Contribuyentes del Régimen de Convenio Multilateral, declaracion jurada anual Productores de Seguro, declaracion jurada anual Agropecuarios y declaracion jurada anual Asociaciones y otras entidades del Impuesto sobre los Ingresos Brutos.</description>
@@ -150,6 +169,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_169xgab">
           <text>"ADMINISTRATIVA"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0nlcofg">
+          <text>&lt;=0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_187fujz">
           <text>&lt;=0</text>
@@ -175,6 +197,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_1uoe0td">
           <text>-3</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_171jyub">
+          <text>"Falta de presentación de la declaración jurada mensual de Contribuyentes Locales y de Convenio Multirateral y DDJJ anual de Contribuyentes del Régimen de Convenio Multilateral, declaracion jurada anual Productores de Seguro, declaracion jurada anual Agropecuarios y declaracion jurada anual Asociaciones y otras entidades del Impuesto sobre los Ingresos Brutos."</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_107gom9">
         <description>Obligaciones vencidas del Impuesto sobre los Ingresos Brutos, Régimen Local y Convenio Multilateral en instancia de gestión adminsitrativa o prejudicial</description>
@@ -189,6 +214,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_0hht905">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1xgir0i">
+          <text>&gt;=0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1bb4frw">
           <text>&gt;=10</text>
@@ -214,6 +242,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_1uuis7v">
           <text>-4</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_1utlbpj">
+          <text>"Obligaciones vencidas del Impuesto sobre los Ingresos Brutos, Régimen Local y Convenio Multilateral en instancia de gestión adminsitrativa o prejudicial"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_15bd89v">
         <description>Multas vencidas del Impuesto sobre los Ingresos Brutos,  Régimen local y Convenio Multilateral en instancia administrativa o prejudicial</description>
@@ -228,6 +259,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_1rnau32">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1wc62pv">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1rwhget">
           <text>&gt;=10</text>
@@ -253,6 +287,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_0bvguby">
           <text>-5</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_0026q7n">
+          <text>"Multas vencidas del Impuesto sobre los Ingresos Brutos,  Régimen local y Convenio Multilateral en instancia administrativa o prejudicial"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_1xsfv4o">
         <description>Obligaciones vencidas del Impuesto sobre los Ingresos Brutos,  Régimen Simplificado, en instancia de gestión administrativa o prejudicial (MUC)</description>
@@ -267,6 +304,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_0bzziol">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1lzz5pz">
+          <text>&gt;=0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0tc8woy">
           <text>&gt;=10</text>
@@ -292,6 +332,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_1i1q4b1">
           <text>-6</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_1oslwps">
+          <text>"Obligaciones vencidas del Impuesto sobre los Ingresos Brutos,  Régimen Simplificado, en instancia de gestión administrativa o prejudicial (MUC)"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_1xg03oa">
         <description>Obligaciones vencidas del Impuesto Inmobiliario (Urbano, Rural, Loteo, Parcelario, Adicional Rural y Conjunto Tributario) en instancia de gestión administrativa o prejudicial</description>
@@ -306,6 +349,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_05d3tz9">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1q9xh81">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1p96ej5">
           <text>&gt;=10</text>
@@ -331,6 +377,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_15i0987">
           <text>-7</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_0d2gqgr">
+          <text>"Obligaciones vencidas del Impuesto Inmobiliario (Urbano, Rural, Loteo, Parcelario, Adicional Rural y Conjunto Tributario) en instancia de gestión administrativa o prejudicial"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_0r3myra">
         <description>Obligaciones vencidas del Impuesto a la Propiedad Automotor en instancia de gestión administrativa o prejudicial</description>
@@ -345,6 +394,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_1r4ywc9">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1cqdjq2">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1v9krzp">
           <text>&gt;=10</text>
@@ -370,6 +422,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_0ulc7bz">
           <text>-8</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_1m0q5ii">
+          <text>"Obligaciones vencidas del Impuesto a la Propiedad Automotor en instancia de gestión administrativa o prejudicial"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_1nxpjto">
         <description>Obligaciones vencidas del Impuesto a las Embarcaciones en instancia de gestión administrativa o prejudicial</description>
@@ -384,6 +439,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_1hp16dm">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ygyk8w">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0y20ovb">
           <text>&gt;=10</text>
@@ -409,6 +467,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_1y56017">
           <text>-9</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_0mdnit2">
+          <text>"Obligaciones vencidas del Impuesto a las Embarcaciones en instancia de gestión administrativa o prejudicial"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_0temksd">
         <description>Obligaciones vencidas de Agentes de Retención o Percepción del Impuesto sobre los Ingresos Brutos en instancia de gestión administrativa o prejudicial</description>
@@ -423,6 +484,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_1uzf09t">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0zo98y9">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1q9ry1j">
           <text>&gt;=10</text>
@@ -448,6 +512,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_03y819q">
           <text>-10</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_17cagz3">
+          <text>"Obligaciones vencidas de Agentes de Retención o Percepción del Impuesto sobre los Ingresos Brutos en instancia de gestión administrativa o prejudicial"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_0fwd8o0">
         <description>Falta de presentación de declaraciones juradas de Agentes de Retención y Percepción del Impuesto sobre los Ingresos Brutos</description>
@@ -462,6 +529,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_1aazv6n">
           <text>"ADMINISTRATIVA"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0kxk1nf">
+          <text>&lt;=0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1wh3qw5">
           <text>&lt;=0</text>
@@ -487,6 +557,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_1fi4uvh">
           <text>-11</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_157shsm">
+          <text>"Falta de presentación de declaraciones juradas de Agentes de Retención y Percepción del Impuesto sobre los Ingresos Brutos"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_1nbw1s9">
         <description>Obligaciones vencidas de Agentes de Retención de Tarjetas  de Credito Regimen SIRTAC en instancia de gestión administrativa o prejudicial</description>
@@ -501,6 +574,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_1y8fvbr">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0m4998e">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0dl25zw">
           <text>&gt;=10</text>
@@ -526,6 +602,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_1np2316">
           <text>-12</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_1k5jn3s">
+          <text>"Obligaciones vencidas de Agentes de Retención de Tarjetas  de Credito Regimen SIRTAC en instancia de gestión administrativa o prejudicial"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_03g459n">
         <description>Falta de presentación de declaraciones juradas de Agentes de Retención de Tarjetas de Credito y Regimen SIRTAC</description>
@@ -540,6 +619,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_1h6nopz">
           <text>"ADMINISTRATIVA"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1xmsglt">
+          <text>&lt;=0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_183i538">
           <text>&lt;=0</text>
@@ -565,6 +647,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_1tk23zk">
           <text>-13</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_0ms6ap1">
+          <text>"Falta de presentación de declaraciones juradas de Agentes de Retención de Tarjetas de Credito y Regimen SIRTAC"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_0aqdguc">
         <description>Obligaciones vencidas de Agentes de Recaudación del Impuesto sobre los Ingresos Brutos en instancia de gestión administrativa o prejudicial</description>
@@ -579,6 +664,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_122qayr">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18m0zux">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1htrsvk">
           <text>&gt;=10</text>
@@ -604,6 +692,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_0juvymj">
           <text>-14</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_0bl3lfl">
+          <text>"Obligaciones vencidas de Agentes de Recaudación del Impuesto sobre los Ingresos Brutos en instancia de gestión administrativa o prejudicial"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_17df8de">
         <description>Falta de presentación de declaraciones juradas de Agentes de Recaudación del Impuesto sobre los Ingresos Brutos</description>
@@ -618,6 +709,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_0ffdooo">
           <text>"ADMINISTRATIVA"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_133oak0">
+          <text>&lt;=0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1f28tqv">
           <text>&lt;=0</text>
@@ -643,6 +737,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_1c9toed">
           <text>-15</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_1t49kmu">
+          <text>"Falta de presentación de declaraciones juradas de Agentes de Recaudación del Impuesto sobre los Ingresos Brutos"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_1wtsvwq">
         <description>Obligaciones vencidas de Agentes de Retención de Tarjetas  de Credito Regimen SIRCUPA en instancia de gestión administrativa o prejudicial</description>
@@ -657,6 +754,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_083b7t4">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1l613zs">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1wwo95s">
           <text>&gt;=10</text>
@@ -682,6 +782,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_0dsfcpn">
           <text>-16</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_0e048ij">
+          <text>"Obligaciones vencidas de Agentes de Retención de Tarjetas  de Credito Regimen SIRCUPA en instancia de gestión administrativa o prejudicial"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_0z422dv">
         <description>Falta de presentación de declaraciones juradas de Agentes de Retención de Tarjetas de Credito Regimen SIRCUPA</description>
@@ -696,6 +799,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_126lzpx">
           <text>"ADMINISTRATIVA"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_03fkvcd">
+          <text>&lt;=0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1bq34aq">
           <text>&lt;=0</text>
@@ -721,6 +827,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_1k3qj3f">
           <text>-17</text>
         </outputEntry>
+        <outputEntry id="LiteralExpression_056kd10">
+          <text>"Falta de presentación de declaraciones juradas de Agentes de Retención de Tarjetas de Credito Regimen SIRCUPA"</text>
+        </outputEntry>
       </rule>
       <rule id="DecisionRule_1i71tkh">
         <description>Multas vencidas de Agentes de Retención, Percepción y Recaudación del Impuesto sobre los Ingresos Brutos , en instancia de gestión administrativa o prejudicial.</description>
@@ -735,6 +844,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <inputEntry id="UnaryTests_0qvhtt2">
           <text>"ADMINISTRATIVA","PREJUDICIAL"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0fo69ea">
+          <text>&gt;0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1y2hkxy">
           <text>&gt;=10</text>
@@ -760,44 +872,8 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         <outputEntry id="LiteralExpression_1j49w17">
           <text>-18</text>
         </outputEntry>
-      </rule>
-      <rule id="DecisionRule_1klt1j8">
-        <description>Obligaciones vencidas origen PSRM del impuesto Inmobiliario, Automotor y Embarcaciones en instancia de gestión administrativa.</description>
-        <inputEntry id="UnaryTests_1a1kr56">
-          <text>"tributaria"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_070bmf4">
-          <text>"5","600","58"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1qmxrrx">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1m0tpxu">
-          <text>"ADMINISTRATIVA"</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_0x3wli7">
-          <text>&gt;=10</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1fw2ofe">
-          <text>true</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1exv6rs">
-          <text>&gt;10</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1lybqrj">
-          <text>&lt;=5</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_11ipdn8">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_0p9p7mt">
-          <text></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1yqcpro">
-          <text></text>
-        </inputEntry>
-        <outputEntry id="LiteralExpression_0msgdg9">
-          <text>-19</text>
+        <outputEntry id="LiteralExpression_1gc0zkl">
+          <text>"Multas vencidas de Agentes de Retención, Percepción y Recaudación del Impuesto sobre los Ingresos Brutos , en instancia de gestión administrativa o prejudicial."</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1l94ocv">
@@ -812,6 +888,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1f9s02o">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_08ycu7e">
           <text></text>
         </inputEntry>
         <inputEntry id="UnaryTests_1ufgeye">
@@ -837,6 +916,9 @@ Incluye a los planes de pago multi-Impuesto y multi-instancia.</description>
         </inputEntry>
         <outputEntry id="LiteralExpression_042rkq5">
           <text>1</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1d1i4h5">
+          <text>"No Deuda"</text>
         </outputEntry>
       </rule>
     </decisionTable>

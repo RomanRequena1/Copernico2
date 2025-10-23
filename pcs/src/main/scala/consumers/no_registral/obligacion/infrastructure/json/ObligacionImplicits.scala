@@ -1,19 +1,10 @@
 package consumers.no_registral.obligacion.infrastructure.json
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{
-  ObligacionRemove,
-  ObligacionUpdateExencion,
-  ObligacionUpdateFromDto
-}
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateExencion, ObligacionUpdateFromDto}
 import consumers.no_registral.obligacion.application.entities.ObligacionResponses.GetObligacionResponse
 import consumers.no_registral.obligacion.application.entities._
-import consumers.no_registral.obligacion.domain.ObligacionEvents.{
-  ObligacionAddedExencion,
-  ObligacionPersistedSnapshot,
-  ObligacionRemoved,
-  ObligacionUpdatedFromDto
-}
+import consumers.no_registral.obligacion.domain.ObligacionEvents.{DMNResumenPersisted, ObligacionAddedExencion, ObligacionPersistedSnapshot, ObligacionRemoved, ObligacionUpdatedFromDto}
 import io.circe._
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.syntax.EncoderOps
@@ -91,6 +82,9 @@ object ObligacionImplicits {
   //EVENTS
   implicit val ObligacionPersistedSnapshotDecoder: Decoder[ObligacionPersistedSnapshot] = deriveDecoder
   implicit val ObligacionPersistedSnapshotEncoder: Encoder[ObligacionPersistedSnapshot] = deriveEncoder
+
+  implicit val DMNResumenPersistedDecoder: Decoder[DMNResumenPersisted] = deriveDecoder
+  implicit val DMNResumenPersistedEncoder: Encoder[DMNResumenPersisted] = deriveEncoder
 
   implicit val ObligacionUpdatedFromDtoDecoder: Decoder[ObligacionUpdatedFromDto] = deriveDecoder
   implicit val ObligacionUpdatedFromDtoEncoder: Encoder[ObligacionUpdatedFromDto] = deriveEncoder

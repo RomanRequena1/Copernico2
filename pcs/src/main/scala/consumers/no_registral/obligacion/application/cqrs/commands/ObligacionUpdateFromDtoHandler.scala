@@ -7,12 +7,9 @@ import consumers.no_registral.obligacion.application.helper.StateParcialObligaci
 import consumers.no_registral.obligacion.domain.ObligacionEvents.ObligacionUpdatedFromDto
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
-import cqrs.untyped.command.StateParcial
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement.isIdempotent
-
-import java.time.LocalDateTime
 import scala.util.{Success, Try}
 
 class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommandHandler[ObligacionUpdateFromDto] {
@@ -57,7 +54,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       command.detallesSupresiones,
       command.isAdheridoDebito,
       command.cuota,
-      command.resultDmn
+      command.resultDmn,
     )
     val initialization: String = {
       Try(System.getenv("INITIALIZATION")).getOrElse(null)
@@ -70,11 +67,9 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
 
       sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
 
-      Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     } else {
-      actor.persistEvent(event) { () =>
+      actor.persistEventTagsSujeto(event) { () =>
         actor.state += event
-        if (!(initialization == "true" && command.registro.BOB_ESTADO.contains("ADMINISTRATIVA"))) {}
         if (event.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.tiene30Obligaciones.get.equals(true)) {
           actor.informParent(command)
         } else {
@@ -88,7 +83,6 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
         actor.lastDeliveryId = command.registro.EV_ID
         actor.persistSnapshot(event) { () =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-
         }
       }
     }

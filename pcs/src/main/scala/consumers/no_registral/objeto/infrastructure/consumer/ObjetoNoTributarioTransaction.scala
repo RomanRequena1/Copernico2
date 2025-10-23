@@ -17,10 +17,9 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 case class ObjetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitoring)(
-    implicit
-    actorTransactionRequirements: ActorTransactionRequirements,
-    system: ActorSystem
-
+  implicit
+  actorTransactionRequirements: ActorTransactionRequirements,
+  system: ActorSystem
 ) extends ActorTransaction[ObjetosAnt](monitoring) {
 
   implicit val timeout: Timeout = Timeout(30.seconds)
@@ -38,7 +37,27 @@ case class ObjetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
     decode[ObjetosAnt](input)
   }
 
-  def processMessage(registro: ObjetosAnt): Future[Response.SuccessProcessing] = {
+  /**
+   * Método auxiliar para setear automáticamente el EV_ID en DetallesObjeto
+   * @param registro El objeto ObjetosAnt original
+   * @return Una copia del objeto con los EV_ID seteados en todos los DetallesObjeto
+   */
+  private def setEvIdInDetalles(registro: ObjetosAnt): ObjetosAnt = {
+    registro.copy(
+      SOJ_OTROS_ATRIBUTOS = registro.SOJ_OTROS_ATRIBUTOS.map { listDetalles =>
+        listDetalles.copy(
+          SOJ_DETALLES = listDetalles.SOJ_DETALLES.map { detalle =>
+            detalle.copy(EV_ID = Some(registro.EV_ID))
+          }
+        )
+      }
+    )
+  }
+
+  def processMessage(registroOriginal: ObjetosAnt): Future[Response.SuccessProcessing] = {
+
+    // Setear automáticamente el EV_ID en los detalles
+    val registro = setEvIdInDetalles(registroOriginal)
 
     val isResponsable: Option[ListDetallesObjeto] => List[Boolean] = {
       case Some(d) =>
@@ -61,6 +80,7 @@ case class ObjetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
     }
 
     val isAdheridoDebito = Some(registro.SOJ_ADHERIDO_DEBITO.contains("S"))
+
     if (registro.SOJ_SUJ_IDENTIFICADOR == "" || registro.SOJ_IDENTIFICADOR == "" || registro.SOJ_TIPO_OBJETO == "") {
       Future.failed(new IllegalArgumentException("Campos obligatorios vacíos, operación omitida"))
     } else {
@@ -86,6 +106,7 @@ case class ObjetoNoTributarioTransaction(actorRef: ActorRef, monitoring: Monitor
             sujetoResponsable = sujetoResponsable.head,
             isAdheridoDebito = isAdheridoDebito
           )
+
       sorterEnabled.equals("ON") match {
         case true => {
           recordBetterSorter()

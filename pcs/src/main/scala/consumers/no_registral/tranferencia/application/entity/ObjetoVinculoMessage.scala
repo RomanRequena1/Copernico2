@@ -25,8 +25,6 @@ object ObjetoVinculoMessage {
       persistenceId match {
         case s"ObjetoVinculo-$objetoId" =>
           ObjetoVinculoMessageRoots(objetoId)
-        case s"$objetoId" =>
-          ObjetoVinculoMessageRoots(objetoId)
       }
   }
 }

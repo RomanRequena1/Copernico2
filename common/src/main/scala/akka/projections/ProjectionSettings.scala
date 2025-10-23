@@ -7,9 +7,9 @@ import monitoring.Monitoring
 
 object ProjectionSettings {
 
-  def apply(system: ActorSystem[_], monitoring: Monitoring): ProjectionSettings = {
-    apply(system.settings.config.getConfig("event-processor"), monitoring)
-  }
+//  def apply(system: ActorSystem[_], monitoring: Monitoring): ProjectionSettings = {
+//    apply(system.settings.config.getConfig("event-processor"), monitoring)
+//  }
 
   def apply(config: Config, monitoring: Monitoring): ProjectionSettings = {
     val tagPrefix: String = config.getString("tag")
@@ -22,6 +22,6 @@ object ProjectionSettings {
 }
 
 final case class ProjectionSettings(tag: String, parallelism: Int, monitoring: Monitoring) {
-  def name = tag + "Projection"
+  def name = tag
   def projectionId = Utils.Transformation.to_underscore(tag)
 }

@@ -1,0 +1,17 @@
+{
+    "EV_ID": "1",
+    "BCI_SUJ_IDENTIFICADOR": "77-77777777-7",
+    "BCI_OBN_IDENTIFICADOR": "3099713647314",
+    "BCI_SOJ_IDENTIFICADOR": "PRUEBANIFI",
+    "BCI_SOJ_TIPO_OBJETO": "A",
+    "BCI_CANAL_ORIGEN": "PSRM",
+    "BCI_OTROS_ATRIBUTOS": {
+        "BCI_DETALLES": [
+            {
+                "codigo": "TMUNI",
+                "concepto": "1522-12-24",
+                "monto": 1062.1
+            }
+        ]
+    }
+}

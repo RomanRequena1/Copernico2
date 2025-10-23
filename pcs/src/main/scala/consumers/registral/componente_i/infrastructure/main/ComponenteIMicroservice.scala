@@ -11,8 +11,7 @@ import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumer
 import org.slf4j.LoggerFactory
 
 class ComponenteIMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
-  implicit val actor: ComponenteIActor = ComponenteIActor(ComponenteIState())
-  private val log = LoggerFactory.getLogger(this.getClass)
+  implicit val actor: ComponenteIActor = ComponenteIActor(ComponenteIState())(monitoringAndMessageProducer.messageProducer, system)
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       ComponenteITributarioTransaction(actor, monitoring)

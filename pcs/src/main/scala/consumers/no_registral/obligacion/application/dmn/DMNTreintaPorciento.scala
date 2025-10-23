@@ -4,13 +4,13 @@ import consumers.no_registral.obligacion.application.entities.ObligacionExternal
 import consumers.no_registral.obligacion.application.helper.FileStreamDmn.dmnStream
 import org.camunda.dmn.DmnEngine
 import org.slf4j.LoggerFactory
-import scalaz.Scalaz.ToValidationOps
 import scalaz.concurrent.Task.Try
 
 object DMNTreintaPorciento {
 
   private val log = LoggerFactory.getLogger(this.getClass)
-  def dmn(actor: ObligacionExternalDto): Any = {
+
+  def dmn(actor: ObligacionExternalDto): Option[(Int, String)] = {
 
     val dmnId: String = Try(System.getenv("DMN_ID_DECISION_30")).getOrElse("id")
 
@@ -32,20 +32,40 @@ object DMNTreintaPorciento {
 
     val isVencida = if (diffDaysOblligaciones > 10) true else false
 
-    val engine = new DmnEngine()
+    val inputMap = Utils.mapsToDMN(actor, isVencida, diffDaysOblligaciones, diffYearsOblligaciones, diffDaysOblligacionesVen2, dias_prescripcion)
 
     dmnStream
       .flatMap(dmn =>
-        engine.eval(dmn,
-                    dmnId,
-                    Utils.mapsToDMN(actor,
-                                    isVencida,
-                                    diffDaysOblligaciones,
-                                    diffYearsOblligaciones,
-                                    diffDaysOblligacionesVen2,
-                                    dias_prescripcion))
+        new DmnEngine().eval(dmn, dmnId, inputMap)
+      ).fold(
+        e => {
+          log.error("ERROR DMN OBLIGACION::" + e); None
+        },
+        value => value.value match {
+          case map: Map[_, _] =>
+            val m = map.asInstanceOf[Map[String, Any]]
+            val numero = m.get("decision_30_descuento")
+              .orElse(m.values.collectFirst { case i: Int => i })
+              .collect { case i: java.lang.Number => i.intValue }
+            val desc = m.get("descripcion")
+              .orElse(m.values.collectFirst { case s: String if s.nonEmpty => s })
+              .map(_.toString)
+              .getOrElse("")
+            numero.map(n => (n, desc))
+          case list: List[_] if list.nonEmpty && list.head.isInstanceOf[Map[_, _]] =>
+            val m = list.head.asInstanceOf[Map[String, Any]]
+            val numero = m.get("decision_30_descuento")
+              .orElse(m.values.collectFirst { case i: Int => i })
+              .collect { case i: java.lang.Number => i.intValue }
+            val desc = m.get("descripcion")
+              .orElse(m.values.collectFirst { case s: String if s.nonEmpty => s })
+              .map(_.toString)
+              .getOrElse("")
+            numero.map(n => (n, desc))
+          case otro =>
+            log.error(s"Formato inesperado: $otro")
+            None
+        }
       )
-      .fold(e => log.error("ERROR DMN OBLIGACION::" + e), value => value.value)
   }
-
 }

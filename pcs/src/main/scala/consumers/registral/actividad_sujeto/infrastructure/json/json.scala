@@ -6,6 +6,7 @@ import consumers.registral.actividad_sujeto.application.entities.{ActividadSujet
 import consumers.registral.actividad_sujeto.domain.ActividadSujetoEvents.ActividadSujetoUpdatedFromDto
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}
+import kafka.MessageProducer
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

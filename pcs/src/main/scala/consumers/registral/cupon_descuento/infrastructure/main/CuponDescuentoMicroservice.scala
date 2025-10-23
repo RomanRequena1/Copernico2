@@ -11,8 +11,7 @@ import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumer
 import org.slf4j.LoggerFactory
 
 class CuponDescuentoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
-  implicit val actor: CuponDescuentoActor = CuponDescuentoActor(CuponDescuentoState())
-  private val log = LoggerFactory.getLogger(this.getClass)
+  implicit val actor: CuponDescuentoActor = CuponDescuentoActor(CuponDescuentoState())(monitoringAndMessageProducer.messageProducer, system)
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       CuponDescuentoTributarioTransaction(actor, monitoring)

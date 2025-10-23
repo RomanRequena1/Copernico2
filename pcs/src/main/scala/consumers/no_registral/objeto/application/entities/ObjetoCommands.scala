@@ -39,7 +39,8 @@ object ObjetoCommands {
       objetoId: String,
       tipoObjeto: String,
       tiene30Sujeto: Boolean,
-      exclusionSUjeto: Option[String]
+      exclusionSUjeto: Option[String],
+      dmnDescripcionSujeto: Option[String]
   ) extends ObjetoCommands
 
   case class ObjetoSnapshot(
@@ -89,7 +90,9 @@ object ObjetoCommands {
       obligacionExenta: Boolean,
       porcentajeExencion: Option[BigDecimal],
       idExterno: Option[String],
-      couta: Option[String]
+      couta: Option[String],
+      dmnNumero: Option[Int],
+      dmnDescripcion: Option[String]
   ) extends ObjetoCommands
 
   case class ObjetoRemoveObligacion(
@@ -98,7 +101,9 @@ object ObjetoCommands {
       objetoId: String,
       tipoObjeto: String,
       obligacionId: String,
-      cuota: Option[String]
+      cuota: Option[String],
+      dmnNumero: Option[Int],
+      dmnDescripcion: Option[String]
   ) extends ObjetoCommands
 
   case class ObjetoTagAdd(
@@ -153,7 +158,9 @@ object ObjetoCommands {
       obligacionExenta: Boolean,
       porcentajeExencion: Option[BigDecimal],
       idExterno: Option[String],
-      cuota: Option[String]
+      cuota: Option[String],
+      dmnNumero: Option[Int],
+      dmnDescripcion: Option[String]
   ) extends ObjetoCommands
   case class DeleteObjectIfNoObligaciones(
                                            deliveryId: BigInt,

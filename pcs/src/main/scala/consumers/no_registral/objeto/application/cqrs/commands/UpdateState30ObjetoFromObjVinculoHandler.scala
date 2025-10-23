@@ -12,14 +12,11 @@ import design_principles.actor_model.Response
 import scala.util.{Success, Try}
 
 class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
-    extends SyncCommandHandler[ObjetoCommands.UpdateState30ObjetoFromObjVinculo] {
+  extends SyncCommandHandler[ObjetoCommands.UpdateState30ObjetoFromObjVinculo] {
 
-  /**
-   * Si el objeto tiene 30% manda mensaje a los objetos vinculados y si no manda mensaje a los objetos vinculados
-   */
   override def handle(
-      command: ObjetoCommands.UpdateState30ObjetoFromObjVinculo
-  ): Try[Response.SuccessProcessing] = {
+                       command: ObjetoCommands.UpdateState30ObjetoFromObjVinculo
+                     ): Try[Response.SuccessProcessing] = {
     log.debug(
       f"""|CUMBIA
           |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
@@ -40,15 +37,17 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
 
     actor.persistEvent(event) { () =>
       actor.state += event
+
+      if (actor.state.tiene30Objeto) {
+        SendToSujeto1(actor, requeriment, event)
+      } else {
+        SendToSujeto(actor, requeriment, event)
+      }
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+
+
       if (actor.state.eventCounter == eventCounterMax) {
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
-      }
-
-      if (actor.state.tiene30Objeto.equals(false)) {
-        SendToSujeto(actor, requeriment, event)
-
-      } else {
-        SendToSujeto1(actor, requeriment, event)
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

@@ -19,7 +19,10 @@ object KafkaMessageProcessorRequirements {
 
   private val config = ConfigFactory.load()
   private val appConfig = new KafkaConfig(config)
+
   val bootstrapServers: String = appConfig.KAFKA_BROKER
+  val PSRMbootstrapServers: Option[String] = appConfig.KAFKA_PSRM_BROKER
+  val PSRMEnabled: Boolean = appConfig.PSRM_ENABLED
 
   private implicit def consumerSettings(system: akka.actor.ActorSystem): ConsumerSettings[String, String] =
     ConsumerSettings(system, new StringDeserializer, new StringDeserializer)
@@ -28,7 +31,6 @@ object KafkaMessageProcessorRequirements {
       .withBootstrapServers(bootstrapServers)
       .withProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "100000")
       .withProperty(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "1")
-  //.withClientId("client-new") //TODO add client ID
 
   private implicit def producerSettings(system: akka.actor.ActorSystem): ProducerSettings[String, String] =
     ProducerSettings(system, new StringSerializer, new StringSerializer)

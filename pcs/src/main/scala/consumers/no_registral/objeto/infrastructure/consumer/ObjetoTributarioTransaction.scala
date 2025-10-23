@@ -21,7 +21,7 @@ import scala.util.Try
 case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitoring)(
   implicit
   actorTransactionRequirements: ActorTransactionRequirements,
-  system: ActorSystem  // Recibir el ActorSystem como parámetro implícito
+  system: ActorSystem
 ) extends ActorTransaction[ObjetosTri](monitoring) {
 
   implicit val timeout: Timeout = Timeout(30.seconds)
@@ -38,7 +38,28 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
   def processInput(input: String): Either[Throwable, ObjetosTri] =
     decode[ObjetosTri](input)
 
-  def processMessage(registro: ObjetosTri): Future[Response.SuccessProcessing] = {
+  /**
+   * Método auxiliar para setear automáticamente el EV_ID en DetallesObjeto
+   * @param registro El objeto ObjetosTri original
+   * @return Una copia del objeto con los EV_ID seteados en todos los DetallesObjeto
+   */
+  private def setEvIdInDetalles(registro: ObjetosTri): ObjetosTri = {
+    registro.copy(
+      SOJ_OTROS_ATRIBUTOS = registro.SOJ_OTROS_ATRIBUTOS.map { listDetalles =>
+        listDetalles.copy(
+          SOJ_DETALLES = listDetalles.SOJ_DETALLES.map { detalle =>
+            detalle.copy(EV_ID = Some(registro.EV_ID))
+          }
+        )
+      }
+    )
+  }
+
+  def processMessage(registroOriginal: ObjetosTri): Future[Response.SuccessProcessing] = {
+
+    // Setear automáticamente el EV_ID en los detalles
+    val registro = setEvIdInDetalles(registroOriginal)
+
     val isResponsable: Option[ListDetallesObjeto] => List[Boolean] = {
       case Some(d) =>
         d.SOJ_DETALLES map { d =>
@@ -87,8 +108,6 @@ case class ObjetoTributarioTransaction(actorRef: ActorRef, monitoring: Monitorin
             isAdheridoDebito = isAdheridoDebito
           )
 
-      // Enviar el comando al router en lugar del actor directamente
-      // El router se encargará de garantizar el procesamiento secuencial
       sorterEnabled.equals("ON") match {
         case true => {
           recordBetterSorter()

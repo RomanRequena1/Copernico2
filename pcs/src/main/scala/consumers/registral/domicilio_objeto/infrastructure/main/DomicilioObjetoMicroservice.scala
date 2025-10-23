@@ -10,7 +10,7 @@ import consumers.registral.domicilio_objeto.infrastructure.kafka.{DomicilioObjet
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 class DomicilioObjetoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
-  implicit val actor: DomicilioObjetoActor = DomicilioObjetoActor(DomicilioObjetoState())
+  implicit val actor: DomicilioObjetoActor = DomicilioObjetoActor(DomicilioObjetoState())(monitoringAndMessageProducer.messageProducer, system)
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       DomicilioObjetoNoTributarioTransaction(actor, monitoring),

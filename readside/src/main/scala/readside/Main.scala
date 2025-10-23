@@ -16,8 +16,8 @@ object  Main extends App {
   startMicroservices(microservices, ip, port, actorSystemName)
 
   def microservices(
-      microserviceProvisioning: KafkaConsumerMicroserviceRequirements
-  ): Seq[KafkaConsumerMicroservice] = {
+                     microserviceProvisioning: KafkaConsumerMicroserviceRequirements
+                   ): Seq[KafkaConsumerMicroservice] = {
     // localImplicit @deprecated | in Scala 3 we will be able to send first order functions with implicit parameters
     implicit val localImplicit: KafkaConsumerMicroserviceRequirements = microserviceProvisioning
 

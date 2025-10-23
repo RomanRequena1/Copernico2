@@ -22,6 +22,11 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
   implicit val messageProducer: MessageProducer = requirements.messageProducer
 
 
+  override val persistenceId: String = {
+    val entityId = self.path.name
+    s"ObjetoVinculo-$entityId"
+  }
+
   override def setupHandlers(): Unit = {
     commandBus.subscribe[ObjetoVinculoCommands.UpdateVinculoObjetoFromObj](new UpdateObjetoVinculoFromObjHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoVinculoCommands.CreateTransfVinculoObjetoFromObj](new CreateVinculoObjetoFromObjTranfHandler(this, requirements).handle)

@@ -10,7 +10,7 @@ import consumers.registral.actividad_sujeto.infrastructure.kafka.ActividadSujeto
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 
 class ActividadSujetoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
-  implicit val actor: ActividadSujetoActor = ActividadSujetoActor(ActividadSujetoState())
+  implicit val actor: ActividadSujetoActor = ActividadSujetoActor(ActividadSujetoState())(monitoringAndMessageProducer.messageProducer, system)
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(ActividadSujetoTransaction(actor, monitoring))
 

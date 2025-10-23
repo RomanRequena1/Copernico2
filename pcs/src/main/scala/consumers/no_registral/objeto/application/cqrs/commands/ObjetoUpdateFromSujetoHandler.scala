@@ -4,26 +4,38 @@ import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal.DmnFinal
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoUpdatedFromSujeto
+import consumers.no_registral.objeto.domain.ObjetoEvents.{AplicarDescuentoUpdated, DmnResumen, ObjetoUpdatedFromSujeto}
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
+
 import scala.util.{Success, Try}
 
 class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
-    extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromSujeto] {
-  override def handle(
-      command: ObjetoCommands.ObjetoUpdateFromSujeto
-  ): Try[Response.SuccessProcessing] = {
+  extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromSujeto] {
+
+  def debeEnviarResumen(anterior: Option[Boolean], nuevo: Option[Boolean]): Boolean =
+    anterior != nuevo
+
+  private val resumenEnabled: Option[String] = Option(System.getenv("KAFKA_BROKERS_LIST_PSRM"))
+
+  override def handle(command: ObjetoCommands.ObjetoUpdateFromSujeto): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
-    log.debug(
-      f"""|CUMBIA
-          |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
-          |  | sender    : ${actor.context.sender().path.toString.replace("akka://PersonClassificationService", "")}
-          |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
-          |""".stripMargin
+    val obj_default: ObjetosTri = ObjetosTri(
+      Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"),
+      None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"),
+      Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),
+      None, None
     )
+
+    val estado = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("")
+    if (estado == "TRANSF") {
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+      return Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
+    }
+
+    val aplicarDescuentoAnterior = actor.state.aplicarDescuento
 
     val event = ObjetoUpdatedFromSujeto(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
@@ -31,13 +43,16 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
       command.objetoId,
       command.tipoObjeto,
       command.tiene30Sujeto,
-      command.exclusionSUjeto
+      command.exclusionSUjeto,
+      command.dmnDescripcionSujeto
     )
 
     actor.state += event
-    val obj_default = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), None, None)
 
-    val result = DMNTreintaPorcientoFinal.calcularDmnFinal(
+    def esTipoObjetoPermitido(tipo: String): Boolean =
+      Set("A", "I", "N").contains(tipo)
+
+    val result: Boolean = DMNTreintaPorcientoFinal.calcularDmnFinal(
       DmnFinal(
         command.exclusionSUjeto,
         actor.state.exclusionObjeto,
@@ -47,30 +62,49 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
         actor.state.tiene30ObjetoVinculo
       )
     )
-    result match {
 
-      case d if d.equals(true) =>
-        val newState = actor.state.copy(aplicarDescuento = Some(true))
-        if (!actor.state.registro
-          .getOrElse(obj_default)
-          .SOJ_ESTADO
-          .getOrElse("")
-          .equals("BAJA") && newState.aplicarDescuento.isDefined) {
-          actor.persistSnapshot(event, newState) { () =>
+    val aplicarDescuentoNuevo = result match {
+      case true  => Some(true)
+      case false => Some(false)
+    }
+
+
+    val event1 = AplicarDescuentoUpdated(
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
+      command.sujetoId,
+      command.objetoId,
+      command.tipoObjeto,
+      aplicarDescuentoNuevo
+    )
+
+    actor.state += event1
+
+
+    //println(s"aplicar anterior: $aplicarDescuentoAnterior, nuevo: ${actor.state.aplicarDescuento}")
+    //println("state: " + actor.state)
+
+    val eventDmn = DmnResumen(
+      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
+      command.sujetoId,
+      command.objetoId,
+      command.tipoObjeto,
+      actor.state.registro.getOrElse(obj_default).SOJ_ID_EXTERNO.orElse(Some("None")),
+      Some(actor.state.fechaUltMod),
+      actor.state.aplicarDescuento,
+      actor.state.dmnNumero,
+      actor.state.dmnDescripcion
+    )
+
+    if (!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA") && actor.state.aplicarDescuento.isDefined) {
+        actor.persistSnapshot(event, actor.state) { () =>
+        if (debeEnviarResumen(aplicarDescuentoAnterior, actor.state.aplicarDescuento) && esTipoObjetoPermitido(command.tipoObjeto) && resumenEnabled.isDefined) {
+          actor.dmnresumenpersistSnapshot(eventDmn, actor.state) { () =>
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
+        } else {
+          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }
-      case _ =>
-        val newState = actor.state.copy(aplicarDescuento = Some(false))
-        if (!actor.state.registro
-          .getOrElse(obj_default)
-          .SOJ_ESTADO
-          .getOrElse("")
-          .equals("BAJA") && newState.aplicarDescuento.isDefined) {
-          actor.persistSnapshot(event, newState) { () =>
-            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-          }
-        }
+      }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }

@@ -56,7 +56,7 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
       sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
       Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     } else {
-      actor.persistEvent(event) { () =>
+      actor.persistEventTagsSujeto(event) { () =>
         actor.state += event
 
         // Verificar si es una baja por pago y si el tipo de objeto es PPP o PM26

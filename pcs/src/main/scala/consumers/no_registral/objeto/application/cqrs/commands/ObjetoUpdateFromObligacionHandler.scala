@@ -20,7 +20,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: Monitor
       command: ObjetoCommands.ObjetoUpdateFromObligacion
   ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-    val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
+    val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"),Some("None"), Some("None"), Some("None"),None,None)
 
     log.debug(
       f"""|CUMBIA
@@ -41,12 +41,10 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: Monitor
       command.obligacionExenta,
       command.porcentajeExencion,
       command.idExterno,
-      command.couta
+      command.couta,
+      command.dmnNumero,
+      command.dmnDescripcion
     )
-    val initialization: String = {
-      Try(System.getenv("INITIALIZATION")).getOrElse(null)
-    }
-
 
     implicit val ac: ActorSystem = actor.context.system
     val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
@@ -55,6 +53,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: Monitor
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+        actor.deleteMessages(actor.lastSequenceNr - 201)
       }
 
       SendObjetoToObjetoVinculo(vinculoActor, actor, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state.registro.getOrElse(obj_default).SOJ_ESTADO, requeriment, command)

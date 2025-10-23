@@ -8,9 +8,14 @@ import monitoring.KamonMonitoring
 import akka.actor.typed.scaladsl.adapter._
 import akka.entity.ShardedEntity.{ProductionMonitoringAndCassandraWrite, ProductionMonitoringAndMessageProducer, ProductionMonitoringAndMessageProducerTransf}
 import design_principles.actor_model.mechanism.stream_supervision.UniqueTopicPerNode.uniqueTopicPerNode
+import org.slf4j.{Logger, LoggerFactory}
+
+import scala.util.{Failure, Success}
 
 abstract class KafkaConsumerMicroservice(implicit m: KafkaConsumerMicroserviceRequirements)
-    extends Microservice[KafkaConsumerMicroserviceRequirements] {
+  extends Microservice[KafkaConsumerMicroserviceRequirements] {
+  val log: Logger = LoggerFactory.getLogger(this.getClass)
+
 
   implicit final val classicSystem: akka.actor.ActorSystem = m.ctx
   implicit final val system: akka.actor.typed.ActorSystem[Nothing] = m.ctx.toTyped
@@ -19,13 +24,29 @@ abstract class KafkaConsumerMicroservice(implicit m: KafkaConsumerMicroserviceRe
   implicit final val queryStateApiR: QueryStateApiRequirements = m.queryStateApiRequirements
   implicit final val kafkaMessageProcessorR: KafkaMessageProcessorRequirements = m.kafkaMessageProcessorRequirements
   implicit final val actorTransactionR: ActorTransaction.ActorTransactionRequirements = m.actorTransactionRequirements
+
   implicit val messageProducer: KafkaMessageProducer =
     KafkaMessageProducer(monitoring, m.kafkaMessageProcessorRequirements.rebalancerListener)
+
+  // PSRM Producer con fallback seguro
+  implicit val psrmMessageProducer: KafkaMessageProducer = {
+    KafkaMessageProducer.psrmProducer(monitoring, m.kafkaMessageProcessorRequirements.rebalancerListener) match {
+      case Success(producer) =>
+        producer
+
+      case Failure(exception) =>
+        log.debug("Error: " + exception)
+        messageProducer // Usa el producer principal como fallback
+    }
+  }
+
   implicit final val monitoringAndMessageProducer: ProductionMonitoringAndMessageProducer =
     ProductionMonitoringAndMessageProducer(
       monitoring,
-      messageProducer
+      messageProducer,
+      psrmMessageProducer
     )
+
   implicit final val monitoringAndMessageProducerTransf: ProductionMonitoringAndMessageProducerTransf =
     ProductionMonitoringAndMessageProducerTransf(
       monitoring

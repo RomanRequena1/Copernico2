@@ -51,6 +51,8 @@ sealed trait ObjetoExternalDto extends ExternalDto with CbroSerialization{
 
   def SOJ_IDENTIFICADOR_2: Option[String]
 
+  def SOJ_DOCUMENTO: Option[String]
+
   def SOJ_TITULARIDAD: Option[String]
 
   def SOJ_TIPO_EXCLUSION: Option[String]
@@ -82,6 +84,7 @@ object ObjetoExternalDto{
                          SOJ_CANAL_ORIGEN: Option[String],
                          SOJ_SUBTIPO: Option[String],
                          SOJ_IDENTIFICADOR_2: Option[String],
+                         SOJ_DOCUMENTO: Option[String],
                          SOJ_TITULARIDAD: Option[String],
                          SOJ_TIPO_EXCLUSION: Option[String],
                          SOJ_FECHA_VTA_SUBASTA: Option[LocalDateTime],
@@ -107,6 +110,7 @@ object ObjetoExternalDto{
                          SOJ_CANAL_ORIGEN: Option[String],
                          SOJ_SUBTIPO: Option[String],
                          SOJ_IDENTIFICADOR_2: Option[String],
+                         SOJ_DOCUMENTO: Option[String],
                          SOJ_TITULARIDAD: Option[String],
                          SOJ_TIPO_EXCLUSION: Option[String],
                          SOJ_FECHA_VTA_SUBASTA: Option[LocalDateTime],
@@ -126,7 +130,8 @@ object ObjetoExternalDto{
                              SOJ_SEMAFORO_MARCA: Option[String],
                              SOJ_ADQUIRIDO_SUBASTA: Option[String],
                              FECHA_SUBASTA: Option[LocalDateTime],
-                             SOJ_OWNER: Option[String]
+                             SOJ_OWNER: Option[String],
+                             EV_ID: Option[BigInt]
                            ) extends CbroSerialization
 
   case class Cotitularidad(

@@ -19,7 +19,6 @@ import java.io.FileInputStream
 class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
 
   implicit val actor: ActorRef = SujetoActor.startWithRequirements(monitoringAndMessageProducer)
-  ObjetoVinculoActor.startWithRequirements(monitoringAndMessageProducer)
 
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
@@ -35,7 +34,12 @@ class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) 
       ObligacionTributariaTransactionJuicio(actor, monitoring),
       ObligacionTributariaTransaction2(actor, monitoring),
       ObligacionTributariaTransaction3(actor, monitoring),
-      ObligacionNoTributariaTransaction(actor, monitoring)
+      ObligacionNoTributariaTransaction(actor, monitoring),
+      ObligacionTributariaTransactionSincroA(actor, monitoring),
+      ObligacionTributariaTransactionSincroE(actor, monitoring),
+      ObligacionTributariaTransactionSincroI(actor, monitoring),
+      ObligacionTributariaTransactionSincroM(actor, monitoring),
+      ObligacionTributariaTransactionSincroN(actor, monitoring)
     )
 
   def route: Route = {

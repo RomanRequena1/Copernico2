@@ -9,7 +9,7 @@ import consumers.registral.juicio_tri.infrastructure.http.JuicioDosStateAPI
 import consumers.registral.juicio_tri.infrastructure.kafka.JuicioDosTributarioTransaction
 import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumerMicroservice, KafkaConsumerMicroserviceRequirements}
 class JuicioDosMicroservice (implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
-  implicit val actor: JuicioDosActor = JuicioDosActor(JuicioDosState())
+  implicit val actor: JuicioDosActor = JuicioDosActor(JuicioDosState())(monitoringAndMessageProducer.messageProducer, system)
 
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(

@@ -7,7 +7,7 @@ import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.cqrs.commands._
 import consumers.no_registral.objeto.application.cqrs.queries.{GetAllObnObjetoHandler, GetSnapshotObjetoHandler, GetStateExencionHandler, GetStateObjetoHandler}
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoQueries}
-import consumers.no_registral.objeto.domain.ObjetoEvents.ObjetoSnapshotPersisted
+import consumers.no_registral.objeto.domain.ObjetoEvents.{Beneficio, DmnResumenSnapshotPersisted, ObjetoSnapshotPersisted}
 import consumers.no_registral.objeto.domain.{ObjetoEvents, ObjetoState}
 import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
@@ -21,7 +21,7 @@ import io.circe.syntax.EncoderOps
 import kafka.KafkaMessageProducer.KafkaKeyValue
 import kafka.MessageProducer
 
-class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPropsOption: Option[Props] = None)
+class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPropsOption: Option[Props] = None)
     extends PersistentBaseActor[ObjetoEvents, ObjetoState](requirements.monitoring) {
   import ObjetoActor._
 
@@ -171,6 +171,40 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer, obligacionActorPro
       handler()
     }
   }
+
+  def dmnresumenpersistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
+    val kafkaTopic = "dgr-cop-objeto-beneficios-v1"
+
+    val beneficio = Beneficio(
+      codigo = "DTO30",
+      aplicarDescuento = consolidatedState.aplicarDescuento,
+      dmnNumero = consolidatedState.dmnNumero,
+      dmnDescripcion = consolidatedState.dmnDescripcion
+    )
+    val snapshot =
+      DmnResumenSnapshotPersisted(
+        evt.deliveryId,
+        evt.sujetoId,
+        evt.objetoId,
+        evt.tipoObjeto,
+        consolidatedState.registro.flatMap(_.SOJ_ID_EXTERNO).orElse(Some("None")),
+        Some(consolidatedState.fechaUltMod),
+        Seq(beneficio)
+      )
+    // println("estoy en el ObjetoActor")
+    requirements.psrmMessageProducer.produce(
+      data = Seq(
+        KafkaKeyValue(
+          snapshot.aggregateRoot,
+          snapshot.asJson.toString()
+        )
+      ),
+      topic = kafkaTopic
+    ) { _ =>
+      handler()
+    }
+  }
+
   def deleteSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
     val kafkaTopic = "ObjetoSnapshotPersistedReadside"
     val snapshot =

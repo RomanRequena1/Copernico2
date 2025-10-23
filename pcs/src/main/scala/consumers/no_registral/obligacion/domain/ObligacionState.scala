@@ -54,7 +54,8 @@ case class ObligacionState(
           lastDeliveryIdByEvents = e.deliveryId,
           isAdheridoDebito = e.isAdheridoDebito.getOrElse(false),
           idExterno = e.registro.SOJ_ID_EXTERNO,
-          resultDmn = e.resultDmn
+          resultDmn = e.resultDmn,
+
         )
 
       case e: ObligacionEvents.ObligacionAntUpdatedFromDto =>

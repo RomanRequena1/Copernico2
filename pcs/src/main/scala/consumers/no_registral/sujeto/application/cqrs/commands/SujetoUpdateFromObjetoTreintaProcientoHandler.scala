@@ -33,13 +33,14 @@ class SujetoUpdateFromObjetoTreintaProcientoHandler(actor: SujetoActor)
       command.saldoObligaciones,
       command.clasificacionObjeto
     )
-    actor.persistEvent(event) { () =>
+    actor.persistEventTagsSujeto(event) { () =>
       actor.state += event
       SendToObjeto(actor.state, sender, actor.context, event.sujetoId, command.objetoId, command.tipoObjeto)
 
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+        actor.deleteMessages(actor.lastSequenceNr - 201)
       }
 
       actor.persistSnapshot() { _ =>

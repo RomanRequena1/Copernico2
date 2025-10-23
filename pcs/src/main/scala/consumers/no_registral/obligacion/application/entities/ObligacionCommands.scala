@@ -62,4 +62,12 @@ object ObligacionCommands {
       isAdheridoDebito: Option[Boolean],
       cuota: Option[String]
   ) extends ObligacionCommands
+
+  case class ObligacionReprocess(
+       deliveryId: BigInt,
+       sujetoId: String,
+       objetoId: String,
+       tipoObjeto: String,
+       obligacionId: String
+     ) extends ObligacionCommands
 }
