@@ -64,7 +64,7 @@ class ObjetoJuicioProjectionHandler(settings: ProjectionSettings, system: ActorS
           ref
         )) onComplete {
           case Success(value: GetObjetoJuicioResponse) => {
-            println("Value: " + value.state.toString)
+            //println("Value: " + value.state.toString)
             val miSnapshot = ObjetoJuicioUpdatedFromDto(
               objetoId = event.objetoId,
               tipoObjeto = event.tipoObjeto,
@@ -77,7 +77,7 @@ class ObjetoJuicioProjectionHandler(settings: ProjectionSettings, system: ActorS
               deliveryId = value.lastDeliveryIdByEvent,
               registro = value.state.get.registro.get
             )
-            println("SS: " + miSnapshot.toString)
+            // println("SS: " + miSnapshot.toString)
             cas.writeState(ObjetoJuicioSnapshotProjectionW(miSnapshot))
           }
           case Failure(exception) => log.error("Error Projection: " + exception.getMessage)

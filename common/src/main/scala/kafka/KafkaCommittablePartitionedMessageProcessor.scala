@@ -64,10 +64,7 @@ class KafkaCommittablePartitionedMessageProcessor(
 
     //Obtain the ConsumerSettings through the requirements and then configure the consumer group
     val consumerSetting: ConsumerSettings[String, String] =
-      SOURCE_TOPIC match {
-        case s"DGR-COP-OBLIGACIONES-TRI-$x-SINCRO" => transactionRequirements.consumer.withGroupId(appConfig.CONSUMER_GROUP_SINCRO)
-        case _ => transactionRequirements.consumer.withGroupId(appConfig.CONSUMER_GROUP)
-      }
+      transactionRequirements.consumer.withGroupId(appConfig.CONSUMER_GROUP)
 
     //Topic Subscription
     val subscription: AutoSubscription =
