@@ -19,7 +19,6 @@ import java.io.FileInputStream
 class ObligacionMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
 
   implicit val actor: ActorRef = SujetoActor.startWithRequirements(monitoringAndMessageProducer)
-  ObjetoVinculoActor.startWithRequirements(monitoringAndMessageProducer)
 
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(

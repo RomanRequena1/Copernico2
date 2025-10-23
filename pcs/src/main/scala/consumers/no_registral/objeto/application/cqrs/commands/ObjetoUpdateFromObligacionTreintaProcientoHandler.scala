@@ -54,6 +54,7 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+        actor.deleteMessages(actor.lastSequenceNr - 201)
       }
       SendObjetoToObjetoVinculo(
         vinculoActor,

@@ -53,6 +53,7 @@ class ObjetoUpdateFromObligacionHandler(actor: ObjetoActor, requeriment: Monitor
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
+        actor.deleteMessages(actor.lastSequenceNr - 201)
       }
 
       SendObjetoToObjetoVinculo(vinculoActor, actor, command.sujetoId, command.objetoId, command.tipoObjeto, actor.state.registro.getOrElse(obj_default).SOJ_ESTADO, requeriment, command)

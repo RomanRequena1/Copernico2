@@ -12,7 +12,6 @@ import design_principles.microservice.kafka_consumer_microservice.{KafkaConsumer
 
 class SujetoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) extends KafkaConsumerMicroservice {
   implicit val actor: ActorRef = SujetoActor.startWithRequirements(monitoringAndMessageProducer)
-  ObjetoVinculoActor.startWithRequirements(monitoringAndMessageProducer)
 
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
