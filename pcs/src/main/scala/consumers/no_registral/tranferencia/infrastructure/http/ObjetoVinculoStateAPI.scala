@@ -43,12 +43,12 @@ case class ObjetoVinculoStateAPI(actor: ActorRef, monitoring: Monitoring)(
         }
 
   def getState: Route =
-      withObjeto { objetoId =>
-          queryState[GetObjetoVinculoResponse](actorRef = actor, GetStateObjetoVinculo(objetoId))(
-            GetObjetoVinculoResponseEncoder,
-            t => t.fechaUltMod == LocalDateTime.MIN
-          )
-        }
+    path("sujeto" / Segment / "objetovinculo") { objetoId =>
+        queryState[GetObjetoVinculoResponse](actorRef = actor, GetStateObjetoVinculo(objetoId))(
+          GetObjetoVinculoResponseEncoder,
+          t => t.fechaUltMod == LocalDateTime.MIN
+        )
+      }
 
   def route: Route = GET(getState) ~ POST(developerTools)
 
