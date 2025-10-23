@@ -151,6 +151,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
               obligacionId = obligacion.BOB_OBN_ID,
               registro = obligacionNoDeuda,
               detallesObligacion = detallesObligacion,
+              detallesCaracteristicas = detallesObligacionCaracteristicas,
               detallesSupresiones = detallesSupresiones,
               isAdheridoDebito = isAdheridoDebito,
               cuota = obligacion.BOB_CUOTA,
@@ -166,6 +167,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
               obligacionId = obligacion.BOB_OBN_ID,
               registro = dmn._1,  // Ya viene con tiene30Obligaciones = false
               detallesObligacion = detallesObligacion,
+              detallesCaracteristicas = detallesObligacionCaracteristicas,
               detallesSupresiones = detallesSupresiones,
               isAdheridoDebito = isAdheridoDebito,
               cuota = obligacion.BOB_CUOTA,

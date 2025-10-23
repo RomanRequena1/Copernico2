@@ -31,7 +31,9 @@ class DeleteObjectIfNoObligacionesHandler(actor: ObjetoActor, requirements: Moni
       command.objetoId,
       command.tipoObjeto,
       command.obligacionId,
-      command.cuota
+      command.cuota,
+      actor.state.dmnNumero,
+      actor.state.dmnDescripcion
     )
 
     actor.persistEvent(eventRemove) { () =>
@@ -42,8 +44,8 @@ class DeleteObjectIfNoObligacionesHandler(actor: ObjetoActor, requirements: Moni
 
 
       if (obligacionesRestantes.isEmpty && (command.tipoObjeto == "PPP" || command.tipoObjeto == "PM26")) {
-        log.info(s"Eliminando objeto ANT ${command.tipoObjeto} ${command.objetoId} - No quedan obligaciones")
-        val obj_default: ObjetosAnt = ObjetosAnt(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),None,None)
+        log.warn(s"Eliminando objeto ANT ${command.tipoObjeto} ${command.objetoId} - No quedan obligaciones")
+        val obj_default: ObjetosAnt = ObjetosAnt(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), None, None, None)
 
         actor.self ! ObjetoCommands.SetBajaObjeto(
           sujetoId = command.sujetoId,

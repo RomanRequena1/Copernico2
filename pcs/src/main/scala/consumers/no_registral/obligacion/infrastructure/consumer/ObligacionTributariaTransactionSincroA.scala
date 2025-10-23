@@ -63,6 +63,10 @@ case class ObligacionTributariaTransactionSincroA(actorRef: ActorRef, monitoring
       case Some(r) => r.BOB_DETALLES
       case None => null
     }
+    val detallesObligacionCaracteristicas: Seq[DetallesObligacionCaracteristicas] = obligacion.BOB_CARACTERISTICAS match {
+      case Some(r) => r.BOB_DETALLES_CARACTERISTICAS
+      case None => null
+    }
     val detallesSupresiones: Seq[DetallesSupresiones] = obligacion.BOB_SUPRESIONES match {
       case Some(r) => r.BOB_DETALLES_SUPRESIONES
       case None => null
@@ -146,6 +150,7 @@ case class ObligacionTributariaTransactionSincroA(actorRef: ActorRef, monitoring
               obligacionId = obligacion.BOB_OBN_ID,
               registro = obligacionNoDeuda,
               detallesObligacion = detallesObligacion,
+              detallesCaracteristicas = detallesObligacionCaracteristicas,
               detallesSupresiones = detallesSupresiones,
               isAdheridoDebito = isAdheridoDebito,
               cuota = obligacion.BOB_CUOTA,
@@ -161,6 +166,7 @@ case class ObligacionTributariaTransactionSincroA(actorRef: ActorRef, monitoring
               obligacionId = obligacion.BOB_OBN_ID,
               registro = dmn._1,  // Ya viene con tiene30Obligaciones = false
               detallesObligacion = detallesObligacion,
+              detallesCaracteristicas = detallesObligacionCaracteristicas,
               detallesSupresiones = detallesSupresiones,
               isAdheridoDebito = isAdheridoDebito,
               cuota = obligacion.BOB_CUOTA,
