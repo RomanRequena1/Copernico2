@@ -30,7 +30,7 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
       command.clasificacionObjeto
     )
 
-    actor.persistEventTagsSujeto(event) { () =>
+    actor.persistEvent(event) { () =>
       actor.state += event
       SendToObjeto(actor.state, sender, actor.context, event.sujetoId, command.objetoId, command.tipoObjeto)
 

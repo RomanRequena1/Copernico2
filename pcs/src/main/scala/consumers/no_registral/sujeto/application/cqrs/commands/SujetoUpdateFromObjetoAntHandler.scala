@@ -29,7 +29,7 @@ class SujetoUpdateFromObjetoAntHandler(actor: SujetoActor) extends SyncCommandHa
       command.clasificacionObjeto
     )
 
-    actor.persistEventTagsSujeto(event) { () =>
+    actor.persistEvent(event) { () =>
       actor.state += event
 
       if (actor.state.eventCounter == eventCounterMax) {

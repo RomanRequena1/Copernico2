@@ -68,7 +68,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
 
     } else {
-      actor.persistEventTagsSujeto(event) { () =>
+      actor.persistEvent(event) { () =>
         actor.state += event
         if (event.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.tiene30Obligaciones.get.equals(true)) {
           actor.informParent(command)
