@@ -30,7 +30,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
     )
 
     val estado = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("")
-    if (estado == "TRANSF") {
+    if (estado == "TRANSF" || estado == "ESTADO2") {
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       return Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     }

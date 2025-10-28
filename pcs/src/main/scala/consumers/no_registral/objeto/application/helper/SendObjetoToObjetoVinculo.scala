@@ -52,7 +52,7 @@ object testIfObjVinculo {
     }
 
     estado match {
-      case x if x.getOrElse("").equals("TRANSF") && !esPago =>
+      case x if (x.getOrElse("").equals("TRANSF") || x.getOrElse("").equals("ESTADO2")) && !esPago =>
         log.info(s"[SEND-TO-VINCULO] Detectado TRANSF real - Usando CreateTransfVinculoObjetoFromObj")
         val res = vinculoActor.ask[Response.SuccessProcessing](CreateTransfVinculoObjetoFromObj(
           objetoId = objetoId,
@@ -75,7 +75,7 @@ object testIfObjVinculo {
         else
           actor.informParent(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
 
-      case x if x.getOrElse("").equals("TRANSF") && esPago =>
+      case x if (x.getOrElse("").equals("TRANSF") || x.getOrElse("").equals("ESTADO2")) && esPago =>
         // Caso raro: es un pago de un objeto que esta transferido
         val res = vinculoActor.ask[Response.SuccessProcessing](UpdateVinculoObjetoFromObj(
           objetoId = objetoId,
