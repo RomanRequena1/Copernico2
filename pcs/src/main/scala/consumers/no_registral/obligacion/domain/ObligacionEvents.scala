@@ -1,12 +1,7 @@
 package consumers.no_registral.obligacion.domain
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import consumers.no_registral.obligacion.application.entities.{
-  DetallesObligacion,
-  DetallesSupresiones,
-  ObligacionExternalDto,
-  ObligacionMessage
-}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesObligacionCaracteristicas, DetallesSupresiones, ObligacionExternalDto, ObligacionMessage}
 import design_principles.actor_model.Event
 import serialization.CbroSerialization
 
@@ -53,6 +48,7 @@ object ObligacionEvents {
       obligacionId: String,
       registro: ObligacionExternalDto,
       detallesObligacion: Seq[DetallesObligacion],
+      detallesCaracteristicas: Seq[DetallesObligacionCaracteristicas],
       detallesSupresiones: Seq[DetallesSupresiones],
       isAdheridoDebito: Option[Boolean],
       cuota: Option[String],
@@ -96,6 +92,7 @@ object ObligacionEvents {
       obligacionId: String,
       registro: ObligacionExternalDto,
       detallesObligacion: Seq[DetallesObligacion],
+      detallesCaracteristicas: Seq[DetallesObligacionCaracteristicas],
       detallesSupresiones: Seq[DetallesSupresiones],
       isAdheridoDebito: Option[Boolean],
       cuota: Option[String]

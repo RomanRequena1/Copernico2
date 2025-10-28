@@ -1,10 +1,6 @@
 package consumers.no_registral.obligacion.domain
 
-import consumers.no_registral.obligacion.application.entities.{
-  DetallesObligacion,
-  DetallesSupresiones,
-  ObligacionExternalDto
-}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesObligacionCaracteristicas, DetallesSupresiones, ObligacionExternalDto}
 import ddd._
 import serialization.CbroSerialization
 
@@ -18,6 +14,7 @@ case class ObligacionState(
     registro: Option[ObligacionExternalDto] = None,
     lastDeliveryIdByEvents: BigInt = 0,
     detallesObligacion: Seq[DetallesObligacion] = Seq.empty,
+    detallesObligacionCaracteristicas: Seq[DetallesObligacionCaracteristicas] = Seq.empty,
     detallesSupresiones: Option[Seq[DetallesSupresiones]] = None,
     juicioId: Option[BigInt] = None,
     isAdheridoDebito: Boolean = false,

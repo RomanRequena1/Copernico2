@@ -6,7 +6,7 @@ import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesSupresiones, ListDetallesObligaciones, ObligacionCommands, ObligacionesTri}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesObligacionCaracteristicas, DetallesSupresiones, ListDetallesObligaciones, ObligacionCommands, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import consumers.no_registral.obligacion.infrastructure.sorter.ObligacionCommandRouter
 import design_principles.actor_model.Response
@@ -62,6 +62,10 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
 
     val detallesObligacion: Seq[DetallesObligacion] = obligacion.BOB_OTROS_ATRIBUTOS match {
       case Some(r) => r.BOB_DETALLES
+      case None => null
+    }
+    val detallesObligacionCaracteristicas: Seq[DetallesObligacionCaracteristicas] = obligacion.BOB_CARACTERISTICAS match {
+      case Some(r) => r.BOB_DETALLES_CARACTERISTICAS
       case None => null
     }
     val detallesSupresiones: Seq[DetallesSupresiones] = obligacion.BOB_SUPRESIONES match {
@@ -147,6 +151,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
               obligacionId = obligacion.BOB_OBN_ID,
               registro = obligacionNoDeuda,
               detallesObligacion = detallesObligacion,
+              detallesCaracteristicas = detallesObligacionCaracteristicas,
               detallesSupresiones = detallesSupresiones,
               isAdheridoDebito = isAdheridoDebito,
               cuota = obligacion.BOB_CUOTA,
@@ -162,6 +167,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
               obligacionId = obligacion.BOB_OBN_ID,
               registro = dmn._1,  // Ya viene con tiene30Obligaciones = false
               detallesObligacion = detallesObligacion,
+              detallesCaracteristicas = detallesObligacionCaracteristicas,
               detallesSupresiones = detallesSupresiones,
               isAdheridoDebito = isAdheridoDebito,
               cuota = obligacion.BOB_CUOTA,

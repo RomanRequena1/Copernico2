@@ -7,7 +7,7 @@ import consumers.no_registral.obligacion.application.cqrs.commands._
 import consumers.no_registral.obligacion.application.cqrs.queries.{ObligacionGetMiniStateHandler, ObligacionGetStateHandler, ObligacionSnapshotHandler}
 import consumers.no_registral.obligacion.application.entities.ObligacionCommands.ObligacionRemove
 import consumers.no_registral.obligacion.application.entities.ObligacionMessage.ObligacionMessageRoots
-import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionQueries}
+import consumers.no_registral.obligacion.application.entities.{ObligacionCommands, ObligacionQueries, ObligacionesAnt, ObligacionesTri}
 import consumers.no_registral.obligacion.domain.ObligacionEvents.{DMNResumenPersisted, ObligacionPersistedSnapshot, ObligacionUpdatedFromDto}
 import consumers.no_registral.obligacion.domain.{ObligacionEvents, ObligacionState}
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
@@ -55,8 +55,14 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       state.porcentajeExencion,
       state.idExterno,
       state.registro.get.BOB_CUOTA,
-      state.registro.get.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnNumero,
-      state.registro.get.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnDescripcion,
+      state.registro.get.BOB_OTROS_ATRIBUTOS match {
+        case Some(value) => value.BOB_DETALLES.head.dmnNumero
+        case None => None
+      },
+      state.registro.get.BOB_OTROS_ATRIBUTOS match {
+        case Some(value) => value.BOB_DETALLES.head.dmnDescripcion
+        case None => None
+      },
     )
   }
 
@@ -93,8 +99,14 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       cmd.tipoObjeto,
       cmd.obligacionId,
       cmd.cuota,
-      cmd.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnNumero,
-      cmd.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.dmnDescripcion
+      state.registro.get.BOB_OTROS_ATRIBUTOS match {
+        case Some(value) => value.BOB_DETALLES.head.dmnNumero
+        case None => None
+      },
+      state.registro.get.BOB_OTROS_ATRIBUTOS match {
+        case Some(value) => value.BOB_DETALLES.head.dmnDescripcion
+        case None => None
+      },
     )
   }
   def persistSnapshot(evt: ObligacionEvents)(handler: () => Unit): Unit = {

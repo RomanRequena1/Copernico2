@@ -53,6 +53,9 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento](
       new ObjetoUpdateFromObligacionTreintaProcientoHandler(this, requirements).handle
     )
+    commandBus.subscribe[ObjetoCommands.DeleteObjectIfNoObligaciones](
+      new DeleteObjectIfNoObligacionesHandler(this, requirements).handle
+    )
     queryBus.subscribe[ObjetoQueries.GetStateObjeto](new GetStateObjetoHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetStateExencion](new GetStateExencionHandler(this).handle)
     queryBus.subscribe[ObjetoQueries.GetSnapshotObjeto](new GetSnapshotObjetoHandler(this).handle)
@@ -93,10 +96,11 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
       state += evt
       evt match {
         case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
-          obligaciones((evt.sujetoId, evt.objetoId, evt.tipoObjeto, evt.obligacionId)) // waking up child
+          obligaciones((evt.sujetoId, evt.objetoId, evt.tipoObjeto, evt.obligacionId))
         case _ =>
       }
   }
+
 // TODO: Validar que es lo q esta haciendo, para Objetos ANT?
   def processObligacionMessages: Receive = {
     case childMessage: ObligacionMessage =>
@@ -187,7 +191,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
         Some(consolidatedState.fechaUltMod),
         Seq(beneficio)
       )
-    println("estoy en el ObjetoActor")
+    // println("estoy en el ObjetoActor")
     requirements.psrmMessageProducer.produce(
       data = Seq(
         KafkaKeyValue(
@@ -362,6 +366,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
       cmd.tipoObjeto
     )
   }
+
 }
 
 object ObjetoActor extends ShardedEntity[MonitoringAndMessageProducer] {

@@ -40,6 +40,7 @@ class ObligacionReprocessHandler(actor: ObligacionActor)
             command.obligacionId,
             registro,
             actor.state.detallesObligacion,
+            actor.state.detallesObligacionCaracteristicas,
             actor.state.detallesSupresiones.getOrElse(Seq.empty),
             Some(actor.state.isAdheridoDebito),
             registro.BOB_CUOTA,

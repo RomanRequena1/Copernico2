@@ -2,7 +2,7 @@ package consumers.no_registral.obligacion.application.helper
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.{DetallesObjeto, ListDetallesObjeto}
-import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesSupresiones, ListDetallesObligaciones, ListDetallesSupresiones, ObligacionExternalDto}
+import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesObligacionCaracteristicas, DetallesSupresiones, ListCaracteristicasObligaciones, ListDetallesObligaciones, ListDetallesSupresiones, ObligacionExternalDto}
 import cqrs.untyped.command.StateParcial
 
 import java.lang.reflect.Field
@@ -30,43 +30,6 @@ class StateParcialObligacion extends StateParcial {
       case e: ObligacionExternalDto => e
     }
 
-   /* estado match {
-      case None if campoActualizar.getName.equals("BOB_OTROS_ATRIBUTOS")  && miEvento.BOB_OTROS_ATRIBUTOS.isDefined => {
-        val otros_atributos_evento = miEvento.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head
-        val otros_atributos_updated = super.stateParcialCC(otros_atributos_evento, None)
-        campoActualizar.set(eventoNuevo, Some(ListDetallesObligaciones(List(otros_atributos_updated match { case oau: DetallesObligacion => oau }))))
-      }
-
-      case Some(e: ObligacionExternalDto) if campoActualizar.getName.equals("BOB_SUPRESIONES") && e.BOB_SUPRESIONES.isDefined => {
-        if (miEvento.BOB_SUPRESIONES.get.BOB_DETALLES_SUPRESIONES.isEmpty) {
-          campoActualizar.set(eventoNuevo, None)
-        } else {
-          campoActualizar.set(eventoNuevo, miEvento.BOB_SUPRESIONES)
-        }
-      }
-
-      case Some(e: ObligacionExternalDto) if campoActualizar.getName.equals("BOB_OTROS_ATRIBUTOS") => e.BOB_OTROS_ATRIBUTOS match {
-        case None => ()
-        case Some(value: ListDetallesObligaciones) if value.BOB_DETALLES.nonEmpty => {
-
-          val otros_atributos_evento = (evento match {
-            case e: ObligacionExternalDto => e
-          }).BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head
-
-          val otros_atributos_estado = value.BOB_DETALLES.head
-
-          val otros_atributos_updated = super.stateParcialCC(otros_atributos_evento, Some(otros_atributos_estado))
-
-          campoActualizar.set(eventoNuevo, Some(ListDetallesObligaciones(List(otros_atributos_updated match { case oau: DetallesObligacion => oau }))))
-          ()
-        }
-      }
-
-      case _ => ()
-    }
-*/
-
-
     campoActualizar.getName match {
       case "BOB_OTROS_ATRIBUTOS" => {
 
@@ -78,7 +41,7 @@ class StateParcialObligacion extends StateParcial {
               // Caso 2- Evento con oAtri en None, con estado (Independiente del valor de oAtri en estado)
               case Some(oEstado: ObligacionExternalDto) => campoActualizar.set(eventoNuevo, oEstado.BOB_OTROS_ATRIBUTOS)
               case _ => ()
-          }
+            }
           case Some(oAtriEvento) =>
             estado match {
               // Caso 3- Evento con oAtri con valores, sin estado
@@ -110,6 +73,20 @@ class StateParcialObligacion extends StateParcial {
         }
 
       }
+
+      case "BOB_CARACTERISTICAS" => {
+        estado match {
+          case Some(oEstado: ObligacionExternalDto) if oEstado.BOB_CARACTERISTICAS.isDefined => {
+            if (miEvento.BOB_CARACTERISTICAS.get.BOB_DETALLES_CARACTERISTICAS.isEmpty) {
+              campoActualizar.set(eventoNuevo, None)
+            } else {
+              campoActualizar.set(eventoNuevo, miEvento.BOB_CARACTERISTICAS)
+            }
+          }
+          case _ => ()
+        }
+      }
+
       case "BOB_SUPRESIONES" => {
         estado match {
           case Some(oEstado: ObligacionExternalDto) if oEstado.BOB_SUPRESIONES.isDefined => {
@@ -119,11 +96,10 @@ class StateParcialObligacion extends StateParcial {
               campoActualizar.set(eventoNuevo, miEvento.BOB_SUPRESIONES)
             }
           }
-           case _ => ()
+          case _ => ()
         }
       }
     }
-
 
   }
 
@@ -135,5 +111,3 @@ object StateParcialObligacion {
     SPO.stateParcialCC(evento, estado) match {case o: ObligacionExternalDto => o}
   }
 }
-
-

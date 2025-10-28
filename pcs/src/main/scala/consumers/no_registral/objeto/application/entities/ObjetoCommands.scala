@@ -162,5 +162,12 @@ object ObjetoCommands {
       dmnNumero: Option[Int],
       dmnDescripcion: Option[String]
   ) extends ObjetoCommands
-
+  case class DeleteObjectIfNoObligaciones(
+                                           deliveryId: BigInt,
+                                           sujetoId: String,
+                                           objetoId: String,
+                                           tipoObjeto: String,
+                                           obligacionId: String,
+                                           cuota: Option[String]
+                                         ) extends ObjetoCommands
 }

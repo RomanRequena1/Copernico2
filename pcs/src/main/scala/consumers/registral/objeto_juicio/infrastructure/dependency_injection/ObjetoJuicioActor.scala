@@ -45,7 +45,7 @@ case class ObjetoJuicioActor(state: ObjetoJuicioState = ObjetoJuicioState(), pro
   if (projFlag) {
     val projSettings1: ProjectionSettings = ProjectionSettings.default("ObjetoJuicio-updated", 1)(this.monitoring)
     val projHandler1 = new ObjetoJuicioProjectionHandler(projSettings1, this.system, this)
-    println(s"CHECK ${projSettings1.toString}")
+    //println(s"CHECK ${projSettings1.toString}")
     projHandler1.run()
   }
 }

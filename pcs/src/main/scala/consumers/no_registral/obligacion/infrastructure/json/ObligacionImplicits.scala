@@ -36,6 +36,9 @@ object ObligacionImplicits {
   implicit val DetallesObligacionDecoder: Decoder[DetallesObligacion] = deriveDecoder
   implicit val DetallesObligacionEncoder: Encoder[DetallesObligacion] = deriveEncoder
 
+  implicit val DetallesCaracteristicasDecoder: Decoder[DetallesObligacionCaracteristicas] = deriveDecoder
+  implicit val DetallesCaracteristicasEncoder: Encoder[DetallesObligacionCaracteristicas] = deriveEncoder
+
   implicit val DetallesSupresionesDecoder: Decoder[DetallesSupresiones] = deriveDecoder
   implicit val DetallesSupresionesEncoder: Encoder[DetallesSupresiones] = deriveEncoder
 
@@ -47,6 +50,13 @@ object ObligacionImplicits {
     (detallesObligaciones: ListDetallesObligaciones) =>
       Json.obj(
         "BOB_DETALLES" -> detallesObligaciones.BOB_DETALLES.asJson
+      )
+
+  implicit val ListDetallesCaracteristicasDecoder: Decoder[ListCaracteristicasObligaciones] = deriveDecoder
+  implicit val ListDetallesCaracteristicasEncoder: Encoder[ListCaracteristicasObligaciones] =
+    (detallesCaracteristicas: ListCaracteristicasObligaciones) =>
+      Json.obj(
+        "BOB_DETALLES_CARACTERISTICAS" -> detallesCaracteristicas.BOB_DETALLES_CARACTERISTICAS.asJson
       )
 
   implicit val ListDetallesSupresionesDecoder: Decoder[ListDetallesSupresiones] = deriveDecoder

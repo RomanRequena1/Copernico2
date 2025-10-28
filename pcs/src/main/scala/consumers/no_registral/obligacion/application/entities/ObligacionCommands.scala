@@ -15,6 +15,7 @@ object ObligacionCommands {
       deliveryId: BigInt,
       registro: ObligacionExternalDto,
       detallesObligacion: Seq[DetallesObligacion],
+      detallesCaracteristicas: Seq[DetallesObligacionCaracteristicas],
       detallesSupresiones: Seq[DetallesSupresiones],
       isAdheridoDebito: Option[Boolean],
       cuota: Option[String],
@@ -56,6 +57,7 @@ object ObligacionCommands {
       deliveryId: BigInt,
       registro: ObligacionExternalDto,
       detallesObligacion: Seq[DetallesObligacion],
+      detallesCaracteristicas: Seq[DetallesObligacionCaracteristicas],
       detallesSupresiones: Seq[DetallesSupresiones],
       isAdheridoDebito: Option[Boolean],
       cuota: Option[String]

@@ -8,6 +8,7 @@ sealed trait ObjetoVinculoEvent extends Event with ObjetoVinculoMessage with Cbr
   //TODO: validar pq se utiliza el tipoObj en el trait
   def tipoObj: String
   def deliveryId: BigInt
+  override def aggregateRoot: String = s"ObjetoVinculo-$objetoId"
 }
 
 object ObjetoVinculoEvent {

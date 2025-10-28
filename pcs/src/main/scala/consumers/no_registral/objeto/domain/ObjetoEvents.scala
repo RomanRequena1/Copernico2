@@ -221,5 +221,4 @@ object ObjetoEvents {
       dmnNumero: Option[Int],
       dmnDescripcion: Option[String]
   ) extends ObjetoEvents
-
 }

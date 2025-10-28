@@ -62,6 +62,8 @@ sealed trait ObligacionExternalDto extends ExternalDto with CbroSerialization {
 
   def BOB_OTROS_ATRIBUTOS: Option[ListDetallesObligaciones]
 
+  def BOB_CARACTERISTICAS: Option[ListCaracteristicasObligaciones]
+
   def BOB_SUPRESIONES: Option[ListDetallesSupresiones]
 
   def BOB_PERIODO: Option[String]
@@ -110,6 +112,7 @@ case class ObligacionesTri(
     BOB_INTERES_RESAR: Option[BigDecimal],
     BOB_JUI_ID: Option[BigInt],
     BOB_OTROS_ATRIBUTOS: Option[ListDetallesObligaciones],
+    BOB_CARACTERISTICAS: Option[ListCaracteristicasObligaciones],
     BOB_PERIODO: Option[String],
     BOB_PLN_ID: Option[String],
     BOB_PRORROGA: Option[LocalDateTime],
@@ -149,6 +152,7 @@ case class ObligacionesAnt(
     BOB_INTERES_RESAR: Option[BigDecimal],
     BOB_JUI_ID: Option[BigInt],
     BOB_OTROS_ATRIBUTOS: Option[ListDetallesObligaciones],
+    BOB_CARACTERISTICAS: Option[ListCaracteristicasObligaciones],
     BOB_PERIODO: Option[String],
     BOB_PLN_ID: Option[String],
     BOB_PRORROGA: Option[LocalDateTime],
@@ -176,6 +180,8 @@ case class DetallesSupresiones(
 
 case class ListDetallesObligaciones(BOB_DETALLES: List[DetallesObligacion]) extends CbroSerialization
 
+case class ListCaracteristicasObligaciones(BOB_DETALLES_CARACTERISTICAS: List[DetallesObligacionCaracteristicas]) extends CbroSerialization
+
 case class DetallesObligacion(
     BOB_MUNICIPIO: Option[String],
     RULE_NUMBER: Option[String],
@@ -196,3 +202,10 @@ case class DetallesObligacion(
     SOJ_FECHA_RESOLUCION: Option[LocalDateTime],
     SOJ_DESCUENTO_VIGENTE: Option[String]
 ) extends CbroSerialization
+
+case class DetallesObligacionCaracteristicas(
+                                              BOB_CARACTERISTICA_CODIGO: Option[String],
+                                              BOB_CARACTERISTICA_DESCRIPCION: Option[String],
+                                              BOB_CARACTERISTICA_VALOR: Option[String],
+                                              BOB_CARACTERISTICA_DESCRIPCION_VALOR: Option[String]
+                             ) extends CbroSerialization

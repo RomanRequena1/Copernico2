@@ -62,11 +62,11 @@ class SingleObjectProcessor(targetGlobalActor: ActorRef, objetoId: String) exten
 //    )
 
     // Enviar el comando al actor global y pipe la respuesta al remitente original
-    (targetGlobalActor ? cmd)
+    (targetGlobalActor ? cmd)(400 seconds)
       .mapTo[Response.SuccessProcessing]
       .recover {
         case e: Exception => {
-          println(s"Doing recover of better sorter Obligacion: $objetoId, (queue: ${queue.size})")
+          logger.error(s"Doing recover of better sorter Objeto: $objetoId, (queue: ${queue.size}) - ${e.getMessage}")
           self ! "CommandProcessed"
         }
       }
