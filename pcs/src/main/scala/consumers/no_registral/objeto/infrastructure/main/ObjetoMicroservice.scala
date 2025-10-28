@@ -13,6 +13,7 @@ class ObjetoMicroservice(implicit m: KafkaConsumerMicroserviceRequirements) exte
 
   implicit val actor: ActorRef =
     SujetoActor.startWithRequirements(monitoringAndMessageProducer)
+    ObjetoVinculoActor.startWithRequirements(monitoringAndMessageProducer)
   override def actorTransactions: Set[ActorTransaction[_]] =
     Set(
       ObjetoExencionTransaction(actor, monitoring),
