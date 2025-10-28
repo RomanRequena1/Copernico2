@@ -139,10 +139,17 @@ final case class ObjetoVinculoState(
               case (acc, (vinculo, cotitular)) =>
                 acc + (vinculo -> cotitular.copy(estado = Some("TRANSF")))
             }
-
             val _mapVinculoLimpio = mapVinculo.filterNot(v => v._1.objetoId.equals(evt.objetoId))
             val _mapVinculo = _mapVinculoLimpio + (_vinculo -> _vinculoCotitular)
+            (_mapTransf, _mapVinculo)
 
+          case Some("ESTADO2") =>
+             val _mapTransf = vinculosAnteriores.foldLeft(mapTransf) {
+                case (acc, (vinculo, cotitular)) =>
+                  acc + (vinculo -> cotitular.copy(estado = Some("ESTADO2")))
+              }
+            val _mapVinculoLimpio = mapVinculo.filterNot(v => v._1.objetoId.equals(evt.objetoId))
+            val _mapVinculo = _mapVinculoLimpio + (_vinculo -> _vinculoCotitular)
             (_mapTransf, _mapVinculo)
 
           case _ =>

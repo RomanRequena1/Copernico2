@@ -177,8 +177,6 @@ case class ObjetoState(
         // Si tiene30ObjetoVinculo = false Y no tiene obligaciones propias heredar la penalizacion
         val tiene30ObjetoCalculado = if (!evt.tiene30ObjetoVinculo && obligaciones.isEmpty) {
           false
-        } else if (evt.tiene30ObjetoVinculo && obligaciones.isEmpty) {
-          true
         } else {
           tiene30Objeto // Sino mantener la marca actual
         }
