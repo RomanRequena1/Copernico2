@@ -175,11 +175,18 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
   def dmnresumenpersistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
     val kafkaTopic = "dgr-cop-objeto-beneficios-v1"
 
+    val (dmnNumeroFinal, dmnDescripcionFinal) = evt match {
+      //si hay un dmn calculado es porque en el handler se cumplio la condicion y tengo que usar este
+      case e: ObjetoEvents.DmnResumen => (e.dmnNumero, e.dmnDescripcion)
+      //sino usar el de siempre
+      case _ => (consolidatedState.dmnNumero, consolidatedState.dmnDescripcion)
+    }
+
     val beneficio = Beneficio(
       codigo = "DTO30",
       aplicarDescuento = consolidatedState.aplicarDescuento,
-      dmnNumero = consolidatedState.dmnNumero,
-      dmnDescripcion = consolidatedState.dmnDescripcion
+      dmnNumero = dmnNumeroFinal,
+      dmnDescripcion = dmnDescripcionFinal
     )
     val snapshot =
       DmnResumenSnapshotPersisted(
@@ -191,7 +198,6 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
         Some(consolidatedState.fechaUltMod),
         Seq(beneficio)
       )
-    // println("estoy en el ObjetoActor")
     requirements.psrmMessageProducer.produce(
       data = Seq(
         KafkaKeyValue(

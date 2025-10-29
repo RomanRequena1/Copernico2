@@ -68,7 +68,6 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
       case false => Some(false)
     }
 
-
     val event1 = AplicarDescuentoUpdated(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
@@ -80,8 +79,23 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
     actor.state += event1
 
 
-    //println(s"aplicar anterior: $aplicarDescuentoAnterior, nuevo: ${actor.state.aplicarDescuento}")
-    //println("state: " + actor.state)
+    // Si dmnNumero está vacío (no tiene deuda propia)
+    // Y aplicarDescuento es false (está penalizado)
+    // Y tiene30Objeto es true (el objeto en sí NO tiene deuda)
+    // entonces notificar a todos los objetos que tienen deuda por otro objeto
+    // =>
+    val (dmnNumeroParaPSRM, dmnDescripcionParaPSRM) = {
+      if (actor.state.dmnNumero.isEmpty &&
+        aplicarDescuentoNuevo.contains(false) &&
+        actor.state.tiene30Objeto) {
+
+        (Some(99), Some("No cumple por deuda en otro objeto del sujeto"))
+
+      } else {
+        //caso normal como antes
+        (actor.state.dmnNumero, actor.state.dmnDescripcion)
+      }
+    }
 
     val eventDmn = DmnResumen(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
@@ -91,12 +105,12 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
       actor.state.registro.getOrElse(obj_default).SOJ_ID_EXTERNO.orElse(Some("None")),
       Some(actor.state.fechaUltMod),
       actor.state.aplicarDescuento,
-      actor.state.dmnNumero,
-      actor.state.dmnDescripcion
+      dmnNumeroParaPSRM,          // ← Usar el calculado
+      dmnDescripcionParaPSRM      // ← Usar el calculado
     )
 
     if (!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA") && actor.state.aplicarDescuento.isDefined) {
-        actor.persistSnapshot(event, actor.state) { () =>
+      actor.persistSnapshot(event, actor.state) { () =>
         if (debeEnviarResumen(aplicarDescuentoAnterior, actor.state.aplicarDescuento) && esTipoObjetoPermitido(command.tipoObjeto) && resumenEnabled.isDefined) {
           actor.dmnresumenpersistSnapshot(eventDmn, actor.state) { () =>
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
