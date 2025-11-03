@@ -51,6 +51,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       },
       command.detallesObligacion,
       command.detallesCaracteristicas,
+      command.idExterno,
       command.detallesSupresiones,
       command.isAdheridoDebito,
       command.cuota,

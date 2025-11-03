@@ -102,7 +102,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor)
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
-      actor.state.registro.getOrElse(obj_default).SOJ_ID_EXTERNO.orElse(Some("None")),
+      actor.state.idExterno,
       Some(actor.state.fechaUltMod),
       actor.state.aplicarDescuento,
       dmnNumeroParaPSRM,          // ← Usar el calculado
