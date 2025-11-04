@@ -182,6 +182,18 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
       case _ => (consolidatedState.dmnNumero, consolidatedState.dmnDescripcion)
     }
 
+    val idExternoFinal: Option[String] = evt match {
+      case e: ObjetoEvents.DmnResumen =>
+        e.idExterno
+          .orElse(consolidatedState.idExterno)
+          .orElse(consolidatedState.registro.flatMap(_.SOJ_ID_EXTERNO))
+
+      case _ =>
+        // Para otros eventos: state → registro
+        consolidatedState.idExterno
+          .orElse(consolidatedState.registro.flatMap(_.SOJ_ID_EXTERNO))
+    }
+
     val beneficio = Beneficio(
       codigo = "DTO30",
       aplicarDescuento = consolidatedState.aplicarDescuento,
@@ -194,7 +206,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
         evt.sujetoId,
         evt.objetoId,
         evt.tipoObjeto,
-        consolidatedState.registro.flatMap(_.SOJ_ID_EXTERNO).orElse(Some("None")),
+        idExternoFinal,
         Some(consolidatedState.fechaUltMod),
         Seq(beneficio)
       )
