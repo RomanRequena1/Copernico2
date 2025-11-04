@@ -41,6 +41,7 @@ class ObligacionReprocessHandler(actor: ObligacionActor)
             registro,
             actor.state.detallesObligacion,
             actor.state.detallesObligacionCaracteristicas,
+            actor.state.idExterno,
             actor.state.detallesSupresiones.getOrElse(Seq.empty),
             Some(actor.state.isAdheridoDebito),
             registro.BOB_CUOTA,
