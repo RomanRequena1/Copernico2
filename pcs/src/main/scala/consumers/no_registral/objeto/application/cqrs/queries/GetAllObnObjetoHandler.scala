@@ -5,6 +5,7 @@ import akka.util.Timeout
 import consumers.no_registral.objeto.application.entities.ObjetoQueries.{GetAllObnObjeto, GetStateObjeto}
 import consumers.no_registral.objeto.application.entities.ObjetoResponses
 import consumers.no_registral.objeto.application.entities.ObjetoResponses.{GetAllObnResponse, GetObjetoResponse, Obligacion}
+import consumers.no_registral.objeto.application.helper.InteresCalculator
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.obligacion.application.entities.ObligacionQueries.GetMiniStateObligacion
 import consumers.no_registral.obligacion.application.entities.ObligacionResponses.GetMiniObligacionResponse
@@ -33,9 +34,18 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
         query.tipoObjeto,
         actorObn
       )).mapTo[GetMiniObligacionResponse].map { response =>
+        val interes = InteresCalculator.aplicarInteres(
+          capital = response.saldo.getOrElse(BigDecimal(0)),
+          vencimiento = response.vencimiento,
+          prorroga = response.vencimiento,
+          estado = response.estado,
+          saldo = response.saldo
+        )
         Obligacion(
           id = actorObn,
           saldo = response.saldo,
+          interes = Some(interes),
+          saldoInteres = response.saldo.map(_ + interes),
           vencimiento = response.vencimiento,
           estado = response.estado
         )

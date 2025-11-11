@@ -33,6 +33,8 @@ object ObjetoResponses {
 
   case class Obligacion(id: String,
                         saldo:Option[BigDecimal],
+                        interes: Option[BigDecimal],
+                        saldoInteres: Option[BigDecimal],
                         vencimiento: Option[LocalDateTime],
                         estado: Option[String])
 
