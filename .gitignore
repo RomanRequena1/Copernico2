@@ -17,6 +17,7 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 # IDEA
+.run/
 .idea/
 # Metals
 \.metals/

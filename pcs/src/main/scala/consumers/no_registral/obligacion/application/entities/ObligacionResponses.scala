@@ -10,6 +10,7 @@ object ObligacionResponses {
 
   case class GetObligacionResponse(
       saldo: BigDecimal = 0,
+      interes: BigDecimal = 0,
       fechaUltMod: LocalDateTime = LocalDateTime.MIN,
       exenta: Boolean = false,
       porcentajeExencion: Option[BigDecimal] = None,
