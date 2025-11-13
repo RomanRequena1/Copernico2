@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 
 final case class SujetoState(
     saldo: BigDecimal = 0,
+    saldoTotal: BigDecimal = 0,
     saldoObjetos: Map[String, BigDecimal] = Map.empty,
     saldoObligaciones: Map[String, BigDecimal] = Map.empty,
     objetos: Set[(String, String)] = Set.empty,

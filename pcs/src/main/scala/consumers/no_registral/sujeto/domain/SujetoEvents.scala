@@ -68,4 +68,11 @@ object SujetoEvents {
       objetoId: String,
       tipoObjeto: String
   ) extends SujetoEvents
+
+  case class SujetoUpdatedSaldo(
+      deliveryId: BigInt,
+      sujetoId: String,
+      saldoTotal: String
+    ) extends SujetoEvents
+
 }

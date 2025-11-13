@@ -28,6 +28,8 @@ object ObjetoResponses {
                                 objetoId: String,
                                 objetoTipo: String,
                                 //saldo: BigDecimal,
+                                tiene30objeto: Option[Boolean],
+                                aplicarDescuento: Option[Boolean],
                                 obligaciones: Set[Obligacion] = Set.empty,
                               ) extends ObjetoResponses with CbroSerialization
 
@@ -36,7 +38,9 @@ object ObjetoResponses {
                         interes: Option[BigDecimal],
                         saldoInteres: Option[BigDecimal],
                         vencimiento: Option[LocalDateTime],
-                        estado: Option[String])
+                        estado: Option[String],
+                        tiene30obn: Option[Boolean]
+                       )
 
 
 

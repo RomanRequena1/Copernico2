@@ -4,8 +4,10 @@ import akka.ActorRefMap
 import akka.actor.{ActorRef, Props}
 import akka.entity.ShardedEntity
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
+import akka.persistence.SnapshotOffer
 import consumers.no_registral.objeto.application.cqrs.commands._
 import consumers.no_registral.objeto.application.cqrs.queries.{GetAllObnObjetoHandler, GetSnapshotObjetoHandler, GetStateExencionHandler, GetStateObjetoHandler}
+import consumers.no_registral.objeto.application.entities.ObjetoMessage.ObjetoMessageRoots
 import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoQueries}
 import consumers.no_registral.objeto.domain.ObjetoEvents.{Beneficio, DmnResumenSnapshotPersisted, ObjetoSnapshotPersisted}
 import consumers.no_registral.objeto.domain.{ObjetoEvents, ObjetoState}
@@ -98,6 +100,14 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
         case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
           obligaciones((evt.sujetoId, evt.objetoId, evt.tipoObjeto, evt.obligacionId))
         case _ =>
+      }
+
+    case SnapshotOffer(_, snapshot: ObjetoState) =>
+      state = snapshot
+      val omr = ObjetoMessageRoots.extractor(this.persistenceId)
+      val obligacionesYObnVencidas: Set[String] = state.obligaciones ++ state.obnVencidas.keySet
+      obligacionesYObnVencidas.foreach { obn =>
+        obligaciones((omr.sujetoId, omr.objetoId, omr.tipoObjeto, obn))
       }
   }
 
