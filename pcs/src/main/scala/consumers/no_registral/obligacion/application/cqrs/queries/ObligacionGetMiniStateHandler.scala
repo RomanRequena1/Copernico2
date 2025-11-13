@@ -19,7 +19,8 @@ class ObligacionGetMiniStateHandler(actor: ObligacionActor) extends SyncQueryHan
       query.obligacionId,
       actor.state.saldo,
       actor.state.registro.get.BOB_VENCIMIENTO,
-      actor.state.registro.get.BOB_ESTADO
+      actor.state.registro.get.BOB_ESTADO,
+      actor.state.registro.get.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.tiene30Obligaciones
     )
     import java.time.format.DateTimeFormatter
     val time = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").format(ZonedDateTime.now())

@@ -47,7 +47,8 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
           interes = Some(interes),
           saldoInteres = response.saldo.map(_ + interes),
           vencimiento = response.vencimiento,
-          estado = response.estado
+          estado = response.estado,
+          tiene30obn = response.tiene30
         )
       }
     }
@@ -66,8 +67,11 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
         val response = GetAllObnResponse(
           objetoId = query.objetoId,
           objetoTipo = query.tipoObjeto,
+          tiene30objeto = Some(actor.state.tiene30Objeto),
+          aplicarDescuento = actor.state.aplicarDescuento,
 //          saldo = actor.state.saldo,
-          obligaciones = lista)
+          obligaciones = lista
+        )
         sender ! response
       }
       case Failure(ex) => println(ex.toString)
@@ -76,6 +80,8 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
     val response = GetAllObnResponse(
       objetoId = query.objetoId,
       objetoTipo = query.tipoObjeto,
+      tiene30objeto = Some(actor.state.tiene30Objeto),
+      aplicarDescuento = actor.state.aplicarDescuento,
 //      saldo = actor.state.saldo,
       obligaciones = Set.empty)
 

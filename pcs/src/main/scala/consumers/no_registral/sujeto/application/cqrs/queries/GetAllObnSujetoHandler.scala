@@ -55,6 +55,7 @@ class GetAllObnSujetoHandler(actor: SujetoActor) extends SyncQueryHandler[GetAll
         val response = GetAllObnSujetoResponse(
           saldo = actor.state.saldo,
           saldoTotal = calcularSaldoInteresTotal(list),
+          tiene30sujeto = Some(actor.state.tiene30Sujeto),
           objetos = list,
           fechaUltMod = actor.state.fechaUltMod,
           registro = actor.state.registro,
@@ -82,6 +83,8 @@ class GetAllObnSujetoHandler(actor: SujetoActor) extends SyncQueryHandler[GetAll
 
     val response = GetAllObnSujetoResponse(
       saldo = actor.state.saldo,
+      saldoTotal = 0,
+      tiene30sujeto = Some(actor.state.tiene30Sujeto),
       objetos = Set.empty,
       fechaUltMod = actor.state.fechaUltMod,
       registro = actor.state.registro,
