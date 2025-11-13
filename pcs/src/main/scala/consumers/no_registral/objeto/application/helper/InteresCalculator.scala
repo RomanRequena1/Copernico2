@@ -7,8 +7,6 @@ case class IndiceRecargo(id: Int, fechaDesde: LocalDate, fechaHasta: LocalDate, 
 
 object InteresCalculator {
 
-
-
   /*
     [{'fechaDesde': '2002-09-01','fechaHasta': '2003-10-31','valor': 0.1300},
     {'fechaDesde': '2003-11-01','fechaHasta': '2014-03-31','valor': 0.0830},
@@ -66,19 +64,12 @@ object InteresCalculator {
 
     parametros.foreach { param =>
       if (!fechaVencPro.isBefore(param.fechaDesde) && !fechaVencPro.isAfter(param.fechaHasta)) {
-        println(s"Fecha: $fechaVencPro")
         val daysDiff = ChronoUnit.DAYS.between(fechaVencPro, param.fechaHasta)
         interesRecargo += ((param.valor / 100) * capital * daysDiff).setScale(2, BigDecimal.RoundingMode.HALF_UP)
-        println(s"Debug - Param.valor: ${param.valor}, Capital: $capital, DaysDiff: $daysDiff")
-        println(s"Debug - ${param.valor / 100}")
-        println(s"Debug - ${(param.valor / 100) * capital}")
-        println(s"Debug - ${(param.valor / 100) * capital * daysDiff}")
-        println(s"Saldo: $capital | Interes recargo: $interesRecargo | ID: ${param.id} - ${param.valor}")
         flag = false
       } else if (!flag) {
         val daysDiff = ChronoUnit.DAYS.between(param.fechaDesde, param.fechaHasta) + 1
         interesRecargo += ((param.valor / 100) * capital * daysDiff).setScale(2, BigDecimal.RoundingMode.HALF_UP)
-        println(s"Saldo: $capital | Interes recargo: $interesRecargo | ID: ${param.id} - ${param.valor}")
       }
     }
 

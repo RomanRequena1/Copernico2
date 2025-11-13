@@ -27,7 +27,7 @@ object ObjetoResponses {
   case class GetAllObnResponse(
                                 objetoId: String,
                                 objetoTipo: String,
-                                saldo: BigDecimal,
+                                //saldo: BigDecimal,
                                 obligaciones: Set[Obligacion] = Set.empty,
                               ) extends ObjetoResponses with CbroSerialization
 
