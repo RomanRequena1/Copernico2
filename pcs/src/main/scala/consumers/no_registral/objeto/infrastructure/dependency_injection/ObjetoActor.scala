@@ -99,13 +99,16 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
       evt match {
         case evt: ObjetoEvents.ObjetoUpdatedFromObligacion =>
           obligaciones((evt.sujetoId, evt.objetoId, evt.tipoObjeto, evt.obligacionId))
+        case evt: ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento =>
+          obligaciones((evt.sujetoId, evt.objetoId, evt.tipoObjeto, evt.obligacionId))
         case _ =>
       }
 
     case SnapshotOffer(_, snapshot: ObjetoState) =>
       state = snapshot
       val omr = ObjetoMessageRoots.extractor(this.persistenceId)
-      val obligacionesYObnVencidas: Set[String] = state.obligaciones ++ state.obnVencidas.keySet
+//      val obligacionesYObnVencidas: Set[String] = state.obligaciones ++ state.obnVencidas.keySet
+      val obligacionesYObnVencidas: Set[String] = state.obnVencidas.keySet
       obligacionesYObnVencidas.foreach { obn =>
         obligaciones((omr.sujetoId, omr.objetoId, omr.tipoObjeto, obn))
       }

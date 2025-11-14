@@ -6,4 +6,5 @@ trait Gauge {
   def add(num: Int): Unit
   def subtract(num: Int): Unit
   def set(num: Int): Unit
+  def set(num: Long): Unit
 }

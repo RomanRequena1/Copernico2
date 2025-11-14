@@ -54,6 +54,10 @@ class KafkaCommittablePartitionedMessageProcessor(
       s"$SOURCE_TOPIC-ProcessedMessagesCounter"
     )
 
+    val currentTimestamp = transactionRequirements.monitoring.gauge(
+      s"$SOURCE_TOPIC-ProcessedCurrentTimestamp"
+    )
+
     //Counter created to monitor the number of rejected messages
     val RejectedMessagesCounter = transactionRequirements.monitoring.counter(
       s"$SOURCE_TOPIC-RejectedMessagesCounter"
@@ -62,10 +66,12 @@ class KafkaCommittablePartitionedMessageProcessor(
     //Obtain the actor system through the requirements
     implicit val system: ActorSystem = transactionRequirements.system
 
+    val consumerSincroEnabled: String = Option(System.getenv("CONSUMER_SINCRO_ENABLED")).getOrElse("ON")
     //Obtain the ConsumerSettings through the requirements and then configure the consumer group
     val consumerSetting: ConsumerSettings[String, String] =
       SOURCE_TOPIC match {
-        case s"DGR-COP-OBLIGACIONES-TRI-$x-SINCRO" => transactionRequirements.consumer.withGroupId(appConfig.CONSUMER_GROUP_SINCRO)
+        case s"DGR-COP-OBLIGACIONES-TRI-$x-SINCRO" if consumerSincroEnabled.equals("ON") =>
+          transactionRequirements.consumer.withGroupId(appConfig.CONSUMER_GROUP_SINCRO)
         case _ => transactionRequirements.consumer.withGroupId(appConfig.CONSUMER_GROUP)
       }
 
@@ -161,6 +167,7 @@ class KafkaCommittablePartitionedMessageProcessor(
 
                 case Right((message, output)) =>
                   ProcessedMessagesCounter.increment()
+                  currentTimestamp.set(message.record.timestamp())
                   ProducerMessage.multi(
                     records = output.map { o =>
                       new ProducerRecord(

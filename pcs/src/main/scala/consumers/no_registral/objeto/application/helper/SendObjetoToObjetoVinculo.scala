@@ -10,6 +10,7 @@ import consumers.no_registral.tranferencia.infrastructure.dependency_injection.O
 import design_principles.actor_model.{Command, Response}
 import org.slf4j.{Logger, LoggerFactory}
 
+import scala.concurrent.ExecutionContextExecutor
 import scala.util.{Failure, Success}
 
 
@@ -44,7 +45,7 @@ object testIfObjVinculo {
 
     val log: Logger = LoggerFactory.getLogger(this.getClass)
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
-
+//    implicit val ec: ExecutionContextExecutor = actor.context.system.getDispatcher (TODO revisar cual es mejor)
     //Verificar si es un pago de una obligacion
     val esPago = command match {
       case _: ObjetoCommands.ObjetoRemoveObligacion => true
