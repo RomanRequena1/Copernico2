@@ -22,6 +22,7 @@ object SendToSujeto1 {
       actor.state.obligacionesSaldo.values.sum,
       actor.state.clasificacionObjeto
     ))
-    actor.context.sender ! Response.SuccessProcessing(event.aggregateRoot, event.deliveryId)
+//    Comentado por DeadLetters
+//    actor.context.sender ! Response.SuccessProcessing(event.aggregateRoot, event.deliveryId)
   }
 }

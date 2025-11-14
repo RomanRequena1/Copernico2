@@ -74,6 +74,10 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
       state += evt
       objetos((evt.sujetoId, evt.objetoId, evt.tipoObjeto))
 
+    case evt: SujetoEvents.SujetoUpdatedFromObjetoTreintaPorciento =>
+      state += evt
+      objetos((evt.sujetoId, evt.objetoId, evt.tipoObjeto))
+
     case SnapshotOffer(_, snapshot: SujetoState) =>
       state = snapshot
       state.objetos.foreach { obj =>

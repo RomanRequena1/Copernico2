@@ -5,5 +5,5 @@ trait Monitoring {
 
   def histogram(name: String): Histogram
 
-  def gauge(name: String): Gauge
+  def gauge(name: String, context: Map[String, String] = Map.empty): Gauge
 }
