@@ -43,7 +43,14 @@ class DeleteObjectIfNoObligacionesHandler(actor: ObjetoActor, requirements: Moni
       val obligacionesRestantes = actor.state.obligacionesSaldo
 
 
-      if (obligacionesRestantes.isEmpty && (command.tipoObjeto == "PPP" || command.tipoObjeto == "PM26")) {
+      if (obligacionesRestantes.isEmpty && (
+        command.tipoObjeto == "PPP" ||
+          command.tipoObjeto == "PM26" ||
+          command.tipoObjeto == "PVS" ||
+          command.tipoObjeto == "MVD" ||
+          command.tipoObjeto == "LTE" ||
+          command.tipoObjeto == "BDG"
+        )) {
         log.warn(s"Eliminando objeto ANT ${command.tipoObjeto} ${command.objetoId} - No quedan obligaciones")
         val obj_default: ObjetosAnt = ObjetosAnt(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), None, None, None)
 
