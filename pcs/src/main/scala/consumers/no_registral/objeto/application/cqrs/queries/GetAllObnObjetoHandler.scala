@@ -86,7 +86,7 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
         )
         sender ! response
       }
-      case Failure(ex) => println(ex.toString)
+      case Failure(ex) => log.error(ex.toString)
     }
 
     val response = GetAllObnResponse(
