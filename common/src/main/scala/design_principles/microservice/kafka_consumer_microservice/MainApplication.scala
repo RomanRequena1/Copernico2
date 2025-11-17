@@ -40,13 +40,13 @@ object MainApplication {
     val cassandraMetricsPort = Try(System.getenv("CASSANDRA_METRICS_PORT")).getOrElse("9089")
 
 
-    try {
-      new HTTPServer(cassandraMetricsPort.toInt)
-      val cassandraRegistry = CassandraMetricsRegistry.get(system).getRegistry
-      CollectorRegistry.defaultRegistry.register(new DropwizardExports(cassandraRegistry))
-    } catch {
-      case e: Exception => println(s"ERROR: Failed to export Cassandra metrics: ${e.getMessage}")
-    }
+//    try {
+//      new HTTPServer(cassandraMetricsPort.toInt)
+//      val cassandraRegistry = CassandraMetricsRegistry.get(system).getRegistry
+//      CollectorRegistry.defaultRegistry.register(new DropwizardExports(cassandraRegistry))
+//    } catch {
+//      case e: Exception => println(s"ERROR: Failed to export Cassandra metrics: ${e.getMessage}")
+//    }
 
     val routes = ProductionMicroserviceContextProvider.getContext(system, config) { implicit microserviceProvisioning =>
       val microservices = microservicesFactory(microserviceProvisioning)
