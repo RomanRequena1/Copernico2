@@ -87,7 +87,7 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
 
         actor.lastDeliveryId = command.deliveryId
         actor.deleteSnapshot(event) { () =>
-          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+          sender ! Response.SuccessProcessing("OBND-" + command.aggregateRoot, command.deliveryId)
         }
       }
       Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

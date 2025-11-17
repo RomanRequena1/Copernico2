@@ -2,6 +2,8 @@ package consumers.no_registral.objeto.application.cqrs.queries
 
 import akka.pattern.ask
 import akka.util.Timeout
+import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal
+import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal.DmnFinal
 import consumers.no_registral.objeto.application.entities.ObjetoQueries.{GetAllObnObjeto, GetStateObjeto}
 import consumers.no_registral.objeto.application.entities.ObjetoResponses
 import consumers.no_registral.objeto.application.entities.ObjetoResponses.{GetAllObnResponse, GetObjetoResponse, Obligacion}
@@ -64,11 +66,21 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
       case Success(value) => {
         lista = value
         //println(s"Mi lista: $lista")
+        val resultAplicarDescuento: Boolean = DMNTreintaPorcientoFinal.calcularDmnFinal(
+          DmnFinal(
+            actor.state.exclusionSujeto,
+            actor.state.exclusionObjeto,
+            actor.state.clasificacionObjeto,
+            actor.state.tiene30Objeto,
+            actor.state.tiene30Sujeto.get,
+            actor.state.tiene30ObjetoVinculo
+          )
+        )
         val response = GetAllObnResponse(
           objetoId = query.objetoId,
           objetoTipo = query.tipoObjeto,
           tiene30objeto = Some(actor.state.tiene30Objeto),
-          aplicarDescuento = actor.state.aplicarDescuento,
+          aplicarDescuento = Some(resultAplicarDescuento),
 //          saldo = actor.state.saldo,
           obligaciones = lista
         )

@@ -35,6 +35,7 @@ abstract class ActorTransaction[ExternalDto](
           case Success(a) => (a.aggregateRoot match {
             case s"IDEM-INT$resto" => recordIdempotencyInternally()
             case s"IDEM-$resto" => recordIdempotency()
+            case s"OBND-$resto" => recordPagos()
             case _ => ()
           })
         }(actorTransactionRequirements.executionContext)

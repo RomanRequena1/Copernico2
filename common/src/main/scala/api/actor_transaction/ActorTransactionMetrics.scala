@@ -27,6 +27,7 @@ abstract class ActorTransactionMetrics(
   final protected val lag: Histogram = monitoring.histogram(s"$metricPrefix-$controllerId-lag")
 
   final protected val idempotency: Counter = monitoring.counter(s"$metricPrefix-$controllerId-idempotency")
+  final protected val pagos: Counter = monitoring.counter(s"$metricPrefix-$controllerId-pagos")
   final protected val idempotencyInt: Counter = monitoring.counter(s"$metricPrefix-$controllerId-idempotency-int")
   final protected val betterSorterEvents: Counter = monitoring.counter(s"$metricPrefix-$controllerId-better-sorter")
 
@@ -46,6 +47,10 @@ abstract class ActorTransactionMetrics(
 
   final protected def recordIdempotency(): Unit = {
     idempotency.increment()
+  }
+
+  final protected def recordPagos(): Unit = {
+    pagos.increment()
   }
 
   final protected def recordLag(n: Long): Unit =

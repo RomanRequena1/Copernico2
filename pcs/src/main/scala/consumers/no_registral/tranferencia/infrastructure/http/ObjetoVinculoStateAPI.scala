@@ -43,7 +43,7 @@ case class ObjetoVinculoStateAPI(actor: ActorRef, monitoring: Monitoring)(
         }
 
   def getState: Route =
-    path("sujeto" / Segment / "objetovinculo") { objetoId =>
+    withObjeto { objetoId =>
         queryState[GetObjetoVinculoResponse](actorRef = actor, GetStateObjetoVinculo(objetoId))(
           GetObjetoVinculoResponseEncoder,
           t => t.fechaUltMod == LocalDateTime.MIN
@@ -56,6 +56,6 @@ case class ObjetoVinculoStateAPI(actor: ActorRef, monitoring: Monitoring)(
 
 object ObjetoVinculoStateAPI {
   def nestedRoute(name: String)(andThen: String => Route): Route = pathPrefix(name / Segment)(andThen)
-  def withObjeto: (String => Route) => Route = nestedRoute("ObjetoVinculo") _
+  def withObjeto: (String => Route) => Route = nestedRoute("objetovinculo") _
 
 }
