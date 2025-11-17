@@ -26,7 +26,7 @@ class ObligacionTaggingActor(actor: ActorRef)(implicit system: ActorSystem)
 
   override def receive: Receive = {
     case StartReprocessing() =>
-      println("Starting obligacion events reprocessing")
+//      println("Starting obligacion events reprocessing")
       val originalSender = sender()
 
       reprocessAllObligacionEvents().onComplete {
@@ -37,11 +37,11 @@ class ObligacionTaggingActor(actor: ActorRef)(implicit system: ActorSystem)
       }
 
     case StopReprocessing() =>
-      println("Stopping obligacion tagging actor")
+//      println("Stopping obligacion tagging actor")
       context.stop(self)
 
     case PoisonPill =>
-      println("Obligacion tagging actor received PoisonPill")
+//      println("Obligacion tagging actor received PoisonPill")
       context.stop(self)
   }
 

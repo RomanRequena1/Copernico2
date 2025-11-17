@@ -63,7 +63,7 @@ class GetAllObnSujetoHandler(actor: SujetoActor) extends SyncQueryHandler[GetAll
         )
         sender ! response
       }
-      case Failure(ex) => println(ex.toString)
+      case Failure(ex) => log.error(ex.toString)
     }
 //    Future.sequence(getAllObjetosFuture) onComplete {
 //      case Success(value) => {

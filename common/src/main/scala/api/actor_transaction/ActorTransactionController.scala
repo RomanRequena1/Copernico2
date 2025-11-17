@@ -33,7 +33,7 @@ class ActorTransactionController(
     val messageBehindFull: String = Option(System.getenv("MESSAGE_BEHIND_1_FULL")).getOrElse("ON")
 
     val cancellable: Cancellable = system.scheduler.scheduleWithFixedDelay(
-      initialDelay = 1.seconds,
+      initialDelay = 600.seconds,
       delay = interval.seconds
     ) { () =>
       try {
