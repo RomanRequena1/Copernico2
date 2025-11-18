@@ -108,7 +108,7 @@ class KafkaCommittablePartitionedMessageProcessor(
       val metadataClient = MetadataClient.create(transactionRequirements.consumer, 20.second)
       log.info(s"Message behind metrics enabled for $SOURCE_TOPIC with interval $messageBehindInterval seconds")
       transactionRequirements.system.scheduler.scheduleWithFixedDelay(
-        initialDelay = 600.seconds,
+        initialDelay = 300.seconds,
         delay = messageBehindInterval.seconds
       ) { () =>
         try {

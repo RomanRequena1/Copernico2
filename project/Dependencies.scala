@@ -151,6 +151,7 @@ object Dependencies {
         cinnamonOpenTracingJaeger ::
         cinnamonOpenTracingZipkin ::
         cinnamonAkkaTyped ::
+        cinnamonKafkaConsumerJmxImporter ::
       Nil
   }
 
