@@ -217,6 +217,8 @@ class KafkaCommittablePartitionedMessageProcessor(
                 case Right((message, output)) =>
                   ProcessedMessagesCounter.increment()
                   currentTimestamp.set(message.record.timestamp())
+                  transactionRequirements.monitoring.gauge(s"$SOURCE_TOPIC-ProcessedCurrentOffset",
+                    Map(("partition" -> message.record.partition().toString))).set(message.record.offset())
                   ProducerMessage.multi(
                     records = output.map { o =>
                       new ProducerRecord(
