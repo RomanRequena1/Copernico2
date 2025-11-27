@@ -7,8 +7,7 @@ import consumers.no_registral.obligacion.application.entities.ObligacionCommands
 object SendToObligaciones {
   def apply(objActor: ObjetoActor) : Unit = {
 
-    objActor.context.children match {
-
+    objActor.state.obnVencidas match {
       case x if x.isEmpty => {
         objActor.context.self ! RemoveObjetoFromObligacion(
           objActor.state.lastDeliveryIdByEvents,
@@ -20,17 +19,14 @@ object SendToObligaciones {
         )
       }
 
-      case x => x.foreach( actor => {
-        val actorSelection = objActor.context.actorSelection(actor.path)
+      case x => x.foreach( obn => {
+        val actorSelection = objActor.context.parent
         actorSelection ! ObligacionRemoveInfoFromObjeto(
           objActor.state.lastDeliveryIdByEvents,
           objActor.state.registro.get.SOJ_SUJ_IDENTIFICADOR,
           objActor.state.registro.get.SOJ_IDENTIFICADOR,
           objActor.state.registro.get.SOJ_TIPO_OBJETO,
-          """Obligacion-(\d+)""".r.findFirstMatchIn(actor.path.toString) match {
-            case Some(matched) => matched.group(1)
-            case None => ""
-          }
+          obn._1
         )
       })
     }

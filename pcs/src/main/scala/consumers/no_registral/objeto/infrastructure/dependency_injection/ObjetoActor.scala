@@ -104,14 +104,14 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
         case _ =>
       }
 
-    case SnapshotOffer(_, snapshot: ObjetoState) =>
-      state = snapshot
-      val omr = ObjetoMessageRoots.extractor(this.persistenceId)
-//      val obligacionesYObnVencidas: Set[String] = state.obligaciones ++ state.obnVencidas.keySet
-      val obligacionesYObnVencidas: Set[String] = state.obnVencidas.keySet
-      obligacionesYObnVencidas.foreach { obn =>
-        obligaciones((omr.sujetoId, omr.objetoId, omr.tipoObjeto, obn))
-      }
+//    case SnapshotOffer(_, snapshot: ObjetoState) =>
+//      state = snapshot
+//      val omr = ObjetoMessageRoots.extractor(this.persistenceId)
+////      val obligacionesYObnVencidas: Set[String] = state.obligaciones ++ state.obnVencidas.keySet
+//      val obligacionesYObnVencidas: Set[String] = state.obnVencidas.keySet
+//      obligacionesYObnVencidas.foreach { obn =>
+//        obligaciones((omr.sujetoId, omr.objetoId, omr.tipoObjeto, obn))
+//      }
   }
 
 // TODO: Validar que es lo q esta haciendo, para Objetos ANT?
