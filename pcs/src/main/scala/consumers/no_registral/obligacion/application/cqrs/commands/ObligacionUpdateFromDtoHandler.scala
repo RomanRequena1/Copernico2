@@ -61,7 +61,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
     }
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error(
+      log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -obligacion- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
 
