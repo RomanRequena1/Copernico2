@@ -28,6 +28,7 @@ abstract class ActorTransactionMetrics(
 
   final protected val idempotency: Counter = monitoring.counter(s"$metricPrefix-$controllerId-idempotency")
   final protected val pagos: Counter = monitoring.counter(s"$metricPrefix-$controllerId-pagos")
+  final protected val pagosError: Counter = monitoring.counter(s"$metricPrefix-$controllerId-pagos-error")
   final protected val idempotencyInt: Counter = monitoring.counter(s"$metricPrefix-$controllerId-idempotency-int")
   final protected val betterSorterEvents: Counter = monitoring.counter(s"$metricPrefix-$controllerId-better-sorter")
 
@@ -58,16 +59,50 @@ abstract class ActorTransactionMetrics(
 
   final protected def recordLatency(future: Future[Response.SuccessProcessing]): Unit =
     latency.recordFuture(future)
+
+  private def extractRuleNumber(input: String): String = {
+    Try {
+      val pattern = """"RULE_NUMBER"\s*:\s*"([^"]*)"""".r
+      pattern.findFirstMatchIn(input).map(_.group(1)).getOrElse("")
+    }.getOrElse("")
+  }
+
+  private def extractErrorInfo(input: String): String = {
+    Try {
+      def getValue(key: String): String = {
+        val pattern = s""""$key"\\s*:\\s*"([^"]*)"""".r
+        pattern.findFirstMatchIn(input).map(_.group(1)).getOrElse("")
+      }
+
+      val evId = getValue("EV_ID")
+
+      input match {
+        case s if s.contains("BOB_OBN_ID") =>
+          val sujIden = getValue("BOB_SUJ_IDENTIFICADOR")
+          val sojTipo = getValue("BOB_SOJ_TIPO_OBJETO")
+          val sojIden = getValue("BOB_SOJ_IDENTIFICADOR")
+          val ruleNumber = extractRuleNumber(input)
+//          s"[$evId - SUJ: $sujIden, SOJ_TIPO: $sojTipo, SOJ_ID: $sojIden, OBN_ID: $obnId, RULE: $ruleNumber]"
+          s" [$evId - $sujIden, $sojIden-$sojTipo ($ruleNumber)]"
+
+
+        case s if s.contains("SOJ_SUJ_IDENTIFICADOR") =>
+          val sujIden = getValue("SOJ_SUJ_IDENTIFICADOR")
+          val sojTipo = getValue("SOJ_TIPO_OBJETO")
+          val sojIden = getValue("SOJ_IDENTIFICADOR")
+          s" [$evId - $sujIden, $sojIden-$sojTipo]"
+
+        case s if s.contains("SUJ_IDENTIFICADOR") =>
+          val sujIden = getValue("SUJ_IDENTIFICADOR")
+          s" [$evId - $sujIden]"
+
+        case _ =>
+          s" [$evId]"
+      }
+    }.getOrElse(" []")
+  }
+
   final protected def recordErrors(throwable: Throwable, input: String): Unit = {
-
-    val trimmedList: List[String] = input.split("\"").map(_.trim).toList
-    val ev_id = trimmedList(3)
-    val a = trimmedList.indexOf("BOB_SUJ_IDENTIFICADOR")
-
-    val suj_iden = trimmedList(a + 1) match {
-      case _ if a.equals(-1) => ""
-      case _ => trimmedList(a + 2)
-    }
 
     throwable match {
       /*case e: SerializationError =>
@@ -76,7 +111,10 @@ abstract class ActorTransactionMetrics(
       case e: AskTimeoutException =>
         errors.increment()
         errorsATO.increment()
-        log.error(e.getMessage + s" [${ev_id}  -  ${suj_iden}]")
+        log.error(e.getMessage + extractErrorInfo(input))
+        if (extractRuleNumber(input).equals("-1") || extractRuleNumber(input).equals("-2")) {
+          pagosError.increment()
+        }
       case unexpectedException: Throwable =>
         errors.increment()
         log.error(unexpectedException.getMessage)

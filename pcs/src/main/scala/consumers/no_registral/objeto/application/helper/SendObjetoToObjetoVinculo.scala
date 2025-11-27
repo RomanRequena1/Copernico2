@@ -90,8 +90,14 @@ object testIfObjVinculo {
           exclusionObjeto = actor.state.exclusionObjeto
         ))
         res.onComplete {
-          case Failure(exception) => log.error("Error to send event to objeto_vinculo (PAGO-TRANSF) " + exception + " objID: "+ objetoId + " sujID: "+sujetoId)
-          case Success(value) => log.debug("Sent event to objet_vinculo (PAGO-TRANSF)" + " objID: "+ objetoId + " sujID: "+ sujetoId)
+          case Failure(exception) => {
+            requeriment.monitoring.counter("objeto-vinculo-pago-transf-error").increment()
+            log.error("Error to send event to objeto_vinculo (PAGO-TRANSF) " + exception + " objID: " + objetoId + " sujID: " + sujetoId)
+          }
+          case Success(value) => {
+            requeriment.monitoring.counter("objeto-vinculo-pago-transf-success").increment()
+            log.debug("Sent event to objet_vinculo (PAGO-TRANSF)" + " objID: " + objetoId + " sujID: " + sujetoId)
+          }
         }
 
       //FIXME: Objeto en baja recibe una obn, activa el VSO?
@@ -107,8 +113,14 @@ object testIfObjVinculo {
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
           exclusionObjeto = actor.state.exclusionObjeto))
         res.onComplete {
-          case Failure(exception) => log.error("Error to send event to objeto_vinculo (BAJA) " + exception + " objID: "+ objetoId + "sujID: "+sujetoId)
-          case Success(value) => log.debug("Sent event to objet_vinculo (BAJA) " + " objID: "+ objetoId + " sujID: "+ sujetoId)
+          case Failure(exception) => {
+            requeriment.monitoring.counter("objeto-vinculo-baja-error").increment()
+            log.error("Error to send event to objeto_vinculo (BAJA) " + exception + " objID: " + objetoId + "sujID: " + sujetoId)
+          }
+          case Success(value) => {
+            requeriment.monitoring.counter("objeto-vinculo-baja-success").increment()
+            log.debug("Sent event to objet_vinculo (BAJA) " + " objID: " + objetoId + " sujID: " + sujetoId)
+          }
         }
 
       case _ =>
@@ -123,8 +135,14 @@ object testIfObjVinculo {
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
           exclusionObjeto = actor.state.exclusionObjeto))
         res.onComplete {
-          case Failure(exception) => log.error("Error to send event to objeto_vinculo (case_) " + exception + " objID: "+ objetoId + " sujID: "+sujetoId)
-          case Success(value) => log.debug("Sent event to objet_vinculo (case_)" + " objID: "+ objetoId + " sujID: "+ sujetoId)
+          case Failure(exception) => {
+            requeriment.monitoring.counter("objeto-vinculo-error").increment()
+            log.error("Error to send event to objeto_vinculo (case_) " + exception + " objID: " + objetoId + " sujID: " + sujetoId)
+          }
+          case Success(value) => {
+            requeriment.monitoring.counter("objeto-vinculo-success").increment()
+            log.debug("Sent event to objet_vinculo (case_)" + " objID: " + objetoId + " sujID: " + sujetoId)
+          }
         }
     }
   }
