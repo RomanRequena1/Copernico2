@@ -15,8 +15,10 @@ final case class ObjetoVinculoState(
     mapVinculo: Map[Vinculo, VinculoCotitular] = Map.empty, //todo contiene todos los vinculos que no son transf junto con el tiene30Objeto
     tiene30ObjetoVinculo: Boolean = false, //todo si ese objeto tiene 30 que depende de todos los vinculos, depende el caso
     exclusionObjetoVinculo: Option[String] = None,
-    lastDeliveryIdByEvents: BigInt = 0
-) extends AbstractState[ObjetoVinculoEvent]
+    lastDeliveryIdByEvents: BigInt = 0,
+    ultimoAplicarDescuentoEnviado: Option[Boolean] = None,
+    fechaUltimoEnvioResumen: LocalDateTime = LocalDateTime.MIN
+                                   ) extends AbstractState[ObjetoVinculoEvent]
     with CbroSerialization {
 
   def +(event: ObjetoVinculoEvent): ObjetoVinculoState = {
@@ -172,6 +174,11 @@ final case class ObjetoVinculoState(
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
           mapVinculo = _mapVinculo,
           mapTransf = _mapTransf
+        )
+      case evt: ObjetoVinculoEvent.ResumenEnviado =>
+        copy(
+          ultimoAplicarDescuentoEnviado = evt.aplicarDescuento,
+          fechaUltimoEnvioResumen = evt.fechaEnvio
         )
       case _ =>
         log.warn(s"Unexpected event at ObjetoVinculoState ")

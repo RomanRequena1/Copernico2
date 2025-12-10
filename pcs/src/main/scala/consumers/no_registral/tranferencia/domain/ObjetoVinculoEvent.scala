@@ -24,6 +24,14 @@ object ObjetoVinculoEvent {
       deliveryId: BigInt
   ) extends ObjetoVinculoEvent
 
+  case class ResumenEnviado(
+                             deliveryId: BigInt,
+                             objetoId: String,
+                             tipoObj: String,
+                             aplicarDescuento: Option[Boolean],
+                             fechaEnvio: java.time.LocalDateTime
+                           ) extends ObjetoVinculoEvent
+
   case class UpdatedVinculoObjetoFromObj(
       sujetoId: String,
       objetoId: String,
@@ -47,6 +55,8 @@ object ObjetoVinculoEvent {
       excusionObjeto: Option[String],
       deliveryId: BigInt
   ) extends ObjetoVinculoEvent
+
+
 
   case class CreatedTransfVinculoObjetoFromObj(
       sujetoId: String,
