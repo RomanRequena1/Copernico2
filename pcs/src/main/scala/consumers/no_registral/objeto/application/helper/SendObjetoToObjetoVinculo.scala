@@ -111,7 +111,7 @@ object testIfObjVinculo {
         }
 
       case _ =>
-        val res = vinculoActor.ask[Response.SuccessProcessing](UpdateVinculoObjetoFromObj(
+        vinculoActor ! UpdateVinculoObjetoFromObj(
           objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = 0,
@@ -120,11 +120,7 @@ object testIfObjVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
-          exclusionObjeto = actor.state.exclusionObjeto))
-        res.onComplete {
-          case Failure(exception) => log.error("Error to send event to objeto_vinculo (case_) " + exception + " objID: "+ objetoId + " sujID: "+sujetoId)
-          case Success(value) => log.debug("Sent event to objet_vinculo (case_)" + " objID: "+ objetoId + " sujID: "+ sujetoId)
-        }
+          exclusionObjeto = actor.state.exclusionObjeto)
     }
   }
 }

@@ -33,7 +33,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
     commandBus.subscribe[ObjetoCommands.UpdateState30ObjetoFromObjVinculo](
       new UpdateState30ObjetoFromObjVinculoHandler(this, requirements).handle
     )
-    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromSujeto](new ObjetoUpdateFromSujetoHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromSujeto](new ObjetoUpdateFromSujetoHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagAdd](new ObjetoTagAddHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagRemove](new ObjetoTagRemoveHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromAnt](new ObjetoUpdateFromAntHandler(this, requirements).handle)

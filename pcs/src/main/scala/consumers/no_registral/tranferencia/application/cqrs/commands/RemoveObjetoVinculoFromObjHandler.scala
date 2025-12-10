@@ -20,6 +20,9 @@ class RemoveObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor,
 
     val sender = actor.context.sender()
 
+    log.info(s"[VINCULO-REMOVE-RECEIVED] Comando RemoveObjetoVinculo recibido - objetoId=${command.objetoId}, sujetoId=${command.sujetoId}")
+
+
     val event = ObjetoVinculoEvent.RemovedVinculoObjetoFromObj(
       command.sujetoId,
       command.objetoId,

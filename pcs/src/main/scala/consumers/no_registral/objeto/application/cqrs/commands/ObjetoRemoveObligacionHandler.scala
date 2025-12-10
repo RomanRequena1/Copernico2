@@ -40,6 +40,9 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
 
     actor.persistEvent(event) { () =>
       actor.state += event
+
+      log.info(s"[PAGO-DEBUG-2] Evento persistido - objetoId=${command.objetoId}, tiene30Objeto=${actor.state.tiene30Objeto}")
+
       actor.persistSnapshot(event, actor.state) { () =>
         if (!actor.state.isBaja && actor.state.registro.isDefined) {
           SendObjetoToObjetoVinculo(
@@ -52,6 +55,9 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
             requeriment,
             command
           )
+        }
+        else {
+          log.warn(s"[PAGO-DEBUG-3-SKIP] NO se envió a vinculo - isBaja=${actor.state.isBaja}, registroDefined=${actor.state.registro.isDefined}")
         }
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }

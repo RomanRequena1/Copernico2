@@ -21,6 +21,8 @@ class UpdateObjetoVinculoFromObjHandler(
   override def handle(command: UpdateVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
+    log.info(s"[VINCULO-RECEIVED] Comando UpdateVinculoObjetoFromObj recibido - objetoId=${command.objetoId}, sujetoId=${command.sujetoId}")
+
     log.debug(
       f"""|CUMBIA - UpdateVinculoObjetoFromObj
           |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
