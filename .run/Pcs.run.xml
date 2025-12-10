@@ -9,6 +9,7 @@
     <option name="useSbtShell" value="false" />
     <option name="vmparams" value="-Xms512M -Xmx1024M -Xss1M -XX:+CMSClassUnloadingEnabled" />
     <option name="workingDir" value="$PROJECT_DIR$" />
+    <option name="envFilePaths" />
     <envs>
       <env name="CASSANDRA_CONTACT_POINTS_UNO" value="0.0.0.0:9042" />
       <env name="ENVIRONMENT_EXECUTION" value="LOCAL" />
@@ -17,6 +18,7 @@
       <env name="APACHE_KAFKA_DEBUG_MODE" value="OFF" />
       <env name="KAFKA_BROKERS_LIST" value="localhost:9092" />
       <env name="POOL_LOCAL_SIZE" value="4" />
+      <env name="STATE_PARCIAL_OBLIGACION_ANT" value="ON" />
       <env name="JAEGER_PORT" value="5775" />
       <env name="APACHE_KAFKA_CLIENTS_NETWORK_CLIENT_DEBUG_MODE" value="OFF" />
       <env name="DMN_ID_DECISION_30" value="Decision_descuento" />

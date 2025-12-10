@@ -36,16 +36,22 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   }
 
   def informParent(cmd: ObligacionCommands): Unit = {
+    // Safe extraction de los campos DMN
+    val (dmnNumero, dmnDescripcion) = state.registro
+      .flatMap(_.BOB_OTROS_ATRIBUTOS)
+      .flatMap(_.BOB_DETALLES.headOption)
+      .map(detalle => (detalle.dmnNumero, detalle.dmnDescripcion))
+      .getOrElse((None, None))
+
     context.parent ! ObjetoCommands.ObjetoUpdateFromObligacion(
       cmd.deliveryId,
       cmd.sujetoId,
       cmd.objetoId,
       cmd match {
         case c: ObligacionCommands.ObligacionUpdateFromDto =>
-          c.registro.BOB_SOJ_IDENTIFICADOR_2 match {
-            case Some(value) => Some(value)
-            case None => None
-          }
+          c.registro.BOB_SOJ_IDENTIFICADOR_2
+        case c: ObligacionCommands.ObligacionAntUpdateFromDto =>
+          c.registro.BOB_SOJ_IDENTIFICADOR_2
         case _ => None
       },
       cmd.tipoObjeto,
@@ -55,14 +61,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       state.porcentajeExencion,
       state.idExterno,
       state.registro.get.BOB_CUOTA,
-      state.registro.get.BOB_OTROS_ATRIBUTOS match {
-        case Some(value) => value.BOB_DETALLES.head.dmnNumero
-        case None => None
-      },
-      state.registro.get.BOB_OTROS_ATRIBUTOS match {
-        case Some(value) => value.BOB_DETALLES.head.dmnDescripcion
-        case None => None
-      },
+      dmnNumero,
+      dmnDescripcion
     )
   }
 
@@ -92,6 +92,12 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   }
 
   def informRemoveToParent(cmd: ObligacionRemove): Unit = {
+    val (dmnNumero, dmnDescripcion) = state.registro
+      .flatMap(_.BOB_OTROS_ATRIBUTOS)
+      .flatMap(_.BOB_DETALLES.headOption)
+      .map(detalle => (detalle.dmnNumero, detalle.dmnDescripcion))
+      .getOrElse((None, None))
+
     context.parent ! ObjetoCommands.ObjetoRemoveObligacion(
       cmd.deliveryId,
       cmd.sujetoId,
@@ -99,14 +105,8 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       cmd.tipoObjeto,
       cmd.obligacionId,
       cmd.cuota,
-      state.registro.get.BOB_OTROS_ATRIBUTOS match {
-        case Some(value) => value.BOB_DETALLES.head.dmnNumero
-        case None => None
-      },
-      state.registro.get.BOB_OTROS_ATRIBUTOS match {
-        case Some(value) => value.BOB_DETALLES.head.dmnDescripcion
-        case None => None
-      },
+      dmnNumero,
+      dmnDescripcion
     )
   }
   def persistSnapshot(evt: ObligacionEvents)(handler: () => Unit): Unit = {
