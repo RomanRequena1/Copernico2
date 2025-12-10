@@ -19,6 +19,7 @@
       <env name="APACHE_KAFKA_DEBUG_MODE" value="WARN" />
       <env name="KAFKA_BROKERS_LIST" value="localhost:9092" />
       <env name="POOL_LOCAL_SIZE" value="3" />
+      <env name="STATE_PARCIAL_OBLIGACION_ANT" value="ON" />
       <env name="JAEGER_PORT" value="5775" />
       <env name="USER_POSTGRES" value="'postgres'" />
       <env name="APACHE_KAFKA_CLIENTS_NETWORK_CLIENT_DEBUG_MODE" value="OFF" />
@@ -46,10 +47,12 @@
       <env name="DMN_ID_CLASIF_OBJETO" value="&quot;Decision_Clasificacion_Objeto&quot;" />
       <env name="MAX_REQUESTS_PER_CONNECTION" value="1024" />
       <env name="MULTI_OBJETO_ANT" value="ON" />
+      <env name="STATE_PARCIAL_OBLIGACION_TRI" value="ON" />
       <env name="KAMON_STATUS_PAGE" value="5278" />
       <env name="IO_NETTY_DEBUG_MODE" value="OFF" />
       <env name="PATH_DMN_OBJETO_CUPON" value="'/opt/docker/bin/objetoCupon.dmn'" />
       <env name="REFLECTION_DEBUG_MODE" value="OFF" />
+      <env name="STATE_PARCIAL_OBJETO_TRI" value="ON" />
       <env name="CASSANDRA_CONTACT_POINTS" value="'172.22.0.6:9042'" />
       <env name="NAME_TABLE1" value="'table_nifi_to_kafka'" />
       <env name="KAFKA_DEBUG_MODE" value="ERROR" />
