@@ -41,7 +41,9 @@ object ObjetoVinculoEvent {
       estadoObj: Option[String],
       titularidad: Option[String],
       exclusionObjeto: Option[String],
-      deliveryId: BigInt
+      deliveryId: BigInt,
+      dmnNumero: Option[Int] = None,
+      dmnDescripcion: Option[String] = None
   ) extends ObjetoVinculoEvent
 
   case class RemovedVinculoObjetoFromObj(

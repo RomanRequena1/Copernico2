@@ -40,7 +40,9 @@ class UpdateObjetoVinculoFromObjHandler(
       command.estadoObj,
       command.titularidad,
       command.exclusionObjeto,
-      command.deliveryId
+      command.deliveryId,
+      command.dmnNumero,
+      command.dmnDescripcion
     )
 
     implicit val ssytem: ActorSystem = actor.context.system
@@ -68,7 +70,9 @@ class UpdateObjetoVinculoFromObjHandler(
             e._1.objetoId,
             e._1.tipoObj,
             tiene30Final,
-            command.exclusionObjeto
+            command.exclusionObjeto,
+            command.dmnNumero,
+            command.dmnDescripcion
           )
         )
        }

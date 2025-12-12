@@ -1,11 +1,11 @@
-package consumers.no_registral.objeto.application.cqrs.commands
+package consumers.no_registral.objeto. application.cqrs.commands
 
 import akka.actor.ActorRef
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal.DmnFinal
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto. ObjetosTri
 import consumers.no_registral.objeto.domain.ObjetoEvents.{AplicarDescuentoUpdated, DmnResumen, ObjetoUpdatedFromSujeto}
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands
@@ -18,12 +18,12 @@ import scala.util.{Success, Try}
 class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
   extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromSujeto] {
 
-  private val resumenEnabled: Option[String] = Option(System.getenv("KAFKA_BROKERS_LIST_PSRM"))
+  private val resumenEnabled:  Option[String] = Option(System.getenv("KAFKA_BROKERS_LIST_PSRM"))
 
   override def handle(command: ObjetoCommands.ObjetoUpdateFromSujeto): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
-    val obj_default: ObjetosTri = ObjetosTri(
+    val obj_default:  ObjetosTri = ObjetosTri(
       Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"),
       None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"),
       Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),
@@ -33,7 +33,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     val estado = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("")
     if (estado == "TRANSF" || estado == "ESTADO2") {
       sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-      return Success(Response.SuccessProcessing(command.aggregateRoot, command. deliveryId))
+      return Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     }
 
     val event = ObjetoUpdatedFromSujeto(
@@ -51,11 +51,11 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     def esTipoObjetoPermitido(tipo: String): Boolean =
       Set("A", "I", "N").contains(tipo)
 
-    val result: Boolean = DMNTreintaPorcientoFinal.calcularDmnFinal(
+    val result:  Boolean = DMNTreintaPorcientoFinal.calcularDmnFinal(
       DmnFinal(
         command.exclusionSUjeto,
         actor.state.exclusionObjeto,
-        actor.state. clasificacionObjeto,
+        actor.state.clasificacionObjeto,
         actor.state.tiene30Objeto,
         actor.state.tiene30Sujeto.get,
         actor.state.tiene30ObjetoVinculo
@@ -67,6 +67,9 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
       case false => Some(false)
     }
 
+    // CLAVE:  Capturar el valor ANTERIOR antes de actualizar
+    val aplicarDescuentoAnterior = actor.state.aplicarDescuento
+
     val event1 = AplicarDescuentoUpdated(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
@@ -77,9 +80,12 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
 
     actor.state += event1
 
+    // Validar si cambió la marca A NIVEL DE OBJETO
+    val cambioDeMarcaEnObjeto = aplicarDescuentoAnterior != aplicarDescuentoNuevo
+
     val (dmnNumeroParaPSRM, dmnDescripcionParaPSRM) = {
       if (actor.state.dmnNumero.isEmpty &&
-        aplicarDescuentoNuevo.contains(false) &&
+        aplicarDescuentoNuevo. contains(false) &&
         actor.state.tiene30Objeto) {
 
         (Some(99), Some("No cumple por deuda en otro objeto del sujeto"))
@@ -101,28 +107,36 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
       dmnDescripcionParaPSRM
     )
 
-    if (!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA") &&
+    // Solo enviar a auditoría SI cambió la marca EN ESTE ObjetoActor
+    if (! actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA") &&
       actor.state.aplicarDescuento.isDefined &&
       esTipoObjetoPermitido(command.tipoObjeto) &&
-      resumenEnabled.isDefined) {
+      resumenEnabled.isDefined &&
+      cambioDeMarcaEnObjeto) {
 
       actor.persistSnapshot(event, actor.state) { () =>
         implicit val system = actor.context.system
-        val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
+        val vinculoActor:  ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
 
-        vinculoActor ! ObjetoVinculoCommands.AuditarYEnviarResumen(
+        log.info(s"[AUDITORIA-FROM-SUJETO] Enviando - objetoId=${command.objetoId}, sujetoId=${command.sujetoId}, " +
+          s"anterior=$aplicarDescuentoAnterior, nuevo=$aplicarDescuentoNuevo")
+
+        vinculoActor !  ObjetoVinculoCommands.AuditarYEnviarResumen(
           deliveryId = command.deliveryId,
-          objetoId = command.objetoId,
-          tipoObj = command.tipoObjeto,
-          sujetoId = command.sujetoId,
+          objetoId   = command.objetoId,
+          tipoObj    = command.tipoObjeto,
+          sujetoId   = command.sujetoId,
           aplicarDescuento = actor.state.aplicarDescuento,
-          eventDmn = eventDmn
+          eventDmn   = eventDmn
         )
 
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
     } else {
-      actor.persistSnapshot(event, actor. state) { () =>
+      log.info(s"[AUDITORIA-SKIP] objetoId=${command.objetoId}, sujetoId=${command. sujetoId}, " +
+        s"cambioDeMarca=$cambioDeMarcaEnObjeto, anterior=$aplicarDescuentoAnterior, nuevo=$aplicarDescuentoNuevo")
+
+      actor.persistSnapshot(event, actor.state) { () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
     }

@@ -63,7 +63,9 @@ object testIfObjVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
-          exclusionObjeto = actor.state.exclusionObjeto
+          exclusionObjeto = actor.state.exclusionObjeto,
+          dmnNumero = actor.state.dmnNumero,
+          dmnDescripcion = actor.state.dmnDescripcion
         ))
         res.onComplete {
           case Failure(exception) => log.error("Error to send event to objeto_vinculo (TRANSF)" + exception + "objID: "+ objetoId + "sujID: "+sujetoId)
@@ -86,7 +88,9 @@ object testIfObjVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
-          exclusionObjeto = actor.state.exclusionObjeto
+          exclusionObjeto = actor.state.exclusionObjeto,
+          dmnNumero = actor.state.dmnNumero,
+          dmnDescripcion = actor.state.dmnDescripcion
         ))
         res.onComplete {
           case Failure(exception) => log.error("Error to send event to objeto_vinculo (PAGO-TRANSF) " + exception + " objID: "+ objetoId + " sujID: "+sujetoId)
@@ -120,7 +124,9 @@ object testIfObjVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
-          exclusionObjeto = actor.state.exclusionObjeto)
+          exclusionObjeto = actor.state.exclusionObjeto,
+          dmnNumero = actor.state.dmnNumero,
+          dmnDescripcion = actor.state.dmnDescripcion)
     }
   }
 }

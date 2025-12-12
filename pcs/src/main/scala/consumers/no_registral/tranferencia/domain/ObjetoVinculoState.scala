@@ -17,7 +17,9 @@ final case class ObjetoVinculoState(
     exclusionObjetoVinculo: Option[String] = None,
     lastDeliveryIdByEvents: BigInt = 0,
     ultimoAplicarDescuentoEnviado: Option[Boolean] = None,
-    fechaUltimoEnvioResumen: LocalDateTime = LocalDateTime.MIN
+    fechaUltimoEnvioResumen: LocalDateTime = LocalDateTime.MIN,
+    dmnNumeroVinculo: Option[Int] = None,
+    dmnDescripcionVinculo: Option[String] = None
                                    ) extends AbstractState[ObjetoVinculoEvent]
     with CbroSerialization {
 
@@ -123,11 +125,22 @@ final case class ObjetoVinculoState(
           mapTransf
         }
         val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(_mapVinculo, _mapTransf)
+
+        val (_dmnNumero, _dmnDescripcion) = (evt.dmnNumero, evt. dmnDescripcion) match {
+          case (Some(num), Some(desc)) if dmnNumeroVinculo.isEmpty =>
+            // Si es el primero que trae DMN, guardarlo
+            (Some(num), Some(desc))
+          case _ =>
+            // Mantener el que ya estaba
+            (dmnNumeroVinculo, dmnDescripcionVinculo)
+        }
         copy(
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
           mapVinculo = _mapVinculo,
           mapTransf = _mapTransf,
-          exclusionObjetoVinculo = evt.exclusionObjeto
+          exclusionObjetoVinculo = evt.exclusionObjeto,
+          dmnNumeroVinculo = _dmnNumero,
+          dmnDescripcionVinculo = _dmnDescripcion
         )
       case evt: ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj =>
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)

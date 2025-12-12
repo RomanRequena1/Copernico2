@@ -79,7 +79,9 @@ class RemoveObjetoVinculoFromObjHandler(actor: ObjetoVinculoActor,
             e._1.objetoId,
             e._1.tipoObj,
             actor.state.tiene30ObjetoVinculo,
-            command.exclusionObjeto)
+            command.exclusionObjeto,
+            actor.state.dmnNumeroVinculo,
+            actor.state.dmnDescripcionVinculo)
         )
       }
       }
