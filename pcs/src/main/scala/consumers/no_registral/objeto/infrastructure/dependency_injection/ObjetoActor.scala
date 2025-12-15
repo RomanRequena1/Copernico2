@@ -35,7 +35,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
     commandBus.subscribe[ObjetoCommands.UpdateState30ObjetoFromObjVinculo](
       new UpdateState30ObjetoFromObjVinculoHandler(this, requirements).handle
     )
-    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromSujeto](new ObjetoUpdateFromSujetoHandler(this).handle)
+    commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromSujeto](new ObjetoUpdateFromSujetoHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagAdd](new ObjetoTagAddHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoTagRemove](new ObjetoTagRemoveHandler(this).handle)
     commandBus.subscribe[ObjetoCommands.ObjetoUpdateFromAnt](new ObjetoUpdateFromAntHandler(this, requirements).handle)
@@ -185,38 +185,56 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
     }
   }
 
-  def dmnresumenpersistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
-    val kafkaTopic = "dgr-cop-objeto-beneficios-v1"
-
-    val beneficio = Beneficio(
-      codigo = "DTO30",
-      aplicarDescuento = consolidatedState.aplicarDescuento,
-      dmnNumero = consolidatedState.dmnNumero,
-      dmnDescripcion = consolidatedState.dmnDescripcion
-    )
-    val snapshot =
-      DmnResumenSnapshotPersisted(
-        evt.deliveryId,
-        evt.sujetoId,
-        evt.objetoId,
-        evt.tipoObjeto,
-        consolidatedState.registro.flatMap(_.SOJ_ID_EXTERNO).orElse(Some("None")),
-        Some(consolidatedState.fechaUltMod),
-        Seq(beneficio)
-      )
-    // println("estoy en el ObjetoActor")
-    requirements.psrmMessageProducer.produce(
-      data = Seq(
-        KafkaKeyValue(
-          snapshot.aggregateRoot,
-          snapshot.asJson.toString()
-        )
-      ),
-      topic = kafkaTopic
-    ) { _ =>
-      handler()
-    }
-  }
+//  def dmnresumenpersistSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
+//    val kafkaTopic = "dgr-cop-objeto-beneficios-v1"
+//
+//    val (dmnNumeroFinal, dmnDescripcionFinal) = evt match {
+//      //si hay un dmn calculado es porque en el handler se cumplio la condicion y tengo que usar este
+//      case e: ObjetoEvents.DmnResumen => (e.dmnNumero, e.dmnDescripcion)
+//      //sino usar el de siempre
+//      case _ => (consolidatedState.dmnNumero, consolidatedState.dmnDescripcion)
+//    }
+//
+//    val idExternoFinal: Option[String] = evt match {
+//      case e: ObjetoEvents.DmnResumen =>
+//        e.idExterno
+//          .orElse(consolidatedState.idExterno)
+//          .orElse(consolidatedState.registro.flatMap(_.SOJ_ID_EXTERNO))
+//
+//      case _ =>
+//        // Para otros eventos: state → registro
+//        consolidatedState.idExterno
+//          .orElse(consolidatedState.registro.flatMap(_.SOJ_ID_EXTERNO))
+//    }
+//
+//    val beneficio = Beneficio(
+//      codigo = "DTO30",
+//      aplicarDescuento = consolidatedState.aplicarDescuento,
+//      dmnNumero = dmnNumeroFinal,
+//      dmnDescripcion = dmnDescripcionFinal
+//    )
+//    val snapshot =
+//      DmnResumenSnapshotPersisted(
+//        evt.deliveryId,
+//        evt.sujetoId,
+//        evt.objetoId,
+//        evt.tipoObjeto,
+//        idExternoFinal,
+//        Some(consolidatedState.fechaUltMod),
+//        Seq(beneficio)
+//      )
+//    requirements.psrmMessageProducer.produce(
+//      data = Seq(
+//        KafkaKeyValue(
+//          snapshot.aggregateRoot,
+//          snapshot.asJson.toString()
+//        )
+//      ),
+//      topic = kafkaTopic
+//    ) { _ =>
+//      handler()
+//    }
+//  }
 
   def deleteSnapshot(evt: ObjetoEvents, consolidatedState: ObjetoState)(handler: () => Unit): Unit = {
     val kafkaTopic = "ObjetoSnapshotPersistedReadside"

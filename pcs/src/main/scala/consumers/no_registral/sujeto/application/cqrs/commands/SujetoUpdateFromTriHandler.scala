@@ -9,14 +9,15 @@ import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
 import design_principles.actor_model.mechanism.DeliveryIdManagement._
-
 import java.time.LocalDateTime
 import scala.util.{Success, Try}
 
 class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[SujetoUpdateFromTri] {
+
   override def handle(command: SujetoUpdateFromTri): Try[Response.SuccessProcessing] = {
 
     val sender = actor.context.sender()
+
     log.debug(
       f"""|CUMBIA
           |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
@@ -84,23 +85,30 @@ class SujetoUpdateFromTriHandler(actor: SujetoActor) extends SyncCommandHandler[
       log.warn(s"[${actor.name} | ${actor.persistenceId}] respond idempotent because of old delivery id | $command")
       sender ! Response.SuccessProcessing("IDEM-" + command.aggregateRoot, command.deliveryId)
     } else {
+      val exclusionAnterior = actor.state.exclusionSujeto
+      val exclusionNueva = command.registro.SUJ_TIPO_EXCLUSION.filter(_.nonEmpty)
+      val cambioExclusion = exclusionAnterior != exclusionNueva
 
-      if (command.registro.SUJ_TIPO_EXCLUSION != actor.state.exclusionSujeto) {
-        SendToObjetoFromSujeto(actor.state,
-                               sender,
-                               actor.context,
-                               command.sujetoId,
-                               command.registro.SUJ_TIPO_EXCLUSION)
-      }
 
       actor.persistEvent(event) { () =>
         actor.state += event
+
+        if (cambioExclusion) {
+          SendToObjetoFromSujeto(
+            actor.state,
+            sender,
+            actor.context,
+            command.sujetoId,
+            actor.state.exclusionSujeto  // ← Enviar el del state actualizado
+          )
+        }
+
         if (actor.state.eventCounter == eventCounterMax) {
           actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         }
+
         actor.persistSnapshot() { _ =>
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-
         }
       }
     }

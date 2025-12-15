@@ -3,7 +3,9 @@ package consumers.no_registral.tranferencia.infrastructure.dependency_injection
 import akka.actor.Props
 import akka.entity.ShardedEntity
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
-import consumers.no_registral.tranferencia.application.cqrs.commands.{RemoveObjetoVinculoFromObjHandler, UpdateObjetoVinculoFromObjHandler, CreateVinculoObjetoFromObjTranfHandler}
+import consumers.no_registral.objeto.domain.ObjetoEvents.{Beneficio, DmnResumen, DmnResumenSnapshotPersisted}
+import consumers.no_registral.objeto.infrastructure.json.ObjetoImplicits._
+import consumers.no_registral.tranferencia.application.cqrs.commands.{AuditoriaHandler, CreateVinculoObjetoFromObjTranfHandler, RemoveObjetoVinculoFromObjHandler, UpdateObjetoVinculoFromObjHandler}
 import consumers.no_registral.tranferencia.application.cqrs.queries.GetStateObjetoVinculoHandler
 import consumers.no_registral.tranferencia.application.entity.{ObjetoVinculoCommands, ObjetoVinculoQueries}
 import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent.ObjetoVinculoSnapshotPersisted
@@ -31,6 +33,7 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
     commandBus.subscribe[ObjetoVinculoCommands.UpdateVinculoObjetoFromObj](new UpdateObjetoVinculoFromObjHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoVinculoCommands.CreateTransfVinculoObjetoFromObj](new CreateVinculoObjetoFromObjTranfHandler(this, requirements).handle)
     commandBus.subscribe[ObjetoVinculoCommands.RemoveObjetoVinculo](new RemoveObjetoVinculoFromObjHandler(this, requirements).handle)
+    commandBus.subscribe[ObjetoVinculoCommands.AuditarYEnviarResumen](new AuditoriaHandler(this, requirements).handle)
     queryBus.subscribe[ObjetoVinculoQueries.GetStateObjetoVinculo](new GetStateObjetoVinculoHandler(this).handle)
   }
 
@@ -51,6 +54,41 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
         KafkaKeyValue(
           snapshot.aggregateRoot,
           snapshot.asJson.noSpaces
+        )
+      ),
+      topic = kafkaTopic
+    ) { _ =>
+      handler()
+    }
+  }
+
+  // En ObjetoVinculoActor.scala
+
+  def dmnresumenpersistSnapshot(evt: DmnResumen, consolidatedState:  ObjetoVinculoState)(handler: () => Unit): Unit = {
+    val kafkaTopic = "dgr-cop-objeto-beneficios-v1"
+
+    val beneficio = Beneficio(
+      codigo = "DTO30",
+      aplicarDescuento = evt.aplicarDescuento,
+      dmnNumero = evt. dmnNumero,
+      dmnDescripcion = evt. dmnDescripcion
+    )
+
+    val snapshot = DmnResumenSnapshotPersisted(
+      evt.deliveryId,
+      evt.sujetoId,
+      evt. objetoId,
+      evt. tipoObjeto,
+      evt.idExterno,
+      evt.fecha,
+      Seq(beneficio)
+    )
+
+    requirements.psrmMessageProducer.produce(
+      data = Seq(
+        KafkaKeyValue(
+          snapshot.aggregateRoot,
+          snapshot.asJson.toString()
         )
       ),
       topic = kafkaTopic

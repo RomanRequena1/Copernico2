@@ -30,7 +30,9 @@ object ObjetoCommands {
       objetoId: String,
       tipoObjeto: String,
       tiene30ObjetoVinculo: Boolean,
-      exclusionObjetoVinculo: Option[String]
+      exclusionObjetoVinculo: Option[String],
+      dmnNumero: Option[Int],
+      dmnDescripcion: Option[String]
   ) extends ObjetoCommands
 
   case class ObjetoUpdateFromSujeto(

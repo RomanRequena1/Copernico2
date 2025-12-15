@@ -151,6 +151,7 @@ case class ObligacionTributariaTransactionSincroI(actorRef: ActorRef, monitoring
               registro = obligacionNoDeuda,
               detallesObligacion = detallesObligacion,
               detallesCaracteristicas = detallesObligacionCaracteristicas,
+              idExterno = obligacion.SOJ_ID_EXTERNO,
               detallesSupresiones = detallesSupresiones,
               isAdheridoDebito = isAdheridoDebito,
               cuota = obligacion.BOB_CUOTA,
@@ -167,6 +168,7 @@ case class ObligacionTributariaTransactionSincroI(actorRef: ActorRef, monitoring
               registro = dmn._1,  // Ya viene con tiene30Obligaciones = false
               detallesObligacion = detallesObligacion,
               detallesCaracteristicas = detallesObligacionCaracteristicas,
+              idExterno = obligacion.SOJ_ID_EXTERNO,
               detallesSupresiones = detallesSupresiones,
               isAdheridoDebito = isAdheridoDebito,
               cuota = obligacion.BOB_CUOTA,

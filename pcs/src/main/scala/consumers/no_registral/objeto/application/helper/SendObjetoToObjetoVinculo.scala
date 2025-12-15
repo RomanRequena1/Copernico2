@@ -10,7 +10,6 @@ import consumers.no_registral.tranferencia.infrastructure.dependency_injection.O
 import design_principles.actor_model.{Command, Response}
 import org.slf4j.{Logger, LoggerFactory}
 
-import scala.concurrent.ExecutionContextExecutor
 import scala.util.{Failure, Success}
 
 
@@ -45,7 +44,7 @@ object testIfObjVinculo {
 
     val log: Logger = LoggerFactory.getLogger(this.getClass)
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
-//    implicit val ec: ExecutionContextExecutor = actor.context.system.getDispatcher (TODO revisar cual es mejor)
+
     //Verificar si es un pago de una obligacion
     val esPago = command match {
       case _: ObjetoCommands.ObjetoRemoveObligacion => true
@@ -64,7 +63,9 @@ object testIfObjVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
-          exclusionObjeto = actor.state.exclusionObjeto
+          exclusionObjeto = actor.state.exclusionObjeto,
+          dmnNumero = actor.state.dmnNumero,
+          dmnDescripcion = actor.state.dmnDescripcion
         ))
         res.onComplete {
           case Failure(exception) => log.error("Error to send event to objeto_vinculo (TRANSF)" + exception + "objID: "+ objetoId + "sujID: "+sujetoId)
@@ -87,7 +88,9 @@ object testIfObjVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
-          exclusionObjeto = actor.state.exclusionObjeto
+          exclusionObjeto = actor.state.exclusionObjeto,
+          dmnNumero = actor.state.dmnNumero,
+          dmnDescripcion = actor.state.dmnDescripcion
         ))
         res.onComplete {
           case Failure(exception) => {
@@ -124,7 +127,7 @@ object testIfObjVinculo {
         }
 
       case _ =>
-        val res = vinculoActor.ask[Response.SuccessProcessing](UpdateVinculoObjetoFromObj(
+        vinculoActor ! UpdateVinculoObjetoFromObj(
           objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = 0,
@@ -133,17 +136,9 @@ object testIfObjVinculo {
           isResponsable = Some(actor.state.isResponsable),
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
-          exclusionObjeto = actor.state.exclusionObjeto))
-        res.onComplete {
-          case Failure(exception) => {
-            requeriment.monitoring.counter("objeto-vinculo-error").increment()
-            log.error("Error to send event to objeto_vinculo (case_) " + exception + " objID: " + objetoId + " sujID: " + sujetoId)
-          }
-          case Success(value) => {
-            requeriment.monitoring.counter("objeto-vinculo-success").increment()
-            log.debug("Sent event to objet_vinculo (case_)" + " objID: " + objetoId + " sujID: " + sujetoId)
-          }
-        }
+          exclusionObjeto = actor.state.exclusionObjeto,
+          dmnNumero = actor.state.dmnNumero,
+          dmnDescripcion = actor.state.dmnDescripcion)
     }
   }
 }

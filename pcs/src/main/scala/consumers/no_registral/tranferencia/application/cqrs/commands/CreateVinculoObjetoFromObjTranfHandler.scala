@@ -56,7 +56,9 @@ class CreateVinculoObjetoFromObjTranfHandler(
             e._1.objetoId,
             e._1.tipoObj,
             tiene30Final,  // valor calculado según deuda
-            command.exclusionObjeto
+            command.exclusionObjeto,
+            command.dmnNumero,
+            command.dmnDescripcion
           )
         )}
       }

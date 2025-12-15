@@ -32,6 +32,7 @@ case class ObjetoState(
     clasificacionObjeto: String = "2",
     tiene30Sujeto: Option[Boolean] = None,
     aplicarDescuento: Option[Boolean] = None,
+    idExterno: Option[String] = None,
     resulDmn: Option[Int] = None,
     obnVencidas: Map[String, Boolean] = Map.empty,
     deuda30Objeto: Boolean = true,
@@ -214,6 +215,7 @@ case class ObjetoState(
           sujetos = sujetos + evt.sujetoId,
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
           isBaja = false,
+          idExterno = evt.registro.SOJ_ID_EXTERNO,
           clasificacionObjeto = evt.clasificacionObjeto.getOrElse("2"),
           resulDmn = evt.resultDmn,
           exclusionObjeto = evt.registro.SOJ_TIPO_EXCLUSION match {
@@ -244,7 +246,7 @@ case class ObjetoState(
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
           isBaja = false
         )
-      case ObjetoEvents.ObjetoUpdatedFromObligacion(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, _, _, dmnNumero, dmnDescripcion) =>
+      case ObjetoEvents.ObjetoUpdatedFromObligacion(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, idExterno, _, dmnNumero, dmnDescripcion) =>
         val _obnVencidas = validExitsObnVencidas(obligacionId)
         val obligacionesSaldo_ = obligacionesSaldo + (obligacionId -> saldoObligacion)
         val diff: Boolean = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
@@ -254,6 +256,7 @@ case class ObjetoState(
           obligacionesSaldo = obligacionesSaldo_,
           sujetos = sujetos + sujetoId,
           isBaja = false,
+          idExterno = idExterno,
           obnVencidas = _obnVencidas,
           tiene30Objeto = diff,
           ultimo30Objeto = ultimo30Objeto + ((event.deliveryId.toString, diff)),
@@ -269,6 +272,7 @@ case class ObjetoState(
           saldo = obligacionesSaldo_.values.sum,
 //          obligaciones = obligaciones + evt.obligacionId,
           obligacionesSaldo = obligacionesSaldo_,
+          idExterno = evt.idExterno,
           obnVencidas = _obnVencidas,
           tiene30Objeto = diff,
           tiene30ObjetoVinculo = tiene30ObjetoVinculo, //todo agregue aca
