@@ -49,6 +49,7 @@ object ObligacionEvents {
       registro: ObligacionExternalDto,
       detallesObligacion: Seq[DetallesObligacion],
       detallesCaracteristicas: Seq[DetallesObligacionCaracteristicas],
+      idExterno: Option[String],
       detallesSupresiones: Seq[DetallesSupresiones],
       isAdheridoDebito: Option[Boolean],
       cuota: Option[String],

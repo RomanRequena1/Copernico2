@@ -102,20 +102,38 @@ final case class SujetoState(
           }
         }
 
+        val tiene30SujetoCalculado = registro.SUJ_TIPO_EXCLUSION match {
+          case Some(tipo) if tipo.nonEmpty =>
+            tipo match {
+              case "E"  => true
+              case "NE" => false
+              case "C"  => true
+              case _ => tiene30Sujeto
+            }
+
+          case _ =>
+            // solo usar los que son clasificacion 2
+            val objetosClasif2 = objVencidas.filter(_._2._2 == "2")
+
+            if (objetosClasif2.isEmpty) {
+              true
+            } else {
+              objetosClasif2.values.forall(_._1)
+            }
+        }
         copy(
           registro = Some(registro),
           exclusionSujeto = registro.SUJ_TIPO_EXCLUSION match {
-            case x if x.contains("E") => Some("E")
-            case x if x.contains("NE") => Some("NE")
-            case x if x.contains("C") => Some("C")
+            case Some(tipo) if tipo.nonEmpty =>
+              tipo match {
+                case "E"  => Some("E")
+                case "NE" => Some("NE")
+                case "C"  => Some("C")
+                case _ => None
+              }
             case _ => None
           },
-          tiene30Sujeto = registro.SUJ_TIPO_EXCLUSION match {
-            case x if x.contains("E") => true
-            case x if x.contains("NE") => false
-            case x if x.contains("C") => true
-            case _ => tiene30Sujeto
-          },
+          tiene30Sujeto = tiene30SujetoCalculado,
           dmnDescripcionAnterior = {
             if (exclusionNueva.nonEmpty && exclusionAnterior.isEmpty) {
               dmnDescripcion

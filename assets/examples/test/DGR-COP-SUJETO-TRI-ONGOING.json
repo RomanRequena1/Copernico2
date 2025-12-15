@@ -1,6 +1,6 @@
 {
-  "EV_ID": "4",
-  "SUJ_IDENTIFICADOR": "20-03034779-2",
+  "EV_ID": "6",
+  "SUJ_IDENTIFICADOR": "20-11111111-2",
   "SUJ_CAT_SUJ_ID": "016",
   "SUJ_DENOMINACION": "TEST Sujeto Nuevo Transferencia",
   "SUJ_ID_EXTERNO": "0303779",
@@ -12,6 +12,6 @@
   "SUJ_DFE": null,
   "SUJ_SITUACION_FISCAL": null,
   "SUJ_RIESGO_FISCAL": null,
-  "SUJ_TIPO_EXCLUSION": null,
+  "SUJ_TIPO_EXCLUSION": "null",
   "SUJ_OTROS_ATRIBUTOS": null
 }

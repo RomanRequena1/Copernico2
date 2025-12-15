@@ -1,5 +1,6 @@
 package consumers.no_registral.tranferencia.application.entity
 
+import consumers.no_registral.objeto.domain.ObjetoEvents.DmnResumen
 import design_principles.actor_model.Command
 import serialization.CbroSerialization
 
@@ -17,7 +18,9 @@ object ObjetoVinculoCommands {
                                   isResponsable: Option[Boolean],
                                   estadoObj: Option[String],
                                   titularidad: Option[String],
-                                  exclusionObjeto: Option[String]
+                                  exclusionObjeto: Option[String],
+                                  dmnNumero: Option[Int],
+                                  dmnDescripcion: Option[String]
                                 ) extends ObjetoVinculoCommands
 
   case class RemoveObjetoVinculo(
@@ -42,6 +45,17 @@ object ObjetoVinculoCommands {
                                           isResponsable: Option[Boolean],
                                           estadoObj: Option[String],
                                           titularidad: Option[String],
-                                          exclusionObjeto: Option[String]
+                                          exclusionObjeto: Option[String],
+                                          dmnNumero: Option[Int],
+                                          dmnDescripcion: Option[String]
                                              ) extends ObjetoVinculoCommands
+
+  case class AuditarYEnviarResumen(
+                                    deliveryId: BigInt,
+                                    objetoId: String,
+                                    tipoObj: String,
+                                    sujetoId: String,
+                                    aplicarDescuento: Option[Boolean],
+                                    eventDmn: DmnResumen
+                                  ) extends ObjetoVinculoCommands
 }

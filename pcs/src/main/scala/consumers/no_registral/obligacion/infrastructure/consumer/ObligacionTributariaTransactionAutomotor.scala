@@ -105,6 +105,7 @@ case class ObligacionTributariaTransactionAutomotor(actorRef: ActorRef, monitori
             registro = dmn._1,
             detallesObligacion = detallesObligacion,
             detallesCaracteristicas = detallesObligacionCaracteristicas,
+            idExterno = obligacion.SOJ_ID_EXTERNO,
             detallesSupresiones = detallesSupresiones,
             isAdheridoDebito = isAdheridoDebito,
             cuota = obligacion.BOB_CUOTA,
