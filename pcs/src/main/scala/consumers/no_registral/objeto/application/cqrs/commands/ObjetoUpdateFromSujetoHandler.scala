@@ -108,11 +108,13 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     )
 
     // Solo enviar a auditoría SI cambió la marca EN ESTE ObjetoActor
-    if (! actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA") &&
+    if (!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA") &&
       actor.state.aplicarDescuento.isDefined &&
       esTipoObjetoPermitido(command.tipoObjeto) &&
       resumenEnabled.isDefined &&
-      cambioDeMarcaEnObjeto) {
+      cambioDeMarcaEnObjeto &&
+      command.objetoId.nonEmpty) // validar que objetoId no este vecio.
+    {
 
       actor.persistSnapshot(event, actor.state) { () =>
         implicit val system = actor.context.system

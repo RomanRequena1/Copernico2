@@ -15,7 +15,7 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
   extends SyncCommandHandler[ObjetoCommands.UpdateState30ObjetoFromObjVinculo] {
 
   override def handle(
-                       command: ObjetoCommands. UpdateState30ObjetoFromObjVinculo
+                       command: ObjetoCommands.UpdateState30ObjetoFromObjVinculo
                      ): Try[Response.SuccessProcessing] = {
     log.debug(
       f"""|CUMBIA

@@ -23,7 +23,8 @@ final case class SujetoState(
     lastInternalDeliveryId: BigInt = 0,
     exclusionSujeto: Option[String] = None,
     dmnDescripcionAnterior: Option[String] = None, // ← NUEVO
-    dmnDescripcion: Option[String] = None
+    dmnDescripcion: Option[String] = None,
+    ultimoDeliveryIdRecibido: BigInt = 0
     ) extends AbstractState[SujetoEvents] with CbroSerialization {
 
 
@@ -166,7 +167,8 @@ final case class SujetoState(
           lastInternalDeliveryId = deliveryId,
           objVencidas = _objVencidas,
           tiene30Sujeto = diff._1,
-          diffStates = diff._2
+          diffStates = diff._2,
+          ultimoDeliveryIdRecibido = deliveryId
         )
 
       case SujetoEvents.SujetoUpdatedFromObjetoAnt(deliveryId,
@@ -189,7 +191,7 @@ final case class SujetoState(
           lastInternalDeliveryId = deliveryId,
           objVencidas = _objVencidas,
           tiene30Sujeto = diff._1,
-          diffStates = diff._2
+          diffStates = diff._2,
         )
 
       case SujetoEvents.SujetoUpdatedFromObjetoTreintaPorciento(deliveryId,
@@ -212,7 +214,8 @@ final case class SujetoState(
           lastInternalDeliveryId = deliveryId,
           objVencidas = _objVencidas,
           tiene30Sujeto = diff._1,
-          diffStates = diff._2
+          diffStates = diff._2,
+          ultimoDeliveryIdRecibido = deliveryId
         )
       case SujetoEvents.SujetoBajaFromObjetoSet(deliveryId, _, objetoId, tipoObjeto) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
