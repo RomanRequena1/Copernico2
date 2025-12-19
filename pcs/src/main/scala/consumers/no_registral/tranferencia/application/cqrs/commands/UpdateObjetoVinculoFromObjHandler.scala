@@ -5,13 +5,12 @@ import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands.UpdateState30ObjetoFromObjVinculo
 import consumers.no_registral.sujeto.infrastructure.dependency_injection.SujetoActor
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands.UpdateVinculoObjetoFromObj
-import consumers.no_registral.tranferencia.domain.{ObjetoVinculoEvent, Vinculo}
+import consumers.no_registral.tranferencia.domain.ObjetoVinculoEvent
 import consumers.no_registral.tranferencia.infrastructure.dependency_injection.ObjetoVinculoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 
-import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success, Try}
+import scala.util.{Success, Try}
 
 class UpdateObjetoVinculoFromObjHandler(
                                          actor: ObjetoVinculoActor,
@@ -65,7 +64,7 @@ class UpdateObjetoVinculoFromObjHandler(
 
         actorSujetoGeneral.ask[Response.SuccessProcessing](
           UpdateState30ObjetoFromObjVinculo(
-            0,
+            command.deliveryId,
             e._1.sujetoId,
             e._1.objetoId,
             e._1.tipoObj,

@@ -53,7 +53,7 @@ class CreateVinculoObjetoFromObjTranfHandler(
 
         actorSujetoGeneral.ask[Response.SuccessProcessing](
           UpdateState30ObjetoFromObjVinculo(
-            0,
+            command.deliveryId,
             e._1.sujetoId,
             e._1.objetoId,
             e._1.tipoObj,
