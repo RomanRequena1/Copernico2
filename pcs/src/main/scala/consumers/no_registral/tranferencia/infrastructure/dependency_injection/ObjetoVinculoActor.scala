@@ -75,7 +75,7 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
     )
 
     val snapshot = DmnResumenSnapshotPersisted(
-      state.lastDeliveryIdByEvents,
+      evt.deliveryId,
       evt.sujetoId,
       evt. objetoId,
       evt. tipoObjeto,

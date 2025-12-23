@@ -21,7 +21,8 @@ object SujetoCommands {
                                                      tipoObjeto: String,
                                                      saldoObjeto: BigDecimal,
                                                      saldoObligaciones: BigDecimal,
-                                                     clasificacionObjeto: String
+                                                     clasificacionObjeto: String,
+                                                     deliveryIdObligacion: Option[BigInt]
                                                    ) extends SujetoCommands
 
   case class SujetoUpdateFromAnt(
@@ -37,7 +38,8 @@ object SujetoCommands {
       tipoObjeto: String,
       saldoObjeto: BigDecimal,
       saldoObligaciones: BigDecimal,
-      clasificacionObjeto: String
+      clasificacionObjeto: String,
+      deliveryIdObligacion: Option[BigInt]
   ) extends SujetoCommands
 
   case class SujetoUpdateFromObjetoAnt(

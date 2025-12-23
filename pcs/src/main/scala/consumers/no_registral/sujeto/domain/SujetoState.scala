@@ -24,7 +24,7 @@ final case class SujetoState(
     exclusionSujeto: Option[String] = None,
     dmnDescripcionAnterior: Option[String] = None, // ← NUEVO
     dmnDescripcion: Option[String] = None,
-    ultimoDeliveryIdRecibido: BigInt = 0
+    deliveryIdObligacion: Option[BigInt] = None,
     ) extends AbstractState[SujetoEvents] with CbroSerialization {
 
 
@@ -153,7 +153,8 @@ final case class SujetoState(
                                                 tipoObjeto,
                                                 saldoObjeto,
                                                 _saldoObligaciones,
-                                                clasificacionObjeto) =>
+                                                clasificacionObjeto,
+                                                deliveryIdObligacion) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
         val _objVencidas = validExitsObjVencidas(objetoId, clasificacionObjeto)
@@ -168,7 +169,7 @@ final case class SujetoState(
           objVencidas = _objVencidas,
           tiene30Sujeto = diff._1,
           diffStates = diff._2,
-          ultimoDeliveryIdRecibido = deliveryId
+          deliveryIdObligacion = deliveryIdObligacion
         )
 
       case SujetoEvents.SujetoUpdatedFromObjetoAnt(deliveryId,
@@ -200,7 +201,8 @@ final case class SujetoState(
                                                                 tipoObjeto,
                                                                 saldoObjeto,
                                                                 _saldoObligaciones,
-                                                                clasificacionObjeto) =>
+                                                                clasificacionObjeto,
+                                                                deliveryIdObligacion) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
         val _objVencidas = validExitsObjVencidasTreinta(objetoId, clasificacionObjeto)
@@ -215,7 +217,7 @@ final case class SujetoState(
           objVencidas = _objVencidas,
           tiene30Sujeto = diff._1,
           diffStates = diff._2,
-          ultimoDeliveryIdRecibido = deliveryId
+          deliveryIdObligacion = deliveryIdObligacion
         )
       case SujetoEvents.SujetoBajaFromObjetoSet(deliveryId, _, objetoId, tipoObjeto) =>
         val objetoKey = s"$objetoId|$tipoObjeto"

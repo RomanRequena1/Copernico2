@@ -16,12 +16,6 @@ object SendToObjeto {
             objetoId: String,
             tipoObjeto: String): Unit = {
 
-    // ✅ Usar el último deliveryId recibido desde un objeto
-    val deliveryIdToUse = if (currentState.ultimoDeliveryIdRecibido > 0) {
-      currentState.ultimoDeliveryIdRecibido
-    } else {
-      currentState.lastDeliveryIdByEvents
-    }
 
     if (currentState.diffStates) {
       val childName = s"Sujeto-$sujetoId-Objeto-$objetoId-$tipoObjeto"
@@ -32,13 +26,14 @@ object SendToObjeto {
 
           objChild.ask[Response.SuccessProcessing](
             ObjetoUpdateFromSujeto(
-              deliveryId = deliveryIdToUse,
+              deliveryId = currentState.lastDeliveryIdByEvents,
               sujetoId = sujetoId,
               objetoId = objetoId,
               tipoObjeto = tipoObjeto,
               tiene30Sujeto = currentState.tiene30Sujeto,
               exclusionSUjeto = currentState.exclusionSujeto,
-              currentState. dmnDescripcion
+              currentState.dmnDescripcion,
+              currentState.deliveryIdObligacion
             )
           )
 
@@ -76,17 +71,18 @@ object SendToObjeto {
         val tipoObjetoExtracted = actorPath.last.toString
 
         if (objetoIdExtracted.nonEmpty) {
-          log.info(s"[SEND-TO-OBJETO-BROADCAST-SEND] Enviando comando - objetoId='$objetoIdExtracted', tipoObjeto='$tipoObjetoExtracted', deliveryId=$deliveryIdToUse")
+          log.info(s"[SEND-TO-OBJETO-BROADCAST-SEND] Enviando comando - objetoId='$objetoIdExtracted', tipoObjeto='$tipoObjetoExtracted', deliveryId=${currentState.lastDeliveryIdByEvents}")
 
           actor.ask[Response.SuccessProcessing](
             ObjetoUpdateFromSujeto(
-              deliveryIdToUse,
+              deliveryId = currentState.lastDeliveryIdByEvents,
               sujetoId,
               objetoIdExtracted,
               tipoObjetoExtracted,
               currentState.tiene30Sujeto,
               currentState.exclusionSujeto,
-              currentState.dmnDescripcion
+              currentState.dmnDescripcion,
+              currentState.deliveryIdObligacion
             )
           )
         } else {
@@ -108,12 +104,6 @@ object SendToObjetoFromSujeto {
             sujetoId: String,
             exclusionSujeto: Option[String]): Unit = {
 
-    // ✅ Usar el último deliveryId recibido desde un objeto
-    val deliveryIdToUse = if (currentState.ultimoDeliveryIdRecibido > 0) {
-      currentState.ultimoDeliveryIdRecibido
-    } else {
-      currentState.lastDeliveryIdByEvents
-    }
 
     val allChildren = actorContext.children. toSeq
     val objetoActors = allChildren.filter(_.path.toString.contains("-Objeto-"))
@@ -137,13 +127,14 @@ object SendToObjetoFromSujeto {
       if (objetoIdExtracted.nonEmpty) {
         actor.ask[Response. SuccessProcessing](
           ObjetoUpdateFromSujeto(
-            deliveryIdToUse,
+            currentState.lastDeliveryIdByEvents,
             sujetoId,
             objetoIdExtracted,
             tipoObjetoExtracted,
             currentState. tiene30Sujeto,
             exclusionSujeto,
-            currentState.dmnDescripcion
+            currentState.dmnDescripcion,
+            currentState.deliveryIdObligacion
           )
         )
       } else {

@@ -20,13 +20,9 @@ class AuditoriaHandler(actor:  ObjetoVinculoActor,
     val ultimoEnviadoAnterior = actor.state.ultimoAplicarDescuentoEnviado
     val cambioDeMarca = ultimoEnviadoAnterior != command.aplicarDescuento
 
-    log. info(s"[AUDITORIA-DEBUG] objetoId=${command.objetoId}, sujetoId=${command.sujetoId}, " +
-      s"ultimoEnviado=$ultimoEnviadoAnterior, actual=${command.aplicarDescuento}, " +
-      s"cambioDeMarca=$cambioDeMarca")
-
     if (cambioDeMarca) {
       val event = ObjetoVinculoEvent.ResumenEnviado(
-        actor.state.lastDeliveryIdByEvents,
+        command.eventDmn.deliveryId,
         command.objetoId,
         command.tipoObj,
         command.aplicarDescuento,

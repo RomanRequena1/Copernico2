@@ -43,7 +43,7 @@ case class ObjetoState(
     dmnDescripcion : Option[String] = None,
     dmnDescripcionAnterior: Option[String] = None,
     dmnDescripcionAnteriorPorSujeto: Option[String] = None,
-    exclusionSujeto: Option[String] = None,
+    exclusionSujeto: Option[String] = None
                       ) extends AbstractState[ObjetoEvents]
     with CbroSerialization {
 

@@ -54,7 +54,6 @@
       <env name="SEED_NODES" value="akka://PersonClassificationService@0.0.0.0:2551" />
       <env name="POOL_REMOTE_SIZE" value="1" />
       <env name="APACHE_ZOOKEEPER_DEBUG_MODE" value="OFF" />
-      <env name="CLUSTER_PORT" value="2551" />
       <env name="CASSANDRA_CONTACT_POINTS_DOS" value="" />
       <env name="KAFKA_BROKERS_LIST_PSRM" value="localhost:9093" />
       <env name="CASSANDRA_PASSWORD" value="cassandra" />

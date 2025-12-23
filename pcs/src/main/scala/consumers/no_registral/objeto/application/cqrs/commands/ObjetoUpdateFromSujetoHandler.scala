@@ -43,7 +43,8 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
       command.tipoObjeto,
       command.tiene30Sujeto,
       command.exclusionSUjeto,
-      command.dmnDescripcionSujeto
+      command.dmnDescripcionSujeto,
+      command.deliveryIdObligacion
     )
 
     actor.state += event
@@ -96,7 +97,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     }
 
     val eventDmn = DmnResumen(
-      if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
+      command.deliveryIdObligacion.get,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,

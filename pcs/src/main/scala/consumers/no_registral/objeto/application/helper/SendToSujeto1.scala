@@ -10,7 +10,7 @@ import design_principles.actor_model.Response
 
 object SendToSujeto1 {
 
-  def apply(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer, event: UpdatedState30ObjetoFromObjVinculo): Unit = {
+  def apply(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer, event: UpdatedState30ObjetoFromObjVinculo, deliveryIdObligacion: Option[BigInt]): Unit = {
     implicit val system: ActorSystem = actor.context.system
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(requeriment)
     actorSujetoGeneral.ask[Response.SuccessProcessing](SujetoCommands.SujetoUpdateFromObjeto(
@@ -20,7 +20,8 @@ object SendToSujeto1 {
       event.tipoObjeto,
       actor.state.saldo,
       actor.state.obligacionesSaldo.values.sum,
-      actor.state.clasificacionObjeto
+      actor.state.clasificacionObjeto,
+      deliveryIdObligacion
     ))
     actor.context.sender ! Response.SuccessProcessing(event.aggregateRoot, event.deliveryId)
   }
