@@ -7,7 +7,7 @@ import design_principles.actor_model.Response
 import org.slf4j.{Logger, LoggerFactory}
 
 object SendToObjeto {
-  private val log: Logger = LoggerFactory.getLogger(this. getClass)
+  private val log: Logger = LoggerFactory.getLogger(this.getClass)
 
   def apply(currentState: SujetoState,
             sender: ActorRef,
@@ -23,16 +23,8 @@ object SendToObjeto {
       currentState.lastDeliveryIdByEvents
     }
 
-    log. info(s"[SEND-TO-OBJETO-DEBUG] Iniciando - sujetoId=$sujetoId, objetoId=$objetoId, " +
-      s"ultimoDeliveryIdRecibido=${currentState.ultimoDeliveryIdRecibido}, " +
-      s"lastDeliveryIdByEvents=${currentState.lastDeliveryIdByEvents}, " +
-      s"deliveryIdToUse=$deliveryIdToUse, " +
-      s"diffStates=${currentState.diffStates}")
-
     if (currentState.diffStates) {
-      // ✅ Caso específico: Buscar un hijo concreto
       val childName = s"Sujeto-$sujetoId-Objeto-$objetoId-$tipoObjeto"
-      log.info(s"[SEND-TO-OBJETO-SPECIFIC] Buscando hijo específico: $childName")
 
       actorContext.child(childName) match {
         case Some(objChild) =>
@@ -123,29 +115,16 @@ object SendToObjetoFromSujeto {
       currentState.lastDeliveryIdByEvents
     }
 
-    log.info(s"[SEND-TO-OBJETO-FROM-SUJETO-DEBUG] Iniciando - sujetoId=$sujetoId, " +
-      s"ultimoDeliveryIdRecibido=${currentState.ultimoDeliveryIdRecibido}, " +
-      s"lastDeliveryIdByEvents=${currentState.lastDeliveryIdByEvents}, " +
-      s"deliveryIdToUse=$deliveryIdToUse")
-
     val allChildren = actorContext.children. toSeq
     val objetoActors = allChildren.filter(_.path.toString.contains("-Objeto-"))
 
-    log.info(s"[SEND-TO-OBJETO-FROM-SUJETO] Total hijos: ${allChildren. size}, ObjetoActors:  ${objetoActors.size}")
-
-    if (objetoActors.isEmpty) {
-      log.warn(s"[SEND-TO-OBJETO-FROM-SUJETO-EMPTY] El SujetoActor NO tiene ObjetoActor hijos.  sujetoId=$sujetoId")
-    }
 
     objetoActors.foreach(actor => {
       val actorPath = actor.path.toString
 
-      log.info(s"[SEND-TO-OBJETO-FROM-SUJETO-CHILD] Procesando ObjetoActor: $actorPath")
-
       val objetoIdExtracted = """Objeto-(.*?)-""".r.findFirstMatchIn(actorPath) match {
         case Some(matched) =>
           val extracted = matched.group(1)
-          log.info(s"[SEND-TO-OBJETO-FROM-SUJETO-REGEX-OK] objetoId extraído: '$extracted'")
           extracted
 
         case None =>
@@ -156,8 +135,6 @@ object SendToObjetoFromSujeto {
       val tipoObjetoExtracted = actorPath.last.toString
 
       if (objetoIdExtracted.nonEmpty) {
-        log.info(s"[SEND-TO-OBJETO-FROM-SUJETO-SEND] Enviando comando - objetoId='$objetoIdExtracted', tipoObjeto='$tipoObjetoExtracted', deliveryId=$deliveryIdToUse")
-
         actor.ask[Response. SuccessProcessing](
           ObjetoUpdateFromSujeto(
             deliveryIdToUse,
@@ -173,7 +150,6 @@ object SendToObjetoFromSujeto {
         log.error(s"[SEND-TO-OBJETO-FROM-SUJETO-SKIP] objetoId VACÍO - NO se enviará comando. Path: $actorPath")
       }
     })
-
     log.info(s"[SEND-TO-OBJETO-FROM-SUJETO-COMPLETE] Terminó el envío a ${objetoActors. size} ObjetoActors")
   }
 }

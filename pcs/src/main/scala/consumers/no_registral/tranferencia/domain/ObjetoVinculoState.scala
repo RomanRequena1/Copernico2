@@ -135,6 +135,7 @@ final case class ObjetoVinculoState(
             (dmnNumeroVinculo, dmnDescripcionVinculo)
         }
         copy(
+          lastDeliveryIdByEvents = evt.deliveryId,
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
           mapVinculo = _mapVinculo,
           mapTransf = _mapTransf,

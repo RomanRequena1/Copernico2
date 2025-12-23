@@ -57,7 +57,7 @@ object testIfObjVinculo {
         val res = vinculoActor.ask[Response.SuccessProcessing](CreateTransfVinculoObjetoFromObj(
           objetoId = objetoId,
           sujetoId = sujetoId,
-          deliveryId = command.deliveryId,
+          deliveryId = actor.state.lastDeliveryIdByEvents,
           tipoObj = tipoObjeto,
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
@@ -82,7 +82,7 @@ object testIfObjVinculo {
         val res = vinculoActor.ask[Response.SuccessProcessing](UpdateVinculoObjetoFromObj(
           objetoId = objetoId,
           sujetoId = sujetoId,
-          deliveryId = command.deliveryId,
+          deliveryId = actor.state.lastDeliveryIdByEvents,
           tipoObj = tipoObjeto,
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
@@ -102,7 +102,7 @@ object testIfObjVinculo {
         val res = vinculoActor.ask[Response.SuccessProcessing](RemoveObjetoVinculo(
           objetoId = objetoId,
           sujetoId = sujetoId,
-          deliveryId = command.deliveryId,
+          deliveryId = actor.state.lastDeliveryIdByEvents,
           tipoObj = tipoObjeto,
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
