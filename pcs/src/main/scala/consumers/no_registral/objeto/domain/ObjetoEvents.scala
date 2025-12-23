@@ -32,7 +32,8 @@ object ObjetoEvents {
       tipoObjeto: String,
       tiene30Sujeto: Boolean,
       exclusionSUjeto: Option[String],
-      dmnDescripcionSujeto: Option[String]
+      dmnDescripcionSujeto: Option[String],
+      deliveryIdObligacion: Option[BigInt]
                                     ) extends ObjetoEvents
 
   case class AplicarDescuentoUpdated(

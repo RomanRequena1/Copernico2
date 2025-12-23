@@ -186,7 +186,8 @@ object test {
               command.tipoObjeto,
               actor.state.saldo,
               actor.state.obligacionesSaldo.values.sum,
-              actor.state.clasificacionObjeto
+              actor.state.clasificacionObjeto,
+              Some(command.deliveryId)
             )
           )
           res.onComplete {
@@ -209,7 +210,8 @@ object test {
                 command.tipoObjeto,
                 actor.state.saldo,
                 actor.state.obligacionesSaldo.values.sum,
-                actor.state.clasificacionObjeto
+                actor.state.clasificacionObjeto,
+                Some(command.deliveryId)
               )
             )
             res.onComplete {

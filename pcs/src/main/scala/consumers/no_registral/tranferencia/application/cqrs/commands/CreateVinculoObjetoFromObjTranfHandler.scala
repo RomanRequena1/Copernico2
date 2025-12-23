@@ -49,9 +49,9 @@ class CreateVinculoObjetoFromObjTranfHandler(
           actor.state.tiene30ObjetoVinculo  // sino dejar la marca como estaba
         }
 
-        val updateResult = actorSujetoGeneral.ask[Response.SuccessProcessing](
+        actorSujetoGeneral.ask[Response.SuccessProcessing](
           UpdateState30ObjetoFromObjVinculo(
-            0,
+            command.deliveryId,
             e._1.sujetoId,
             e._1.objetoId,
             e._1.tipoObj,

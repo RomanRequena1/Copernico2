@@ -20,26 +20,19 @@ class AuditoriaHandler(actor:  ObjetoVinculoActor,
     val ultimoEnviadoAnterior = actor.state.ultimoAplicarDescuentoEnviado
     val cambioDeMarca = ultimoEnviadoAnterior != command.aplicarDescuento
 
-    log. info(s"[AUDITORIA-DEBUG] objetoId=${command.objetoId}, sujetoId=${command.sujetoId}, " +
-      s"ultimoEnviado=$ultimoEnviadoAnterior, actual=${command.aplicarDescuento}, " +
-      s"cambioDeMarca=$cambioDeMarca")
-
     if (cambioDeMarca) {
-      actor.state = actor.state.copy(
-        ultimoAplicarDescuentoEnviado = command.aplicarDescuento,
-        fechaUltimoEnvioResumen = LocalDateTime.now
-      )
-
       val event = ObjetoVinculoEvent.ResumenEnviado(
-        command.deliveryId,
+        command.eventDmn.deliveryId,
         command.objetoId,
         command.tipoObj,
         command.aplicarDescuento,
         LocalDateTime.now
       )
 
+      actor.state += event
+
       actor.persistEvent(event) { () =>
-        actor. dmnresumenpersistSnapshot(command.eventDmn, actor.state) { () =>
+        actor.dmnresumenpersistSnapshot(command.eventDmn, actor.state) { () =>
           log.info(s"[AUDITORIA-ENVIADO] objetoId=${command.objetoId}, aplicarDescuento=${command.aplicarDescuento}")
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }

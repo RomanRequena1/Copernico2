@@ -353,7 +353,8 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
       tipoObjeto,
       state.saldo,
       state.obligacionesSaldo.values.sum,
-      state.clasificacionObjeto
+      state.clasificacionObjeto,
+      Some(deliveryId)
     )
   }
 
@@ -363,13 +364,14 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
                    tipoObjeto: String,
                    state: ObjetoState): Unit = {
     context.parent ! SujetoCommands.SujetoUpdateFromObjeto(
-      deliveryId, //este?
+      deliveryId,
       sujetoId,
       objetoId,
       tipoObjeto,
       state.saldo,
       state.obligacionesSaldo.values.sum,
-      state.clasificacionObjeto
+      state.clasificacionObjeto,
+      Some(deliveryId)
     )
   }
 

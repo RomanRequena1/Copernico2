@@ -2,7 +2,7 @@ package consumers.no_registral.objeto.domain
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
-import consumers.no_registral.objeto.domain.ObjetoEvents.AplicarDescuentoUpdated
+import consumers.no_registral.objeto.domain.ObjetoEvents.{AplicarDescuentoUpdated, ObjetoUpdatedFromObligacion}
 import ddd.{AbstractState, eventCounterMax}
 import serialization.CbroSerialization
 
@@ -43,7 +43,7 @@ case class ObjetoState(
     dmnDescripcion : Option[String] = None,
     dmnDescripcionAnterior: Option[String] = None,
     dmnDescripcionAnteriorPorSujeto: Option[String] = None,
-    exclusionSujeto: Option[String] = None,
+    exclusionSujeto: Option[String] = None
                       ) extends AbstractState[ObjetoEvents]
     with CbroSerialization {
 
@@ -246,15 +246,15 @@ case class ObjetoState(
           isAdheridoDebito = evt.isAdheridoDebito.getOrElse(false),
           isBaja = false
         )
-      case ObjetoEvents.ObjetoUpdatedFromObligacion(_, sujetoId, _, _, _, obligacionId, saldoObligacion, _, _, idExterno, _, dmnNumero, dmnDescripcion) =>
-        val _obnVencidas = validExitsObnVencidas(obligacionId)
-        val obligacionesSaldo_ = obligacionesSaldo + (obligacionId -> saldoObligacion)
+      case evt: ObjetoUpdatedFromObligacion =>
+        val _obnVencidas = validExitsObnVencidas(evt.obligacionId)
+        val obligacionesSaldo_ = obligacionesSaldo + (evt.obligacionId -> evt.saldoObligacion)
         val diff: Boolean = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
         copy(
           saldo = obligacionesSaldo_.values.sum,
-          obligaciones = obligaciones + obligacionId,
+          obligaciones = obligaciones + evt.obligacionId,
           obligacionesSaldo = obligacionesSaldo_,
-          sujetos = sujetos + sujetoId,
+          sujetos = sujetos + evt.sujetoId,
           isBaja = false,
           idExterno = idExterno,
           obnVencidas = _obnVencidas,
