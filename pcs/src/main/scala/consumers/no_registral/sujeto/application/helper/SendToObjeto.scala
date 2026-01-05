@@ -33,6 +33,7 @@ object SendToObjeto {
               tiene30Sujeto = currentState.tiene30Sujeto,
               exclusionSUjeto = currentState.exclusionSujeto,
               currentState.dmnDescripcion,
+              currentState.idExterno,
               currentState.deliveryIdObligacion
             )
           )
@@ -82,6 +83,7 @@ object SendToObjeto {
               currentState.tiene30Sujeto,
               currentState.exclusionSujeto,
               currentState.dmnDescripcion,
+              currentState.idExterno,
               currentState.deliveryIdObligacion
             )
           )
@@ -134,6 +136,7 @@ object SendToObjetoFromSujeto {
             currentState. tiene30Sujeto,
             exclusionSujeto,
             currentState.dmnDescripcion,
+            currentState.idExterno,
             currentState.deliveryIdObligacion
           )
         )

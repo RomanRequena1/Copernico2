@@ -64,6 +64,7 @@ object testIfObjVinculo {
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
           exclusionObjeto = actor.state.exclusionObjeto,
+          idExterno = actor.state.idExterno,
           dmnNumero = actor.state.dmnNumero,
           dmnDescripcion = actor.state.dmnDescripcion
         ))
@@ -83,6 +84,7 @@ object testIfObjVinculo {
           objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = actor.state.lastDeliveryIdByEvents,
+          idExterno = actor.state.idExterno,
           tipoObj = tipoObjeto,
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
@@ -119,6 +121,7 @@ object testIfObjVinculo {
           objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = command.deliveryId,
+          idExterno = actor.state.idExterno,
           tipoObj = tipoObjeto,
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),

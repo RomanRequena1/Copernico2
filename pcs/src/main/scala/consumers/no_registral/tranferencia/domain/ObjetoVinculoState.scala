@@ -19,7 +19,8 @@ final case class ObjetoVinculoState(
     ultimoAplicarDescuentoEnviado: Option[Boolean] = None,
     fechaUltimoEnvioResumen: LocalDateTime = LocalDateTime.MIN,
     dmnNumeroVinculo: Option[Int] = None,
-    dmnDescripcionVinculo: Option[String] = None
+    dmnDescripcionVinculo: Option[String] = None,
+    idExterno: Option[String] = None
                                    ) extends AbstractState[ObjetoVinculoEvent]
     with CbroSerialization {
 
@@ -141,7 +142,8 @@ final case class ObjetoVinculoState(
           mapTransf = _mapTransf,
           exclusionObjetoVinculo = evt.exclusionObjeto,
           dmnNumeroVinculo = _dmnNumero,
-          dmnDescripcionVinculo = _dmnDescripcion
+          dmnDescripcionVinculo = _dmnDescripcion,
+          idExterno = evt.idExterno
         )
       case evt: ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj =>
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
@@ -177,6 +179,7 @@ final case class ObjetoVinculoState(
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
           mapVinculo = nuevoMapVinculo,
           mapTransf = nuevoMapTransf,
+          idExterno = evt.idExterno,
           exclusionObjetoVinculo = evt.exclusionObjeto
         )
       case evt: ObjetoVinculoEvent.RemovedVinculoObjetoFromObj =>
@@ -192,6 +195,7 @@ final case class ObjetoVinculoState(
       case evt: ObjetoVinculoEvent.ResumenEnviado =>
         copy(
           ultimoAplicarDescuentoEnviado = evt.aplicarDescuento,
+          idExterno = evt.idExterno,
           fechaUltimoEnvioResumen = evt.fechaEnvio
         )
       case _ =>

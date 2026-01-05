@@ -33,6 +33,7 @@ object ObjetoEvents {
       tiene30Sujeto: Boolean,
       exclusionSUjeto: Option[String],
       dmnDescripcionSujeto: Option[String],
+      idExterno: Option[String],
       deliveryIdObligacion: Option[BigInt]
                                     ) extends ObjetoEvents
 
@@ -103,6 +104,7 @@ object ObjetoEvents {
       sujetoId: String,
       objetoId: String,
       tipoObjeto: String,
+      idExterno: Option[String],
       registro: ObjetoExternalDto,
       isResponsable: Option[Boolean],
       sujetoResponsable: Option[String],

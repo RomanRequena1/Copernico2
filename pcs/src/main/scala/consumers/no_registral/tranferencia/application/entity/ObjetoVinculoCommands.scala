@@ -19,6 +19,7 @@ object ObjetoVinculoCommands {
                                   estadoObj: Option[String],
                                   titularidad: Option[String],
                                   exclusionObjeto: Option[String],
+                                  idExterno: Option[String],
                                   dmnNumero: Option[Int],
                                   dmnDescripcion: Option[String]
                                 ) extends ObjetoVinculoCommands
@@ -46,6 +47,7 @@ object ObjetoVinculoCommands {
                                           estadoObj: Option[String],
                                           titularidad: Option[String],
                                           exclusionObjeto: Option[String],
+                                          idExterno: Option[String],
                                           dmnNumero: Option[Int],
                                           dmnDescripcion: Option[String]
                                              ) extends ObjetoVinculoCommands
@@ -56,6 +58,7 @@ object ObjetoVinculoCommands {
                                     tipoObj: String,
                                     sujetoId: String,
                                     aplicarDescuento: Option[Boolean],
+                                    idExterno: Option[String],
                                     eventDmn: DmnResumen
                                   ) extends ObjetoVinculoCommands
 }

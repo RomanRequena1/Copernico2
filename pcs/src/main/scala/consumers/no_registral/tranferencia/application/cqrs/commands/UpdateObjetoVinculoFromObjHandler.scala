@@ -40,6 +40,7 @@ class UpdateObjetoVinculoFromObjHandler(
       command.titularidad,
       command.exclusionObjeto,
       command.deliveryId,
+      command.idExterno,
       command.dmnNumero,
       command.dmnDescripcion
     )
@@ -70,6 +71,7 @@ class UpdateObjetoVinculoFromObjHandler(
             e._1.tipoObj,
             tiene30Final,
             command.exclusionObjeto,
+            command.idExterno,
             command.dmnNumero,
             command.dmnDescripcion
           )

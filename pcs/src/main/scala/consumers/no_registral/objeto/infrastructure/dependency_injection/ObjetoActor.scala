@@ -341,6 +341,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
       state.saldo,
       state.obligacionesSaldo.values.sum,
       state.clasificacionObjeto,
+      state.idExterno,
       Some(deliveryId)
     )
   }
@@ -358,6 +359,7 @@ class ObjetoActor(requirements: MonitoringAndMessageProducer,  obligacionActorPr
       state.saldo,
       state.obligacionesSaldo.values.sum,
       state.clasificacionObjeto,
+      state.idExterno,
       Some(deliveryId)
     )
   }

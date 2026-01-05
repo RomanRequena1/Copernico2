@@ -111,6 +111,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
+      command.registro.SOJ_ID_EXTERNO,
       stateParcialEnabled.equals("ON") match {
         case true => getObjetoFFF()
         case false => command.registro
@@ -187,6 +188,7 @@ object test {
               actor.state.saldo,
               actor.state.obligacionesSaldo.values.sum,
               actor.state.clasificacionObjeto,
+              command.registro.SOJ_ID_EXTERNO,
               Some(command.deliveryId)
             )
           )
@@ -211,6 +213,7 @@ object test {
                 actor.state.saldo,
                 actor.state.obligacionesSaldo.values.sum,
                 actor.state.clasificacionObjeto,
+                command.registro.SOJ_ID_EXTERNO,
                 Some(command.deliveryId)
               )
             )

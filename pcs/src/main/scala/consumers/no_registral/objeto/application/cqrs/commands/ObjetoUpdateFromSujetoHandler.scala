@@ -44,6 +44,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
       command.tiene30Sujeto,
       command.exclusionSUjeto,
       command.dmnDescripcionSujeto,
+      command.idExterno,
       command.deliveryIdObligacion
     )
 
@@ -130,6 +131,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
           tipoObj    = command.tipoObjeto,
           sujetoId   = command.sujetoId,
           aplicarDescuento = actor.state.aplicarDescuento,
+          idExterno  = command.idExterno,
           eventDmn   = eventDmn
         )
 

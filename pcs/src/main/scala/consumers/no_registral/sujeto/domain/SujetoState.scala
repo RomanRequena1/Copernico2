@@ -1,7 +1,8 @@
 package consumers.no_registral.sujeto.domain
 
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
-import ddd.{eventCounterMax, AbstractState}
+import consumers.no_registral.sujeto.domain.SujetoEvents.{SujetoUpdatedFromObjeto, SujetoUpdatedFromObjetoTreintaPorciento}
+import ddd.{AbstractState, eventCounterMax}
 import serialization.CbroSerialization
 
 import java.time.LocalDateTime
@@ -25,6 +26,7 @@ final case class SujetoState(
     dmnDescripcionAnterior: Option[String] = None, // ← NUEVO
     dmnDescripcion: Option[String] = None,
     deliveryIdObligacion: Option[BigInt] = None,
+    idExterno: Option[String] = None,
     ) extends AbstractState[SujetoEvents] with CbroSerialization {
 
 
@@ -147,28 +149,22 @@ final case class SujetoState(
         copy(
           registro = Some(registro)
         )
-      case SujetoEvents.SujetoUpdatedFromObjeto(deliveryId,
-                                                _,
-                                                objetoId,
-                                                tipoObjeto,
-                                                saldoObjeto,
-                                                _saldoObligaciones,
-                                                clasificacionObjeto,
-                                                deliveryIdObligacion) =>
-        val objetoKey = s"$objetoId|$tipoObjeto"
-        val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
-        val _objVencidas = validExitsObjVencidas(objetoId, clasificacionObjeto)
+      case evt: SujetoUpdatedFromObjeto=>
+        val objetoKey = s"${evt.objetoId}|${evt.tipoObjeto}"
+        val _saldoObjetos = saldoObjetos + (objetoKey -> evt.saldoObjeto)
+        val _objVencidas = validExitsObjVencidas(evt.objetoId, evt.clasificacionObjeto)
         val diff = diffCurrentStateAndNewState(objVencidas, _objVencidas, tiene30Sujeto)
 
         copy(
-          objetos = objetos + ((objetoId, tipoObjeto)),
+          objetos = objetos + ((evt.objetoId, evt.tipoObjeto)),
           saldoObjetos = _saldoObjetos,
           saldo = _saldoObjetos.values.sum,
-          saldoObligaciones = saldoObligaciones + (objetoKey -> _saldoObligaciones),
-          lastInternalDeliveryId = deliveryId,
+          saldoObligaciones = saldoObligaciones + (objetoKey -> evt.saldoObligaciones),
+          lastInternalDeliveryId = evt.deliveryId,
           objVencidas = _objVencidas,
           tiene30Sujeto = diff._1,
           diffStates = diff._2,
+          idExterno = evt.idExterno,
           deliveryIdObligacion = deliveryIdObligacion
         )
 
@@ -195,28 +191,22 @@ final case class SujetoState(
           diffStates = diff._2,
         )
 
-      case SujetoEvents.SujetoUpdatedFromObjetoTreintaPorciento(deliveryId,
-                                                                _,
-                                                                objetoId,
-                                                                tipoObjeto,
-                                                                saldoObjeto,
-                                                                _saldoObligaciones,
-                                                                clasificacionObjeto,
-                                                                deliveryIdObligacion) =>
-        val objetoKey = s"$objetoId|$tipoObjeto"
-        val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
-        val _objVencidas = validExitsObjVencidasTreinta(objetoId, clasificacionObjeto)
+      case evt: SujetoUpdatedFromObjetoTreintaPorciento =>
+        val objetoKey = s"${evt.objetoId}|${evt.tipoObjeto}"
+        val _saldoObjetos = saldoObjetos + (objetoKey -> evt.saldoObjeto)
+        val _objVencidas = validExitsObjVencidasTreinta(evt.objetoId, evt.clasificacionObjeto)
         val diff = diffCurrentStateAndNewState(objVencidas, _objVencidas, tiene30Sujeto)
 
         copy(
-          objetos = objetos + ((objetoId, tipoObjeto)),
+          objetos = objetos + ((evt.objetoId, evt.tipoObjeto)),
           saldoObjetos = _saldoObjetos,
           saldo = _saldoObjetos.values.sum,
-          saldoObligaciones = saldoObligaciones + (objetoKey -> _saldoObligaciones),
-          lastInternalDeliveryId = deliveryId,
+          saldoObligaciones = saldoObligaciones + (objetoKey -> evt.saldoObligaciones),
+          lastInternalDeliveryId = evt.deliveryId,
           objVencidas = _objVencidas,
           tiene30Sujeto = diff._1,
           diffStates = diff._2,
+          idExterno = evt.idExterno,
           deliveryIdObligacion = deliveryIdObligacion
         )
       case SujetoEvents.SujetoBajaFromObjetoSet(deliveryId, _, objetoId, tipoObjeto) =>

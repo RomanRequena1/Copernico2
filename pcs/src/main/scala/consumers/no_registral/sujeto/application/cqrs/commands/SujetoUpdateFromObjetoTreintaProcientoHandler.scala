@@ -32,6 +32,7 @@ class SujetoUpdateFromObjetoTreintaProcientoHandler(actor: SujetoActor)
       command.saldoObjeto,
       command.saldoObligaciones,
       command.clasificacionObjeto,
+      command.idExterno,
       command.deliveryIdObligacion
     )
     actor.persistEvent(event) { () =>

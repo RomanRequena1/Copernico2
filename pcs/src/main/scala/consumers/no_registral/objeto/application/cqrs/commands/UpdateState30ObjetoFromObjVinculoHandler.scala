@@ -68,9 +68,9 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
 
         actor.persistSnapshot(event, actor.state) { () =>
           if (tiene30ObjetoFinal) {
-            SendToSujeto1(actor, requeriment, event, Some(command.deliveryId))
+            SendToSujeto1(actor, requeriment, event, Some(command.deliveryId), command.idExterno)
           } else {
-            SendToSujeto(actor, requeriment, event, Some(command.deliveryId))
+            SendToSujeto(actor, requeriment, event, Some(command.deliveryId), command.idExterno)
           }
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }
