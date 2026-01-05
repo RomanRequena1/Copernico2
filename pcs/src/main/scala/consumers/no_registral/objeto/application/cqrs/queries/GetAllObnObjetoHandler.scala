@@ -2,9 +2,12 @@ package consumers.no_registral.objeto.application.cqrs.queries
 
 import akka.pattern.ask
 import akka.util.Timeout
+import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal
+import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal.DmnFinal
 import consumers.no_registral.objeto.application.entities.ObjetoQueries.{GetAllObnObjeto, GetStateObjeto}
 import consumers.no_registral.objeto.application.entities.ObjetoResponses
 import consumers.no_registral.objeto.application.entities.ObjetoResponses.{GetAllObnResponse, GetObjetoResponse, Obligacion}
+import consumers.no_registral.objeto.application.helper.InteresCalculator
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.obligacion.application.entities.ObligacionQueries.GetMiniStateObligacion
 import consumers.no_registral.obligacion.application.entities.ObligacionResponses.GetMiniObligacionResponse
@@ -24,20 +27,31 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
 //    println(s"Llego ${query.objetoId} - ${query.tipoObjeto}")
 
     implicit val timeout: Timeout = 300.seconds
-
+    val obligacionesYObnVencidas: Set[String] = actor.state.obnVencidas.keySet
 //    println(s"ChildObjeto ${query.objetoId}: ${actor.state.obligaciones.size}")
-    val obligacionesFutures: Set[Future[Obligacion]] = actor.state.obligaciones.map { actorObn =>
+    val obligacionesFutures: Set[Future[Obligacion]] = obligacionesYObnVencidas.map { actorObn =>
       actor.self.ask(GetMiniStateObligacion(
         query.sujetoId,
         query.objetoId,
         query.tipoObjeto,
         actorObn
       )).mapTo[GetMiniObligacionResponse].map { response =>
+        val interes = InteresCalculator.aplicarInteres(
+          capital = response.saldo.getOrElse(BigDecimal(0)),
+          vencimiento = response.vencimiento,
+          prorroga = response.vencimiento,
+          estado = response.estado,
+          saldo = response.saldo
+        )
         Obligacion(
           id = actorObn,
           saldo = response.saldo,
+          interes = Some(interes),
+          saldoInteres = response.saldo.map(_ + interes),
           vencimiento = response.vencimiento,
-          estado = response.estado
+          estado = response.estado,
+          tiene30obn = response.tiene30,
+          registro = response.registro
         )
       }
     }
@@ -53,20 +67,45 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
       case Success(value) => {
         lista = value
         //println(s"Mi lista: $lista")
+        val resultAplicarDescuento: Boolean = {
+          if (actor.state.tiene30Sujeto.isDefined) {
+            DMNTreintaPorcientoFinal.calcularDmnFinal(
+              DmnFinal(
+                actor.state.exclusionSujeto,
+                actor.state.exclusionObjeto,
+                actor.state.clasificacionObjeto,
+                actor.state.tiene30Objeto,
+                actor.state.tiene30Sujeto.get,
+                actor.state.tiene30ObjetoVinculo
+              ))
+          } else {
+            true
+          }
+        }
         val response = GetAllObnResponse(
           objetoId = query.objetoId,
           objetoTipo = query.tipoObjeto,
-          saldo = actor.state.saldo,
-          obligaciones = lista)
+          objetoTitularidad = actor.state.registro.get.SOJ_TITULARIDAD,
+          tiene30objeto = Some(actor.state.tiene30Objeto),
+          aplicarDescuento = Some(resultAplicarDescuento),
+//          saldo = actor.state.saldo,
+          obligaciones = lista
+        )
         sender ! response
       }
-      case Failure(ex) => println(ex.toString)
+      case Failure(ex) => log.error(ex.toString)
     }
 
     val response = GetAllObnResponse(
       objetoId = query.objetoId,
       objetoTipo = query.tipoObjeto,
-      saldo = actor.state.saldo,
+      objetoTitularidad = actor.state.registro match {
+        case Some(value) => value.SOJ_TITULARIDAD
+        case None => None
+      },
+      tiene30objeto = Some(actor.state.tiene30Objeto),
+      aplicarDescuento = actor.state.aplicarDescuento,
+//      saldo = actor.state.saldo,
       obligaciones = Set.empty)
 
 //    log.info(s"[${actor.persistenceId}] GetState | $response")

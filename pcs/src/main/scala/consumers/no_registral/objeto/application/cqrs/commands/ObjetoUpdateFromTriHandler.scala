@@ -231,7 +231,6 @@ object test {
         }
       } else {
         actor.persistSnapshot(event, actor.state) { () =>
-
           SendObjetoToObjetoVinculo(
             Obje,
             actor,

@@ -1,5 +1,6 @@
 package consumers.no_registral.obligacion.application.cqrs.queries
 
+import consumers.no_registral.objeto.application.helper.InteresCalculator
 import consumers.no_registral.obligacion.application.entities.ObligacionResponses.GetObligacionResponse
 import consumers.no_registral.obligacion.application.entities.{ObligacionQueries, ObligacionResponses}
 import consumers.no_registral.obligacion.infrastructure.dependency_injection.ObligacionActor
@@ -15,8 +16,16 @@ class ObligacionGetStateHandler(actor: ObligacionActor) extends SyncQueryHandler
   ): Try[ObligacionResponses.GetObligacionResponse] = {
     val sender = actor.context.sender()
 
+    val interes = InteresCalculator.aplicarInteres(
+      capital = actor.state.registro.get.BOB_CAPITAL.getOrElse(BigDecimal(0)),
+      vencimiento = actor.state.registro.get.BOB_VENCIMIENTO,
+      prorroga = actor.state.registro.get.BOB_PRORROGA,
+      estado = actor.state.registro.get.BOB_ESTADO,
+      saldo = actor.state.registro.get.BOB_SALDO
+    )
     val response = GetObligacionResponse(
       actor.state.saldo.getOrElse(0),
+      interes,
       actor.state.fechaUltMod,
       actor.state.exenta,
       actor.state.porcentajeExencion,

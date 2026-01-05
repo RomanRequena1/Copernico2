@@ -10,6 +10,7 @@ object ObligacionResponses {
 
   case class GetObligacionResponse(
       saldo: BigDecimal = 0,
+      interes: BigDecimal = 0,
       fechaUltMod: LocalDateTime = LocalDateTime.MIN,
       exenta: Boolean = false,
       porcentajeExencion: Option[BigDecimal] = None,
@@ -29,5 +30,8 @@ object ObligacionResponses {
   case class GetMiniObligacionResponse(id: String,
                                        saldo:Option[BigDecimal],
                                        vencimiento: Option[LocalDateTime],
-                                       estado: Option[String]) extends Response with CbroSerialization
+                                       estado: Option[String],
+                                       tiene30: Option[Boolean],
+                                       registro: Option[ObligacionExternalDto]
+                                      ) extends Response with CbroSerialization
 }

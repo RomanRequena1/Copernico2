@@ -23,6 +23,7 @@ class GetStateObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetStat
       exenciones = actor.state.exenciones,
       bandTipo = actor.state.clasificacionObjeto,
       treinta = actor.state.tiene30Objeto,
+      treintaSujeto = actor.state.tiene30Sujeto,
       treintaFinal = actor.state.aplicarDescuento.getOrElse(true)
     )
     log.info(s"[${actor.persistenceId}] GetState | $response")
