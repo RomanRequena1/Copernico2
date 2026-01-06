@@ -98,7 +98,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     }
 
     val eventDmn = DmnResumen(
-      command.deliveryIdObligacion.get,
+      command.deliveryIdObligacion.getOrElse(0),
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,

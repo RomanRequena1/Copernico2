@@ -1,7 +1,7 @@
 package consumers.no_registral.sujeto.application.helper
 
 import akka.actor.{ActorContext, ActorRef}
-import consumers.no_registral.objeto.application.entities.ObjetoCommands. ObjetoUpdateFromSujeto
+import consumers.no_registral.objeto.application.entities.ObjetoCommands.ObjetoUpdateFromSujeto
 import consumers. no_registral.sujeto.domain.SujetoState
 import design_principles.actor_model.Response
 import org.slf4j.{Logger, LoggerFactory}

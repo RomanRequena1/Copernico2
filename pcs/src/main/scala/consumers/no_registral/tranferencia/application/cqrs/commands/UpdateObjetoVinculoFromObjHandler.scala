@@ -49,6 +49,8 @@ class UpdateObjetoVinculoFromObjHandler(
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
 
     actor.persistEvent(event) { () =>
+      println("EV ID2: " + command.deliveryId)
+
       actor.state += event
 
       val tieneDeudaEnTransf = actor.state.mapTransf.exists(_._2.tiene30Objeto == false)
@@ -79,6 +81,7 @@ class UpdateObjetoVinculoFromObjHandler(
        }
       }
       actor.persistSnapshot(event, actor.state) { () =>
+        println("EV ID3: " + command.deliveryId)
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
     }

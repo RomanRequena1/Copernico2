@@ -149,22 +149,30 @@ final case class SujetoState(
         copy(
           registro = Some(registro)
         )
-      case evt: SujetoUpdatedFromObjeto=>
-        val objetoKey = s"${evt.objetoId}|${evt.tipoObjeto}"
-        val _saldoObjetos = saldoObjetos + (objetoKey -> evt.saldoObjeto)
-        val _objVencidas = validExitsObjVencidas(evt.objetoId, evt.clasificacionObjeto)
+      case SujetoEvents.SujetoUpdatedFromObjeto(deliveryId,
+                                                _,
+                                                objetoId,
+                                                tipoObjeto,
+                                                saldoObjeto,
+                                                _saldoObligaciones,
+                                                clasificacionObjeto,
+                                                idExterno,
+                                                deliveryIdObligacion) =>
+        val objetoKey = s"$objetoId|$tipoObjeto"
+        val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
+        val _objVencidas = validExitsObjVencidas(objetoId, clasificacionObjeto)
         val diff = diffCurrentStateAndNewState(objVencidas, _objVencidas, tiene30Sujeto)
 
         copy(
-          objetos = objetos + ((evt.objetoId, evt.tipoObjeto)),
+          objetos = objetos + ((objetoId, tipoObjeto)),
           saldoObjetos = _saldoObjetos,
           saldo = _saldoObjetos.values.sum,
-          saldoObligaciones = saldoObligaciones + (objetoKey -> evt.saldoObligaciones),
-          lastInternalDeliveryId = evt.deliveryId,
+          saldoObligaciones = saldoObligaciones + (objetoKey -> _saldoObligaciones),
+          lastInternalDeliveryId = deliveryId,
           objVencidas = _objVencidas,
           tiene30Sujeto = diff._1,
           diffStates = diff._2,
-          idExterno = evt.idExterno,
+          idExterno = idExterno,
           deliveryIdObligacion = deliveryIdObligacion
         )
 
@@ -191,22 +199,30 @@ final case class SujetoState(
           diffStates = diff._2,
         )
 
-      case evt: SujetoUpdatedFromObjetoTreintaPorciento =>
-        val objetoKey = s"${evt.objetoId}|${evt.tipoObjeto}"
-        val _saldoObjetos = saldoObjetos + (objetoKey -> evt.saldoObjeto)
-        val _objVencidas = validExitsObjVencidasTreinta(evt.objetoId, evt.clasificacionObjeto)
+      case SujetoEvents.SujetoUpdatedFromObjetoTreintaPorciento(deliveryId,
+                                                                _,
+                                                                objetoId,
+                                                                tipoObjeto,
+                                                                saldoObjeto,
+                                                                _saldoObligaciones,
+                                                                clasificacionObjeto,
+                                                                idExterno,
+                                                                deliveryIdObligacion) =>
+        val objetoKey = s"$objetoId|$tipoObjeto"
+        val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
+        val _objVencidas = validExitsObjVencidasTreinta(objetoId, clasificacionObjeto)
         val diff = diffCurrentStateAndNewState(objVencidas, _objVencidas, tiene30Sujeto)
 
         copy(
-          objetos = objetos + ((evt.objetoId, evt.tipoObjeto)),
+          objetos = objetos + ((objetoId, tipoObjeto)),
           saldoObjetos = _saldoObjetos,
           saldo = _saldoObjetos.values.sum,
-          saldoObligaciones = saldoObligaciones + (objetoKey -> evt.saldoObligaciones),
-          lastInternalDeliveryId = evt.deliveryId,
+          saldoObligaciones = saldoObligaciones + (objetoKey -> _saldoObligaciones),
+          lastInternalDeliveryId = deliveryId,
           objVencidas = _objVencidas,
           tiene30Sujeto = diff._1,
           diffStates = diff._2,
-          idExterno = evt.idExterno,
+          idExterno = idExterno,
           deliveryIdObligacion = deliveryIdObligacion
         )
       case SujetoEvents.SujetoBajaFromObjetoSet(deliveryId, _, objetoId, tipoObjeto) =>
