@@ -1,11 +1,11 @@
-package consumers.no_registral.objeto. application.cqrs.commands
+package consumers.no_registral.objeto.application.cqrs.commands
 
 import akka.actor.ActorRef
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal
 import consumers.no_registral.objeto.application.dmn.DMNTreintaPorcientoFinal.DmnFinal
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import consumers.no_registral.objeto.application.entities.ObjetoExternalDto. ObjetosTri
+import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.ObjetosTri
 import consumers.no_registral.objeto.domain.ObjetoEvents.{AplicarDescuentoUpdated, DmnResumen, ObjetoUpdatedFromSujeto}
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import consumers.no_registral.tranferencia.application.entity.ObjetoVinculoCommands
@@ -18,12 +18,12 @@ import scala.util.{Success, Try}
 class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
   extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromSujeto] {
 
-  private val resumenEnabled:  Option[String] = Option(System.getenv("KAFKA_BROKERS_LIST_PSRM"))
+  private val resumenEnabled: Option[String] = Option(System.getenv("KAFKA_BROKERS_LIST_PSRM"))
 
   override def handle(command: ObjetoCommands.ObjetoUpdateFromSujeto): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
-    val obj_default:  ObjetosTri = ObjetosTri(
+    val obj_default: ObjetosTri = ObjetosTri(
       Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"),
       None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"),
       Some("None"), Some("None"), Some("None"), Some("None"), Some("None"),
@@ -53,7 +53,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     def esTipoObjetoPermitido(tipo: String): Boolean =
       Set("A", "I", "N").contains(tipo)
 
-    val result:  Boolean = DMNTreintaPorcientoFinal.calcularDmnFinal(
+    val result: Boolean = DMNTreintaPorcientoFinal.calcularDmnFinal(
       DmnFinal(
         command.exclusionSUjeto,
         actor.state.exclusionObjeto,
@@ -85,13 +85,24 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     // Validar si cambió la marca A NIVEL DE OBJETO
     val cambioDeMarcaEnObjeto = aplicarDescuentoAnterior != aplicarDescuentoNuevo
 
+    // --- CAMBIO: detectar cuando el objeto pierde el descuento POR deuda en OTRO objeto
+    // isLossByOther:
+    //  - la marca cambió de true -> false (aplicarDescuentoAnterior true, aplicarDescuentoNuevo false)
+    //  - y el objeto NO tiene deuda propia (tiene30Objeto == true)
+    val isLossByOther = cambioDeMarcaEnObjeto &&
+      aplicarDescuentoAnterior.contains(true) &&
+      aplicarDescuentoNuevo.contains(false) &&
+      actor.state.tiene30Objeto
+
+    // Lógica de DMN para auditoría:
+    // 1) Si isLossByOther => forzar (99, "No cumple por deuda en otro objeto del sujeto")
+    // 2) Si no hay dmn en estado y el objeto no tiene deuda propia => (1, "no deuda") como fallback
+    // 3) En otro caso mantener actor.state.dmnNumero / dmnDescripcion
     val (dmnNumeroParaPSRM, dmnDescripcionParaPSRM) = {
-      if (actor.state.dmnNumero.isEmpty &&
-        aplicarDescuentoNuevo. contains(false) &&
-        actor.state.tiene30Objeto) {
-
+      if (isLossByOther) {
         (Some(99), Some("No cumple por deuda en otro objeto del sujeto"))
-
+      } else if (actor.state.dmnNumero.isEmpty && actor.state.tiene30Objeto) {
+        (Some(1), Some("no deuda"))
       } else {
         (actor.state.dmnNumero, actor.state.dmnDescripcion)
       }
@@ -120,19 +131,19 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
 
       actor.persistSnapshot(event, actor.state) { () =>
         implicit val system = actor.context.system
-        val vinculoActor:  ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
+        val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
 
         log.info(s"[AUDITORIA-FROM-SUJETO] Enviando - objetoId=${command.objetoId}, sujetoId=${command.sujetoId}, " +
           s"anterior=$aplicarDescuentoAnterior, nuevo=$aplicarDescuentoNuevo")
 
-        vinculoActor !  ObjetoVinculoCommands.AuditarYEnviarResumen(
+        vinculoActor ! ObjetoVinculoCommands.AuditarYEnviarResumen(
           deliveryId = command.deliveryId,
-          objetoId   = command.objetoId,
-          tipoObj    = command.tipoObjeto,
-          sujetoId   = command.sujetoId,
+          objetoId = command.objetoId,
+          tipoObj = command.tipoObjeto,
+          sujetoId = command.sujetoId,
           aplicarDescuento = actor.state.aplicarDescuento,
-          idExterno  = command.idExterno,
-          eventDmn   = eventDmn
+          idExterno = command.idExterno,
+          eventDmn = eventDmn
         )
 
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)

@@ -9,9 +9,8 @@
     <option name="useSbtShell" value="false" />
     <option name="vmparams" value="-Xms512M -Xmx1024M -Xss1M -XX:+CMSClassUnloadingEnabled" />
     <option name="workingDir" value="$PROJECT_DIR$" />
-    <option name="envFilePaths" />
     <envs>
-      <env name="CASSANDRA_CONTACT_POINTS_UNO" value="0.0.0.0:9042" />
+      <env name="CASSANDRA_CONTACT_POINTS_UNO" value="localhost:9042" />
       <env name="ENVIRONMENT_EXECUTION" value="DESA" />
       <env name="ZIPKIN_HOST" value="host.docker.internal" />
       <env name="STRING_CONEXION_TIMESCALEDB" value="'jdbc:postgresql://172.22.2.1:5432/postgres'" />
