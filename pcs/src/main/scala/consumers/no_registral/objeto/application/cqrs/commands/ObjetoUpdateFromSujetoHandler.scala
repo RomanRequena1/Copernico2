@@ -102,7 +102,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
       if (isLossByOther) {
         (Some(99), Some("No cumple por deuda en otro objeto del sujeto"))
       } else if (actor.state.dmnNumero.isEmpty && actor.state.tiene30Objeto) {
-        (Some(1), Some("no deuda"))
+        (Some(1), Some("No Deuda"))
       } else {
         (actor.state.dmnNumero, actor.state.dmnDescripcion)
       }
