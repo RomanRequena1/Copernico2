@@ -31,7 +31,9 @@ class CreateVinculoObjetoFromObjTranfHandler(
       command.titularidad,
       command.exclusionObjeto,
       command.idExterno,
-      command.deliveryId
+      command.deliveryId,
+      command.dmnNumero,
+      command.dmnDescripcion
     )
 
     implicit val system: ActorSystem = actor.context.system
