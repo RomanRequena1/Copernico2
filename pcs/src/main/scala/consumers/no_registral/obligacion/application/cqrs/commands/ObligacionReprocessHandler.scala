@@ -48,7 +48,7 @@ class ObligacionReprocessHandler(actor: ObligacionActor)
             actor.state.resultDmn
           )
         }
-        println(s"Reprocesado evento para obligación: ${ObligacionMessageRoots(command.sujetoId, command.objetoId, command.tipoObjeto, command.obligacionId)}")
+//        println(s"Reprocesado evento para obligación: ${ObligacionMessageRoots(command.sujetoId, command.objetoId, command.tipoObjeto, command.obligacionId)}")
 
 //        actor.persistEventTagsSujeto(event) { () => ()
 ////          log.info(s"Reprocesado evento para obligación: ${command.obligacionId}")

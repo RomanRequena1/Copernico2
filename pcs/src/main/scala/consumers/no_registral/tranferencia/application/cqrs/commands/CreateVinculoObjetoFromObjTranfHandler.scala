@@ -36,8 +36,6 @@ class CreateVinculoObjetoFromObjTranfHandler(
 
     implicit val system: ActorSystem = actor.context.system
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
-    implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
-
 
     actor.persistEvent(event) { () =>
       actor.state += event

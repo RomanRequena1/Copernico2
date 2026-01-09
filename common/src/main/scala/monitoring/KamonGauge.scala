@@ -1,12 +1,15 @@
 package monitoring
 
 import kamon.Kamon
+import kamon.tag.TagSet
 
-class KamonGauge(name: String) extends Gauge {
+class KamonGauge(name: String, context: Map[String, String]) extends Gauge {
+  private val tags = TagSet.from(context + ("entity" -> name))
 
   private val gauge = Kamon
     .gauge("copernico-gauges")
-    .withTag("entity", name)
+    .withTags(tags)
+
 
   override def increment(): Unit = gauge.increment()
   override def decrement(): Unit = gauge.decrement()
@@ -15,4 +18,6 @@ class KamonGauge(name: String) extends Gauge {
   override def subtract(num: Int): Unit = gauge.decrement(num)
 
   override def set(num: Int): Unit = gauge.update(num)
+  override def set(num: Long): Unit = gauge.update(num)
+
 }

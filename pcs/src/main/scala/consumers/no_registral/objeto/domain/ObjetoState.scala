@@ -179,6 +179,8 @@ case class ObjetoState(
         // Si tiene30ObjetoVinculo = false Y no tiene obligaciones propias heredar la penalizacion
         val tiene30ObjetoCalculado = if (!evt.tiene30ObjetoVinculo && obligaciones.isEmpty) {
           false
+        } else if (evt.tiene30ObjetoVinculo && obligaciones.isEmpty) {
+          true
         } else {
           tiene30Objeto // Sino mantener la marca actual
         }
@@ -266,7 +268,11 @@ case class ObjetoState(
       case evt: ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento =>
         val _obnVencidas = validExitsObnVencidasTreinta(evt.obligacionId)
         val diff = diffCurrentStateAndNewState(_obnVencidas, tiene30Objeto)
+        val obligacionesSaldo_ = obligacionesSaldo + (evt.obligacionId -> evt.saldoObligacion)
         copy(
+          saldo = obligacionesSaldo_.values.sum,
+//          obligaciones = obligaciones + evt.obligacionId,
+          obligacionesSaldo = obligacionesSaldo_,
           idExterno = evt.idExterno,
           obnVencidas = _obnVencidas,
           tiene30Objeto = diff,

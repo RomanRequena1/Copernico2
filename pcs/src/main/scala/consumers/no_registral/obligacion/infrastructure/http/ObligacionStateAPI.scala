@@ -53,38 +53,15 @@ case class ObligacionStateAPI(actor: ActorRef, monitoring: Monitoring)(
       withObjeto { objetoId =>
         withTipoObjeto { tipoObjeto =>
           path("obligacion" / Segment) { obligacionId =>
-            complete {
-              (for {
-                objetoState <- actor.ask[GetObjetoResponse](GetStateObjeto(sujetoId, objetoId, tipoObjeto))
-
-                sujetoResponsable = objetoState.sujetoResponsable match {
-                  case Some(value) => value
-                  case None => sujetoId
-                }
-
-                obligacionState <- actor.ask[GetObligacionResponse](
-                  GetStateObligacion(sujetoResponsable, objetoId, tipoObjeto, obligacionId)
-                )
-              } yield {
-                obligacionState match {
-                  case _: GetObligacionResponse if obligacionState.fechaUltMod == LocalDateTime.MIN =>
-                    HttpResponse(NotFound)
-
-                  case result: GetObligacionResponse =>
-                    HttpResponse(
-                      OK,
-                      entity = Utils.standarization(
-                        result.asJson.toString()
-                      )
-                    )
-                }
-              }).recover { case e: Exception => HttpResponse(InternalServerError, entity = e.getMessage) }
+            queryState[GetObligacionResponse](actorRef = actor, GetStateObligacion(sujetoId, objetoId, tipoObjeto, obligacionId))(
+              GetObligacionResponseEncoder,
+              t => t.fechaUltMod == LocalDateTime.MIN
+            )
             }
 
           }
         }
       }
-    }
 
   def getSnapshot: Route =
     withSujeto { sujetoId =>

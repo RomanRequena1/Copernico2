@@ -31,7 +31,9 @@ class GetAllObnSujetoHandler(actor: SujetoActor) extends SyncQueryHandler[GetAll
 //        actorObn._2
 //      ))
 //    }
-
+  def calcularSaldoInteresTotal(objetos: Set[GetAllObnResponse]): BigDecimal = {
+    objetos.flatMap(_.obligaciones).flatMap(_.saldoInteres).sum
+  }
 
   val getAllObjetosFutureList: Future[Set[GetAllObnResponse]] =  Future.traverse(actor.state.objetos)(obj => {
       actor.self.ask[GetAllObnResponse](GetAllObnObjeto(
@@ -52,6 +54,8 @@ class GetAllObnSujetoHandler(actor: SujetoActor) extends SyncQueryHandler[GetAll
         //        println(s"Mi lista: $lista")
         val response = GetAllObnSujetoResponse(
           saldo = actor.state.saldo,
+          saldoTotal = calcularSaldoInteresTotal(list),
+          tiene30sujeto = Some(actor.state.tiene30Sujeto),
           objetos = list,
           fechaUltMod = actor.state.fechaUltMod,
           registro = actor.state.registro,
@@ -59,7 +63,7 @@ class GetAllObnSujetoHandler(actor: SujetoActor) extends SyncQueryHandler[GetAll
         )
         sender ! response
       }
-      case Failure(ex) => println(ex.toString)
+      case Failure(ex) => log.error(ex.toString)
     }
 //    Future.sequence(getAllObjetosFuture) onComplete {
 //      case Success(value) => {
@@ -79,6 +83,8 @@ class GetAllObnSujetoHandler(actor: SujetoActor) extends SyncQueryHandler[GetAll
 
     val response = GetAllObnSujetoResponse(
       saldo = actor.state.saldo,
+      saldoTotal = 0,
+      tiene30sujeto = Some(actor.state.tiene30Sujeto),
       objetos = Set.empty,
       fechaUltMod = actor.state.fechaUltMod,
       registro = actor.state.registro,

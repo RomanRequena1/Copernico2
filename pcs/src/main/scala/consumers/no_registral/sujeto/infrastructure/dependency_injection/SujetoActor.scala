@@ -4,6 +4,7 @@ import akka.ActorRefMap
 import akka.actor.{ActorRef, Props}
 import akka.entity.ShardedEntity
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
+import akka.persistence.SnapshotOffer
 import consumers.no_registral.objeto.application.entities.ObjetoMessage
 import consumers.no_registral.objeto.application.entities.ObjetoMessage.ObjetoMessageRoots
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -72,6 +73,16 @@ class SujetoActor(requirements: MonitoringAndMessageProducer, objetoActorPropsOp
     case evt: SujetoEvents.SujetoUpdatedFromObjeto =>
       state += evt
       objetos((evt.sujetoId, evt.objetoId, evt.tipoObjeto))
+
+    case evt: SujetoEvents.SujetoUpdatedFromObjetoTreintaPorciento =>
+      state += evt
+      objetos((evt.sujetoId, evt.objetoId, evt.tipoObjeto))
+
+    case SnapshotOffer(_, snapshot: SujetoState) =>
+      state = snapshot
+      state.objetos.foreach { obj =>
+        objetos((this.persistenceId, obj._1, obj._2))
+      }
   }
   def persistSnapshot()(handler: Seq[KafkaKeyValue] => Unit): Unit = {
     val sujetoId = SujetoMessageRoots.extractor(persistenceId).sujetoId

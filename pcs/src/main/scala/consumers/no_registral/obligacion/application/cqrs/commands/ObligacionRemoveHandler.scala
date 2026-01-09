@@ -61,7 +61,14 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
 
         // Verificar si es una baja por pago y si el tipo de objeto es PPP o PM26
         val esBajaPorPago = isPagoObligacion(command.registro)
-        val tipoObjetoValido = command.tipoObjeto == "PPP" || command.tipoObjeto == "PM26"
+        val tipoObjetoValido = (
+          command.tipoObjeto == "PPP" ||
+          command.tipoObjeto == "PM26" ||
+          command.tipoObjeto == "PVS" ||
+          command.tipoObjeto == "MVD" ||
+          command.tipoObjeto == "LTE" ||
+          command.tipoObjeto == "BDG"
+          )
 
         if (esBajaPorPago && tipoObjetoValido) {
           // Enviar comando al objeto padre para verificar si debe eliminarse
@@ -80,7 +87,7 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
 
         actor.lastDeliveryId = command.deliveryId
         actor.deleteSnapshot(event) { () =>
-          sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+          sender ! Response.SuccessProcessing("OBND-" + command.aggregateRoot, command.deliveryId)
         }
       }
       Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))

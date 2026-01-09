@@ -23,6 +23,7 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
           |  | self      : ${actor.self.path.toString.replace("akka://PersonClassificationService", "")}
           |""".stripMargin
     )
+
     def getCCParams(evento: ObligacionExternalDto, estado: ObligacionExternalDto): ObligacionExternalDto = {
       StateParcialObligacion.stateParcialCC(evento, Some(estado))
     }
@@ -57,12 +58,13 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
       command.cuota,
       command.resultDmn,
     )
+
     val initialization: String = {
       Try(System.getenv("INITIALIZATION")).getOrElse(null)
     }
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-      log.error(
+      log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -obligacion- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
 
@@ -71,10 +73,19 @@ class ObligacionUpdateFromDtoHandler(actor: ObligacionActor) extends SyncCommand
     } else {
       actor.persistEvent(event) { () =>
         actor.state += event
-        if (event.registro.BOB_OTROS_ATRIBUTOS.get.BOB_DETALLES.head.tiene30Obligaciones.get.equals(true)) {
-          actor.informParent(command)
-        } else {
-          actor.informParentTreintaProciento(event)
+
+        // Safe check para tiene30Obligaciones
+        val tiene30 = event.registro.BOB_OTROS_ATRIBUTOS
+          .flatMap(_.BOB_DETALLES.headOption)
+          .flatMap(_.tiene30Obligaciones)
+
+        tiene30 match {
+          case Some(true) => actor.informParent(command)
+          case Some(false) => actor.informParentTreintaProciento(event)
+          case None =>
+            // Esto NO debería pasar para TRI, pero por si acaso
+            log.warn(s"Obligación TRI sin tiene30Obligaciones: ${command.obligacionId}")
+            actor.informParent(command)
         }
 
         if (actor.state.eventCounter == eventCounterMax) {

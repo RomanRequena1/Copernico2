@@ -2,7 +2,7 @@ package kafka
 
 import akka.actor.ActorSystem
 import akka.kafka._
-import akka.kafka.scaladsl.{Committer, Consumer, Producer}
+import akka.kafka.scaladsl.{Committer, Consumer, MetadataClient, Producer}
 import akka.stream.scaladsl.{Keep, RunnableGraph, Sink, Source}
 import akka.stream.{KillSwitches, UniqueKillSwitch}
 import akka.{Done, NotUsed}
@@ -10,9 +10,11 @@ import com.lightbend.cinnamon.akka.stream.CinnamonAttributes
 import com.lightbend.cinnamon.akka.stream.CinnamonAttributes.{GraphWithInstrumented, SourceWithInstrumented}
 import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.LoggerFactory
 
+import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
@@ -54,6 +56,10 @@ class KafkaCommittablePartitionedMessageProcessor(
       s"$SOURCE_TOPIC-ProcessedMessagesCounter"
     )
 
+    val currentTimestamp = transactionRequirements.monitoring.gauge(
+      s"$SOURCE_TOPIC-ProcessedCurrentTimestamp"
+    )
+
     //Counter created to monitor the number of rejected messages
     val RejectedMessagesCounter = transactionRequirements.monitoring.counter(
       s"$SOURCE_TOPIC-RejectedMessagesCounter"
@@ -62,10 +68,14 @@ class KafkaCommittablePartitionedMessageProcessor(
     //Obtain the actor system through the requirements
     implicit val system: ActorSystem = transactionRequirements.system
 
+    val consumerSincroEnabled: String = Option(System.getenv("CONSUMER_SINCRO_ENABLED")).getOrElse("ON")
     //Obtain the ConsumerSettings through the requirements and then configure the consumer group
     val consumerSetting: ConsumerSettings[String, String] =
-      transactionRequirements.consumer.withGroupId(appConfig.CONSUMER_GROUP)
-
+      SOURCE_TOPIC match {
+        case s"DGR-COP-OBLIGACIONES-TRI-$x-SINCRO" if consumerSincroEnabled.equals("ON") =>
+          transactionRequirements.consumer.withGroupId(appConfig.CONSUMER_GROUP_SINCRO)
+        case _ => transactionRequirements.consumer.withGroupId(appConfig.CONSUMER_GROUP)
+      }
 
     //Topic Subscription
     val subscription: AutoSubscription =
@@ -88,6 +98,53 @@ class KafkaCommittablePartitionedMessageProcessor(
     //Configuration the kafka producer
     val producerSettings: ProducerSettings[String, String] =
       ProducerSettings(config, new StringSerializer, new StringSerializer)
+
+    val messageBehindEnabled: String = Option(System.getenv("MESSAGE_BEHIND_2_ENABLED")).getOrElse("OFF")
+    val messageBehindInterval: Int = Option(System.getenv("MESSAGE_BEHIND_INTERVAL_SECONDS")).flatMap(s => Try(s.toInt).toOption).getOrElse(60)
+    val messageBehindFull: String = Option(System.getenv("MESSAGE_BEHIND_2_FULL")).getOrElse("ON")
+
+
+    if (messageBehindEnabled.equals("ON")) {
+      val metadataClient = MetadataClient.create(consumerSetting, 20.second)
+      log.info(s"Message behind metrics enabled for $SOURCE_TOPIC with interval $messageBehindInterval seconds")
+      transactionRequirements.system.scheduler.scheduleWithFixedDelay(
+        initialDelay = 300.seconds,
+        delay = messageBehindInterval.seconds
+      ) { () =>
+        try {
+          metadataClient.getPartitionsFor(SOURCE_TOPIC).flatMap { partitions =>
+            val topicPartitions = partitions.map(p =>
+              new TopicPartition(SOURCE_TOPIC, p.partition())
+            ).toSet
+            metadataClient.getCommittedOffsets(topicPartitions).flatMap { committedOffsets =>
+              metadataClient.getEndOffsets(topicPartitions).map { endOffsets =>
+                val totalLag = topicPartitions.map { tp =>
+                  val committed = committedOffsets.get(tp).map(_.offset()).getOrElse(0L)
+                  val end = endOffsets.getOrElse(tp, 0L)
+                  val result = Math.max(0, end - committed)
+
+                  if (messageBehindFull.equals("ON")) {
+                    transactionRequirements.monitoring.gauge(s"$SOURCE_TOPIC-message-behind-end", Map.apply(("partition", tp.partition().toString))).set(end)
+                    transactionRequirements.monitoring.gauge(s"$SOURCE_TOPIC-message-behind-committed", Map.apply(("partition", tp.partition().toString))).set(committed)
+                  }
+                  result
+                }.sum
+
+                transactionRequirements.monitoring.gauge(s"$SOURCE_TOPIC-message-behind").set(totalLag)
+                totalLag
+              }
+            }
+          }.recover {
+            case ex: Exception =>
+              log.error(s"Error calculating message lag for $SOURCE_TOPIC - (Restaring): ${ex.getMessage}")
+              0L
+          }
+        } catch {
+          case ex: Exception =>
+            log.error(s"Scheduler metrics behind execution failed for $SOURCE_TOPIC: ${ex.getMessage}")
+        }
+      }
+    }
 
     //Configuration for committable partitioned source
     val commitableSource = Consumer.committablePartitionedSource(consumerSetting, subscription)
@@ -159,6 +216,9 @@ class KafkaCommittablePartitionedMessageProcessor(
 
                 case Right((message, output)) =>
                   ProcessedMessagesCounter.increment()
+                  currentTimestamp.set(message.record.timestamp())
+                  transactionRequirements.monitoring.gauge(s"$SOURCE_TOPIC-ProcessedCurrentOffset",
+                    Map(("partition" -> message.record.partition().toString))).set(message.record.offset())
                   ProducerMessage.multi(
                     records = output.map { o =>
                       new ProducerRecord(

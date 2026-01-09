@@ -21,6 +21,8 @@ object SujetoResponses {
 
   case class GetAllObnSujetoResponse(
                                 saldo: BigDecimal = 0,
+                                saldoTotal: BigDecimal = 0,
+                                tiene30sujeto: Option[Boolean] = None,
                                 objetos: Set[GetAllObnResponse] = Set.empty,
                                 fechaUltMod: LocalDateTime = LocalDateTime.MIN,
                                 registro: Option[SujetoExternalDto] = None,

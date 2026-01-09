@@ -12,7 +12,7 @@ class KamonMonitoring extends Monitoring {
 
   override def histogram(name: String): Histogram = new KamonHistogram(name)
 
-  override def gauge(name: String): Gauge = new KamonGauge(name)
+  override def gauge(name: String, context: Map[String, String] = Map.empty): Gauge = new KamonGauge(name, context)
 
   val bsobjt: String = Option(System.getenv("BETTER_SORTER_OBJETO_TRI")).getOrElse("OFF")
   val bsobja: String = Option(System.getenv("BETTER_SORTER_OBJETO_ANT")).getOrElse("OFF")
