@@ -11,7 +11,7 @@
     <option name="workingDir" value="$PROJECT_DIR$" />
     <option name="envFilePaths" />
     <envs>
-      <env name="CASSANDRA_CONTACT_POINTS_UNO" value="0.0.0.0:9042" />
+      <env name="CASSANDRA_CONTACT_POINTS_UNO" value="localhost:9042" />
       <env name="ENVIRONMENT_EXECUTION" value="LOCAL" />
       <env name="CONSUMER_PARALLELISM" value="4" />
       <env name="CLUSTER_IP" value="0.0.0.0" />
@@ -36,7 +36,7 @@
       <env name="JAEGER_HOST" value="localhost" />
       <env name="LOCAL_DEBUG_LOGS" value="DEBUG" />
       <env name="AKKA_DEBUG_MODE" value="INFO" />
-      <env name="CASSANDRA_USERNAME" value="cassandra" />
+      <env name="CASSANDRA_USERNAME" value="oper_lpaninka" />
       <env name="HTTP_PORT" value="8081" />
       <env name="AKKA_KAFKA_DEBUG_MODE" value="INFO" />
       <env name="I0ITEC_ZKCLIENT_DEBUG_MODE" value="OFF" />
@@ -50,7 +50,7 @@
       <env name="IO_NETTY_DEBUG_MODE" value="OFF" />
       <env name="PATH_DMN_OBJETO_CUPON" value="$PROJECT_DIR$/objetoCupon.dmn" />
       <env name="REFLECTION_DEBUG_MODE" value="OFF" />
-      <env name="CASSANDRA_CONTACT_POINTS" value="0.0.0.0:9042" />
+      <env name="CASSANDRA_CONTACT_POINTS" value="localhost:9042" />
       <env name="HTTP_IP" value="0.0.0.0" />
       <env name="KAFKA_DEBUG_MODE" value="ERROR" />
       <env name="SEED_NODES" value="akka://PersonClassificationService@0.0.0.0:2551" />
@@ -58,7 +58,7 @@
       <env name="APACHE_ZOOKEEPER_DEBUG_MODE" value="OFF" />
       <env name="CASSANDRA_CONTACT_POINTS_DOS" value="" />
       <env name="KAFKA_BROKERS_LIST_PSRM" value="localhost:9093" />
-      <env name="CASSANDRA_PASSWORD" value="cassandra" />
+      <env name="CASSANDRA_PASSWORD" value="inicial" />
       <env name="PATH_DMN_DECISION_30" value="$PROJECT_DIR$/decision_30_descuento.dmn" />
       <env name="MAX_CONCURRENT_REQUESTS" value="1024 " />
     </envs>

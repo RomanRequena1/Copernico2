@@ -40,6 +40,7 @@ class UpdateObjetoVinculoFromObjHandler(
       command.titularidad,
       command.exclusionObjeto,
       command.deliveryId,
+      command.idExterno,
       command.dmnNumero,
       command.dmnDescripcion
     )
@@ -48,6 +49,8 @@ class UpdateObjetoVinculoFromObjHandler(
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
 
     actor.persistEvent(event) { () =>
+      println("EV ID2: " + command.deliveryId)
+
       actor.state += event
 
       val tieneDeudaEnTransf = actor.state.mapTransf.exists(_._2.tiene30Objeto == false)
@@ -70,6 +73,7 @@ class UpdateObjetoVinculoFromObjHandler(
             e._1.tipoObj,
             tiene30Final,
             command.exclusionObjeto,
+            command.idExterno,
             command.dmnNumero,
             command.dmnDescripcion
           )
@@ -77,6 +81,7 @@ class UpdateObjetoVinculoFromObjHandler(
        }
       }
       actor.persistSnapshot(event, actor.state) { () =>
+        println("EV ID3: " + command.deliveryId)
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
     }

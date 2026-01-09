@@ -30,6 +30,7 @@ class CreateVinculoObjetoFromObjTranfHandler(
       command.estadoObj,
       command.titularidad,
       command.exclusionObjeto,
+      command.idExterno,
       command.deliveryId
     )
 
@@ -57,6 +58,7 @@ class CreateVinculoObjetoFromObjTranfHandler(
             e._1.tipoObj,
             tiene30Final,  // valor calculado según deuda
             command.exclusionObjeto,
+            command.idExterno,
             command.dmnNumero,
             command.dmnDescripcion
           )

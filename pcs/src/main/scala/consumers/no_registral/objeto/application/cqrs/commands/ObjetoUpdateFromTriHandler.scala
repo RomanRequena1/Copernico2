@@ -111,6 +111,7 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
+      command.registro.SOJ_ID_EXTERNO,
       stateParcialEnabled.equals("ON") match {
         case true => getObjetoFFF()
         case false => command.registro
@@ -174,6 +175,7 @@ object test {
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
 
     actor.persistEvent(event) { () =>
+      println("EV ID1: " + command.deliveryId)
       actor.state += event
 
       if (actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) {
@@ -187,6 +189,7 @@ object test {
               actor.state.saldo,
               actor.state.obligacionesSaldo.values.sum,
               actor.state.clasificacionObjeto,
+              command.registro.SOJ_ID_EXTERNO,
               Some(command.deliveryId)
             )
           )
@@ -211,6 +214,7 @@ object test {
                 actor.state.saldo,
                 actor.state.obligacionesSaldo.values.sum,
                 actor.state.clasificacionObjeto,
+                command.registro.SOJ_ID_EXTERNO,
                 Some(command.deliveryId)
               )
             )
@@ -231,7 +235,6 @@ object test {
         }
       } else {
         actor.persistSnapshot(event, actor.state) { () =>
-
           SendObjetoToObjetoVinculo(
             Obje,
             actor,

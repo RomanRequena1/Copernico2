@@ -31,6 +31,7 @@ object ObligacionResponses {
                                        saldo:Option[BigDecimal],
                                        vencimiento: Option[LocalDateTime],
                                        estado: Option[String],
-                                       tiene30: Option[Boolean]
+                                       tiene30: Option[Boolean],
+                                       registro: Option[ObligacionExternalDto]
                                       ) extends Response with CbroSerialization
 }

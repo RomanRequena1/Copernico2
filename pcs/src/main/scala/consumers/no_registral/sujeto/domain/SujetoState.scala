@@ -1,7 +1,8 @@
 package consumers.no_registral.sujeto.domain
 
 import consumers.no_registral.sujeto.application.entity.SujetoExternalDto
-import ddd.{eventCounterMax, AbstractState}
+import consumers.no_registral.sujeto.domain.SujetoEvents.{SujetoUpdatedFromObjeto, SujetoUpdatedFromObjetoTreintaPorciento}
+import ddd.{AbstractState, eventCounterMax}
 import serialization.CbroSerialization
 
 import java.time.LocalDateTime
@@ -27,6 +28,7 @@ final case class SujetoState(
     dmnDescripcionAnterior: Option[String] = None, // ← NUEVO
     dmnDescripcion: Option[String] = None,
     deliveryIdObligacion: Option[BigInt] = None,
+    idExterno: Option[String] = None,
     ) extends AbstractState[SujetoEvents] with CbroSerialization {
 
 
@@ -156,6 +158,7 @@ final case class SujetoState(
                                                 saldoObjeto,
                                                 _saldoObligaciones,
                                                 clasificacionObjeto,
+                                                idExterno,
                                                 deliveryIdObligacion) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
@@ -171,6 +174,7 @@ final case class SujetoState(
           objVencidas = _objVencidas,
           tiene30Sujeto = diff._1,
           diffStates = diff._2,
+          idExterno = idExterno,
           deliveryIdObligacion = deliveryIdObligacion
         )
 
@@ -204,6 +208,7 @@ final case class SujetoState(
                                                                 saldoObjeto,
                                                                 _saldoObligaciones,
                                                                 clasificacionObjeto,
+                                                                idExterno,
                                                                 deliveryIdObligacion) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
@@ -219,6 +224,7 @@ final case class SujetoState(
           objVencidas = _objVencidas,
           tiene30Sujeto = diff._1,
           diffStates = diff._2,
+          idExterno = idExterno,
           deliveryIdObligacion = deliveryIdObligacion
         )
       case SujetoEvents.SujetoBajaFromObjetoSet(deliveryId, _, objetoId, tipoObjeto) =>
