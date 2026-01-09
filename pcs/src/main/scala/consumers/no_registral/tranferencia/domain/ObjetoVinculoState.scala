@@ -174,13 +174,23 @@ final case class ObjetoVinculoState(
             val _mapVinculo = mapVinculo + (_vinculo -> _vinculoCotitular)
             (mapTransf, _mapVinculo)
         }
+        val (_dmnNumero, _dmnDescripcion) = (evt.dmnNumero, evt. dmnDescripcion) match {
+          case (Some(num), Some(desc)) if dmnNumeroVinculo.isEmpty =>
+            // Si es el primero que trae DMN, guardarlo
+            (Some(num), Some(desc))
+          case _ =>
+            // Mantener el que ya estaba
+            (dmnNumeroVinculo, dmnDescripcionVinculo)
+        }
         val _tiene30ObjetoVinculo = calcular30desdeMapVinculo(nuevoMapVinculo, nuevoMapTransf)
         copy(
           tiene30ObjetoVinculo = _tiene30ObjetoVinculo,
           mapVinculo = nuevoMapVinculo,
           mapTransf = nuevoMapTransf,
           idExterno = evt.idExterno,
-          exclusionObjetoVinculo = evt.exclusionObjeto
+          exclusionObjetoVinculo = evt.exclusionObjeto,
+          dmnNumeroVinculo = _dmnNumero,
+          dmnDescripcionVinculo = _dmnDescripcion
         )
       case evt: ObjetoVinculoEvent.RemovedVinculoObjetoFromObj =>
         val _vinculo = Vinculo(evt.sujetoId, evt.objetoId, evt.tipoObj)
