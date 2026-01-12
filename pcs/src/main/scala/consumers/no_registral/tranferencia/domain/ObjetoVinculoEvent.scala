@@ -72,7 +72,9 @@ object ObjetoVinculoEvent {
       titularidad: Option[String],
       exclusionObjeto: Option[String],
       idExterno: Option[String],
-      deliveryId: BigInt
+      deliveryId: BigInt,
+      dmnNumero: Option[Int] = None,
+      dmnDescripcion: Option[String] = None
   ) extends ObjetoVinculoEvent {
 
     case class UpdatedVinculoObjetoFromObj(
@@ -86,15 +88,5 @@ object ObjetoVinculoEvent {
         deliveryId: BigInt
     ) extends ObjetoVinculoEvent
 
-    case class CreatedTransfVinculoObjetoFromObj(
-        sujetoId: String,
-        objetoId: String,
-        tipoObj: String,
-        tiene30Objeto: Boolean,
-        isResponsable: Option[Boolean],
-        estadoObj: Option[String],
-        titularidad: Option[String],
-        deliveryId: BigInt
-    ) extends ObjetoVinculoEvent
   }
 }
