@@ -57,7 +57,7 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
           )
         }
         else {
-          log.warn(s"[PAGO-DEBUG-3-SKIP] NO se envió a vinculo - isBaja=${actor.state.isBaja}, registroDefined=${actor.state.registro.isDefined}")
+          log.warn(s"[PAGO-DEBUG-3-SKIP] NO se envio a vinculo - isBaja=${actor.state.isBaja}, registroDefined=${actor.state.registro.isDefined}")
         }
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }

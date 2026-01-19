@@ -36,7 +36,7 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
     )
 
     actor.persistEvent(event) { () =>
-      println("EV ID4: " + command.deliveryId)
+      //println("EV ID4: " + command.deliveryId)
       actor.state += event
       actor.persistSnapshot(event, actor.state) { () =>
 
