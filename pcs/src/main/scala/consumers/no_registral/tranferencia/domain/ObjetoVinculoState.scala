@@ -13,7 +13,7 @@ final case class ObjetoVinculoState(
                                      eventCounter: Int = 0,
                                      mapTransf: Map[Vinculo, VinculoCotitular] = Map.empty,
                                      mapVinculo: Map[Vinculo, VinculoCotitular] = Map.empty,
-                                     tiene30ObjetoVinculo: Boolean = false,
+                                     tiene30ObjetoVinculo: Boolean = true,
                                      exclusionObjetoVinculo: Option[String] = None,
                                      lastDeliveryIdByEvents: BigInt = 0,
                                      ultimoAplicarDescuentoEnviado: Option[Boolean] = None,

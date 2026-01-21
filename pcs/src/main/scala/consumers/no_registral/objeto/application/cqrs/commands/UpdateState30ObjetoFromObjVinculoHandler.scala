@@ -41,7 +41,9 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
       actor.persistSnapshot(event, actor.state) { () =>
 
         val tiene30ObjetoFinal = if (!command.tiene30ObjetoVinculo && actor.state.obligaciones.isEmpty) {
-          false
+          // ANTES: false
+          // AHORA: Si no tiene obligaciones, asumir que cumple (sin deuda)
+          true
         } else if (command.tiene30ObjetoVinculo && actor.state.obligaciones.isEmpty) {
           true
         } else {
