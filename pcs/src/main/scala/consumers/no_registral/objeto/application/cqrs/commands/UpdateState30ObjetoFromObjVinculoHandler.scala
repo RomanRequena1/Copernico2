@@ -2,8 +2,8 @@ package consumers.no_registral.objeto.application.cqrs.commands
 
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import consumers.no_registral. objeto.application.helper.{SendToSujeto, SendToSujeto1}
-import consumers.no_registral. objeto.domain.ObjetoEvents.UpdatedState30ObjetoFromObjVinculo
+import consumers.no_registral.objeto.application.helper.{SendToSujeto, SendToSujeto1}
+import consumers.no_registral.objeto.domain.ObjetoEvents.UpdatedState30ObjetoFromObjVinculo
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
@@ -12,11 +12,11 @@ import design_principles.actor_model.Response
 import scala.util.{Success, Try}
 
 class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
-  extends SyncCommandHandler[ObjetoCommands.UpdateState30ObjetoFromObjVinculo] {
+    extends SyncCommandHandler[ObjetoCommands.UpdateState30ObjetoFromObjVinculo] {
 
   override def handle(
-                       command: ObjetoCommands.UpdateState30ObjetoFromObjVinculo
-                     ): Try[Response.SuccessProcessing] = {
+      command: ObjetoCommands.UpdateState30ObjetoFromObjVinculo
+  ): Try[Response.SuccessProcessing] = {
     log.debug(
       f"""|CUMBIA
           |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
@@ -32,17 +32,16 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
       command.objetoId,
       command.tipoObjeto,
       command.tiene30ObjetoVinculo,
-      command.exclusionObjetoVinculo,
+      command.exclusionObjetoVinculo
     )
 
     actor.persistEvent(event) { () =>
       //println("EV ID4: " + command.deliveryId)
       actor.state += event
       actor.persistSnapshot(event, actor.state) { () =>
-
         val tiene30ObjetoFinal = if (!command.tiene30ObjetoVinculo && actor.state.obligaciones.isEmpty) {
-          false
-        } else if (command.tiene30ObjetoVinculo && actor.state.obligaciones.isEmpty) {
+          // ANTES: false
+          // AHORA: Si no tiene obligaciones, asumir que cumple (sin deuda)
           true
         } else {
           actor.state.tiene30Objeto
