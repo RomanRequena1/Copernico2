@@ -49,7 +49,7 @@ class UpdateObjetoVinculoFromObjHandler(
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
 
     actor.persistEvent(event) { () =>
-      println("EV ID2: " + command.deliveryId)
+      //println("EV ID2: " + command.deliveryId)
 
       actor.state += event
 

@@ -175,7 +175,7 @@ object test {
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
 
     actor.persistEvent(event) { () =>
-      println("EV ID1: " + command.deliveryId)
+      //println("EV ID1: " + command.deliveryId)
       actor.state += event
 
       if (actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) {
