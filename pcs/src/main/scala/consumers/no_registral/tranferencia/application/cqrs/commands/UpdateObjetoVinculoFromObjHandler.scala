@@ -81,7 +81,7 @@ class UpdateObjetoVinculoFromObjHandler(
        }
       }
       actor.persistSnapshot(event, actor.state) { () =>
-        println("EV ID3: " + command.deliveryId)
+       // println("EV ID3: " + command.deliveryId)
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
     }
