@@ -12,11 +12,11 @@ import design_principles.actor_model.Response
 import scala.util.{Success, Try}
 
 class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
-    extends SyncCommandHandler[ObjetoCommands.UpdateState30ObjetoFromObjVinculo] {
+  extends SyncCommandHandler[ObjetoCommands.UpdateState30ObjetoFromObjVinculo] {
 
   override def handle(
-      command: ObjetoCommands.UpdateState30ObjetoFromObjVinculo
-  ): Try[Response.SuccessProcessing] = {
+                       command: ObjetoCommands.UpdateState30ObjetoFromObjVinculo
+                     ): Try[Response.SuccessProcessing] = {
     log.debug(
       f"""|CUMBIA
           |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
@@ -32,18 +32,44 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
       command.objetoId,
       command.tipoObjeto,
       command.tiene30ObjetoVinculo,
-      command.exclusionObjetoVinculo
+      command.exclusionObjetoVinculo,
+    )
+
+    // LOG: Estado inicial antes de procesar
+    log.info(
+      s"[OBJETO-FROM-VINCULO-INIT] objetoId=${command.objetoId}, sujetoId=${command.sujetoId} - " +
+        s"command.tiene30ObjetoVinculo=${command.tiene30ObjetoVinculo}, " +
+        s"actor.state.obligaciones.size=${actor.state.obligaciones.size}, " +
+        s"actor.state.obligaciones.isEmpty=${actor.state.obligaciones.isEmpty}, " +
+        s"actor.state.tiene30Objeto=${actor.state.tiene30Objeto}, " +
+        s"actor.state.tiene30ObjetoVinculo=${actor.state.tiene30ObjetoVinculo}"
     )
 
     actor.persistEvent(event) { () =>
-      //println("EV ID4: " + command.deliveryId)
+      println("EV ID4: " + command.deliveryId)
       actor.state += event
       actor.persistSnapshot(event, actor.state) { () =>
+
         val tiene30ObjetoFinal = if (!command.tiene30ObjetoVinculo && actor.state.obligaciones.isEmpty) {
-          // ANTES: false
-          // AHORA: Si no tiene obligaciones, asumir que cumple (sin deuda)
+          // LOG: Caso sin obligaciones y vínculo false
+          log.info(
+            s"[OBJETO-FROM-VINCULO-CALC] objetoId=${command.objetoId} - " +
+              s"CASO: !tiene30ObjetoVinculo && obligaciones.isEmpty -> false (PROBLEMA POTENCIAL)"
+          )
+          false
+        } else if (command.tiene30ObjetoVinculo && actor.state.obligaciones.isEmpty) {
+          // LOG: Caso sin obligaciones y vínculo true
+          log.info(
+            s"[OBJETO-FROM-VINCULO-CALC] objetoId=${command.objetoId} - " +
+              s"CASO: tiene30ObjetoVinculo && obligaciones.isEmpty -> true"
+          )
           true
         } else {
+          // LOG: Caso con obligaciones
+          log.info(
+            s"[OBJETO-FROM-VINCULO-CALC] objetoId=${command.objetoId} - " +
+              s"CASO: tiene obligaciones -> usando actor.state.tiene30Objeto=${actor.state.tiene30Objeto}"
+          )
           actor.state.tiene30Objeto
         }
 
@@ -64,6 +90,14 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
         actor.state = actor.state.copy(
           dmnNumero = dmnNumeroFinal,
           dmnDescripcion = dmnDescripcionFinal
+        )
+
+        // LOG: Estado final y decisión de envío al sujeto
+        log.info(
+          s"[OBJETO-FROM-VINCULO-FINAL] objetoId=${command.objetoId}, sujetoId=${command.sujetoId} - " +
+            s"tiene30ObjetoFinal=$tiene30ObjetoFinal, " +
+            s"dmnNumero=$dmnNumeroFinal, dmnDescripcion=$dmnDescripcionFinal, " +
+            s"ENVIANDO_A_SUJETO=${if (tiene30ObjetoFinal) "SendToSujeto1 (sin deuda)" else "SendToSujeto (con deuda)"}"
         )
 
         actor.persistSnapshot(event, actor.state) { () =>
