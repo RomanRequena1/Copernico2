@@ -1,4 +1,4 @@
 ThisBuild / resolvers += "lightbend-commercial-mvn" at
-  "https://repo.akka.io/pass/6kHELK6KmBWLKH_YkIglRJ3gYF7j7OY17m4Ww0PP80y_9V2G/commercial-releases"
+  "https://repo.akka.io/pass/b37c9Kcj6eKryIZumB0UjC1okJB7hstBCBG67sNXLxMl2WSB/commercial-releases"
 ThisBuild / resolvers += Resolver.url("lightbend-commercial-ivy",
-  url("https://repo.akka.io/pass/6kHELK6KmBWLKH_YkIglRJ3gYF7j7OY17m4Ww0PP80y_9V2G/commercial-releases"))(Resolver.ivyStylePatterns)
+  url("https://repo.akka.io/pass/b37c9Kcj6eKryIZumB0UjC1okJB7hstBCBG67sNXLxMl2WSB/commercial-releases"))(Resolver.ivyStylePatterns)
