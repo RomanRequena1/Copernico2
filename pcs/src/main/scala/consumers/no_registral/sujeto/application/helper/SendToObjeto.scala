@@ -22,7 +22,7 @@ object SendToObjeto {
 
       actorContext.child(childName) match {
         case Some(objChild) =>
-          log.info(s"[SEND-TO-OBJETO-SPECIFIC-FOUND] Hijo encontrado: ${objChild.path}")
+          println(s"[SEND-TO-OBJETO-SPECIFIC-FOUND] Hijo encontrado: ${objChild.path}")
 
           objChild.ask[Response.SuccessProcessing](
             ObjetoUpdateFromSujeto(
@@ -73,7 +73,8 @@ object SendToObjeto {
 
         if (objetoIdExtracted.nonEmpty) {
           log.info(s"[SEND-TO-OBJETO-BROADCAST-SEND] Enviando comando - objetoId='$objetoIdExtracted', tipoObjeto='$tipoObjetoExtracted', deliveryId=${currentState.lastDeliveryIdByEvents}")
-
+          // Antes del ask, agregar:
+          println(s"[DEBUG-SEND-TO-OBJETO] sujetoId=$sujetoId, objetoId=$objetoIdExtracted, tiene30Sujeto=${currentState.tiene30Sujeto}")
           actor.ask[Response.SuccessProcessing](
             ObjetoUpdateFromSujeto(
               deliveryId = currentState.lastDeliveryIdByEvents,
@@ -127,6 +128,7 @@ object SendToObjetoFromSujeto {
       val tipoObjetoExtracted = actorPath.last.toString
 
       if (objetoIdExtracted.nonEmpty) {
+        println(s"[DEBUG-SEND-TO-OBJETO] sujetoId=$sujetoId, objetoId=$objetoIdExtracted, tiene30Sujeto=${currentState.tiene30Sujeto}")
         actor.ask[Response. SuccessProcessing](
           ObjetoUpdateFromSujeto(
             currentState.lastDeliveryIdByEvents,

@@ -68,12 +68,16 @@ final case class SujetoState(
                                           newObjVnecidad: Map[String, (Boolean, String)],
                                           deuda30Sujeto: Boolean) = {
     val map = newObjVnecidad.filter(obj => !obj._2._2.equals("1"))
+    println(s"[DEBUG-SUJETO-DIFF] objVencidas.size=${newObjVnecidad.size}, filtrado(clasif!=1).size=${map.size}")
+    println(s"[DEBUG-SUJETO-DIFF] valores=${map.map { case (k, v) => s"$k:(${v._1},${v._2})" }.mkString(", ")}")
+    println(s"[DEBUG-SUJETO-DIFF] forall(_._1)=${map.values.forall(_._1)}")
     if (map.values.forall(_._1)) {
-
       val newTupla = (true, tiene30Sujeto.equals(true))
+      println(s"[DEBUG-SUJETO-DIFF] RESULTADO: tiene30Sujeto=true")
       newTupla
     } else {
       val newTupla = (false, tiene30Sujeto.equals(false))
+      println(s"[DEBUG-SUJETO-DIFF] RESULTADO: tiene30Sujeto=false")
       newTupla
     }
   }

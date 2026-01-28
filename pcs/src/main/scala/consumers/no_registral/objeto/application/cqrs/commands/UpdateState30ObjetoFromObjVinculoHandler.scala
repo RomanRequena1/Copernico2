@@ -36,7 +36,7 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
     )
 
     // LOG: Estado inicial antes de procesar
-    log.info(
+    println(
       s"[OBJETO-FROM-VINCULO-INIT] objetoId=${command.objetoId}, sujetoId=${command.sujetoId} - " +
         s"command.tiene30ObjetoVinculo=${command.tiene30ObjetoVinculo}, " +
         s"actor.state.obligaciones.size=${actor.state.obligaciones.size}, " +
@@ -52,21 +52,21 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
 
         val tiene30ObjetoFinal = if (!command.tiene30ObjetoVinculo && actor.state.obligaciones.isEmpty) {
           // LOG: Caso sin obligaciones y vínculo false
-          log.info(
+          println(
             s"[OBJETO-FROM-VINCULO-CALC] objetoId=${command.objetoId} - " +
               s"CASO: !tiene30ObjetoVinculo && obligaciones.isEmpty -> false (PROBLEMA POTENCIAL)"
           )
           false
         } else if (command.tiene30ObjetoVinculo && actor.state.obligaciones.isEmpty) {
           // LOG: Caso sin obligaciones y vínculo true
-          log.info(
+          println(
             s"[OBJETO-FROM-VINCULO-CALC] objetoId=${command.objetoId} - " +
               s"CASO: tiene30ObjetoVinculo && obligaciones.isEmpty -> true"
           )
           true
         } else {
           // LOG: Caso con obligaciones
-          log.info(
+          println(
             s"[OBJETO-FROM-VINCULO-CALC] objetoId=${command.objetoId} - " +
               s"CASO: tiene obligaciones -> usando actor.state.tiene30Objeto=${actor.state.tiene30Objeto}"
           )
@@ -93,7 +93,7 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
         )
 
         // LOG: Estado final y decisión de envío al sujeto
-        log.info(
+        println(
           s"[OBJETO-FROM-VINCULO-FINAL] objetoId=${command.objetoId}, sujetoId=${command.sujetoId} - " +
             s"tiene30ObjetoFinal=$tiene30ObjetoFinal, " +
             s"dmnNumero=$dmnNumeroFinal, dmnDescripcion=$dmnDescripcionFinal, " +

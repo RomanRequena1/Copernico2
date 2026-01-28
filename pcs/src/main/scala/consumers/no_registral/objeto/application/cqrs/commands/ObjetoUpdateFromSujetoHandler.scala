@@ -53,6 +53,15 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     def esTipoObjetoPermitido(tipo: String): Boolean =
       Set("A", "I", "N").contains(tipo)
 
+    // Justo antes de calcular el DMN, agregá:
+    println(s"[DEBUG-DMN-INPUT] objetoId=${command.objetoId}, sujetoId=${command.sujetoId}")
+    println(s"  exclusionSujeto=${command.exclusionSUjeto}")
+    println(s"  exclusionObjeto=${actor.state.exclusionObjeto}")
+    println(s"  clasificacionObjeto=${actor.state.clasificacionObjeto}")
+    println(s"  tiene30Objeto=${actor.state.tiene30Objeto}")
+    println(s"  tiene30Sujeto=${actor.state.tiene30Sujeto}")
+    println(s"  tiene30ObjetoVinculo=${actor.state.tiene30ObjetoVinculo}")
+
     val result: Boolean = DMNTreintaPorcientoFinal.calcularDmnFinal(
       DmnFinal(
         command.exclusionSUjeto,
