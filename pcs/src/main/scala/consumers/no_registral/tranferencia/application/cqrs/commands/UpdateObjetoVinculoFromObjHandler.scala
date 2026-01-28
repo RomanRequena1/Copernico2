@@ -49,28 +49,35 @@ class UpdateObjetoVinculoFromObjHandler(
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
 
     actor.persistEvent(event) { () =>
-      //println("EV ID2: " + command.deliveryId)
-
       actor.state += event
 
-      val tieneDeudaEnTransf = actor.state.mapTransf.exists(_._2.tiene30Objeto == false)
       val todosLosVinculos = actor.state.mapVinculo ++ actor.state.mapTransf
 
-      todosLosVinculos.foreach { e => {
-        val tiene30Final: Boolean = {
-          if (tieneDeudaEnTransf) {
-            false
-          } else {
-            actor.state.tiene30ObjetoVinculo
-          }
-        }
+      // FIX: Calcular tiene30ObjetoVinculo global considerando TODOS los vínculos
+      // true = sin deuda, false = con deuda
+      // Solo es true si TODOS los vínculos están sin deuda
+      val tiene30ObjetoVinculoGlobal = todosLosVinculos.values.forall(_.tiene30Objeto)
+
+      log.info(s"[VINCULO-UPDATE-CALC] objetoId=${command.objetoId} - " +
+        s"totalVinculos=${todosLosVinculos.size}, " +
+        s"tiene30ObjetoVinculoGlobal=$tiene30ObjetoVinculoGlobal, " +
+        s"vinculos=${todosLosVinculos.map { case (k, v) => s"${k.sujetoId}:${v.tiene30Objeto}" }.mkString(", ")}")
+
+      todosLosVinculos.foreach { case (key, vinculoInfo) =>
+        // FIX: Usar el valor global calculado, que considera todos los vínculos
+        // Esto asegura que si HAY deuda en algún vínculo, todos reciban false
+        // Y si NO HAY deuda en ninguno, todos reciban true
+        val tiene30Final = tiene30ObjetoVinculoGlobal
+
+        log.info(s"[VINCULO-UPDATE-SEND] Enviando a sujetoId=${key.sujetoId}, objetoId=${key.objetoId}, " +
+          s"tiene30Final=$tiene30Final (vinculoInfo.tiene30Objeto=${vinculoInfo.tiene30Objeto})")
 
         actorSujetoGeneral.ask[Response.SuccessProcessing](
           UpdateState30ObjetoFromObjVinculo(
             command.deliveryId,
-            e._1.sujetoId,
-            e._1.objetoId,
-            e._1.tipoObj,
+            key.sujetoId,
+            key.objetoId,
+            key.tipoObj,
             tiene30Final,
             command.exclusionObjeto,
             command.idExterno,
@@ -78,10 +85,9 @@ class UpdateObjetoVinculoFromObjHandler(
             command.dmnDescripcion
           )
         )
-       }
       }
+
       actor.persistSnapshot(event, actor.state) { () =>
-       // println("EV ID3: " + command.deliveryId)
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
     }

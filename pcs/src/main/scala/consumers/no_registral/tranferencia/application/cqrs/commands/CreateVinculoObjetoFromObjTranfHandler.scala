@@ -41,31 +41,41 @@ class CreateVinculoObjetoFromObjTranfHandler(
 
     actor.persistEvent(event) { () =>
       actor.state += event
-      val tieneDeuadEnTransf = actor.state.mapTransf.exists(_._2.tiene30Objeto == false)
 
-      actor.state.mapVinculo.foreach { e =>
-      {
-        // si hay deuda de una transferencia hay que pasar la marca a false para nuevos titulares
-        val tiene30Final = if (tieneDeuadEnTransf) {
-          false  // responsabilidad solidaria adquirir deuda
-        } else {
-          actor.state.tiene30ObjetoVinculo  // sino dejar la marca como estaba
-        }
+      val todosLosVinculos = actor.state.mapVinculo ++ actor.state.mapTransf
+
+      // FIX: Calcular tiene30ObjetoVinculo global considerando TODOS los vínculos
+      // true = sin deuda, false = con deuda
+      // Solo es true si TODOS los vínculos están sin deuda
+      val tiene30ObjetoVinculoGlobal = todosLosVinculos.values.forall(_.tiene30Objeto)
+
+      log.info(s"[VINCULO-CREATE-CALC] objetoId=${command.objetoId} - " +
+        s"totalVinculos=${todosLosVinculos.size}, " +
+        s"tiene30ObjetoVinculoGlobal=$tiene30ObjetoVinculoGlobal, " +
+        s"vinculos=${todosLosVinculos.map { case (k, v) => s"${k.sujetoId}:${v.tiene30Objeto}" }.mkString(", ")}")
+
+      todosLosVinculos.foreach { case (key, vinculoInfo) =>
+        // FIX: Usar el valor global calculado
+        val tiene30Final = tiene30ObjetoVinculoGlobal
+
+        log.info(s"[VINCULO-CREATE-SEND] Enviando a sujetoId=${key.sujetoId}, objetoId=${key.objetoId}, " +
+          s"tiene30Final=$tiene30Final (vinculoInfo.tiene30Objeto=${vinculoInfo.tiene30Objeto})")
 
         actorSujetoGeneral.ask[Response.SuccessProcessing](
           UpdateState30ObjetoFromObjVinculo(
             command.deliveryId,
-            e._1.sujetoId,
-            e._1.objetoId,
-            e._1.tipoObj,
-            tiene30Final,  // valor calculado según deuda
+            key.sujetoId,
+            key.objetoId,
+            key.tipoObj,
+            tiene30Final,
             command.exclusionObjeto,
             command.idExterno,
             command.dmnNumero,
             command.dmnDescripcion
           )
-        )}
+        )
       }
+
       actor.persistSnapshot(event, actor.state) { () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
