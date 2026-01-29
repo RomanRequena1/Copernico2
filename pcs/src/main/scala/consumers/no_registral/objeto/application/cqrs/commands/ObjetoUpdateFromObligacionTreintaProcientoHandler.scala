@@ -12,15 +12,19 @@ import consumers.no_registral.tranferencia.infrastructure.dependency_injection.O
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
 import design_principles.actor_model.Response
+
 import scala.util.{Success, Try}
 
 class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
-    extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento] {
+  extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento] {
   override def handle(
-      command: ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento
-  ): Try[Response.SuccessProcessing] = {
+                       command: ObjetoCommands.ObjetoUpdateFromObnTreintaPorciento
+                     ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
     val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"),Some("None"), Some("None"), Some("None"),None,None)
+
+    println(s"[HANDLER-OBN30-ENTRY] deliveryId=${command.deliveryId}, sujetoId=${command.sujetoId}, " +
+      s"objetoId=${command.objetoId}, obligacionId=${command.obligacionId}")
 
     log.debug(
       f"""|CUMBIA
@@ -50,12 +54,16 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
     val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
 
     actor.persistEvent(event) { () =>
+      println(s"[HANDLER-OBN30-PERSISTED] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
+        s"Evento persistido, estado=${actor.state.registro.map(_.SOJ_ESTADO).getOrElse("NONE")}")
       actor.state += event
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         actor.deleteMessages(actor.lastSequenceNr - 201)
       }
+      println(s"[HANDLER-OBN30-SENDING] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
+        s"Llamando SendObjetoToObjetoVinculo")
       SendObjetoToObjetoVinculo(
         vinculoActor,
         actor,

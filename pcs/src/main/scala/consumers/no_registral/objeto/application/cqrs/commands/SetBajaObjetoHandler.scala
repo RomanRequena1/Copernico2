@@ -14,11 +14,14 @@ import design_principles.actor_model.mechanism.DeliveryIdManagement._
 import scala.util.{Success, Try}
 
 class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
-    extends SyncCommandHandler[ObjetoCommands.SetBajaObjeto] {
+  extends SyncCommandHandler[ObjetoCommands.SetBajaObjeto] {
   override def handle(
-      command: ObjetoCommands.SetBajaObjeto
-  ): Try[Response.SuccessProcessing] = {
+                       command: ObjetoCommands.SetBajaObjeto
+                     ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
+
+    println(s"[HANDLER-BAJA-ENTRY] deliveryId=${command.deliveryId}, sujetoId=${command.sujetoId}, " +
+      s"objetoId=${command.objetoId}, estado=${command.registro.SOJ_ESTADO}")
 
     log.debug(
       f"""|CUMBIA
@@ -38,6 +41,7 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
     )
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
+      println(s"[HANDLER-BAJA-IDEMPOTENT] deliveryId=${command.deliveryId}, objetoId=${command.objetoId}")
       log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
@@ -49,46 +53,27 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
       val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
 
       actor.persistEvent(event) { () =>
+        println(s"[HANDLER-BAJA-PERSISTED] deliveryId=${command.deliveryId}, objetoId=${command.objetoId}")
         actor.state += event
         actor.informBajaToParent(command)
-        actor.deleteSnapshot(event, actor.state) { () => //todo revisar si el baja es con estado o con el saldo de todas obligaciones en 0 o ambas?
+        actor.deleteSnapshot(event, actor.state) { () =>
           actor.deleteObjetoObligacionesSnapshot(event, actor.state) { () =>
             sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
           }
         }
         SendToObligaciones(actor)
+        println(s"[HANDLER-BAJA-SENDING] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
+          s"Llamando SendObjetoToObjetoVinculo")
         SendObjetoToObjetoVinculo(Obje,
-                                  actor,
-                                  command.sujetoId,
-                                  command.objetoId,
-                                  command.tipoObjeto,
-                                  command.registro.SOJ_ESTADO,
-                                  requeriment,
-                                  command)
+          actor,
+          command.sujetoId,
+          command.objetoId,
+          command.tipoObjeto,
+          command.registro.SOJ_ESTADO,
+          requeriment,
+          command)
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
   }
 }
-//    //TODO: validar para que se utiliza este if
-//    if(command.deliveryId.signum < 0 || !isIdempotent(command, actor.state.lastDeliveryIdByEvents)){
-//      implicit val ac: ActorSystem = actor.context.system
-//      val Obje: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
-//
-//      actor.persistEvent(event) { () =>
-//        actor.state += event
-//        actor.informBajaToParent(command)
-//        actor.deleteSnapshot(event, actor.state) { () => //todo revisar si el baja es con estado o con el saldo de todas obligaciones en 0 o ambas?
-//          actor.deleteObjetoObligacionesSnapshot(event, actor.state) { () =>
-//            sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-//          }
-//        }
-//        SendToObligaciones(actor)
-//        SendObjetoToObjetoVinculo(Obje,actor, command.sujetoId, command.objetoId, command.tipoObjeto, command.registro.SOJ_ESTADO, requeriment, command)
-//      }
-//    }
-//
-//    else if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
-//      log.error(s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents)
-//      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
-//    }
