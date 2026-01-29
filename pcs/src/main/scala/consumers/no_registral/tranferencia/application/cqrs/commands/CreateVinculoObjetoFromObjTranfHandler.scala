@@ -21,6 +21,8 @@ class CreateVinculoObjetoFromObjTranfHandler(
   override def handle(command: CreateTransfVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
+    println(s"[VINCULO-TRANSF-RECEIVED] Comando CreateTransfVinculoObjetoFromObj recibido - objetoId=${command.objetoId}, sujetoId=${command.sujetoId}, deliveryId=${command.deliveryId}")
+
     val event = ObjetoVinculoEvent.CreatedTransfVinculoObjetoFromObj(
       command.sujetoId,
       command.objetoId,
@@ -37,6 +39,7 @@ class CreateVinculoObjetoFromObjTranfHandler(
     )
 
     implicit val system: ActorSystem = actor.context.system
+    implicit val ec: ExecutionContext = actor.context.dispatcher
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
 
     actor.persistEvent(event) { () =>
@@ -44,24 +47,21 @@ class CreateVinculoObjetoFromObjTranfHandler(
 
       val todosLosVinculos = actor.state.mapVinculo ++ actor.state.mapTransf
 
-      // FIX: Calcular tiene30ObjetoVinculo global considerando TODOS los vínculos
-      // true = sin deuda, false = con deuda
-      // Solo es true si TODOS los vínculos están sin deuda
       val tiene30ObjetoVinculoGlobal = todosLosVinculos.values.forall(_.tiene30Objeto)
 
-      log.info(s"[VINCULO-CREATE-CALC] objetoId=${command.objetoId} - " +
+      println(s"[VINCULO-CREATE-CALC] objetoId=${command.objetoId}, deliveryId=${command.deliveryId} - " +
         s"totalVinculos=${todosLosVinculos.size}, " +
         s"tiene30ObjetoVinculoGlobal=$tiene30ObjetoVinculoGlobal, " +
         s"vinculos=${todosLosVinculos.map { case (k, v) => s"${k.sujetoId}:${v.tiene30Objeto}" }.mkString(", ")}")
 
       todosLosVinculos.foreach { case (key, vinculoInfo) =>
-        // FIX: Usar el valor global calculado
         val tiene30Final = tiene30ObjetoVinculoGlobal
 
-        log.info(s"[VINCULO-CREATE-SEND] Enviando a sujetoId=${key.sujetoId}, objetoId=${key.objetoId}, " +
-          s"tiene30Final=$tiene30Final (vinculoInfo.tiene30Objeto=${vinculoInfo.tiene30Objeto})")
+        println(s"[VINCULO-TRANSF-PRE-SEND] deliveryId=${command.deliveryId}, " +
+          s"destino: sujetoId=${key.sujetoId}, objetoId=${key.objetoId}, tipoObj=${key.tipoObj}, " +
+          s"tiene30Final=$tiene30Final")
 
-        actorSujetoGeneral.ask[Response.SuccessProcessing](
+        val futureResponse = actorSujetoGeneral.ask[Response.SuccessProcessing](
           UpdateState30ObjetoFromObjVinculo(
             command.deliveryId,
             key.sujetoId,
@@ -74,6 +74,16 @@ class CreateVinculoObjetoFromObjTranfHandler(
             command.dmnDescripcion
           )
         )
+
+        futureResponse.onComplete {
+          case Success(response) =>
+            println(s"[VINCULO-TRANSF-SEND-OK] deliveryId=${command.deliveryId}, " +
+              s"sujetoId=${key.sujetoId}, objetoId=${key.objetoId} - Response OK")
+          case Failure(ex) =>
+            println(s"[VINCULO-TRANSF-SEND-FAIL] deliveryId=${command.deliveryId}, " +
+              s"sujetoId=${key.sujetoId}, objetoId=${key.objetoId} - ERROR: ${ex.getMessage}")
+            ex.printStackTrace()
+        }
       }
 
       actor.persistSnapshot(event, actor.state) { () =>
