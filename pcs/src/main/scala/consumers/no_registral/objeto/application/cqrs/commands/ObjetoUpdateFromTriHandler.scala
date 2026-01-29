@@ -28,16 +28,14 @@ import scala.util.{Failure, Success, Try}
 class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
   extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromTri] {
 
-  /**
-   * Si el objeto es tipo M y actor.state.tiene30Objeto es false, entonces informParentTreintaPorciento y si actor.state.tiene30Objeto es true, entonces informParent.
-   * En ambos casos, persistSnapshot.
-   * En el caso del else, se envía el objeto a objeto vinculo.
-   */
   override def handle(
                        command: ObjetoCommands.ObjetoUpdateFromTri
                      ): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
     val log: Logger = LoggerFactory.getLogger(this.getClass)
+
+    println(s"[HANDLER-TRI-ENTRY] deliveryId=${command.deliveryId}, sujetoId=${command.sujetoId}, " +
+      s"objetoId=${command.objetoId}, tipoObjeto=${command.tipoObjeto}")
 
     log.debug(
       f"""|CUMBIA
@@ -58,6 +56,8 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
     }
 
     if (!StateParcialObjeto.shouldProcessEvent(command.registro, actor.state.registro)) {
+      println(s"[HANDLER-TRI-REJECTED-VINCULO] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
+        s"Rechazado por vínculo inexistente")
       log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -objeto- rechazando evento de state parcial del semáforo/VDO porque el vínculo no existe | sujetoId: ${command.sujetoId}, objetoId: ${command.objetoId}"
       )
@@ -106,7 +106,6 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
     val stateParcialEnabled: String = Option(System.getenv("STATE_PARCIAL_OBJETO_TRI")).getOrElse("OFF")
 
     val event = ObjetoEvents.ObjetoUpdatedFromTri(
-      //TODO: validar para que esta este If
       if (command.deliveryId.signum < 0) actor.state.lastDeliveryIdByEvents else command.deliveryId,
       command.sujetoId,
       command.objetoId,
@@ -124,6 +123,8 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
     )
 
     if (isIdempotent(command, actor.state.lastDeliveryIdByEvents)) {
+      println(s"[HANDLER-TRI-IDEMPOTENT] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
+        s"Rechazado por idempotencia")
       log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -objeto- respond idempotent because of old delivery id | $command -> " + command.deliveryId + " <= " + actor.state.lastDeliveryIdByEvents
       )
@@ -131,6 +132,8 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
 
       Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
     } else {
+      println(s"[HANDLER-TRI-PROCESSING] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
+        s"Procesando evento")
       persistSnapshotEvent(event, actor, command, requeriment)
     }
   }
@@ -163,7 +166,12 @@ object test {
     @JsonIgnore
     val log: Logger = LoggerFactory.getLogger(this.getClass)
 
+    println(s"[HANDLER-TRI-PERSIST] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
+      s"Iniciando persistSnapshotEvent")
+
     if (!StateParcialObjeto.shouldProcessEvent(command.registro, actor.state.registro)) {
+      println(s"[HANDLER-TRI-PERSIST-REJECTED] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
+        s"Rechazado en persistSnapshotEvent")
       log.warn(
         s"[${actor.name} | ${actor.persistenceId}] -objeto- rechazando evento de state parcial en persistSnapshotEvent porque el vínculo no existe | sujetoId: ${command.sujetoId}, objetoId: ${command.objetoId}"
       )
@@ -175,10 +183,12 @@ object test {
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
 
     actor.persistEvent(event) { () =>
-      //println("EV ID1: " + command.deliveryId)
+      println(s"[HANDLER-TRI-EVENT-PERSISTED] deliveryId=${command.deliveryId}, objetoId=${command.objetoId}")
       actor.state += event
 
       if (actor.state.registro.get.SOJ_TIPO_OBJETO.equals("M")) {
+        println(s"[HANDLER-TRI-TIPO-M] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
+          s"Es tipo M, NO se envía a ObjetoVinculo")
         if (actor.state.tiene30Objeto.equals(false)) {
           val res = actor.context.parent.ask[Response.SuccessProcessing](
             SujetoCommands.SujetoUpdateFromObjetoTreintaPorciento(
@@ -234,6 +244,8 @@ object test {
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }
       } else {
+        println(s"[HANDLER-TRI-NO-TIPO-M] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
+          s"NO es tipo M, enviando a ObjetoVinculo, estado=${command.registro.SOJ_ESTADO}")
         actor.persistSnapshot(event, actor.state) { () =>
           SendObjetoToObjetoVinculo(
             Obje,
