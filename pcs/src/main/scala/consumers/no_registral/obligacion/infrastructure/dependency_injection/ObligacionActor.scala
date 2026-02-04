@@ -92,11 +92,14 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   }
 
   def informRemoveToParent(cmd: ObligacionRemove): Unit = {
-    val (dmnNumero, dmnDescripcion) = state.registro
-      .flatMap(_.BOB_OTROS_ATRIBUTOS)
+    // ✅ CAMBIO: Extraer DMN del REGISTRO DEL COMANDO, no del state
+    val (dmnNumero, dmnDescripcion) = cmd.registro.BOB_OTROS_ATRIBUTOS
       .flatMap(_.BOB_DETALLES.headOption)
       .map(detalle => (detalle.dmnNumero, detalle.dmnDescripcion))
       .getOrElse((None, None))
+
+    println(s"[OBLIGACION-REMOVE-TO-PARENT] obligacionId=${cmd.obligacionId}, " +
+      s"dmnNumero=$dmnNumero, dmnDescripcion=$dmnDescripcion, resultDmn=${cmd.resultDmn}")
 
     context.parent ! ObjetoCommands.ObjetoRemoveObligacion(
       cmd.deliveryId,
