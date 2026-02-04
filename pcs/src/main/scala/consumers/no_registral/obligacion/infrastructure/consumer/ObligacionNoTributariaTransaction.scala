@@ -79,7 +79,8 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
             tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
             obligacionId = obligacion.BOB_OBN_ID,
             registro = obligacion,
-            cuota = obligacion.BOB_CUOTA
+            cuota = obligacion.BOB_CUOTA,
+            resultDmn = None
           )
         } else if (isNotDeuda(obligacion.BOB_OTROS_ATRIBUTOS).head) {
           ObligacionCommands.ObligacionRemove(
@@ -89,7 +90,8 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
             tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
             obligacionId = obligacion.BOB_OBN_ID,
             registro = obligacion,
-            cuota = obligacion.BOB_CUOTA
+            cuota = obligacion.BOB_CUOTA,
+            resultDmn = None
           )
         } else {
           ObligacionAntUpdateFromDto(
