@@ -92,49 +92,34 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     val cambioDeMarcaEnObjeto = aplicarDescuentoAnterior != aplicarDescuentoNuevo
 
     // --- Detectar cuando el objeto pierde el descuento POR deuda en OTRO objeto
-    // isLossByOther:
-    //  - la marca cambió de true -> false (aplicarDescuentoAnterior true, aplicarDescuentoNuevo false)
-    //  - y el objeto NO tiene deuda propia (tiene30Objeto == true)
     val isLossByOther = cambioDeMarcaEnObjeto &&
       aplicarDescuentoAnterior.contains(true) &&
       aplicarDescuentoNuevo.contains(false) &&
       actor.state.tiene30Objeto
 
-    // CORRECCION: Lógica de DMN para auditoría
-    // La descripción debe ser CONSISTENTE con aplicarDescuentoNuevo (el resultado final)
-    //
-    // Casos:
-    // 1) isLossByOther => (99, "No cumple por deuda en otro objeto del sujeto")
-    // 2) Si hay DMN en estado => usar ese (ya viene del cálculo de obligación)
-    // 3) Si no hay DMN en estado:
-    //    - Si aplicarDescuentoNuevo=true => "No Deuda" (cumple el 30%)
-    //    - Si aplicarDescuentoNuevo=false => usar descripción del sujeto o "Deuda"
+    // CORRECCION: Lógica de DMN para auditoría - CONSISTENTE con aplicarDescuentoNuevo
     val (dmnNumeroParaPSRM, dmnDescripcionParaPSRM) = {
       if (isLossByOther) {
         // Caso especial: pierde por deuda en otro objeto
         (Some(99), Some("No cumple por deuda en otro objeto del sujeto"))
-      } else if (actor.state.dmnNumero.isDefined) {
-        // Si ya tiene DMN calculado, usarlo
-        // PERO validar que la descripción sea consistente con aplicarDescuentoNuevo
-        val descExistente = actor.state.dmnDescripcion
-        val descConsistente = validarDescripcionConsistente(
-          aplicarDescuentoNuevo,
-          descExistente,
-          command.dmnDescripcionSujeto
-        )
-        (actor.state.dmnNumero, descConsistente)
-      } else {
-        // No hay DMN en estado - determinar basándose en aplicarDescuentoNuevo
-        // CORRECCION: Antes usaba tiene30Objeto, ahora usa aplicarDescuentoNuevo
-        if (result) {
-          // Cumple el 30% -> "No Deuda"
-          (Some(1), Some("No Deuda"))
+      } else if (aplicarDescuentoNuevo.contains(false)) {
+        // NO cumple el 30% - asegurar que DMN sea consistente
+        if (actor.state.dmnNumero.isDefined && !actor.state.dmnNumero.contains(1)) {
+          // Tiene DMN válido (no es "No Deuda") - mantener
+          (actor.state.dmnNumero, actor.state.dmnDescripcion)
         } else {
-          // NO cumple el 30% -> usar descripción del sujeto si existe, sino "Deuda"
+          // No tiene DMN o era "No Deuda" (inconsistente) - usar descripción del sujeto
           val desc = command.dmnDescripcionSujeto
             .filter(_.nonEmpty)
             .getOrElse("Deuda")
           (Some(0), Some(desc))
+        }
+      } else {
+        // Cumple el 30%
+        if (actor.state.dmnNumero.isDefined) {
+          (actor.state.dmnNumero, actor.state.dmnDescripcion)
+        } else {
+          (Some(1), Some("No Deuda"))
         }
       }
     }
@@ -201,45 +186,5 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     }
 
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
-  }
-
-  /**
-   * CORRECCION: Valida que la descripción sea consistente con aplicarDescuento.
-   * Si hay inconsistencia, retorna una descripción corregida.
-   *
-   * @param aplicarDescuento El resultado final del cálculo (true = cumple 30%, false = no cumple)
-   * @param descExistente La descripción que viene del estado
-   * @param descSujeto La descripción que viene del sujeto (fallback)
-   * @return Descripción consistente con aplicarDescuento
-   */
-  private def validarDescripcionConsistente(
-                                             aplicarDescuento: Option[Boolean],
-                                             descExistente: Option[String],
-                                             descSujeto: Option[String]
-                                           ): Option[String] = {
-    val desc = descExistente.getOrElse("").toLowerCase
-
-    (aplicarDescuento, desc) match {
-      // Caso inconsistente: aplicarDescuento=false pero descripción dice "No Deuda"
-      case (Some(false), d) if d.contains("no deuda") =>
-        log.warn(
-          s"[DMN-INCONSISTENCIA-CORREGIDA] aplicarDescuento=false pero descripcion='$descExistente' - " +
-            s"usando descripcion del sujeto o 'Deuda'"
-        )
-        // Usar descripción del sujeto si existe, sino "Deuda"
-        descSujeto.filter(_.nonEmpty).orElse(Some("Deuda"))
-
-      // Caso inconsistente: aplicarDescuento=true pero descripción dice "Deuda" (sin "No")
-      case (Some(true), d) if d.contains("deuda") && !d.contains("no deuda") =>
-        log.warn(
-          s"[DMN-INCONSISTENCIA-CORREGIDA] aplicarDescuento=true pero descripcion='$descExistente' - " +
-            s"usando 'No Deuda'"
-        )
-        Some("No Deuda")
-
-      // Caso consistente: mantener descripción existente
-      case _ =>
-        descExistente
-    }
   }
 }
