@@ -75,15 +75,30 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
 
         actor.state = actor.state.copy(tiene30Objeto = tiene30ObjetoFinal)
 
-        // Actualizar el DMN del objeto si viene del vinculo
-        // Esto permite que objetos sin obligaciones propias usen el DMN de cotitulares
+        // CORRECCION: Lógica de DMN consistente con tiene30ObjetoFinal
+        // Si tiene30ObjetoFinal=false, NO puede tener dmnNumero=1 ("No Deuda")
         val (dmnNumeroFinal, dmnDescripcionFinal) = {
-          if (actor.state.dmnNumero.isDefined) {
-            (actor.state.dmnNumero, actor.state.dmnDescripcion)
-          } else if (command.dmnNumero.isDefined) {
-            (command.dmnNumero, command.dmnDescripcion)
+          if (tiene30ObjetoFinal) {
+            // Objeto cumple el 30% - puede heredar DMN del estado o del comando
+            if (actor.state.dmnNumero.isDefined) {
+              (actor.state.dmnNumero, actor.state.dmnDescripcion)
+            } else if (command.dmnNumero.isDefined) {
+              (command.dmnNumero, command.dmnDescripcion)
+            } else {
+              (None, None)
+            }
           } else {
-            (None, None)
+            // Objeto NO cumple el 30% - verificar consistencia
+            if (actor.state.dmnNumero.isDefined && !actor.state.dmnNumero.contains(1)) {
+              // Tiene DMN definido y NO es "No Deuda" (1) - mantener
+              (actor.state.dmnNumero, actor.state.dmnDescripcion)
+            } else if (command.dmnNumero.isDefined && !command.dmnNumero.contains(1)) {
+              // Comando trae DMN y NO es "No Deuda" (1) - usar del comando
+              (command.dmnNumero, command.dmnDescripcion)
+            } else {
+              // No hay DMN válido o era "No Deuda" - limpiar para que se calcule después
+              (None, None)
+            }
           }
         }
 
