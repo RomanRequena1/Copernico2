@@ -1,11 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ObjetoSpecUT.una obligacion should 4: dar de alta una obligacion vencida de Lucas" type="ScalaTestRunConfiguration" factoryName="ScalaTest" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
-    <module name="pcs" />
+    <module name="Copernico.pcs.test" />
     <option name="VMParameters" value="" />
     <option name="allowRunningInParallel" value="false" />
     <option name="alternativeJrePath" />
     <option name="alternativeJrePathEnabled" value="false" />
     <option name="classpathModifications">
+      <list />
+    </option>
+    <option name="envFilePaths">
       <list />
     </option>
     <option name="envs">
@@ -115,6 +118,7 @@
     <option name="shortenClasspath" value="NONE" />
     <option name="testClassPath" value="consumers_spec.no_registrales.objeto.unit_test.ObjetoSpecUT" />
     <option name="testName" value="una obligacion should 4: dar de alta una obligacion vencida de Lucas" />
+    <option name="workingDirectory" value="$PROJECT_DIR$" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

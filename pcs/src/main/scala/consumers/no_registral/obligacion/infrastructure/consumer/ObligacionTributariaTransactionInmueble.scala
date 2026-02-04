@@ -4,40 +4,36 @@ import akka.actor.ActorRef
 import api.actor_transaction.ActorTransaction
 import api.actor_transaction.ActorTransaction.ActorTransactionRequirements
 import consumers.no_registral.obligacion.application.dmn.DMNTreintaPorciento
-import consumers.no_registral.obligacion.application.entities.ObligacionCommands.{ObligacionRemove, ObligacionUpdateFromDto}
+import consumers.no_registral.obligacion.application.entities.ObligacionCommands._
 import consumers.no_registral.obligacion.application.entities.{DetallesObligacion, DetallesObligacionCaracteristicas, DetallesSupresiones, ListDetallesObligaciones, ObligacionCommands, ObligacionesTri}
 import consumers.no_registral.obligacion.infrastructure.json.ObligacionImplicits._
 import design_principles.actor_model.Response
 import io.circe.parser.decode
 import io.circe.syntax.EncoderOps
 import monitoring.Monitoring
-import org.camunda.dmn.DmnEngine
-import org.camunda.dmn.parser.ParsedDmn
-import org.slf4j.LoggerFactory
-import scalaz.\/
 
-import java.io.FileInputStream
 import scala.concurrent.Future
-import scala.util.Try
 
 case class ObligacionTributariaTransactionInmueble(actorRef: ActorRef, monitoring: Monitoring)(
-    implicit
-    actorTransactionRequirements: ActorTransactionRequirements
+  implicit
+  actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
-  private val log = LoggerFactory.getLogger(this.getClass)
-  val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
 
-  /** Handles the deserialization of detalles de obligaciones tributarias */
   def topic = "DGR-COP-OBLIGACIONES-TRI-I"
-  def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
-  def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
+  def topicRetry = "DGR-COP-OBLIGACIONES-TRI-I_retry"
+  def topicError = "DGR-COP-OBLIGACIONES-TRI-I_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-
     decode[ObligacionesTri](input)
   }
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
+    // ✅ EVALUAR DMN SIEMPRE, ANTES DE CUALQUIER DECISIÓN
+    val dmn = isTreintaPorciento(obligacion)
+    val dmnResultTuple = dmn._2
+    val dmnNumero = dmnResultTuple._1
+    val dmnDescripcion = dmnResultTuple._2
+
     val isNotDeuda: Option[ListDetallesObligaciones] => List[Boolean] = {
       case Some(d) =>
         d.BOB_DETALLES map { d =>
@@ -68,32 +64,37 @@ case class ObligacionTributariaTransactionInmueble(actorRef: ActorRef, monitorin
 
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
 
-    if (obligacion.BOB_SUJ_IDENTIFICADOR == "" || obligacion.BOB_SOJ_IDENTIFICADOR == "" || obligacion.BOB_SOJ_TIPO_OBJETO == "" || obligacion.BOB_OBN_ID == "") {
+    if (obligacion.BOB_SUJ_IDENTIFICADOR == "" || obligacion.BOB_SOJ_IDENTIFICADOR == "" ||
+      obligacion.BOB_SOJ_TIPO_OBJETO == "" || obligacion.BOB_OBN_ID == "") {
       Future.failed(new IllegalArgumentException("Campos obligatorios vacíos, operación omitida"))
     } else {
       val command: ObligacionCommands =
         if (isCancelada(obligacion.BOB_OTROS_ATRIBUTOS).head) {
+          // ✅ CASO CANCELADA: Usar el registro CON DMN evaluado
           ObligacionCommands.ObligacionRemove(
             deliveryId = obligacion.EV_ID,
             sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
             objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
             tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
             obligacionId = obligacion.BOB_OBN_ID,
-            registro = obligacion,
-            cuota = obligacion.BOB_CUOTA
+            registro = dmn._1,  // ✅ Ya tiene el DMN evaluado
+            cuota = obligacion.BOB_CUOTA,
+            resultDmn = Some(s"($dmnNumero,$dmnDescripcion)")  // ✅ Pasar resultado del DMN
           )
         } else if (isNotDeuda(obligacion.BOB_OTROS_ATRIBUTOS).head) {
+          // ✅ CASO NO DEUDA (RULE_NUMBER = -1): Usar el registro CON DMN evaluado
           ObligacionCommands.ObligacionRemove(
             deliveryId = obligacion.EV_ID,
             sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
             objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
             tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
             obligacionId = obligacion.BOB_OBN_ID,
-            registro = obligacion,
-            cuota = obligacion.BOB_CUOTA
+            registro = dmn._1,  // ✅ Ya tiene el DMN evaluado
+            cuota = obligacion.BOB_CUOTA,
+            resultDmn = Some(s"($dmnNumero,$dmnDescripcion)")  // ✅ Pasar resultado del DMN
           )
         } else {
-          val dmn = isTreintaPorciento(obligacion)
+          // ✅ CASO NORMAL: Actualizar obligación
           ObligacionUpdateFromDto(
             sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
             objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
@@ -107,12 +108,13 @@ case class ObligacionTributariaTransactionInmueble(actorRef: ActorRef, monitorin
             detallesSupresiones = detallesSupresiones,
             isAdheridoDebito = isAdheridoDebito,
             cuota = obligacion.BOB_CUOTA,
-            resultDmn = Some(dmn._2.toString)
+            resultDmn = Some(s"($dmnNumero,$dmnDescripcion)")
           )
         }
       actorRef.ask[Response.SuccessProcessing](command)
     }
   }
+
   private def isTreintaPorciento(obn: ObligacionesTri): (ObligacionesTri, (Int, String)) = {
     val dmnResult = DMNTreintaPorciento.dmn(obn)
 
@@ -133,7 +135,7 @@ case class ObligacionTributariaTransactionInmueble(actorRef: ActorRef, monitorin
         val newDetails =
           decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
-        (newO, (numero, descripcion))  // ← Retornar tupla tipada
+        (newO, (numero, descripcion))
       }
       case Some((numero, descripcion)) if !numero.equals(1) => {
         val detalles: Option[List[DetallesObligacion]] = Some(
@@ -151,9 +153,9 @@ case class ObligacionTributariaTransactionInmueble(actorRef: ActorRef, monitorin
         val newDetails =
           decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
-        (newO, (numero, descripcion))  // ← Retornar tupla tipada
+        (newO, (numero, descripcion))
       }
-      case None => (obn, (-999, "Error en DMN"))  // ← Retornar tupla tipada
+      case None => (obn, (-999, "Error en DMN"))
     }
   }
 }

@@ -38,7 +38,8 @@ object ObligacionCommands {
       tipoObjeto: String,
       obligacionId: String,
       registro: ObligacionExternalDto,
-      cuota:Option[String]
+      cuota:Option[String],
+      resultDmn: Option[String]
   ) extends ObligacionCommands
 
   case class ObligacionUpdateExencion(
