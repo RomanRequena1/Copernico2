@@ -52,7 +52,30 @@ class DeleteObjectIfNoObligacionesHandler(actor: ObjetoActor, requirements: Moni
           command.tipoObjeto == "BDG"
         )) {
         log.warn(s"Eliminando objeto ANT ${command.tipoObjeto} ${command.objetoId} - No quedan obligaciones")
-        val obj_default: ObjetosAnt = ObjetosAnt(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), None, None, None)
+        val obj_default: ObjetosAnt = ObjetosAnt(
+          RULE_NUMBER = None,
+          EV_ID = command.deliveryId,
+          SOJ_SUJ_IDENTIFICADOR = command.sujetoId,
+          SOJ_TIPO_OBJETO = command.tipoObjeto,
+          SOJ_IDENTIFICADOR = command.objetoId,
+          SOJ_CAT_SOJ_ID = None,
+          SOJ_DESCRIPCION = None,
+          SOJ_ESTADO = None,
+          SOJ_FECHA_INICIO = None,
+          SOJ_FECHA_FIN = None,
+          SOJ_ID_EXTERNO = None,
+          SOJ_OTROS_ATRIBUTOS = None,
+          SOJ_BASE_IMPONIBLE = None,
+          SOJ_ADHERIDO_DEBITO = None,
+          SOJ_CANT_CUOTAS_PAGADAS = None,
+          SOJ_CANAL_ORIGEN = None,
+          SOJ_SUBTIPO = None,
+          SOJ_IDENTIFICADOR_2 = None,
+          SOJ_DOCUMENTO = None,
+          SOJ_TITULARIDAD = None,
+          SOJ_TIPO_EXCLUSION = None,
+          SOJ_FECHA_VTA_SUBASTA = None,
+          SOJ_FECHA_ADQ_SUBASTA = None)
 
         actor.self ! ObjetoCommands.SetBajaObjeto(
           sujetoId = command.sujetoId,

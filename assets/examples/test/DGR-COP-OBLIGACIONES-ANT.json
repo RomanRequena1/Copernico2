@@ -1,63 +1,130 @@
 {
-  "EV_ID": "2025121102",
-  "BOB_SUJ_IDENTIFICADOR": "20-45678901-4",
-  "BOB_SOJ_TIPO_OBJETO": "PPP",
-  "BOB_SOJ_IDENTIFICADOR": "PPP001",
-  "BOB_OBN_ID": "OBN_PPP_002",
-  "BOB_SALDO": "12000.00",
-  "BOB_CUOTA": "2/12",
-  "BOB_ESTADO": "VIGENTE",
-  "BOB_CANAL_ORIGEN": "OTAX",
-  "BOB_FISCALIZADA": "N",
-  "BOB_JUI_ID": null,
-  "BOB_PERIODO": "2025",
-  "BOB_PLN_ID": "PLN_PPP_001",
-  "BOB_PRORROGA": "2026-02-15 00:00:00.0",
-  "BOB_TIPO": "no_tributaria",
-  "BOB_VENCIMIENTO": "2026-02-15 00:00:00.0",
-  "BOB_CAPITAL": "12000.00",
-  "BOB_CONCEPTO": "PPP",
-  "BOB_IMPUESTO": "PPP",
-  "BOB_ADHERIDO_DEBITO": "S",
-  "BOB_OGA_ID": "62510",
-  "BOB_VENCIMIENTO_2": null,
-  "SOJ_ID_EXTERNO": "EXT_PPP_001",
-  "BOB_SOJ_IDENTIFICADOR_2": null,
-  "BOB_SUB_ESTADO": null,
-  "BOB_TOTAL": null,
-  "BOB_TPBID": null,
-  "BOB_FECHASANCION": null,
-  "BOB_INDICE_INT_PUNIT": null,
-  "BOB_INDICE_INT_RESAR": null,
-  "BOB_INTERES_PUNIT": null,
-  "BOB_INTERES_RESAR": null,
-  "BOB_OTROS_ATRIBUTOS": {
-    "BOB_DETALLES": [
+  "BOB_SALDO" : 2000,
+  "BOB_SUJ_IDENTIFICADOR" : "20-11559432-1",
+  "BOB_SOJ_IDENTIFICADOR_2" : null,
+  "BOB_SOJ_TIPO_OBJETO" : "BDG",
+  "BOB_SOJ_IDENTIFICADOR" : "2122011",
+  "BOB_OBN_ID" : "0178594081",
+  "BOB_SUB_ESTADO" : "VENCIDA",
+  "BOB_TPBID" : null,
+  "BOB_ADHERIDO_DEBITO" : "N",
+  "BOB_CANAL_ORIGEN" : "PSRM",
+  "BOB_CAPITAL" : 2000,
+  "BOB_CUOTA" : "00",
+  "BOB_ESTADO" : "ADMINISTRATIVA",
+  "BOB_CONCEPTO" : "BDG",
+  "BOB_FECHASANCION" : null,
+  "BOB_FISCALIZADA" : null,
+  "BOB_IMPUESTO" : "BDG",
+  "BOB_INDICE_INT_PUNIT" : null,
+  "BOB_INDICE_INT_RESAR" : null,
+  "BOB_INTERES_PUNIT" : null,
+  "BOB_INTERES_RESAR" : null,
+  "BOB_JUI_ID" : null,
+  "BOB_OTROS_ATRIBUTOS" : {
+    "BOB_DETALLES" : [
       {
-        "BOB_MUNICIPIO": null,
-        "EVO_OBN_PEO_ID_MATERIAL": "PC",
-        "BOB_INTERES_FINANCIACION": "2.5",
-        "JUICIO_MULTIOBJETO": "N",
-        "RULE_NUMBER": "1",
-        "EVO_OBN_PEO_ID_FORMAL": "NC",
-        "PLAN_MULTIOBJETO": "S",
-        "FLAG_OCULTA_WEB": null,
-        "SOJ_FECHA_LABRADO": null,
-        "SOJ_FECHA_SENTENCIA": null,
-        "SOJ_FECHA_RESOLUCION": null,
-        "SOJ_DESCUENTO_VIGENTE": null
+        "BOB_MUNICIPIO" : null,
+        "RULE_NUMBER" : "-1",
+        "TIENE30_OBLIGACIONES" : null,
+        "BAND_BATCH" : null,
+        "EV_ID" : null,
+        "SOJ_ID_EXTERNO" : null,
+        "EVO_OBN_PEO_ID_MATERIAL" : null,
+        "JUICIO_MULTIOBJETO" : null,
+        "BOB_INTERES_FINANCIACION" : null,
+        "EVO_OBN_PEO_ID_FORMAL" : null,
+        "PLAN_MULTIOBJETO" : null,
+        "FLAG_OCULTA_WEB" : "N",
+        "DMN_NUMERO" : null,
+        "DMN_DESCRIPCION" : null,
+        "SOJ_FECHA_LABRADO" : null,
+        "SOJ_FECHA_SENTENCIA" : null,
+        "SOJ_FECHA_RESOLUCION" : null,
+        "SOJ_DESCUENTO_VIGENTE" : null
       }
     ]
   },
-  "BOB_CARACTERISTICAS": {
-    "BOB_DETALLES_CARACTERISTICAS": [
+  "BOB_CARACTERISTICAS" : {
+    "BOB_DETALLES_CARACTERISTICAS" : [
       {
-        "BOB_CUOTA_NUMERO": "2",
-        "BOB_CUOTA_TOTAL": "12",
-        "BOB_MONTO_ORIGINAL": "144000.00",
-        "BOB_TASA_INTERES": "2.5"
+        "BOB_CARACTERISTICA_CODIGO" : "CMBDGCG ",
+        "BOB_CARACTERISTICA_DESCRIPCION" : "[BDG] - CUIT Garante",
+        "BOB_CARACTERISTICA_VALOR" : "20-11559432-0",
+        "BOB_CARACTERISTICA_DESCRIPCION_VALOR" : null
+      },
+      {
+        "BOB_CARACTERISTICA_CODIGO" : "CMBDGCUO",
+        "BOB_CARACTERISTICA_DESCRIPCION" : "[BDG] - Numero Cuota",
+        "BOB_CARACTERISTICA_VALOR" : "3",
+        "BOB_CARACTERISTICA_DESCRIPCION_VALOR" : null
+      },
+      {
+        "BOB_CARACTERISTICA_CODIGO" : "CMBDGDCP",
+        "BOB_CARACTERISTICA_DESCRIPCION" : "[BDG] - Decreto Prestamo",
+        "BOB_CARACTERISTICA_VALOR" : "2022-09-19",
+        "BOB_CARACTERISTICA_DESCRIPCION_VALOR" : null
+      },
+      {
+        "BOB_CARACTERISTICA_CODIGO" : "CMBDGDES",
+        "BOB_CARACTERISTICA_DESCRIPCION" : "[BDG] - Descripción Cuota",
+        "BOB_CARACTERISTICA_VALOR" : "L2",
+        "BOB_CARACTERISTICA_DESCRIPCION_VALOR" : null
+      },
+      {
+        "BOB_CARACTERISTICA_CODIGO" : "CMBDGFCO",
+        "BOB_CARACTERISTICA_DESCRIPCION" : "[BDG] - Fecha Otorgamiento Prestamo",
+        "BOB_CARACTERISTICA_VALOR" : "2023-04-11",
+        "BOB_CARACTERISTICA_DESCRIPCION_VALOR" : null
+      },
+      {
+        "BOB_CARACTERISTICA_CODIGO" : "CMBDGFVC",
+        "BOB_CARACTERISTICA_DESCRIPCION" : "[BDG] - Fecha de Vencimiento Cuota",
+        "BOB_CARACTERISTICA_VALOR" : "2023-11-10",
+        "BOB_CARACTERISTICA_DESCRIPCION_VALOR" : null
+      },
+      {
+        "BOB_CARACTERISTICA_CODIGO" : "CMBDGMON",
+        "BOB_CARACTERISTICA_DESCRIPCION" : "[BDG] - Monto Cuota",
+        "BOB_CARACTERISTICA_VALOR" : "2000.00",
+        "BOB_CARACTERISTICA_DESCRIPCION_VALOR" : null
+      },
+      {
+        "BOB_CARACTERISTICA_CODIGO" : "CMBDGNDG",
+        "BOB_CARACTERISTICA_DESCRIPCION" : "[BDG] - Garante",
+        "BOB_CARACTERISTICA_VALOR" : "CARRANZA, CESAR HORACIO",
+        "BOB_CARACTERISTICA_DESCRIPCION_VALOR" : null
+      },
+      {
+        "BOB_CARACTERISTICA_CODIGO" : "CMBDGNOC",
+        "BOB_CARACTERISTICA_DESCRIPCION" : "[BDG] - Numero Cuota/Prestamo",
+        "BOB_CARACTERISTICA_VALOR" : "2122010/3",
+        "BOB_CARACTERISTICA_DESCRIPCION_VALOR" : null
+      },
+      {
+        "BOB_CARACTERISTICA_CODIGO" : "CMBDGPMO",
+        "BOB_CARACTERISTICA_DESCRIPCION" : "[BDG] - Numero Prestamo",
+        "BOB_CARACTERISTICA_VALOR" : "2122010",
+        "BOB_CARACTERISTICA_DESCRIPCION_VALOR" : null
+      },
+      {
+        "BOB_CARACTERISTICA_CODIGO" : "CMDOMMUL",
+        "BOB_CARACTERISTICA_DESCRIPCION" : "Domicilio de la Obligación",
+        "BOB_CARACTERISTICA_VALOR" : "00541535318215",
+        "BOB_CARACTERISTICA_DESCRIPCION_VALOR" : null
       }
     ]
   },
-  "BOB_SUPRESIONES": null
+  "BOB_PERIODO" : "2023",
+  "BOB_PLN_ID" : null,
+  "BOB_PRORROGA" : "2023-11-10 00:00:00.0",
+  "BOB_TIPO" : "no tributaria",
+  "BOB_TOTAL" : null,
+  "BOB_VENCIMIENTO" : "2023-11-10 00:00:00.0",
+  "BOB_VENCIMIENTO_2" : null,
+  "BOB_OGA_ID" : null,
+  "EV_ID" : 20260130150836202601301508360104,
+  "RULE_NUMBER" : null,
+  "SOJ_ID_EXTERNO" : null,
+  "BOB_SUPRESIONES" : null
 }

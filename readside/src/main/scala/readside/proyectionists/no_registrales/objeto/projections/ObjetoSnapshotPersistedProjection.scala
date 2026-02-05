@@ -13,6 +13,7 @@ case class ObjetoSnapshotPersistedProjection(
 
   val registro: Option[ObjetoExternalDto] = event.registro
   val fromRegistro: Option[List[(String, Option[Any])]] = registro match {
+    case Some(r) if r.SOJ_DESCRIPCION.isEmpty =>
     case Some(r) =>
       val bobDetailsResult: Option[Map[String, List[DetallesObjeto]]] = {
         decode[Map[String, List[DetallesObjeto]]](registro.get.SOJ_OTROS_ATRIBUTOS.asJson.toString()).toOption
