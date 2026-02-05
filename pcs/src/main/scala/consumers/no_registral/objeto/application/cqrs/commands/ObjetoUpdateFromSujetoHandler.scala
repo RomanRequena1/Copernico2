@@ -92,47 +92,57 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     // Validar si cambió la marca A NIVEL DE OBJETO
     val cambioDeMarcaEnObjeto = aplicarDescuentoAnterior != aplicarDescuentoNuevo
 
-    // --- Detectar cuando el objeto pierde el descuento POR deuda en OTRO objeto ---
+    // --- Detectar cuando el objeto pierde el descuento SIN tener deuda propia ---
+
     // Caso 1: La marca cambió de true -> false y el objeto NO tiene deuda propia
     val isLossByOtherCambio = cambioDeMarcaEnObjeto &&
       aplicarDescuentoAnterior.contains(true) &&
       aplicarDescuentoNuevo.contains(false) &&
       actor.state.tiene30Objeto
 
-    // Caso 2: El objeto NO tiene deuda propia (tiene30Objeto=true, obligaciones vacías o todas cumplen)
-    //         pero pierde el descuento porque tiene30Sujeto=false
-    //         Esto cubre el caso donde aplicarDescuentoAnterior era None (primera ejecución)
-    val isNoDebtButLosesByOther = aplicarDescuentoNuevo.contains(false) &&
+    // Caso 2: El objeto NO tiene deuda propia pero pierde porque tiene30Sujeto=false
+    val isNoDebtButLosesBySujeto = aplicarDescuentoNuevo.contains(false) &&
       actor.state.tiene30Objeto &&
       actor.state.tiene30ObjetoVinculo &&
-      !actor.state.tiene30Sujeto.getOrElse(true) // tiene30Sujeto = false
+      !actor.state.tiene30Sujeto.getOrElse(true)
 
-    // Combinar ambos casos
-    val isLossByOther = isLossByOtherCambio || isNoDebtButLosesByOther
+    // Caso 3: El objeto NO tiene deuda propia pero pierde porque tiene30ObjetoVinculo=false
+    val isNoDebtButLosesByVinculo = aplicarDescuentoNuevo.contains(false) &&
+      actor.state.obligaciones.isEmpty &&
+      !actor.state.tiene30ObjetoVinculo
 
-    // CORRECCION: Lógica de DMN para auditoría - CONSISTENTE con aplicarDescuentoNuevo
+    // Combinar todos los casos donde pierde sin tener deuda propia
+    val isLossByOther = isLossByOtherCambio || isNoDebtButLosesBySujeto || isNoDebtButLosesByVinculo
+
+    // CORRECCION: Lógica de DMN - NUNCA debe ser (0, "Deuda")
     val (dmnNumeroParaPSRM, dmnDescripcionParaPSRM) = {
       if (isLossByOther) {
-        // Caso especial: pierde por deuda en otro objeto del sujeto
+        // Caso especial: pierde por deuda en otro objeto (del sujeto o del vínculo)
+        val motivo = if (isNoDebtButLosesByVinculo) {
+          "No cumple por deuda en otro objeto del vínculo"
+        } else {
+          "No cumple por deuda en otro objeto del sujeto"
+        }
         println(s"[DMN-LOSS-BY-OTHER] objetoId=${command.objetoId}, sujetoId=${command.sujetoId} - " +
           s"tiene30Objeto=${actor.state.tiene30Objeto}, tiene30ObjetoVinculo=${actor.state.tiene30ObjetoVinculo}, " +
-          s"tiene30Sujeto=${actor.state.tiene30Sujeto}, obligaciones.size=${actor.state.obligaciones.size}")
-        (Some(99), Some("No cumple por deuda en otro objeto del sujeto"))
+          s"tiene30Sujeto=${actor.state.tiene30Sujeto}, obligaciones.size=${actor.state.obligaciones.size}, " +
+          s"motivo=$motivo")
+        (Some(99), Some(motivo))
       } else if (aplicarDescuentoNuevo.contains(false)) {
         // NO cumple el 30% por deuda propia - asegurar que DMN sea consistente
-        if (actor.state.dmnNumero.isDefined && !actor.state.dmnNumero.contains(1)) {
-          // Tiene DMN válido (no es "No Deuda") - mantener
+        if (actor.state.dmnNumero.isDefined && !actor.state.dmnNumero.contains(1) && !actor.state.dmnNumero.contains(0)) {
+          // Tiene DMN válido (no es "No Deuda" ni genérico) - mantener
           (actor.state.dmnNumero, actor.state.dmnDescripcion)
         } else {
-          // No tiene DMN o era "No Deuda" (inconsistente) - usar descripción del sujeto
-          val desc = command.dmnDescripcionSujeto
-            .filter(_.nonEmpty)
-            .getOrElse("Deuda")
-          (Some(0), Some(desc))
+          // Usar descripción del sujeto si existe y es específica, sino usar 99
+          command.dmnDescripcionSujeto.filter(d => d.nonEmpty && d != "Deuda") match {
+            case Some(desc) => (Some(-1), Some(desc)) // -1 para indicar que viene del sujeto
+            case None => (Some(99), Some("No cumple por deuda en otro objeto"))
+          }
         }
       } else {
         // Cumple el 30%
-        if (actor.state.dmnNumero.isDefined) {
+        if (actor.state.dmnNumero.isDefined && !actor.state.dmnNumero.contains(0)) {
           (actor.state.dmnNumero, actor.state.dmnDescripcion)
         } else {
           (Some(1), Some("No Deuda"))
@@ -148,7 +158,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
           s"tiene30Objeto=${actor.state.tiene30Objeto}, " +
           s"tiene30Sujeto=${actor.state.tiene30Sujeto}, " +
           s"tiene30ObjetoVinculo=${actor.state.tiene30ObjetoVinculo}, " +
-          s"isLossByOther=$isLossByOther, " +
+          s"isLossByOther=$isLossByOther (cambio=$isLossByOtherCambio, sujeto=$isNoDebtButLosesBySujeto, vinculo=$isNoDebtButLosesByVinculo), " +
           s"dmnNumero=$dmnNumeroParaPSRM, dmnDescripcion=$dmnDescripcionParaPSRM"
       )
     }
