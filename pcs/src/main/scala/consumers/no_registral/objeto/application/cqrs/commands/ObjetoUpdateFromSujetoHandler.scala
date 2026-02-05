@@ -53,7 +53,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     def esTipoObjetoPermitido(tipo: String): Boolean =
       Set("A", "I", "N").contains(tipo)
 
-    // Justo antes de calcular el DMN, agregá:
+    // Debug DMN input
     println(s"[DEBUG-DMN-INPUT] objetoId=${command.objetoId}, sujetoId=${command.sujetoId}")
     println(s"  exclusionSujeto=${command.exclusionSUjeto}")
     println(s"  exclusionObjeto=${actor.state.exclusionObjeto}")
@@ -61,6 +61,7 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     println(s"  tiene30Objeto=${actor.state.tiene30Objeto}")
     println(s"  tiene30Sujeto=${actor.state.tiene30Sujeto}")
     println(s"  tiene30ObjetoVinculo=${actor.state.tiene30ObjetoVinculo}")
+    println(s"  obligaciones.size=${actor.state.obligaciones.size}")
 
     val result: Boolean = DMNTreintaPorcientoFinal.calcularDmnFinal(
       DmnFinal(
@@ -91,19 +92,34 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     // Validar si cambió la marca A NIVEL DE OBJETO
     val cambioDeMarcaEnObjeto = aplicarDescuentoAnterior != aplicarDescuentoNuevo
 
-    // --- Detectar cuando el objeto pierde el descuento POR deuda en OTRO objeto
-    val isLossByOther = cambioDeMarcaEnObjeto &&
+    // --- Detectar cuando el objeto pierde el descuento POR deuda en OTRO objeto ---
+    // Caso 1: La marca cambió de true -> false y el objeto NO tiene deuda propia
+    val isLossByOtherCambio = cambioDeMarcaEnObjeto &&
       aplicarDescuentoAnterior.contains(true) &&
       aplicarDescuentoNuevo.contains(false) &&
       actor.state.tiene30Objeto
 
+    // Caso 2: El objeto NO tiene deuda propia (tiene30Objeto=true, obligaciones vacías o todas cumplen)
+    //         pero pierde el descuento porque tiene30Sujeto=false
+    //         Esto cubre el caso donde aplicarDescuentoAnterior era None (primera ejecución)
+    val isNoDebtButLosesByOther = aplicarDescuentoNuevo.contains(false) &&
+      actor.state.tiene30Objeto &&
+      actor.state.tiene30ObjetoVinculo &&
+      !actor.state.tiene30Sujeto.getOrElse(true) // tiene30Sujeto = false
+
+    // Combinar ambos casos
+    val isLossByOther = isLossByOtherCambio || isNoDebtButLosesByOther
+
     // CORRECCION: Lógica de DMN para auditoría - CONSISTENTE con aplicarDescuentoNuevo
     val (dmnNumeroParaPSRM, dmnDescripcionParaPSRM) = {
       if (isLossByOther) {
-        // Caso especial: pierde por deuda en otro objeto
+        // Caso especial: pierde por deuda en otro objeto del sujeto
+        println(s"[DMN-LOSS-BY-OTHER] objetoId=${command.objetoId}, sujetoId=${command.sujetoId} - " +
+          s"tiene30Objeto=${actor.state.tiene30Objeto}, tiene30ObjetoVinculo=${actor.state.tiene30ObjetoVinculo}, " +
+          s"tiene30Sujeto=${actor.state.tiene30Sujeto}, obligaciones.size=${actor.state.obligaciones.size}")
         (Some(99), Some("No cumple por deuda en otro objeto del sujeto"))
       } else if (aplicarDescuentoNuevo.contains(false)) {
-        // NO cumple el 30% - asegurar que DMN sea consistente
+        // NO cumple el 30% por deuda propia - asegurar que DMN sea consistente
         if (actor.state.dmnNumero.isDefined && !actor.state.dmnNumero.contains(1)) {
           // Tiene DMN válido (no es "No Deuda") - mantener
           (actor.state.dmnNumero, actor.state.dmnDescripcion)
@@ -124,14 +140,15 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
       }
     }
 
-    // Log para debugging de inconsistencias
-    if (cambioDeMarcaEnObjeto) {
+    // Log para debugging
+    if (cambioDeMarcaEnObjeto || isLossByOther) {
       log.info(
         s"[DMN-DEBUG] objetoId=${command.objetoId}, sujetoId=${command.sujetoId} - " +
           s"aplicarDescuento: $aplicarDescuentoAnterior -> $aplicarDescuentoNuevo, " +
           s"tiene30Objeto=${actor.state.tiene30Objeto}, " +
           s"tiene30Sujeto=${actor.state.tiene30Sujeto}, " +
           s"tiene30ObjetoVinculo=${actor.state.tiene30ObjetoVinculo}, " +
+          s"isLossByOther=$isLossByOther, " +
           s"dmnNumero=$dmnNumeroParaPSRM, dmnDescripcion=$dmnDescripcionParaPSRM"
       )
     }
