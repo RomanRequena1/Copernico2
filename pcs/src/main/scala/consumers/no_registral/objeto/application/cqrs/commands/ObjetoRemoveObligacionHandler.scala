@@ -23,9 +23,6 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
     val sender = actor.context.sender()
     val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), Some("None"), None, None)
 
-    println(s"[HANDLER-REMOVE-OBN-ENTRY] deliveryId=${command.deliveryId}, sujetoId=${command.sujetoId}, " +
-      s"objetoId=${command.objetoId}, obligacionId=${command.obligacionId}")
-
     val event = ObjetoRemovedObligacion(
       if (actor.state.lastDeliveryIdByEvents.equals(0)) 0 else actor.state.lastDeliveryIdByEvents,
       command.sujetoId,
@@ -44,14 +41,8 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
     actor.persistEvent(event) { () =>
       actor.state += event
 
-      println(s"[HANDLER-REMOVE-OBN-PERSISTED] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
-        s"tiene30Objeto=${actor.state.tiene30Objeto}, isBaja=${actor.state.isBaja}, " +
-        s"registroDefined=${actor.state.registro.isDefined}")
-
       actor.persistSnapshot(event, actor.state) { () =>
         if (!actor.state.isBaja && actor.state.registro.isDefined) {
-          println(s"[HANDLER-REMOVE-OBN-SENDING] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
-            s"Llamando SendObjetoToObjetoVinculo, estado=${actor.state.registro.map(_.SOJ_ESTADO).getOrElse("NONE")}")
           SendObjetoToObjetoVinculo(
             vinculoActor,
             actor,
@@ -62,10 +53,6 @@ class ObjetoRemoveObligacionHandler(actor: ObjetoActor, requeriment: MonitoringA
             requeriment,
             command
           )
-        }
-        else {
-          println(s"[HANDLER-REMOVE-OBN-SKIP] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
-            s"NO se envía a vinculo - isBaja=${actor.state.isBaja}, registroDefined=${actor.state.registro.isDefined}")
         }
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }

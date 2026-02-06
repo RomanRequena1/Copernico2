@@ -8,28 +8,28 @@ import serialization.CbroSerialization
 import java.time.LocalDateTime
 
 final case class SujetoState(
-    saldo: BigDecimal = 0,
-    saldoTotal: BigDecimal = 0,
-    fechaUltSaldo: LocalDateTime = LocalDateTime.MIN,
-    saldoObjetos: Map[String, BigDecimal] = Map.empty,
-    saldoObligaciones: Map[String, BigDecimal] = Map.empty,
-    objetos: Set[(String, String)] = Set.empty,
-    fechaUltMod: LocalDateTime = LocalDateTime.MIN,
-    registro: Option[SujetoExternalDto] = None,
-    lastDeliveryIdByEvents: BigInt = 0,
-    eventCounter: Int = 0,
-    cuotas: List[Boolean] =
-      List(false, false, false, false, false, false, false, false, false, false, false, false, false),
-    tiene30Sujeto: Boolean = true,
-    objVencidas: Map[String, (Boolean, String)] = Map.empty, //todo este ("idObjeto" -> (valor30%, "tipoObjeto(sale del alta objeto) "))
-    diffStates: Boolean = false, //todo este ("IBG456" -> (true, "2")
-    lastInternalDeliveryId: BigInt = 0,
-    exclusionSujeto: Option[String] = None,
-    dmnDescripcionAnterior: Option[String] = None, // ← NUEVO
-    dmnDescripcion: Option[String] = None,
-    deliveryIdObligacion: Option[BigInt] = None,
-    idExterno: Option[String] = None,
-    ) extends AbstractState[SujetoEvents] with CbroSerialization {
+                              saldo: BigDecimal = 0,
+                              saldoTotal: BigDecimal = 0,
+                              fechaUltSaldo: LocalDateTime = LocalDateTime.MIN,
+                              saldoObjetos: Map[String, BigDecimal] = Map.empty,
+                              saldoObligaciones: Map[String, BigDecimal] = Map.empty,
+                              objetos: Set[(String, String)] = Set.empty,
+                              fechaUltMod: LocalDateTime = LocalDateTime.MIN,
+                              registro: Option[SujetoExternalDto] = None,
+                              lastDeliveryIdByEvents: BigInt = 0,
+                              eventCounter: Int = 0,
+                              cuotas: List[Boolean] =
+                              List(false, false, false, false, false, false, false, false, false, false, false, false, false),
+                              tiene30Sujeto: Boolean = true,
+                              objVencidas: Map[String, (Boolean, String)] = Map.empty,
+                              diffStates: Boolean = false,
+                              lastInternalDeliveryId: BigInt = 0,
+                              exclusionSujeto: Option[String] = None,
+                              dmnDescripcionAnterior: Option[String] = None,
+                              dmnDescripcion: Option[String] = None,
+                              deliveryIdObligacion: Option[BigInt] = None,
+                              idExterno: Option[String] = None,
+                            ) extends AbstractState[SujetoEvents] with CbroSerialization {
 
 
   def +(event: SujetoEvents): SujetoState = {
@@ -47,49 +47,35 @@ final case class SujetoState(
           eventCounter = n + 1
         )
     }
-    /*changeState(event).copy(
-      fechaUltMod = LocalDateTime.now,
-      lastDeliveryIdByEvents = lastDeliveryIdByEvents + ((event.getClass.getSimpleName, event.deliveryId)),
-      eventCounter = c
-    )*/
   }
 
   private def validExitsObjVencidas(objetoId: String, clasificacionObjeto: String) = {
-
     objVencidas match {
-      //case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (true, clasificacionObjeto))
       case x if x.contains(objetoId) => x updated (objetoId, (true, clasificacionObjeto))
       case x => x + (objetoId -> ((true, clasificacionObjeto)))
     }
-
-    //if (objVencidas.contains(objetoId)) objVencidas else objVencidas + (objetoId -> (true, clasificacionObjeto))
   }
+
   private def diffCurrentStateAndNewState(currentObjVnecidad: Map[String, (Boolean, String)],
                                           newObjVnecidad: Map[String, (Boolean, String)],
                                           deuda30Sujeto: Boolean) = {
     val map = newObjVnecidad.filter(obj => !obj._2._2.equals("1"))
-    println(s"[DEBUG-SUJETO-DIFF] objVencidas.size=${newObjVnecidad.size}, filtrado(clasif!=1).size=${map.size}")
-    println(s"[DEBUG-SUJETO-DIFF] valores=${map.map { case (k, v) => s"$k:(${v._1},${v._2})" }.mkString(", ")}")
-    println(s"[DEBUG-SUJETO-DIFF] forall(_._1)=${map.values.forall(_._1)}")
     if (map.values.forall(_._1)) {
       val newTupla = (true, tiene30Sujeto.equals(true))
-      println(s"[DEBUG-SUJETO-DIFF] RESULTADO: tiene30Sujeto=true")
       newTupla
     } else {
       val newTupla = (false, tiene30Sujeto.equals(false))
-      println(s"[DEBUG-SUJETO-DIFF] RESULTADO: tiene30Sujeto=false")
       newTupla
     }
   }
+
   private def validExitsObjVencidasTreinta(objetoId: String, clasificacionObjeto: String) = {
     objVencidas match {
-      //case x if x.contains(objetoId) && x(objetoId)._2.equals("") => x updated (objetoId, (false, clasificacionObjeto))
       case x if x.contains(objetoId) => x updated (objetoId, (false, clasificacionObjeto))
       case x => x + (objetoId -> ((false, clasificacionObjeto)))
     }
-
-    //if (objVencidas.contains(objetoId)) objVencidas updated (objetoId , (false, objVencidas(objetoId)._2 )) else objVencidas + (objetoId -> (false, clasificacionObjeto))
   }
+
   private def changeState(event: SujetoEvents): SujetoState =
     event match {
       case SujetoEvents.SujetoUpdatedFromTri(_, _, registro) =>
@@ -119,7 +105,6 @@ final case class SujetoState(
             }
 
           case _ =>
-            // solo usar los que son clasificacion 2
             val objetosClasif2 = objVencidas.filter(_._2._2 == "2")
 
             if (objetosClasif2.isEmpty) {
@@ -156,14 +141,14 @@ final case class SujetoState(
           registro = Some(registro)
         )
       case SujetoEvents.SujetoUpdatedFromObjeto(deliveryId,
-                                                _,
-                                                objetoId,
-                                                tipoObjeto,
-                                                saldoObjeto,
-                                                _saldoObligaciones,
-                                                clasificacionObjeto,
-                                                idExterno,
-                                                deliveryIdObligacion) =>
+        _,
+        objetoId,
+        tipoObjeto,
+        saldoObjeto,
+        _saldoObligaciones,
+        clasificacionObjeto,
+        idExterno,
+        deliveryIdObligacion) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
         val _objVencidas = validExitsObjVencidas(objetoId, clasificacionObjeto)
@@ -183,12 +168,12 @@ final case class SujetoState(
         )
 
       case SujetoEvents.SujetoUpdatedFromObjetoAnt(deliveryId,
-                                                   _,
-                                                   objetoId,
-                                                   tipoObjeto,
-                                                   saldoObjeto,
-                                                   _saldoObligaciones,
-                                                   clasificacionObjeto) =>
+        _,
+        objetoId,
+        tipoObjeto,
+        saldoObjeto,
+        _saldoObligaciones,
+        clasificacionObjeto) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
         val _objVencidas = validExitsObjVencidas(objetoId, clasificacionObjeto)
@@ -206,14 +191,14 @@ final case class SujetoState(
         )
 
       case SujetoEvents.SujetoUpdatedFromObjetoTreintaPorciento(deliveryId,
-                                                                _,
-                                                                objetoId,
-                                                                tipoObjeto,
-                                                                saldoObjeto,
-                                                                _saldoObligaciones,
-                                                                clasificacionObjeto,
-                                                                idExterno,
-                                                                deliveryIdObligacion) =>
+        _,
+        objetoId,
+        tipoObjeto,
+        saldoObjeto,
+        _saldoObligaciones,
+        clasificacionObjeto,
+        idExterno,
+        deliveryIdObligacion) =>
         val objetoKey = s"$objetoId|$tipoObjeto"
         val _saldoObjetos = saldoObjetos + (objetoKey -> saldoObjeto)
         val _objVencidas = validExitsObjVencidasTreinta(objetoId, clasificacionObjeto)

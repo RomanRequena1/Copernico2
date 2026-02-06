@@ -11,7 +11,7 @@ import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 
 import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success, Try}
+import scala.util.{Success, Try}
 
 class UpdateObjetoVinculoFromObjHandler(
                                          actor: ObjetoVinculoActor,
@@ -20,8 +20,6 @@ class UpdateObjetoVinculoFromObjHandler(
 
   override def handle(command: UpdateVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-
-    println(s"[VINCULO-RECEIVED] Comando UpdateVinculoObjetoFromObj recibido - objetoId=${command.objetoId}, sujetoId=${command.sujetoId}, deliveryId=${command.deliveryId}")
 
     log.debug(
       f"""|CUMBIA - UpdateVinculoObjetoFromObj
@@ -54,44 +52,22 @@ class UpdateObjetoVinculoFromObjHandler(
       actor.state += event
 
       val todosLosVinculos = actor.state.mapVinculo ++ actor.state.mapTransf
-
       val tiene30ObjetoVinculoGlobal = todosLosVinculos.values.forall(_.tiene30Objeto)
-
-      println(s"[VINCULO-UPDATE-CALC] objetoId=${command.objetoId}, deliveryId=${command.deliveryId} - " +
-        s"totalVinculos=${todosLosVinculos.size}, " +
-        s"tiene30ObjetoVinculoGlobal=$tiene30ObjetoVinculoGlobal, " +
-        s"vinculos=${todosLosVinculos.map { case (k, v) => s"${k.sujetoId}:${v.tiene30Objeto}" }.mkString(", ")}")
 
       todosLosVinculos.foreach { case (key, vinculoInfo) =>
         val tiene30Final = tiene30ObjetoVinculoGlobal
 
-        println(s"[VINCULO-PRE-SEND] deliveryId=${command.deliveryId}, " +
-          s"destino: sujetoId=${key.sujetoId}, objetoId=${key.objetoId}, tipoObj=${key.tipoObj}, " +
-          s"tiene30Final=$tiene30Final")
-
-        val futureResponse = actorSujetoGeneral.ask[Response.SuccessProcessing](
-          UpdateState30ObjetoFromObjVinculo(
-            command.deliveryId,
-            key.sujetoId,
-            key.objetoId,
-            key.tipoObj,
-            tiene30Final,
-            command.exclusionObjeto,
-            command.idExterno,
-            command.dmnNumero,
-            command.dmnDescripcion
-          )
+        actorSujetoGeneral ! UpdateState30ObjetoFromObjVinculo(
+          command.deliveryId,
+          key.sujetoId,
+          key.objetoId,
+          key.tipoObj,
+          tiene30Final,
+          command.exclusionObjeto,
+          command.idExterno,
+          command.dmnNumero,
+          command.dmnDescripcion
         )
-
-        futureResponse.onComplete {
-          case Success(response) =>
-            println(s"[VINCULO-SEND-OK] deliveryId=${command.deliveryId}, " +
-              s"sujetoId=${key.sujetoId}, objetoId=${key.objetoId} - Response OK")
-          case Failure(ex) =>
-            println(s"[VINCULO-SEND-FAIL] deliveryId=${command.deliveryId}, " +
-              s"sujetoId=${key.sujetoId}, objetoId=${key.objetoId} - ERROR: ${ex.getMessage}")
-            ex.printStackTrace()
-        }
       }
 
       actor.persistSnapshot(event, actor.state) { () =>
