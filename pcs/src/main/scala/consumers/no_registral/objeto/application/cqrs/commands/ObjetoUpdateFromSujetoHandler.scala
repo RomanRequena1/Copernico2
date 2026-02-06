@@ -53,16 +53,6 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     def esTipoObjetoPermitido(tipo: String): Boolean =
       Set("A", "I", "N").contains(tipo)
 
-    // Debug DMN input
-    println(s"[DEBUG-DMN-INPUT] objetoId=${command.objetoId}, sujetoId=${command.sujetoId}")
-    println(s"  exclusionSujeto=${command.exclusionSUjeto}")
-    println(s"  exclusionObjeto=${actor.state.exclusionObjeto}")
-    println(s"  clasificacionObjeto=${actor.state.clasificacionObjeto}")
-    println(s"  tiene30Objeto=${actor.state.tiene30Objeto}")
-    println(s"  tiene30Sujeto=${actor.state.tiene30Sujeto}")
-    println(s"  tiene30ObjetoVinculo=${actor.state.tiene30ObjetoVinculo}")
-    println(s"  obligaciones.size=${actor.state.obligaciones.size}")
-
     val result: Boolean = DMNTreintaPorcientoFinal.calcularDmnFinal(
       DmnFinal(
         command.exclusionSUjeto,
@@ -75,8 +65,6 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
     )
 
     val aplicarDescuentoNuevo = Some(result)
-
-    // CLAVE: Capturar el valor ANTERIOR antes de actualizar
     val aplicarDescuentoAnterior = actor.state.aplicarDescuento
 
     val event1 = AplicarDescuentoUpdated(
@@ -89,78 +77,48 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
 
     actor.state += event1
 
-    // Validar si cambió la marca A NIVEL DE OBJETO
     val cambioDeMarcaEnObjeto = aplicarDescuentoAnterior != aplicarDescuentoNuevo
 
-    // --- Detectar cuando el objeto pierde el descuento SIN tener deuda propia ---
-
-    // Caso 1: La marca cambió de true -> false y el objeto NO tiene deuda propia
     val isLossByOtherCambio = cambioDeMarcaEnObjeto &&
       aplicarDescuentoAnterior.contains(true) &&
       aplicarDescuentoNuevo.contains(false) &&
       actor.state.tiene30Objeto
 
-    // Caso 2: El objeto NO tiene deuda propia pero pierde porque tiene30Sujeto=false
     val isNoDebtButLosesBySujeto = aplicarDescuentoNuevo.contains(false) &&
       actor.state.tiene30Objeto &&
       actor.state.tiene30ObjetoVinculo &&
       !actor.state.tiene30Sujeto.getOrElse(true)
 
-    // Caso 3: El objeto NO tiene deuda propia pero pierde porque tiene30ObjetoVinculo=false
     val isNoDebtButLosesByVinculo = aplicarDescuentoNuevo.contains(false) &&
       actor.state.obligaciones.isEmpty &&
       !actor.state.tiene30ObjetoVinculo
 
-    // Combinar todos los casos donde pierde sin tener deuda propia
     val isLossByOther = isLossByOtherCambio || isNoDebtButLosesBySujeto || isNoDebtButLosesByVinculo
 
-    // CORRECCION: Lógica de DMN - NUNCA debe ser (0, "Deuda")
     val (dmnNumeroParaPSRM, dmnDescripcionParaPSRM) = {
       if (isLossByOther) {
-        // Caso especial: pierde por deuda en otro objeto (del sujeto o del vínculo)
         val motivo = if (isNoDebtButLosesByVinculo) {
           "No cumple por deuda en otro objeto del vínculo"
         } else {
           "No cumple por deuda en otro objeto del sujeto"
         }
-        println(s"[DMN-LOSS-BY-OTHER] objetoId=${command.objetoId}, sujetoId=${command.sujetoId} - " +
-          s"tiene30Objeto=${actor.state.tiene30Objeto}, tiene30ObjetoVinculo=${actor.state.tiene30ObjetoVinculo}, " +
-          s"tiene30Sujeto=${actor.state.tiene30Sujeto}, obligaciones.size=${actor.state.obligaciones.size}, " +
-          s"motivo=$motivo")
         (Some(99), Some(motivo))
       } else if (aplicarDescuentoNuevo.contains(false)) {
-        // NO cumple el 30% por deuda propia - asegurar que DMN sea consistente
         if (actor.state.dmnNumero.isDefined && !actor.state.dmnNumero.contains(1) && !actor.state.dmnNumero.contains(0)) {
-          // Tiene DMN válido (no es "No Deuda" ni genérico) - mantener
           (actor.state.dmnNumero, actor.state.dmnDescripcion)
         } else {
-          // Usar descripción del sujeto si existe y es específica, sino usar 99
           command.dmnDescripcionSujeto.filter(d => d.nonEmpty && d != "Deuda") match {
-            case Some(desc) => (Some(-1), Some(desc)) // -1 para indicar que viene del sujeto
+            case Some(desc) => (Some(-1), Some(desc))
             case None => (Some(99), Some("No cumple por deuda en otro objeto"))
           }
         }
       } else {
-        // Cumple el 30%
         if (actor.state.dmnNumero.isDefined && !actor.state.dmnNumero.contains(0)) {
           (actor.state.dmnNumero, actor.state.dmnDescripcion)
         } else {
           (Some(1), Some("No Deuda"))
         }
       }
-    }
-
-    // Log para debugging
-    if (cambioDeMarcaEnObjeto || isLossByOther) {
-      log.info(
-        s"[DMN-DEBUG] objetoId=${command.objetoId}, sujetoId=${command.sujetoId} - " +
-          s"aplicarDescuento: $aplicarDescuentoAnterior -> $aplicarDescuentoNuevo, " +
-          s"tiene30Objeto=${actor.state.tiene30Objeto}, " +
-          s"tiene30Sujeto=${actor.state.tiene30Sujeto}, " +
-          s"tiene30ObjetoVinculo=${actor.state.tiene30ObjetoVinculo}, " +
-          s"isLossByOther=$isLossByOther (cambio=$isLossByOtherCambio, sujeto=$isNoDebtButLosesBySujeto, vinculo=$isNoDebtButLosesByVinculo), " +
-          s"dmnNumero=$dmnNumeroParaPSRM, dmnDescripcion=$dmnDescripcionParaPSRM"
-      )
     }
 
     val eventDmn = DmnResumen(
@@ -175,7 +133,6 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
       dmnDescripcionParaPSRM
     )
 
-    // Solo enviar a auditoría SI cambió la marca EN ESTE ObjetoActor
     if (!actor.state.registro.getOrElse(obj_default).SOJ_ESTADO.getOrElse("").equals("BAJA") &&
       actor.state.aplicarDescuento.isDefined &&
       esTipoObjetoPermitido(command.tipoObjeto) &&
@@ -186,10 +143,6 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
       actor.persistSnapshot(event, actor.state) { () =>
         implicit val system = actor.context.system
         val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
-
-        log.info(s"[AUDITORIA-FROM-SUJETO] Enviando - objetoId=${command.objetoId}, sujetoId=${command.sujetoId}, " +
-          s"anterior=$aplicarDescuentoAnterior, nuevo=$aplicarDescuentoNuevo, " +
-          s"dmnDesc=$dmnDescripcionParaPSRM")
 
         vinculoActor ! ObjetoVinculoCommands.AuditarYEnviarResumen(
           deliveryId = command.deliveryId,
@@ -204,9 +157,6 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }
     } else {
-      log.info(s"[AUDITORIA-SKIP] objetoId=${command.objetoId}, sujetoId=${command.sujetoId}, " +
-        s"cambioDeMarca=$cambioDeMarcaEnObjeto, anterior=$aplicarDescuentoAnterior, nuevo=$aplicarDescuentoNuevo")
-
       actor.persistSnapshot(event, actor.state) { () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }

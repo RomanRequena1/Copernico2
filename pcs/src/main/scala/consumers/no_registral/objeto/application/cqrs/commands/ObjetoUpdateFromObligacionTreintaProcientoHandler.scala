@@ -23,9 +23,6 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
     val sender = actor.context.sender()
     val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"),Some("None"), Some("None"), Some("None"),None,None)
 
-    println(s"[HANDLER-OBN30-ENTRY] deliveryId=${command.deliveryId}, sujetoId=${command.sujetoId}, " +
-      s"objetoId=${command.objetoId}, obligacionId=${command.obligacionId}")
-
     log.debug(
       f"""|CUMBIA
           |  | command_id: ${command.deliveryId}%-20s | state_id: ${actor.state.lastDeliveryIdByEvents}%-5s
@@ -54,16 +51,12 @@ class ObjetoUpdateFromObligacionTreintaProcientoHandler(actor: ObjetoActor, requ
     val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
 
     actor.persistEvent(event) { () =>
-      println(s"[HANDLER-OBN30-PERSISTED] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
-        s"Evento persistido, estado=${actor.state.registro.map(_.SOJ_ESTADO).getOrElse("NONE")}")
       actor.state += event
       if (actor.state.eventCounter == eventCounterMax) {
         actor.deleteSnapshots(SnapshotSelectionCriteria(actor.lastSequenceNr - 200))
         actor.saveSnapshot(actor.state.copy(eventCounter = 0))
         actor.deleteMessages(actor.lastSequenceNr - 201)
       }
-      println(s"[HANDLER-OBN30-SENDING] deliveryId=${command.deliveryId}, objetoId=${command.objetoId} - " +
-        s"Llamando SendObjetoToObjetoVinculo")
       SendObjetoToObjetoVinculo(
         vinculoActor,
         actor,

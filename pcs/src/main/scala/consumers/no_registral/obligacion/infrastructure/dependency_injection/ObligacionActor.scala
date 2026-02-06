@@ -18,7 +18,7 @@ import kafka.KafkaMessageProducer.KafkaKeyValue
 import scala.util.{Failure, Success, Try}
 
 class ObligacionActor(requirements: MonitoringAndMessageProducer)
-    extends PersistentBaseActor[ObligacionEvents, ObligacionState](requirements.monitoring) {
+  extends PersistentBaseActor[ObligacionEvents, ObligacionState](requirements.monitoring) {
   val enable = Try(System.getenv("ENABLE_TRAZ")).getOrElse("no")
 
   var state = ObligacionState()
@@ -36,7 +36,6 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   }
 
   def informParent(cmd: ObligacionCommands): Unit = {
-    // Safe extraction de los campos DMN
     val (dmnNumero, dmnDescripcion) = state.registro
       .flatMap(_.BOB_OTROS_ATRIBUTOS)
       .flatMap(_.BOB_DETALLES.headOption)
@@ -92,14 +91,10 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
   }
 
   def informRemoveToParent(cmd: ObligacionRemove): Unit = {
-    // ✅ CAMBIO: Extraer DMN del REGISTRO DEL COMANDO, no del state
     val (dmnNumero, dmnDescripcion) = cmd.registro.BOB_OTROS_ATRIBUTOS
       .flatMap(_.BOB_DETALLES.headOption)
       .map(detalle => (detalle.dmnNumero, detalle.dmnDescripcion))
       .getOrElse((None, None))
-
-    println(s"[OBLIGACION-REMOVE-TO-PARENT] obligacionId=${cmd.obligacionId}, " +
-      s"dmnNumero=$dmnNumero, dmnDescripcion=$dmnDescripcion, resultDmn=${cmd.resultDmn}")
 
     context.parent ! ObjetoCommands.ObjetoRemoveObligacion(
       cmd.deliveryId,
@@ -112,6 +107,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       dmnDescripcion
     )
   }
+
   def persistSnapshot(evt: ObligacionEvents)(handler: () => Unit): Unit = {
     val kafkaTopic = "ObligacionPersistedSnapshot"
     val event = ObligacionPersistedSnapshot(
@@ -139,10 +135,7 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       )(_ => handler())
       .onComplete {
         case Failure(ex) => log.error("Error when try to send to topic " + ex)
-        case Success(value) => {
-          log.debug("Success,  sent to topic")
-
-        }
+        case Success(value) => log.debug("Success, sent to topic")
       }
   }
 
@@ -176,14 +169,12 @@ class ObligacionActor(requirements: MonitoringAndMessageProducer)
       )(_ => handler())
       .onComplete {
         case Failure(ex) => log.error("Error when try to send to topic " + ex)
-        case Success(value) => {
-          log.debug("Success,  sent to topic")
-        }
+        case Success(value) => log.debug("Success, sent to topic")
       }
   }
 }
 
 object ObligacionActor {
   def props(requirements: MonitoringAndMessageProducer): Props =
-    Props(new ObligacionActor(requirements)).withDispatcher("my-dispatcher") //TODO added my-dispatcher
+    Props(new ObligacionActor(requirements)).withDispatcher("my-dispatcher")
 }
