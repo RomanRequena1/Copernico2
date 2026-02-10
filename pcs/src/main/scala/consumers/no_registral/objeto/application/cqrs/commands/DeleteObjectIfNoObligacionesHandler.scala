@@ -59,7 +59,7 @@ class DeleteObjectIfNoObligacionesHandler(actor: ObjetoActor, requirements: Moni
           SOJ_TIPO_OBJETO = command.tipoObjeto,
           SOJ_IDENTIFICADOR = command.objetoId,
           SOJ_CAT_SOJ_ID = None,
-          SOJ_DESCRIPCION = None,
+          SOJ_DESCRIPCION = Some("DefaultANT"),
           SOJ_ESTADO = None,
           SOJ_FECHA_INICIO = None,
           SOJ_FECHA_FIN = None,
