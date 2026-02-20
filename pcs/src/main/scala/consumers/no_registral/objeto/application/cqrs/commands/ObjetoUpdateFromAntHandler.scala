@@ -28,7 +28,11 @@ extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromAnt] {
           |""".stripMargin
     )
     def getCCParams(evento: ObjetoExternalDto, estado: ObjetoExternalDto): ObjetoExternalDto = {
-      StateParcialObjeto.stateParcialCC(evento, Some(estado))
+      val estado2 = estado match {
+        case o:ObjetoExternalDto.ObjetosAnt if o.SOJ_ESTADO.exists(e => e.equals("BAJA")) => o.copy(SOJ_ESTADO = None)
+        case _ => estado
+      }
+      StateParcialObjeto.stateParcialCC(evento, Some(estado2))
     }
     def getObjetoFFF() = {
       val objetoFFF = actor.state.registro match {
