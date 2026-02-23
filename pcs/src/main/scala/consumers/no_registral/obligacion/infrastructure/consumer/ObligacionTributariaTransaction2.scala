@@ -21,8 +21,8 @@ import scala.concurrent.Future
 import scala.util.Try
 
 case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Monitoring)(
-    implicit
-    actorTransactionRequirements: ActorTransactionRequirements
+  implicit
+  actorTransactionRequirements: ActorTransactionRequirements
 ) extends ActorTransaction[ObligacionesTri](monitoring) {
   private val log = LoggerFactory.getLogger(this.getClass)
 
@@ -35,11 +35,16 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
   def topicError = "DGR-COP-OBLIGACIONES-TRI2_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
-
     decode[ObligacionesTri](input)
   }
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
+    // ✅ EVALUAR DMN SIEMPRE, ANTES DE CUALQUIER DECISIÓN
+    val dmn = isTreintaPorciento(obligacion)
+    val dmnResultTuple = dmn._2
+    val dmnNumero = dmnResultTuple._1
+    val dmnDescripcion = dmnResultTuple._2
+
     val isNotDeuda: Option[ListDetallesObligaciones] => List[Boolean] = {
       case Some(d) =>
         d.BOB_DETALLES map { d =>
@@ -70,32 +75,37 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
 
     val isAdheridoDebito = Some(obligacion.BOB_ADHERIDO_DEBITO.contains("S"))
 
-    if (obligacion.BOB_SUJ_IDENTIFICADOR == "" || obligacion.BOB_SOJ_IDENTIFICADOR == "" || obligacion.BOB_SOJ_TIPO_OBJETO == "" || obligacion.BOB_OBN_ID == "") {
+    if (obligacion.BOB_SUJ_IDENTIFICADOR == "" || obligacion.BOB_SOJ_IDENTIFICADOR == "" ||
+      obligacion.BOB_SOJ_TIPO_OBJETO == "" || obligacion.BOB_OBN_ID == "") {
       Future.failed(new IllegalArgumentException("Campos obligatorios vacíos, operación omitida"))
     } else {
       val command: ObligacionCommands =
         if (isCancelada(obligacion.BOB_OTROS_ATRIBUTOS).head) {
+          // ✅ CASO CANCELADA: Usar el registro CON DMN evaluado
           ObligacionCommands.ObligacionRemove(
             deliveryId = obligacion.EV_ID,
             sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
             objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
             tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
             obligacionId = obligacion.BOB_OBN_ID,
-            registro = obligacion,
-            cuota = obligacion.BOB_CUOTA
+            registro = dmn._1,  // ✅ Ya tiene el DMN evaluado
+            cuota = obligacion.BOB_CUOTA,
+            resultDmn = Some(s"($dmnNumero,$dmnDescripcion)")  // ✅ Pasar resultado del DMN
           )
         } else if (isNotDeuda(obligacion.BOB_OTROS_ATRIBUTOS).head) {
+          // ✅ CASO NO DEUDA (RULE_NUMBER = -1): Usar el registro CON DMN evaluado
           ObligacionCommands.ObligacionRemove(
             deliveryId = obligacion.EV_ID,
             sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
             objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
             tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
             obligacionId = obligacion.BOB_OBN_ID,
-            registro = obligacion,
-            cuota = obligacion.BOB_CUOTA
+            registro = dmn._1,  // ✅ Ya tiene el DMN evaluado
+            cuota = obligacion.BOB_CUOTA,
+            resultDmn = Some(s"($dmnNumero,$dmnDescripcion)")  // ✅ Pasar resultado del DMN
           )
         } else {
-          val dmn = isTreintaPorciento(obligacion)
+          // ✅ CASO NORMAL: Actualizar obligación
           ObligacionUpdateFromDto(
             sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
             objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
@@ -109,7 +119,7 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
             detallesSupresiones = detallesSupresiones,
             isAdheridoDebito = isAdheridoDebito,
             cuota = obligacion.BOB_CUOTA,
-            resultDmn = Some(dmn._2.toString)
+            resultDmn = Some(s"($dmnNumero,$dmnDescripcion)")
           )
         }
       actorRef.ask[Response.SuccessProcessing](command)
@@ -136,7 +146,7 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
         val newDetails =
           decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
-        (newO, (numero, descripcion))  // ← Retornar tupla tipada
+        (newO, (numero, descripcion))
       }
       case Some((numero, descripcion)) if !numero.equals(1) => {
         val detalles: Option[List[DetallesObligacion]] = Some(
@@ -154,9 +164,9 @@ case class ObligacionTributariaTransaction2(actorRef: ActorRef, monitoring: Moni
         val newDetails =
           decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
-        (newO, (numero, descripcion))  // ← Retornar tupla tipada
+        (newO, (numero, descripcion))
       }
-      case None => (obn, (-999, "Error en DMN"))  // ← Retornar tupla tipada
+      case None => (obn, (-999, "Error en DMN"))
     }
   }
 }

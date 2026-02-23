@@ -28,6 +28,7 @@ object SujetoEvents {
       saldoObjeto: BigDecimal,
       saldoObligaciones: BigDecimal,
       clasificacionObjeto: String,
+      idExterno: Option[String],
       deliveryIdObligacion: Option[BigInt]
   ) extends SujetoEvents
 
@@ -51,6 +52,7 @@ object SujetoEvents {
       saldoObjeto: BigDecimal,
       saldoObligaciones: BigDecimal,
       clasificacionObjeto: String,
+      idExterno: Option[String],
       deliveryIdObligacion: Option[BigInt]
   ) extends SujetoEvents
 

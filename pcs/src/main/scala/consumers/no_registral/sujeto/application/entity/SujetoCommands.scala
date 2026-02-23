@@ -22,6 +22,7 @@ object SujetoCommands {
                                                      saldoObjeto: BigDecimal,
                                                      saldoObligaciones: BigDecimal,
                                                      clasificacionObjeto: String,
+                                                     idExterno: Option[String],
                                                      deliveryIdObligacion: Option[BigInt]
                                                    ) extends SujetoCommands
 
@@ -39,6 +40,7 @@ object SujetoCommands {
       saldoObjeto: BigDecimal,
       saldoObligaciones: BigDecimal,
       clasificacionObjeto: String,
+      idExterno: Option[String],
       deliveryIdObligacion: Option[BigInt]
   ) extends SujetoCommands
 

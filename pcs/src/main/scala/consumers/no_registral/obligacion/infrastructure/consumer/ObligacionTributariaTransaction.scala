@@ -40,6 +40,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
   }
 
   def processMessage(obligacion: ObligacionesTri): Future[Response.SuccessProcessing] = {
+    // ✅ EVALUAR DMN SIEMPRE, ANTES DE CUALQUIER DECISIÓN
     val dmn = isTreintaPorciento(obligacion)
     val dmnResultTuple = dmn._2
     val dmnNumero = dmnResultTuple._1
@@ -81,57 +82,37 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
     } else {
       val command: ObligacionCommands =
         if (isCancelada(obligacion.BOB_OTROS_ATRIBUTOS).head) {
-          val obligacionPago = obligacion.copy(
-            BOB_OTROS_ATRIBUTOS = obligacion.BOB_OTROS_ATRIBUTOS.map { detalles =>
-              detalles.copy(
-                BOB_DETALLES = detalles.BOB_DETALLES.map { d =>
-                  d.copy(
-                    dmnNumero = None,
-                    dmnDescripcion = Some("no deuda")
-                  )
-                }
-              )
-            }
-          )
           ObligacionCommands.ObligacionRemove(
             deliveryId = obligacion.EV_ID,
             sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
             objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
             tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
             obligacionId = obligacion.BOB_OBN_ID,
-            registro = obligacionPago,
-            cuota = obligacion.BOB_CUOTA
+            registro = dmn._1,
+            cuota = obligacion.BOB_CUOTA,
+            resultDmn = Some(s"($dmnNumero,$dmnDescripcion)")
           )
         } else if (isNotDeuda(obligacion.BOB_OTROS_ATRIBUTOS).head) {
-          val obligacionPago = obligacion.copy(
-            BOB_OTROS_ATRIBUTOS = obligacion.BOB_OTROS_ATRIBUTOS.map { detalles =>
-              detalles.copy(
-                BOB_DETALLES = detalles.BOB_DETALLES.map { d =>
-                  d.copy(
-                    dmnNumero = None,
-                    dmnDescripcion = Some("no deuda")
-                  )
-                }
-              )
-            }
-          )
           ObligacionCommands.ObligacionRemove(
             deliveryId = obligacion.EV_ID,
             sujetoId = obligacion.BOB_SUJ_IDENTIFICADOR,
             objetoId = obligacion.BOB_SOJ_IDENTIFICADOR,
             tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
             obligacionId = obligacion.BOB_OBN_ID,
-            registro = obligacionPago,
-            cuota = obligacion.BOB_CUOTA
+            registro = dmn._1,
+            cuota = obligacion.BOB_CUOTA,
+            resultDmn = Some(s"($dmnNumero,$dmnDescripcion)")
           )
         } else {
+          // ✅ CASO NORMAL: Actualizar obligación
           if (dmnNumero == 1) {
+            // NO deuda → tiene30Obligaciones = true
             val obligacionNoDeuda = obligacion.copy(
               BOB_OTROS_ATRIBUTOS = obligacion.BOB_OTROS_ATRIBUTOS.map { detalles =>
                 detalles.copy(
                   BOB_DETALLES = detalles.BOB_DETALLES.map { d =>
                     d.copy(
-                      tiene30Obligaciones = Some(true),  // ← TRUE = NO penaliza
+                      tiene30Obligaciones = Some(true),
                       BAND_BATCH = Some(false),
                       EV_ID = Some(obligacion.EV_ID),
                       SOJ_ID_EXTERNO = obligacion.SOJ_ID_EXTERNO,
@@ -208,7 +189,7 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
         val newDetails =
           decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
-        (newO, (numero, descripcion))  // ← Retornar tupla tipada
+        (newO, (numero, descripcion))
       }
       case Some((numero, descripcion)) if !numero.equals(1) => {
         val detalles: Option[List[DetallesObligacion]] = Some(
@@ -226,9 +207,9 @@ case class ObligacionTributariaTransaction(actorRef: ActorRef, monitoring: Monit
         val newDetails =
           decode[ListDetallesObligaciones](ListDetallesObligaciones(detalles.get).asJson.toString()).toOption.get
         val newO: ObligacionesTri = obn.copy(BOB_OTROS_ATRIBUTOS = Some(newDetails))
-        (newO, (numero, descripcion))  // ← Retornar tupla tipada
+        (newO, (numero, descripcion))
       }
-      case None => (obn, (-999, "Error en DMN"))  // ← Retornar tupla tipada
+      case None => (obn, (-999, "Error en DMN"))
     }
   }
 }

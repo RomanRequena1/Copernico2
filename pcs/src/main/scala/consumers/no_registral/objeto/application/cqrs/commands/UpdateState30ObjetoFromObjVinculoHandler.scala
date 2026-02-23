@@ -2,8 +2,8 @@ package consumers.no_registral.objeto.application.cqrs.commands
 
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import consumers.no_registral. objeto.application.helper.{SendToSujeto, SendToSujeto1}
-import consumers.no_registral. objeto.domain.ObjetoEvents.UpdatedState30ObjetoFromObjVinculo
+import consumers.no_registral.objeto.application.helper.{SendToSujeto, SendToSujeto1}
+import consumers.no_registral.objeto.domain.ObjetoEvents.UpdatedState30ObjetoFromObjVinculo
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import ddd.eventCounterMax
@@ -49,15 +49,23 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
 
         actor.state = actor.state.copy(tiene30Objeto = tiene30ObjetoFinal)
 
-        // Actualizar el DMN del objeto si viene del vinculo
-        // Esto permite que objetos sin obligaciones propias usen el DMN de cotitulares
         val (dmnNumeroFinal, dmnDescripcionFinal) = {
-          if (actor.state.dmnNumero.isDefined) {
-            (actor.state.dmnNumero, actor.state.dmnDescripcion)
-          } else if (command.dmnNumero.isDefined) {
-            (command.dmnNumero, command.dmnDescripcion)
+          if (tiene30ObjetoFinal) {
+            if (actor.state.dmnNumero.isDefined) {
+              (actor.state.dmnNumero, actor.state.dmnDescripcion)
+            } else if (command.dmnNumero.isDefined) {
+              (command.dmnNumero, command.dmnDescripcion)
+            } else {
+              (None, None)
+            }
           } else {
-            (None, None)
+            if (actor.state.dmnNumero.isDefined && !actor.state.dmnNumero.contains(1)) {
+              (actor.state.dmnNumero, actor.state.dmnDescripcion)
+            } else if (command.dmnNumero.isDefined && !command.dmnNumero.contains(1)) {
+              (command.dmnNumero, command.dmnDescripcion)
+            } else {
+              (None, None)
+            }
           }
         }
 
@@ -68,9 +76,9 @@ class UpdateState30ObjetoFromObjVinculoHandler(actor: ObjetoActor, requeriment: 
 
         actor.persistSnapshot(event, actor.state) { () =>
           if (tiene30ObjetoFinal) {
-            SendToSujeto1(actor, requeriment, event, Some(command.deliveryId))
+            SendToSujeto1(actor, requeriment, event, Some(command.deliveryId), command.idExterno)
           } else {
-            SendToSujeto(actor, requeriment, event, Some(command.deliveryId))
+            SendToSujeto(actor, requeriment, event, Some(command.deliveryId), command.idExterno)
           }
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }

@@ -29,6 +29,7 @@ object ObjetoVinculoEvent {
                              objetoId: String,
                              tipoObj: String,
                              aplicarDescuento: Option[Boolean],
+                             idExterno: Option[String],
                              fechaEnvio: java.time.LocalDateTime
                            ) extends ObjetoVinculoEvent
 
@@ -42,6 +43,7 @@ object ObjetoVinculoEvent {
       titularidad: Option[String],
       exclusionObjeto: Option[String],
       deliveryId: BigInt,
+      idExterno: Option[String],
       dmnNumero: Option[Int] = None,
       dmnDescripcion: Option[String] = None
   ) extends ObjetoVinculoEvent
@@ -69,7 +71,10 @@ object ObjetoVinculoEvent {
       estadoObj: Option[String],
       titularidad: Option[String],
       exclusionObjeto: Option[String],
-      deliveryId: BigInt
+      idExterno: Option[String],
+      deliveryId: BigInt,
+      dmnNumero: Option[Int] = None,
+      dmnDescripcion: Option[String] = None
   ) extends ObjetoVinculoEvent {
 
     case class UpdatedVinculoObjetoFromObj(
@@ -83,15 +88,5 @@ object ObjetoVinculoEvent {
         deliveryId: BigInt
     ) extends ObjetoVinculoEvent
 
-    case class CreatedTransfVinculoObjetoFromObj(
-        sujetoId: String,
-        objetoId: String,
-        tipoObj: String,
-        tiene30Objeto: Boolean,
-        isResponsable: Option[Boolean],
-        estadoObj: Option[String],
-        titularidad: Option[String],
-        deliveryId: BigInt
-    ) extends ObjetoVinculoEvent
   }
 }

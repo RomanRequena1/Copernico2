@@ -1,6 +1,7 @@
 package consumers.no_registral.objeto.application.entities
 
 import consumers.no_registral.objeto.application.entities.ObjetoExternalDto.Exencion
+import consumers.no_registral.obligacion.application.entities.ObligacionExternalDto
 import design_principles.actor_model.Response
 import serialization.CbroSerialization
 
@@ -21,12 +22,14 @@ object ObjetoResponses {
                                 exenciones: Set[Exencion],
                                 bandTipo: String,
                                 treinta: Boolean,
+                                treintaSujeto: Option[Boolean],
                                 treintaFinal: Boolean
                               ) extends ObjetoResponses with CbroSerialization
 
   case class GetAllObnResponse(
                                 objetoId: String,
                                 objetoTipo: String,
+                                objetoTitularidad: Option[String],
                                 //saldo: BigDecimal,
                                 tiene30objeto: Option[Boolean],
                                 aplicarDescuento: Option[Boolean],
@@ -39,7 +42,8 @@ object ObjetoResponses {
                         saldoInteres: Option[BigDecimal],
                         vencimiento: Option[LocalDateTime],
                         estado: Option[String],
-                        tiene30obn: Option[Boolean]
+                        tiene30obn: Option[Boolean],
+                        registro: Option[ObligacionExternalDto]
                        )
 
 
