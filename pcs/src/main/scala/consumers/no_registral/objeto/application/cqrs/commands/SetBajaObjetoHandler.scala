@@ -2,7 +2,7 @@ package consumers.no_registral.objeto.application.cqrs.commands
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.entity.ShardedEntity.MonitoringAndMessageProducer
-import consumers.no_registral.objeto.application.entities.ObjetoCommands
+import consumers.no_registral.objeto.application.entities.{ObjetoCommands, ObjetoExternalDto}
 import consumers.no_registral.objeto.application.helper.{SendObjetoToObjetoVinculo, SendToObligaciones}
 import consumers.no_registral.objeto.domain.ObjetoEvents
 import consumers.no_registral.objeto.infrastructure.dependency_injection.ObjetoActor
@@ -57,14 +57,21 @@ class SetBajaObjetoHandler(actor: ObjetoActor, requeriment: MonitoringAndMessage
           }
         }
         SendToObligaciones(actor)
-        SendObjetoToObjetoVinculo(Obje,
-                                  actor,
-                                  command.sujetoId,
-                                  command.objetoId,
-                                  command.tipoObjeto,
-                                  command.registro.SOJ_ESTADO,
-                                  requeriment,
-                                  command)
+        event.registro match {
+          case o: ObjetoExternalDto.ObjetosTri =>
+            SendObjetoToObjetoVinculo(Obje,
+              actor,
+              command.sujetoId,
+              command.objetoId,
+              command.tipoObjeto,
+              command.registro.SOJ_ESTADO,
+              requeriment,
+              command)
+          case o: ObjetoExternalDto.ObjetosAnt => ()
+          case _ => ()
+        }
+
+
       }
     }
     Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
