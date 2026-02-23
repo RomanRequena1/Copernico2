@@ -52,9 +52,36 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
     }
 
     val detallesObligacion: Seq[DetallesObligacion] = obligacion.BOB_OTROS_ATRIBUTOS match {
-      case Some(r) => r.BOB_DETALLES
+      case Some(r) => r.BOB_DETALLES.map(d => d.copy(EV_ID = Some(obligacion.EV_ID)))
       case None => null
     }
+
+    val detallesAllNoneWithEvId = DetallesObligacion(
+      BOB_MUNICIPIO = None,
+      RULE_NUMBER = None,
+      tiene30Obligaciones = None,
+      BAND_BATCH = None,
+      EV_ID = Some(obligacion.EV_ID),
+      SOJ_ID_EXTERNO = None,
+      EVO_OBN_PEO_ID_MATERIAL = None,
+      JUICIO_MULTIOBJETO = None,
+      BOB_INTERES_FINANCIACION = None,
+      EVO_OBN_PEO_ID_FORMAL = None,
+      PLAN_MULTIOBJETO = None,
+      FLAG_OCULTA_WEB = None,
+      dmnNumero = None,
+      dmnDescripcion = None,
+      SOJ_FECHA_LABRADO = None,
+      SOJ_FECHA_SENTENCIA = None,
+      SOJ_FECHA_RESOLUCION = None,
+      SOJ_DESCUENTO_VIGENTE = None
+    )
+
+    val detallesWithEvId = obligacion.BOB_OTROS_ATRIBUTOS match {
+      case Some(r) => r.copy(r.BOB_DETALLES.map(d => d.copy(EV_ID = Some(obligacion.EV_ID))))
+      case None => ListDetallesObligaciones(List(detallesAllNoneWithEvId))
+    }
+
     val detallesObligacionCaracteristicas: Seq[DetallesObligacionCaracteristicas] = obligacion.BOB_CARACTERISTICAS match {
       case Some(r) => r.BOB_DETALLES_CARACTERISTICAS
       case None => null
@@ -100,7 +127,7 @@ case class ObligacionNoTributariaTransaction(actorRef: ActorRef, monitoring: Mon
             tipoObjeto = obligacion.BOB_SOJ_TIPO_OBJETO,
             obligacionId = obligacion.BOB_OBN_ID,
             deliveryId = obligacion.EV_ID,
-            registro = obligacion,
+            registro = obligacion.copy(BOB_OTROS_ATRIBUTOS = Some(detallesWithEvId)),
             detallesObligacion = detallesObligacion,
             detallesCaracteristicas = detallesObligacionCaracteristicas,
             detallesSupresiones = detallesSupresiones,
