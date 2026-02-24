@@ -28,11 +28,11 @@ case class ObligacionTributariaTransactionSincroE(actorRef: ActorRef, monitoring
   implicit val ec: ExecutionContext = actorTransactionRequirements.executionContext
 
   val sorterEnabled: String = Option(System.getenv("BETTER_SORTER_OBLIGACION_TRI")).getOrElse("OFF")
-  private val commandRouter = ObligacionCommandRouter.getOrCreate(system, actorRef)
+//  private val commandRouter = ObligacionCommandRouter.getOrCreate(system, actorRef)
 
-  def topic = "DGR-COP-OBLIGACIONES-TRI-E-SINCRO-A"
-  def topicRetry = "DGR-COP-OBLIGACIONES-TRI-SINCRO-A_retry"
-  def topicError = "DGR-COP-OBLIGACIONES-TRI-SINCRO-A_error"
+  def topic = "DGR-COP-OBLIGACIONES-TRI-E-SINCRO"
+  def topicRetry = "DGR-COP-OBLIGACIONES-TRI_retry"
+  def topicError = "DGR-COP-OBLIGACIONES-TRI_error"
 
   def processInput(input: String): Either[Throwable, ObligacionesTri] = {
     decode[ObligacionesTri](input)
@@ -158,13 +158,7 @@ case class ObligacionTributariaTransactionSincroE(actorRef: ActorRef, monitoring
           }
         }
 
-      sorterEnabled.equals("ON") match {
-        case true => {
-          recordBetterSorter()
-          commandRouter.ask[Response.SuccessProcessing](command)
-        }
-        case false => actorRef.ask[Response.SuccessProcessing](command)
-      }
+      actorRef.ask[Response.SuccessProcessing](command)
     }
   }
 
