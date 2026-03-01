@@ -26,7 +26,6 @@ case class PlanCabeceraTributarioTransaction(actor: PlanCabeceraActor, monitorin
     def topicError = "DGR-COP-PLAN-CABECERA-TRI_error"
 
     def processInput(input: String): Either[Throwable, PlanCabeceraTri] = {
-      log.error("LOGGGGGGGGG"+decode[PlanCabeceraTri](input))
       decode[PlanCabeceraTri](input)
     }
 
@@ -41,7 +40,6 @@ case class PlanCabeceraTributarioTransaction(actor: PlanCabeceraActor, monitorin
           )
         }
         else {
-          log.error("DSAJSADSDAJSADAJSDAS"+registro)
           PlanCabeceraCommands.PlanCabeceraUpdateFromDto(
             deliveryId = registro.EV_ID,
             planCabeceraId = registro.BPL_IDENTIFICADOR,

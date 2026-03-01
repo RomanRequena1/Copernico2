@@ -10,6 +10,7 @@ import consumers.no_registral.tranferencia.infrastructure.dependency_injection.O
 import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 
+import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}
 
 class UpdateObjetoVinculoFromObjHandler(
@@ -19,8 +20,6 @@ class UpdateObjetoVinculoFromObjHandler(
 
   override def handle(command: UpdateVinculoObjetoFromObj): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
-
-    log.info(s"[VINCULO-RECEIVED] Comando UpdateVinculoObjetoFromObj recibido - objetoId=${command.objetoId}, sujetoId=${command.sujetoId}")
 
     log.debug(
       f"""|CUMBIA - UpdateVinculoObjetoFromObj
@@ -40,42 +39,37 @@ class UpdateObjetoVinculoFromObjHandler(
       command.titularidad,
       command.exclusionObjeto,
       command.deliveryId,
+      command.idExterno,
       command.dmnNumero,
       command.dmnDescripcion
     )
 
-    implicit val ssytem: ActorSystem = actor.context.system
+    implicit val system: ActorSystem = actor.context.system
+    implicit val ec: ExecutionContext = actor.context.dispatcher
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
 
     actor.persistEvent(event) { () =>
       actor.state += event
 
-      val tieneDeudaEnTransf = actor.state.mapTransf.exists(_._2.tiene30Objeto == false)
       val todosLosVinculos = actor.state.mapVinculo ++ actor.state.mapTransf
+      val tiene30ObjetoVinculoGlobal = todosLosVinculos.values.forall(_.tiene30Objeto)
 
-      todosLosVinculos.foreach { e => {
-        val tiene30Final: Boolean = {
-          if (tieneDeudaEnTransf) {
-            false
-          } else {
-            actor.state.tiene30ObjetoVinculo
-          }
-        }
+      todosLosVinculos.foreach { case (key, vinculoInfo) =>
+        val tiene30Final = tiene30ObjetoVinculoGlobal
 
-        actorSujetoGeneral.ask[Response.SuccessProcessing](
-          UpdateState30ObjetoFromObjVinculo(
-            command.deliveryId,
-            e._1.sujetoId,
-            e._1.objetoId,
-            e._1.tipoObj,
-            tiene30Final,
-            command.exclusionObjeto,
-            command.dmnNumero,
-            command.dmnDescripcion
-          )
+        actorSujetoGeneral ! UpdateState30ObjetoFromObjVinculo(
+          command.deliveryId,
+          key.sujetoId,
+          key.objetoId,
+          key.tipoObj,
+          tiene30Final,
+          command.exclusionObjeto,
+          command.idExterno,
+          command.dmnNumero,
+          command.dmnDescripcion
         )
-       }
       }
+
       actor.persistSnapshot(event, actor.state) { () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }

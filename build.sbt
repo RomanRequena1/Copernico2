@@ -7,7 +7,8 @@ run / javaOptions += javaOpts
 lazy val commonSettings = Seq(
   ThisBuild / organization := "peperina",
   version := "1.0",
-  scalaVersion := Dependencies.scalaVersion
+  scalaVersion := Dependencies.scalaVersion,
+  excludeDependencies += "io.confluent" % "monitoring-interceptors"
 )
 
 lazy val global = project

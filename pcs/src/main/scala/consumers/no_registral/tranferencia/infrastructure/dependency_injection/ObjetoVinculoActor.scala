@@ -64,7 +64,7 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
 
   // En ObjetoVinculoActor.scala
 
-  def dmnresumenpersistSnapshot(evt: DmnResumen, consolidatedState:  ObjetoVinculoState)(handler: () => Unit): Unit = {
+  def dmnresumenpersistSnapshot(evt: DmnResumen, consolidatedState:  ObjetoVinculoState, idExterno: Option[String])(handler: () => Unit): Unit = {
     val kafkaTopic = "dgr-cop-objeto-beneficios-v1"
 
     val beneficio = Beneficio(
@@ -77,9 +77,9 @@ class ObjetoVinculoActor(requirements: MonitoringAndMessageProducer, objetoVincu
     val snapshot = DmnResumenSnapshotPersisted(
       evt.deliveryId,
       evt.sujetoId,
-      evt. objetoId,
-      evt. tipoObjeto,
-      evt.idExterno,
+      evt.objetoId,
+      evt.tipoObjeto,
+      idExterno,
       evt.fecha,
       Seq(beneficio)
     )

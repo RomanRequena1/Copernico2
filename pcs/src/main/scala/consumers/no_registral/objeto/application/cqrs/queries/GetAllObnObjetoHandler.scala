@@ -50,7 +50,8 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
           saldoInteres = response.saldo.map(_ + interes),
           vencimiento = response.vencimiento,
           estado = response.estado,
-          tiene30obn = response.tiene30
+          tiene30obn = response.tiene30,
+          registro = response.registro
         )
       }
     }
@@ -66,19 +67,28 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
       case Success(value) => {
         lista = value
         //println(s"Mi lista: $lista")
-        val resultAplicarDescuento: Boolean = DMNTreintaPorcientoFinal.calcularDmnFinal(
-          DmnFinal(
-            actor.state.exclusionSujeto,
-            actor.state.exclusionObjeto,
-            actor.state.clasificacionObjeto,
-            actor.state.tiene30Objeto,
-            actor.state.tiene30Sujeto.get,
-            actor.state.tiene30ObjetoVinculo
-          )
-        )
+        val resultAplicarDescuento: Boolean = {
+          if (actor.state.tiene30Sujeto.isDefined) {
+            DMNTreintaPorcientoFinal.calcularDmnFinal(
+              DmnFinal(
+                actor.state.exclusionSujeto,
+                actor.state.exclusionObjeto,
+                actor.state.clasificacionObjeto,
+                actor.state.tiene30Objeto,
+                actor.state.tiene30Sujeto.get,
+                actor.state.tiene30ObjetoVinculo
+              ))
+          } else {
+            true
+          }
+        }
         val response = GetAllObnResponse(
           objetoId = query.objetoId,
           objetoTipo = query.tipoObjeto,
+          objetoTitularidad = actor.state.registro match {
+            case Some(value) => value.SOJ_TITULARIDAD
+            case None => None
+          },
           tiene30objeto = Some(actor.state.tiene30Objeto),
           aplicarDescuento = Some(resultAplicarDescuento),
 //          saldo = actor.state.saldo,
@@ -92,6 +102,10 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
     val response = GetAllObnResponse(
       objetoId = query.objetoId,
       objetoTipo = query.tipoObjeto,
+      objetoTitularidad = actor.state.registro match {
+        case Some(value) => value.SOJ_TITULARIDAD
+        case None => None
+      },
       tiene30objeto = Some(actor.state.tiene30Objeto),
       aplicarDescuento = actor.state.aplicarDescuento,
 //      saldo = actor.state.saldo,

@@ -12,27 +12,16 @@ import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.{Failure, Success}
 
-
-//todo --------------------------- REFACTORIZAR ----------------------------------
 object SendObjetoToObjetoVinculo {
-  //FIXME: revisar obj_default si es necesario y que deliveryId tendria
   val obj_default: ObjetosTri = ObjetosTri(Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"), None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"), Some("None"), Some("None"),Some("None"), Some("None"), Some("None"),None,None)
-  /**
-   * 1. Crear actor
-   * Si el actor ya existe, se envía el mensaje al actor existente que entra por el catch y si no existe se crea el actor
-   * Si estado es TRANSF se envia el mensaje CreateTransfVinculoObjetoFromObj y se hace los informes hacia el padre
-   * Si estado no es TRANSF se envia el mensaje UpdateVinculoObjetoFromObj
-   */
 
   def apply(vinculoActor: ActorRef, actor: ObjetoActor, sujetoId: String, objetoId: String, tipoObjeto: String, estado: Option[String], requeriment: MonitoringAndMessageProducer, command: Command): Unit = {
     if(vinculoActor.path.toString.equals("akka://PersonClassificationService/system/sharding/ObjetoVinculoActor")){
-
       testIfObjVinculo(vinculoActor, actor, sujetoId, objetoId, tipoObjeto, estado, requeriment, command)
     } else {
       implicit val ac: ActorSystem = actor.context.system
       val vinculoActor: ActorRef = ObjetoVinculoActor.startWithRequirements(requeriment)
       testIfObjVinculo(vinculoActor, actor, sujetoId, objetoId, tipoObjeto, estado, requeriment, command)
-
     }
   }
 }
@@ -45,7 +34,6 @@ object testIfObjVinculo {
     val log: Logger = LoggerFactory.getLogger(this.getClass)
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
 
-    //Verificar si es un pago de una obligacion
     val esPago = command match {
       case _: ObjetoCommands.ObjetoRemoveObligacion => true
       case _ => false
@@ -53,7 +41,6 @@ object testIfObjVinculo {
 
     estado match {
       case x if (x.getOrElse("").equals("TRANSF") || x.getOrElse("").equals("ESTADO2")) && !esPago =>
-        log.info(s"[SEND-TO-VINCULO] Detectado TRANSF real - Usando CreateTransfVinculoObjetoFromObj")
         val res = vinculoActor.ask[Response.SuccessProcessing](CreateTransfVinculoObjetoFromObj(
           objetoId = objetoId,
           sujetoId = sujetoId,
@@ -64,12 +51,15 @@ object testIfObjVinculo {
           estadoObj = actor.state.registro.getOrElse(obj_default).SOJ_ESTADO,
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
           exclusionObjeto = actor.state.exclusionObjeto,
+          idExterno = actor.state.idExterno,
           dmnNumero = actor.state.dmnNumero,
           dmnDescripcion = actor.state.dmnDescripcion
         ))
         res.onComplete {
-          case Failure(exception) => log.error("Error to send event to objeto_vinculo (TRANSF)" + exception + "objID: "+ objetoId + "sujID: "+sujetoId)
-          case Success(value) => log.debug("Sent event to objet_vinculo (TRANSF)" + " objID: "+ objetoId + " sujID: "+ sujetoId)
+          case Failure(exception) =>
+            log.error("Error to send event to objeto_vinculo (TRANSF)" + exception + "objID: "+ objetoId + "sujID: "+sujetoId)
+          case Success(value) =>
+            log.debug("Sent event to objet_vinculo (TRANSF)" + " objID: "+ objetoId + " sujID: "+ sujetoId)
         }
 
         if (actor.state.tiene30Objeto.equals(false))
@@ -78,11 +68,11 @@ object testIfObjVinculo {
           actor.informParent(actor.state.lastDeliveryIdByEvents, sujetoId, objetoId, tipoObjeto, actor.state)
 
       case x if (x.getOrElse("").equals("TRANSF") || x.getOrElse("").equals("ESTADO2")) && esPago =>
-        // Caso raro: es un pago de un objeto que esta transferido
         val res = vinculoActor.ask[Response.SuccessProcessing](UpdateVinculoObjetoFromObj(
           objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = actor.state.lastDeliveryIdByEvents,
+          idExterno = actor.state.idExterno,
           tipoObj = tipoObjeto,
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),
@@ -93,17 +83,14 @@ object testIfObjVinculo {
           dmnDescripcion = actor.state.dmnDescripcion
         ))
         res.onComplete {
-          case Failure(exception) => {
+          case Failure(exception) =>
             requeriment.monitoring.counter("objeto-vinculo-pago-transf-error").increment()
             log.error("Error to send event to objeto_vinculo (PAGO-TRANSF) " + exception + " objID: " + objetoId + " sujID: " + sujetoId)
-          }
-          case Success(value) => {
+          case Success(value) =>
             requeriment.monitoring.counter("objeto-vinculo-pago-transf-success").increment()
             log.debug("Sent event to objet_vinculo (PAGO-TRANSF)" + " objID: " + objetoId + " sujID: " + sujetoId)
-          }
         }
 
-      //FIXME: Objeto en baja recibe una obn, activa el VSO?
       case x if x.getOrElse("").equals("BAJA") =>
         val res = vinculoActor.ask[Response.SuccessProcessing](RemoveObjetoVinculo(
           objetoId = objetoId,
@@ -116,14 +103,12 @@ object testIfObjVinculo {
           titularidad = actor.state.registro.getOrElse(obj_default).SOJ_TITULARIDAD,
           exclusionObjeto = actor.state.exclusionObjeto))
         res.onComplete {
-          case Failure(exception) => {
+          case Failure(exception) =>
             requeriment.monitoring.counter("objeto-vinculo-baja-error").increment()
             log.error("Error to send event to objeto_vinculo (BAJA) " + exception + " objID: " + objetoId + "sujID: " + sujetoId)
-          }
-          case Success(value) => {
+          case Success(value) =>
             requeriment.monitoring.counter("objeto-vinculo-baja-success").increment()
             log.debug("Sent event to objet_vinculo (BAJA) " + " objID: " + objetoId + " sujID: " + sujetoId)
-          }
         }
 
       case _ =>
@@ -131,6 +116,7 @@ object testIfObjVinculo {
           objetoId = objetoId,
           sujetoId = sujetoId,
           deliveryId = command.deliveryId,
+          idExterno = actor.state.idExterno,
           tipoObj = tipoObjeto,
           tiene30Objeto = actor.state.tiene30Objeto,
           isResponsable = Some(actor.state.isResponsable),

@@ -11,7 +11,7 @@ import cqrs.untyped.command.CommandHandler.SyncCommandHandler
 import design_principles.actor_model.Response
 
 import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success, Try}
+import scala.util.{Success, Try}
 
 class CreateVinculoObjetoFromObjTranfHandler(
                                               actor: ObjetoVinculoActor,
@@ -30,38 +30,38 @@ class CreateVinculoObjetoFromObjTranfHandler(
       command.estadoObj,
       command.titularidad,
       command.exclusionObjeto,
-      command.deliveryId
+      command.idExterno,
+      command.deliveryId,
+      command.dmnNumero,
+      command.dmnDescripcion
     )
 
     implicit val system: ActorSystem = actor.context.system
+    implicit val ec: ExecutionContext = actor.context.dispatcher
     implicit val actorSujetoGeneral: ActorRef = SujetoActor.startWithRequirements(tranferenciaActorRequirements)
 
     actor.persistEvent(event) { () =>
       actor.state += event
-      val tieneDeuadEnTransf = actor.state.mapTransf.exists(_._2.tiene30Objeto == false)
 
-      actor.state.mapVinculo.foreach { e =>
-      {
-        // si hay deuda de una transferencia hay que pasar la marca a false para nuevos titulares
-        val tiene30Final = if (tieneDeuadEnTransf) {
-          false  // responsabilidad solidaria adquirir deuda
-        } else {
-          actor.state.tiene30ObjetoVinculo  // sino dejar la marca como estaba
-        }
+      val todosLosVinculos = actor.state.mapVinculo ++ actor.state.mapTransf
+      val tiene30ObjetoVinculoGlobal = todosLosVinculos.values.forall(_.tiene30Objeto)
 
-        actorSujetoGeneral.ask[Response.SuccessProcessing](
-          UpdateState30ObjetoFromObjVinculo(
-            command.deliveryId,
-            e._1.sujetoId,
-            e._1.objetoId,
-            e._1.tipoObj,
-            tiene30Final,  // valor calculado según deuda
-            command.exclusionObjeto,
-            command.dmnNumero,
-            command.dmnDescripcion
-          )
-        )}
+      todosLosVinculos.foreach { case (key, vinculoInfo) =>
+        val tiene30Final = tiene30ObjetoVinculoGlobal
+
+        actorSujetoGeneral ! UpdateState30ObjetoFromObjVinculo(
+          command.deliveryId,
+          key.sujetoId,
+          key.objetoId,
+          key.tipoObj,
+          tiene30Final,
+          command.exclusionObjeto,
+          command.idExterno,
+          command.dmnNumero,
+          command.dmnDescripcion
+        )
       }
+
       actor.persistSnapshot(event, actor.state) { () =>
         sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
       }

@@ -31,6 +31,7 @@ object ObjetoCommands {
       tipoObjeto: String,
       tiene30ObjetoVinculo: Boolean,
       exclusionObjetoVinculo: Option[String],
+      idExterno: Option[String],
       dmnNumero: Option[Int],
       dmnDescripcion: Option[String]
   ) extends ObjetoCommands
@@ -43,6 +44,7 @@ object ObjetoCommands {
       tiene30Sujeto: Boolean,
       exclusionSUjeto: Option[String],
       dmnDescripcionSujeto: Option[String],
+      idExterno: Option[String],
       deliveryIdObligacion: Option[BigInt]
   ) extends ObjetoCommands
 

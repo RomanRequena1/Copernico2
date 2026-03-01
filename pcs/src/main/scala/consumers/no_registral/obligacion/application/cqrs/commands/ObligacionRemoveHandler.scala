@@ -63,11 +63,11 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
         val esBajaPorPago = isPagoObligacion(command.registro)
         val tipoObjetoValido = (
           command.tipoObjeto == "PPP" ||
-          command.tipoObjeto == "PM26" ||
-          command.tipoObjeto == "PVS" ||
-          command.tipoObjeto == "MVD" ||
-          command.tipoObjeto == "LTE" ||
-          command.tipoObjeto == "BDG"
+            command.tipoObjeto == "PM26" ||
+            command.tipoObjeto == "PVS" ||
+            command.tipoObjeto == "MVD" ||
+            command.tipoObjeto == "LTE" ||
+            command.tipoObjeto == "BDG"
           )
 
         if (esBajaPorPago && tipoObjetoValido) {
@@ -81,7 +81,6 @@ class ObligacionRemoveHandler(actor: ObligacionActor) extends SyncCommandHandler
             command.cuota
           )
         } else {
-          // Si no es pago o no es PPP/PM26, ejecutar flujo normal
           actor.informRemoveToParent(command)
         }
 

@@ -45,7 +45,7 @@
       <env name="TIMEOUT" value="50" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="Main" />
-    <module name="pcs" />
+    <module name="Copernico.pcs.main" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

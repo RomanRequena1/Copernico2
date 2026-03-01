@@ -156,6 +156,7 @@ case class ObjetoState(
         copy(
           tiene30Sujeto = Some(evt.tiene30Sujeto),
           exclusionSujeto = evt.exclusionSUjeto,
+          idExterno = evt.idExterno,
           dmnDescripcionAnteriorPorSujeto = {
             if (exclusionNuevaSujeto.isDefined && exclusionAnteriorSujeto.isEmpty) {
               dmnDescripcion_
@@ -256,12 +257,12 @@ case class ObjetoState(
           obligacionesSaldo = obligacionesSaldo_,
           sujetos = sujetos + evt.sujetoId,
           isBaja = false,
-          idExterno = idExterno,
+          idExterno = evt.idExterno,
           obnVencidas = _obnVencidas,
           tiene30Objeto = diff,
           ultimo30Objeto = ultimo30Objeto + ((event.deliveryId.toString, diff)),
-          dmnNumero = dmnNumero,
-          dmnDescripcion = dmnDescripcion
+          dmnNumero = evt.dmnNumero,
+          dmnDescripcion = evt.dmnDescripcion
         )
 
       case evt: ObjetoEvents.ObjetoUpdatedFromObnTreintaProciento =>

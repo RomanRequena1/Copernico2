@@ -28,6 +28,7 @@ class SujetoUpdateFromObjetoHandler(actor: SujetoActor) extends SyncCommandHandl
       command.saldoObjeto,
       command.saldoObligaciones,
       command.clasificacionObjeto,
+      command.idExterno,
       command.deliveryIdObligacion
     )
 

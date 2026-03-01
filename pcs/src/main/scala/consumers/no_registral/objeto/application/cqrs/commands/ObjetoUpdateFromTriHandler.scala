@@ -28,11 +28,6 @@ import scala.util.{Failure, Success, Try}
 class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndMessageProducer)
   extends SyncCommandHandler[ObjetoCommands.ObjetoUpdateFromTri] {
 
-  /**
-   * Si el objeto es tipo M y actor.state.tiene30Objeto es false, entonces informParentTreintaPorciento y si actor.state.tiene30Objeto es true, entonces informParent.
-   * En ambos casos, persistSnapshot.
-   * En el caso del else, se envía el objeto a objeto vinculo.
-   */
   override def handle(
                        command: ObjetoCommands.ObjetoUpdateFromTri
                      ): Try[Response.SuccessProcessing] = {
@@ -106,11 +101,11 @@ class ObjetoUpdateFromTriHandler(actor: ObjetoActor, requeriment: MonitoringAndM
     val stateParcialEnabled: String = Option(System.getenv("STATE_PARCIAL_OBJETO_TRI")).getOrElse("OFF")
 
     val event = ObjetoEvents.ObjetoUpdatedFromTri(
-      //TODO: validar para que esta este If
       if (command.deliveryId.signum < 0) actor.state.lastDeliveryIdByEvents else command.deliveryId,
       command.sujetoId,
       command.objetoId,
       command.tipoObjeto,
+      command.registro.SOJ_ID_EXTERNO,
       stateParcialEnabled.equals("ON") match {
         case true => getObjetoFFF()
         case false => command.registro
@@ -187,6 +182,7 @@ object test {
               actor.state.saldo,
               actor.state.obligacionesSaldo.values.sum,
               actor.state.clasificacionObjeto,
+              command.registro.SOJ_ID_EXTERNO,
               Some(command.deliveryId)
             )
           )
@@ -211,6 +207,7 @@ object test {
                 actor.state.saldo,
                 actor.state.obligacionesSaldo.values.sum,
                 actor.state.clasificacionObjeto,
+                command.registro.SOJ_ID_EXTERNO,
                 Some(command.deliveryId)
               )
             )
@@ -231,7 +228,6 @@ object test {
         }
       } else {
         actor.persistSnapshot(event, actor.state) { () =>
-
           SendObjetoToObjetoVinculo(
             Obje,
             actor,

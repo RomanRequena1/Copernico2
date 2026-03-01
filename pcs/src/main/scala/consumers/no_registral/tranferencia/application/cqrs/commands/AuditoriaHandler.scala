@@ -26,13 +26,14 @@ class AuditoriaHandler(actor:  ObjetoVinculoActor,
         command.objetoId,
         command.tipoObj,
         command.aplicarDescuento,
+        command.idExterno,
         LocalDateTime.now
       )
 
       actor.state += event
 
       actor.persistEvent(event) { () =>
-        actor.dmnresumenpersistSnapshot(command.eventDmn, actor.state) { () =>
+        actor.dmnresumenpersistSnapshot(command.eventDmn, actor.state, command.idExterno) { () =>
           log.info(s"[AUDITORIA-ENVIADO] objetoId=${command.objetoId}, aplicarDescuento=${command.aplicarDescuento}")
           sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
         }

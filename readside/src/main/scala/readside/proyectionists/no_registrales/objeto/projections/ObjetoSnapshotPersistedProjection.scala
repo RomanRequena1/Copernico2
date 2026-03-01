@@ -11,8 +11,37 @@ case class ObjetoSnapshotPersistedProjection(
     event: ObjetoSnapshotPersisted
 ) extends ObjetoProjection {
 
+  def tipoANT(tipo: String, descripcion: Option[String]) = {
+    descripcion match {
+      case Some(value) => value.equals("DefaultANT") || (
+        tipo == "PPP" ||
+          tipo == "PM26" ||
+          tipo == "PVS" ||
+          tipo == "MVD" ||
+          tipo == "LTE" ||
+          tipo == "BDG"
+        )
+      case None => false
+    }
+
+  }
+
   val registro: Option[ObjetoExternalDto] = event.registro
   val fromRegistro: Option[List[(String, Option[Any])]] = registro match {
+    case Some(r) if tipoANT(r.SOJ_TIPO_OBJETO, r.SOJ_DESCRIPCION) => {
+      Some(
+        List(
+          "soj_descripcion" -> Some("Sin descripción"),
+          "soj_id_externo" -> event.idExterno,
+          "soj_identificador_2" -> event.objetoId2,
+          "soj_cant_cuotas_pagadas" -> Some(event.cuotas.mkString("[", ",", "]")),
+          "soj_tiene30Objeto" -> event.tiene30Objeto,
+          "soj_tiene30ObjetoVinculo" -> event.tiene30ObjetoVinculo,
+          "soj_aplicarDescuento" -> event.aplicarDescuento,
+          "soj_resultDmn" -> Some(event.bandTipo.toInt)
+        )
+      )
+    }
     case Some(r) =>
       val bobDetailsResult: Option[Map[String, List[DetallesObjeto]]] = {
         decode[Map[String, List[DetallesObjeto]]](registro.get.SOJ_OTROS_ATRIBUTOS.asJson.toString()).toOption
