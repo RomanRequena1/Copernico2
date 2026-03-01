@@ -23,6 +23,14 @@ class ObjetoUpdateFromSujetoHandler(actor: ObjetoActor, requeriment: MonitoringA
   override def handle(command: ObjetoCommands.ObjetoUpdateFromSujeto): Try[Response.SuccessProcessing] = {
     val sender = actor.context.sender()
 
+    // Guard: objeto en BAJA no debe generar snapshots U.
+    // El SujetoActor envía SujetoSetBajaFromObjeto que puede rebotar un ObjetoUpdateFromSujeto
+    // generando un snapshot espurio con operacion=U entre el D y el FD del flujo de baja.
+    if (actor.state.isBaja) {
+      sender ! Response.SuccessProcessing(command.aggregateRoot, command.deliveryId)
+      return Success(Response.SuccessProcessing(command.aggregateRoot, command.deliveryId))
+    }
+
     val obj_default: ObjetosTri = ObjetosTri(
       Some("None"), 0, "None", "None", "None", Some("None"), Some("None"), Some("None"),
       None, None, Some("None"), None, Some(0), Some("None"), Some(0), Some("None"),

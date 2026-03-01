@@ -85,7 +85,10 @@ class GetAllObnObjetoHandler(actor: ObjetoActor) extends SyncQueryHandler[GetAll
         val response = GetAllObnResponse(
           objetoId = query.objetoId,
           objetoTipo = query.tipoObjeto,
-          objetoTitularidad = actor.state.registro.get.SOJ_TITULARIDAD,
+          objetoTitularidad = actor.state.registro match {
+            case Some(value) => value.SOJ_TITULARIDAD
+            case None => None
+          },
           tiene30objeto = Some(actor.state.tiene30Objeto),
           aplicarDescuento = Some(resultAplicarDescuento),
 //          saldo = actor.state.saldo,
