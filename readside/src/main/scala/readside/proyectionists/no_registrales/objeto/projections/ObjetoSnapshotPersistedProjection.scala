@@ -11,16 +11,17 @@ case class ObjetoSnapshotPersistedProjection(
     event: ObjetoSnapshotPersisted
 ) extends ObjetoProjection {
 
-  def tipoANT(tipo: String, descripcion: Option[String]) = {
+  private def tipoANT(tipo: String, descripcion: Option[String]) = {
     descripcion match {
-      case Some(value) => value.equals("DefaultANT") || (
-        tipo == "PPP" ||
+      case Some(value) if value.equals("DefaultANT") => (
+          tipo == "PPP" ||
           tipo == "PM26" ||
           tipo == "PVS" ||
           tipo == "MVD" ||
           tipo == "LTE" ||
           tipo == "BDG"
         )
+      case Some(_) => false
       case None => false
     }
 
