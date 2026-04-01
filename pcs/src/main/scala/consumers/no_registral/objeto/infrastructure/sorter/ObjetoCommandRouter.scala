@@ -1,10 +1,9 @@
 package consumers.no_registral.objeto.infrastructure.sorter
 
 import akka.actor.{Actor, ActorRef, Props}
-import akka.pattern.{ask, pipe}
+import akka.pattern.ask
 import akka.util.Timeout
 import consumers.no_registral.objeto.application.entities.ObjetoCommands
-import design_principles.actor_model.Response
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.Await
@@ -27,11 +26,8 @@ class ObjetoCommandRouter(targetGlobalActor: ActorRef) extends Actor {
     case cmd: ObjetoCommands =>
       val objetoId = cmd.objetoId
 
-//      logger.debug(s"Router recibió comando para objetoId: $objetoId")
-
       // Obtener o crear un actor para este objetoId
       val actor = objectActors.getOrElse(objetoId, {
-//        logger.debug(s"Creando nuevo actor para objetoId: $objetoId")
         val newActor = context.actorOf(
           Props(new SingleObjectProcessor(targetGlobalActor, objetoId)),
           s"object-processor-$objetoId"
